@@ -123,6 +123,7 @@ This module exports the following variables and procedures:
    (http:message-headers msg)
    (http:message-header header msg)
    (http:get url)
+   (http:post-form url extra-headers fields)
    (http:open host . args)
    (http:request method url . args)
 @end example
