@@ -1,5 +1,10 @@
 2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* answer.scm (mouthpiece): For internal proc `send-reply', if
+	status box has a second position, set it to the content-length.
+
+2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* log.scm: New file.
 
 2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
