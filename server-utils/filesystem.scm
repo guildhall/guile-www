@@ -33,7 +33,7 @@
             upath->filename-proc
             filename->content-type))
 
-;; Create and return a filesystem-access procedure based on @var{docroot}.
+;; Create and return a filesystem-access procedure based on @var{docroot}
 ;; and @var{forbid-rx}.  The returned procedure @var{p} takes a @var{filename}
 ;; and returns #t if access to that file should be denied for any of the
 ;; following reasons:
