@@ -39,7 +39,7 @@
 ;;
 (define-public (www:set-protocol-handler! proto handler)
   (set! dispatch-table
-	(assq-set! dispatch-table proto handler)))
+        (assq-set! dispatch-table proto handler)))
 
 ;; Parse @var{url-string} into portions.  For HTTP, open a connection,
 ;; retrieve and return the specified document.  Otherwise, consult the
@@ -55,10 +55,10 @@
                 (http:message-body msg)))
       (else
        (let ((handle (assq-ref dispatch-table (url:scheme url))))
-	 (if handle
-	     (handle (url:host url)
-		     (url:port url)
-		     (url:path url))
-	     (error "unknown URL scheme" (url:scheme url))))))))
+         (if handle
+             (handle (url:host url)
+                     (url:port url)
+                     (url:path url))
+             (error "unknown URL scheme" (url:scheme url))))))))
 
 ;;; www/main.scm ends here

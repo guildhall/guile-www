@@ -1,6 +1,6 @@
 ;;; www/url.scm --- URL manipulation tools
 
-;; 	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
+;;	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -104,22 +104,22 @@
   (cond
    ((regexp-exec http-regexp url)
     => (lambda (m)
-	 (url:make-http (match:substring m 1)
-			(cond ((match:substring m 3) => string->number)
-			      (else #f))
-			(match:substring m 5))))
+         (url:make-http (match:substring m 1)
+                        (cond ((match:substring m 3) => string->number)
+                              (else #f))
+                        (match:substring m 5))))
 
    ((regexp-exec ftp-regexp url)
     => (lambda (m)
-	 (url:make-ftp (match:substring m 2)
-		       (match:substring m 3)
-		       (cond ((match:substring m 5) => string->number)
-			     (else #f))
-		       (match:substring m 7))))
+         (url:make-ftp (match:substring m 2)
+                       (match:substring m 3)
+                       (cond ((match:substring m 5) => string->number)
+                             (else #f))
+                       (match:substring m 7))))
 
    ((regexp-exec mailto-regexp url)
     => (lambda (m)
-	 (url:make-mailto (match:substring m 1))))
+         (url:make-mailto (match:substring m 1))))
 
    (else
     (url:make 'unknown url))))

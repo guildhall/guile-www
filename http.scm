@@ -1,6 +1,6 @@
 ;;; www/http.scm --- HTTP client library for Guile
 
-;; 	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
+;;	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@
 (define http:version "HTTP/1.0")
 
 ;; An HTTP message is represented by a vector:
-;;	#(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
+;;      #(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
 ;;
 ;; Each of VERSION, STATUS-CODE, STATUS-TEXT are strings.  HEADERS
 ;; is an alist of headers and their contents.  BODY is a single string.
@@ -73,11 +73,11 @@
 ;; symbol representing the header name, and the CDR is a string
 ;; containing the header text.  E.g.:
 ;;
-;;	'((date . "Thu, 29 May 1997 23:48:27 GMT")
-;;	  (server . "NCSA/1.5.1")
-;;	  (last-modified . "Tue, 06 May 1997 18:32:03 GMT")
-;;	  (content-type . "text/html")
-;;	  (content-length . "8097"))
+;;      '((date . "Thu, 29 May 1997 23:48:27 GMT")
+;;        (server . "NCSA/1.5.1")
+;;        (last-modified . "Tue, 06 May 1997 18:32:03 GMT")
+;;        (content-type . "text/html")
+;;        (content-length . "8097"))
 ;;
 ;; Note: these symbols are all lowercase, although the original headers
 ;; were mixed-case.  Clients using this library should keep this in
@@ -107,17 +107,17 @@
 (define (http:header-parse hd)
   (let ((match (regexp-exec header-regex hd)))
     (cons (string->symbol
-	   (apply string
-		  (map char-downcase
-		       (string->list (match:prefix match)))))
-	  (match:suffix match))))
+           (apply string
+                  (map char-downcase
+                       (string->list (match:prefix match)))))
+          (match:suffix match))))
 
 (define (parse-status-line statline)
   (let* ((first (string-index statline #\space))
-	 (second (string-index statline #\space (1+ first))))
+         (second (string-index statline #\space (1+ first))))
     (list (make-shared-substring statline 0 first)
-	  (make-shared-substring statline (1+ first) second)
-	  (make-shared-substring statline (1+ second)))))
+          (make-shared-substring statline (1+ first) second)
+          (make-shared-substring statline (1+ second)))))
 
 
 ;;; HTTP connection management functions.
@@ -134,7 +134,7 @@
 ;; send more requests on connections the server assumed were dead.
 ;; (define (add-open-connection! host tcp-port port)
 ;;   (set! connection-table
-;; 	(assoc-set! connection-table (cons host tcp-port) port)))
+;;      (assoc-set! connection-table (cons host tcp-port) port)))
 ;; (define (get-open-connection host tcp-port)
 ;;   (assoc-ref connection-table (cons host tcp-port)))
 
@@ -286,15 +286,15 @@
 ;;
 (define-public (http:open host . args)
   (let ((port (cond ((null? args) 80)
-		    ((not (car args)) 80)
-		    (else (car args)))))
+                    ((not (car args)) 80)
+                    (else (car args)))))
     (or (get-open-connection host port)
-	(let* ((tcp (vector-ref (getproto "tcp") 2))
-	       (addr (car (vector-ref (gethost host) 4)))
-	       (sock (socket AF_INET SOCK_STREAM tcp)))
-	  (connect sock AF_INET addr port)
-	  (add-open-connection! host port sock)
-	  sock))))
+        (let* ((tcp (vector-ref (getproto "tcp") 2))
+               (addr (car (vector-ref (gethost host) 4)))
+               (sock (socket AF_INET SOCK_STREAM tcp)))
+          (connect sock AF_INET addr port)
+          (add-open-connection! host port sock)
+          sock))))
 
 (define form-hack-regex
   ;; Normally `http:request' formats the lines it sends over the socket to
@@ -339,15 +339,15 @@
 ;;
 (define-public (http:request method url . args)
   (let ((host     (url:host url))
-	(tcp-port (or (url:port url) 80))
-	(path     (format #f "/~A" (or (url:path url) ""))))
+        (tcp-port (or (url:port url) 80))
+        (path     (format #f "/~A" (or (url:path url) ""))))
     (let ((sock (http:open host tcp-port))
-	  (request (format #f "~A ~A ~A" method path http:version))
-	  (headers (cons (format #f "Host: ~A" (url:host url))
+          (request (format #f "~A ~A ~A" method path http:version))
+          (headers (cons (format #f "Host: ~A" (url:host url))
                          (if (pair? args) (car args) '())))
-	  (body    (if (and (pair? args) (pair? (cdr args)))
-		       (cadr args)
-		       '())))
+          (body    (if (and (pair? args) (pair? (cdr args)))
+                       (cadr args)
+                       '())))
       (let* ((form-hack? (let loop ((ls headers))
                            (cond ((null? ls) #f)
                                  ((regexp-exec form-hack-regex (car ls))
@@ -355,72 +355,72 @@
                                        (not (pair? (cdr body)))))
                                  (else (loop (cdr ls))))))
              (content-length
-	      (apply +
+              (apply +
                      (if form-hack? -2 0)
-		     (map (lambda (line)
-			    (+ 2 (string-length line)))	; + 2 for CRLF
-			  body)))
-	     (headers (if (positive? content-length)
-			  (cons (format #f "Content-Length: ~A" content-length)
-				headers)
-			  headers)))
+                     (map (lambda (line)
+                            (+ 2 (string-length line))) ; + 2 for CRLF
+                          body)))
+             (headers (if (positive? content-length)
+                          (cons (format #f "Content-Length: ~A" content-length)
+                                headers)
+                          headers)))
 
-	(with-output-to-port sock
-	  (lambda ()
-	    (display-with-crlf request)
-	    (for-each display-with-crlf headers)
-	    (display "\r\n")
+        (with-output-to-port sock
+          (lambda ()
+            (display-with-crlf request)
+            (for-each display-with-crlf headers)
+            (display "\r\n")
             (if form-hack?
                 (display (car body))
                 (for-each display-with-crlf body))))
 
-	;; parse and add status line
-	;; also cons up a list of response headers
-	(let* ((response-status-line (sans-trailing-whitespace
-				      (read-line sock 'trim)))
-	       (response-headers
-		(let make-header-list ((ln (sans-trailing-whitespace
-					    (read-line sock 'trim)))
-				       (hlist '()))
-		  (if (= 0 (string-length ln))
-		      hlist
-		      (make-header-list (sans-trailing-whitespace
-					 (read-line sock 'trim))
-					(cons (http:header-parse ln)
-					      hlist)))))
-	       (response-status-fields
-		(parse-status-line response-status-line))
-	       (response-version (car response-status-fields))
-	       (response-code    (cadr response-status-fields))
-	       (response-text    (caddr response-status-fields)))
+        ;; parse and add status line
+        ;; also cons up a list of response headers
+        (let* ((response-status-line (sans-trailing-whitespace
+                                      (read-line sock 'trim)))
+               (response-headers
+                (let make-header-list ((ln (sans-trailing-whitespace
+                                            (read-line sock 'trim)))
+                                       (hlist '()))
+                  (if (= 0 (string-length ln))
+                      hlist
+                      (make-header-list (sans-trailing-whitespace
+                                         (read-line sock 'trim))
+                                        (cons (http:header-parse ln)
+                                              hlist)))))
+               (response-status-fields
+                (parse-status-line response-status-line))
+               (response-version (car response-status-fields))
+               (response-code    (cadr response-status-fields))
+               (response-text    (caddr response-status-fields)))
 
-	  ;; signal error if HTTP status is invalid
-	  ;; (or (http:status-ok? response-code)
-	  ;; (error 'http-status "HTTP server returned bad status"
-	  ;;        response-status-line))
-	  ;; Get message body: if Content-Length header was supplied, read
-	  ;; that many chars.  Otherwise, read until EOF
+          ;; signal error if HTTP status is invalid
+          ;; (or (http:status-ok? response-code)
+          ;; (error 'http-status "HTTP server returned bad status"
+          ;;        response-status-line))
+          ;; Get message body: if Content-Length header was supplied, read
+          ;; that many chars.  Otherwise, read until EOF
 
-	  (let ((content-length (http:fetch-header
-				 'content-length
-				 response-headers)))
-	    (let ((response-body
-		   (if (and content-length
-			    (not (string-ci=? method "HEAD")))
-		       (read-n-chars (string->number content-length) sock)
-		       (with-output-to-string
-			 (lambda ()
-			   (while (not (eof-object? (peek-char sock)))
-				  (display (read-char sock))))))))
+          (let ((content-length (http:fetch-header
+                                 'content-length
+                                 response-headers)))
+            (let ((response-body
+                   (if (and content-length
+                            (not (string-ci=? method "HEAD")))
+                       (read-n-chars (string->number content-length) sock)
+                       (with-output-to-string
+                         (lambda ()
+                           (while (not (eof-object? (peek-char sock)))
+                             (display (read-char sock))))))))
 
-	      ;; FIXME: what about keepalives?
-	      (close-port sock)
+              ;; FIXME: what about keepalives?
+              (close-port sock)
 
-	      (http:make-message response-version
-				 response-code
-				 response-text
-				 response-headers
-				 response-body))))))))
+              (http:make-message response-version
+                                 response-code
+                                 response-text
+                                 response-headers
+                                 response-body))))))))
 
 
 
@@ -428,12 +428,12 @@
 
 (define (read-n-chars num . port-arg)
   (let ((p (if (null? port-arg)
-	       (current-input-port)
-	       (car port-arg)))
-	(s (make-string num)))
+               (current-input-port)
+               (car port-arg)))
+        (s (make-string num)))
     (do ((i   0              (+ i 1))
-	 (ch  (read-char p)  (read-char p)))
-	((or (>= i num) (eof-object? ch)) s)
+         (ch  (read-char p)  (read-char p)))
+        ((or (>= i num) (eof-object? ch)) s)
       (string-set! s i ch))))
 
 (define (display-with-crlf line . p)
@@ -441,18 +441,18 @@
   (apply display "\r\n" p))
 
 ;; (sans-trailing-whitespace STR)
-;;	These are defined in module (ice-9 string-fun), so this code
-;;	will prob.  be discarded when the module system and boot-9
-;;	settle down.
+;;      These are defined in module (ice-9 string-fun), so this code
+;;      will prob.  be discarded when the module system and boot-9
+;;      settle down.
 
 (define (sans-trailing-whitespace s)
   (let ((st 0)
-	(end (string-length s)))
+        (end (string-length s)))
     (while (and (< 0 end)
-		(char-whitespace? (string-ref s (1- end))))
-	   (set! end (1- end)))
+                (char-whitespace? (string-ref s (1- end))))
+      (set! end (1- end)))
     (if (< end st)
-	""
-	(make-shared-substring s st end))))
+        ""
+        (make-shared-substring s st end))))
 
 ;;; www/http.scm ends here

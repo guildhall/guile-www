@@ -1,6 +1,6 @@
 ;;; www/url-coding.scm --- URL character coding: decode/encode
 
-;; 	Copyright (C) 2004 Free Software Foundation, Inc.
+;;	Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -57,13 +57,13 @@
   (with-output-to-string
     (lambda ()
       (for-each (lambda (ch)
-		  (if (and (safe-char? ch)
-			   (not (memv ch reserved-chars)))
-		      (display ch)
-		      (begin
-			(display #\%)
-			(display (number->string (char->integer ch) 16)))))
-		(string->list str)))))
+                  (if (and (safe-char? ch)
+                           (not (memv ch reserved-chars)))
+                      (display ch)
+                      (begin
+                        (display #\%)
+                        (display (number->string (char->integer ch) 16)))))
+                (string->list str)))))
 
 (define safe-chars (append (string->list "$-_.+!*'(),")
                            ;; reserved
