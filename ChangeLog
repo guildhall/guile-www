@@ -1,5 +1,17 @@
 2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* autogen.sh: Also pass guile-specific "-I" args to aclocal.
+
+	* configure.in (GUILE_SITE_DIR): New macro call.
+
+	* Makefile.am (gwwwdir): Use $(GUILE_SITE) instead of $(datadir)/guile.
+	(install-data-hook): New target.
+
+	* INSTALL: Update *.scm install directory.
+	Mention $(GUILE_SITE)/.module-catalog update.
+
+2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* Makefile.am (EXTRA_DIST): Add doc-snarf.
 
 2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
