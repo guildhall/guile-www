@@ -36,29 +36,74 @@
 
 ;;; CGI environment variables.
 
-(define cgi-server-software-type #f)
-(define cgi-server-software-version #f)
-(define cgi-server-hostname #f)
-(define cgi-gateway-interface #f)
-(define cgi-server-protocol-name #f)
-(define cgi-server-protocol-version #f)
-(define cgi-server-port #f)
-(define cgi-request-method #f)
-(define cgi-path-info #f)
-(define cgi-path-translated #f)
-(define cgi-script-name #f)
-(define cgi-query-string #f)
-(define cgi-remote-host #f)
-(define cgi-remote-addr #f)
-(define cgi-authentication-type #f)
-(define cgi-remote-user #f)
-(define cgi-remote-ident #f)
-(define cgi-content-type #f)
-(define cgi-content-length #f)
-(define cgi-http-accept-types #f)
-(define cgi-http-user-agent #f)
-(define cgi-http-cookie #f)
+(define *env-alist*
+  (let ((server-sw-info
+         (delay (and=> (getenv "SERVER_SOFTWARE")
+                       (lambda (sw) (list sw (string-index sw #\/))))))
 
+        (server-pr-info
+         (delay (and=> (getenv "SERVER_PROTOCOL")
+                       (lambda (pr) (list pr (string-index pr #\/)))))))
+    `(;; simple stuff
+      (server-hostname . ,(delay (getenv "SERVER_NAME")))
+      (gateway-interface . ,(delay (getenv "GATEWAY_INTERFACE")))
+      (server-port . ,(delay (and=> (getenv "SERVER_PORT") string->number)))
+      (request-method . ,(delay (getenv "REQUEST_METHOD")))
+      (path-info . ,(delay (getenv "PATH_INFO")))
+      (path-translated . ,(delay (getenv "PATH_TRANSLATED")))
+      (script-name . ,(delay (getenv "SCRIPT_NAME")))
+      (query-string . ,(delay (getenv "QUERY_STRING")))
+      (remote-host . ,(delay (getenv "REMOTE_HOST")))
+      (remote-addr . ,(delay (getenv "REMOTE_ADDR")))
+      (authentication-type . ,(delay (getenv "AUTH_TYPE")))
+      (remote-user . ,(delay (getenv "REMOTE_USER")))
+      (remote-ident . ,(delay (getenv "REMOTE_IDENT")))
+      (content-type . ,(delay (getenv "CONTENT_TYPE")))
+      (content-length . ,(delay (or (and=> (getenv "CONTENT_LENGTH")
+                                           string->number)
+                                    0)))
+      (http-user-agent . ,(delay (getenv "HTTP_USER_AGENT")))
+      (http-cookie . ,(delay (getenv "HTTP_COOKIE")))
+      ;; complex stuff
+      (server-software-type
+       . ,(delay (apply-to-args (force server-sw-info)
+                                (lambda (sw slash)
+                                  (if slash
+                                      (substring sw 0 slash)
+                                      sw)))))
+      (server-software-version
+       . ,(delay (apply-to-args (force server-sw-info)
+                                (lambda (sw slash)
+                                  (and slash (substring sw (1+ slash)))))))
+      (server-protocol-name
+       . ,(delay (apply-to-args (force server-pr-info)
+                                (lambda (pr slash)
+                                  (substring pr 0 slash)))))
+      (server-protocol-version
+       . ,(delay (apply-to-args (force server-pr-info)
+                                (lambda (pr slash)
+                                  (substring pr (1+ slash))))))
+      (http-accept-types
+       . ,(delay (and=> (getenv "HTTP_ACCEPT")
+                        (lambda (types)
+                          (map (lambda (s)
+                                 (if (char=? #\space (string-ref s 0))
+                                     (make-shared-substring s 1)
+                                     s))
+                               (separate-fields-discarding-char
+                                #\, types)))))))))
+
+(define (env-look key)                  ; may return #f
+  (and=> (or (assq key *env-alist*)
+             (error "unrecognized key:" key))
+         (lambda (cell)
+           (let ((v (cdr cell)))
+             (if (promise? v)
+                 (force v)
+                 v)))))
+
+(define (env-set! key value)
+  (set-cdr! (assq key *env-alist*) value))
 
 
 ;;; CGI high-level interface
@@ -66,23 +111,26 @@
 ;; Initialize the environment.
 ;;
 (define-public (cgi:init)
-  (init-environment)
-  (and cgi-content-length
-       (string-ci=? cgi-content-type
-                    "application/x-www-form-urlencoded")
-       (parse-form (read-raw-form-data)))
-  (and cgi-content-length
-       (string-ci=? (make-shared-substring cgi-content-type 0 19)
-                    "multipart/form-data")
-       (parse-form-multipart (read-raw-form-data)))
-  (and cgi-query-string
-       (parse-form cgi-query-string))
-  (and cgi-http-cookie
-       (get-cookies)))
+  (and=> (env-look 'query-string)
+         (lambda (s)
+           (and (string-null? s)
+                (env-set! 'query-string #f))))
+  (let ((len (env-look 'content-length)))
+    (cond ((= 0 len))
+          ((string-ci=? (env-look 'content-type)
+                        "application/x-www-form-urlencoded")
+           (parse-form (read-raw-form-data len)))
+          ((string-ci=? (make-shared-substring (env-look 'content-type) 0 19)
+                        "multipart/form-data")
+           (parse-form-multipart (read-raw-form-data len)))))
+  (and=> (env-look 'query-string) parse-form)
+  (and=> (env-look 'http-cookie) get-cookies))
 
 ;; Return the possibly massaged value of the environment variable
-;; associated with @var{key}, a symbol.  The return value may be the
-;; null string and is never #f.  The following keys are recognized:
+;; associated with @var{key}, a symbol.  Unless otherwise specified
+;; below, the return value is a (possibly empty) string.  The following
+;; keys are recognized:
+;;
 ;; @itemize
 ;; @item server-software-type
 ;; @item server-software-version
@@ -90,7 +138,7 @@
 ;; @item gateway-interface
 ;; @item server-protocol-name
 ;; @item server-protocol-version
-;; @item server-port
+;; @item server-port (integer)
 ;; @item request-method
 ;; @item path-info
 ;; @item path-translated
@@ -102,38 +150,16 @@
 ;; @item remote-user
 ;; @item remote-ident
 ;; @item content-type
-;; @item content-length
+;; @item content-length (integer, possibly 0)
 ;; @item http-accept-types
 ;; @item http-user-agent
 ;; @item http-cookie
 ;; @end itemize
 ;;
+;; Keys not listed above result in an "unrecognized key" error.
+;;
 (define-public (cgi:getenv key)
-  (or (case key
-        ((server-software-type) cgi-server-software-type)
-        ((server-software-version) cgi-server-software-version)
-        ((server-hostname) cgi-server-hostname)
-        ((gateway-interface) cgi-gateway-interface)
-        ((server-protocol-name) cgi-server-protocol-name)
-        ((server-protocol-version) cgi-server-protocol-version)
-        ((server-port) cgi-server-port)
-        ((request-method) cgi-request-method)
-        ((path-info) cgi-path-info)
-        ((path-translated) cgi-path-translated)
-        ((script-name) cgi-script-name)
-        ((query-string) cgi-query-string)
-        ((remote-host) cgi-remote-host)
-        ((remote-addr) cgi-remote-addr)
-        ((authentication-type) cgi-authentication-type)
-        ((remote-user) cgi-remote-user)
-        ((remote-ident) cgi-remote-ident)
-        ((content-type) cgi-content-type)
-        ((content-length) cgi-content-length)
-        ((http-accept-types) cgi-http-accept-types)
-        ((http-user-agent) cgi-http-user-agent)
-        ((http-cookie) cgi-http-cookie)
-        (else (error "unrecognized key:" key)))
-      ""))
+  (or (env-look key) ""))
 
 ;; Fetch any values associated with @var{name} found in the form data.
 ;; Return a list, even if it contains only one element.
@@ -218,9 +244,8 @@
 ;; (parse-form-multipart DATA): parse DATA as raw form response data
 ;;  of enctype multipart/form-data, adding values as necessary to
 ;;  'form-variables' and file data to 'file-uploads'.
-;; (read-raw-form-data): read in `content-length' bytes from stdin
-;; (init-environment): initialize CGI environment from Unix env vars.
-;; (get-cookies): initialize the cookie list from cgi-http-cookie.
+;; (read-raw-form-data LEN): read in LEN bytes from stdin
+;; (get-cookies RAW): initialize the cookie list.
 
 (define (parse-form raw-data)
   ;; get-name and get-value are used to parse individual `name=value' pairs.
@@ -244,7 +269,8 @@
 (define (parse-form-multipart raw-data)
   (let* ((boundary (format #f "--~A"
                            (match:substring
-                            (string-match "boundary=(.*)$" cgi-content-type)
+                            (string-match "boundary=(.*)$"
+                                          (env-look 'content-type))
                             1)))
          (boundary-len (string-length boundary))
          (name-exp (make-regexp "name=\"([^\"]*)\""))
@@ -306,75 +332,12 @@
               (get-pair (cdr segment-pair))))))
     (get-pair raw-data)))
 
-(define (read-raw-form-data)
-  (and cgi-content-length (read-n-chars cgi-content-length)))
-
-(define (init-environment)
-
-  ;; SERVER_SOFTWARE format: name/version
-  ;; (but handle "/version" omission anyway)
-  (let ((server-software (getenv "SERVER_SOFTWARE")))
-    (if server-software
-        (let ((slash (string-index server-software #\/)))
-          (set! cgi-server-software-type
-                (if slash
-                    (substring server-software 0 slash)
-                    server-software))
-          (set! cgi-server-software-version
-                (if slash
-                    (substring server-software (1+ slash))
-                    "(unavailable)")))))
-
-  (set! cgi-server-hostname        (getenv "SERVER_NAME"))
-  (set! cgi-gateway-interface      (getenv "GATEWAY_INTERFACE")) ;"CGI/revision"
-
-  (let* ((server-protocol (getenv "SERVER_PROTOCOL")))
-    (if server-protocol
-        (let ((slash (string-index server-protocol #\/)))
-          (set! cgi-server-protocol-name     (substring server-protocol
-                                                        0 slash))
-          (set! cgi-server-protocol-version  (substring server-protocol
-                                                        (1+ slash))))))
-
-  (let ((port (getenv "SERVER_PORT")))
-    (set! cgi-server-port (and port (string->number port))))
-
-  (set! cgi-request-method         (getenv "REQUEST_METHOD"))
-  (set! cgi-path-info              (getenv "PATH_INFO"))
-  (set! cgi-path-translated        (getenv "PATH_TRANSLATED"))
-  (set! cgi-script-name            (getenv "SCRIPT_NAME"))
-  (set! cgi-remote-host            (getenv "REMOTE_HOST"))
-  (set! cgi-remote-addr            (getenv "REMOTE_ADDR"))
-  (set! cgi-authentication-type    (getenv "AUTH_TYPE"))
-  (set! cgi-remote-user            (getenv "REMOTE_USER"))
-  (set! cgi-remote-ident           (getenv "REMOTE_IDENT"))
-  (set! cgi-content-type           (getenv "CONTENT_TYPE"))
-  (set! cgi-query-string           (getenv "QUERY_STRING"))
-
-  (and cgi-query-string
-       (string-null? cgi-query-string)
-       (set! cgi-query-string #f))
-
-  (let ((contlen (getenv "CONTENT_LENGTH")))
-    (set! cgi-content-length (and contlen (string->number contlen))))
-
-  ;; list of MIME types separated by commas (and possibly spaces)
-  (cond ((getenv "HTTP_ACCEPT")
-         => (lambda (types)
-              (set! cgi-http-accept-types
-                    (map (lambda (s)
-                           (if (char=? #\space (string-ref s 0))
-                               (make-shared-substring s 1)
-                               s))
-                         (separate-fields-discarding-char #\, types))))))
-
-  ;; HTTP_USER_AGENT format: software/version library/version.
-  (set! cgi-http-user-agent                (getenv "HTTP_USER_AGENT"))
-  (set! cgi-http-cookie                    (getenv "HTTP_COOKIE")))
+(define (read-raw-form-data len)
+  (read-n-chars len))
 
 ;; Setting up the cookies
 
-(define (get-cookies)
+(define (get-cookies raw)
   (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
     (define (get-pair str)
       (let ((pair-match (regexp-exec pair-exp str)))
@@ -387,7 +350,7 @@
                                     (append (or (cgi:cookies name) '())
                                             (list value)))))
               (get-pair (match:suffix pair-match))))))
-    (get-pair cgi-http-cookie)))
+    (get-pair raw)))
 
 
 ;;; System I/O and low-level stuff.
