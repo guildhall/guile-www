@@ -9,7 +9,7 @@
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
 @direntry
-* Guile-www: (guile-www).         Scheme modules for WWW interaction
+* Guile-WWW: (guile-www).         Scheme modules for WWW interaction
 @end direntry
 
 @c ---------------------------------------------------------------------------
@@ -89,6 +89,7 @@ Each module is named @code{(www FOO)}.
 * url::                 Parse URLs, including decoding.
 * cgi::                 Write CGI scripts painlessly.
 * main::                Fetch world-wide-web resources.
+* url-coding::          URL decode and encode, only.
 
 * Procedure Index::
 @end menu
@@ -192,6 +193,16 @@ retriving data named by any URL.  The HTTP scheme is pre-registered.
 
 @twerpdoc (www:set-protocol-handler!)
 @twerpdoc (www:get)
+
+@c ---------------------------------------------------------------------------
+@node    url-coding
+@chapter url-coding
+
+The @code{(www url-coding)} module provides two procedures for decoding
+and encoding URL strings for safe transmission according to RFC 1738.
+
+@twerpdoc (url-coding:decode)
+@twerpdoc (url-coding:encode)
 
 @c ---------------------------------------------------------------------------
 @node    Procedure Index
