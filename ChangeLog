@@ -1,5 +1,9 @@
 2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* Makefile.am (install-data-hook): Also punify installed files.
+
+2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm: Also use module (srfi srfi-13).
 	(subs): New alias for `make-shared-substring'.
 	(*env-alist*): Use `subs' instead of `substring'.
