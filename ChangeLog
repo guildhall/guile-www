@@ -1,5 +1,13 @@
 2004-01-22  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* cgi.scm (cgi:value): Use `and=>'.
+	(cgi:cookie): Likewise.
+	(cgi:upload): Likewise.
+	(cgi:uploads): Likewise.
+	Also, fix omission bug: Delete cell as documented.
+
+2004-01-22  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (cgi:init): Fix doc omission bug: Describe
 	return value for key `http-accept-types'; nfc.
 
