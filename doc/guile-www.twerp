@@ -222,11 +222,16 @@ and encoding URL strings for safe transmission according to RFC 1738.
 @node    parse-request
 @chapter parse-request
 
-The @code{(www server-utils parse-request)} module provides two procedures to
+The @code{(www server-utils parse-request)} module provides procedures to
 read the first line and the headers of an HTTP message on the input port.
 
 @twerpdoc (read-first-line)
 @twerpdoc (read-headers)
+
+Sometimes you are interested in the body of the message but not the headers.
+In this case, you can use @code{skip-headers} to quickly position the port.
+
+@twerpdoc (skip-headers)
 
 @c ---------------------------------------------------------------------------
 @node    filesystem
