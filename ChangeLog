@@ -1,6 +1,7 @@
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
-	* doc/guile-www.twerp: Remove RCS tag.
+	* doc/guile-www.twerp: Update copyright.
+	Remove RCS tag.
 	(Top): Change @top to "The (www *) Modules".
 	Remove Concept Index.
 	Add @twerpsetsearchpath directive.
@@ -8,6 +9,25 @@
 	commentary slice w/ @twerpcommentary directive.
 	(url, cgi, main): Likewise.
 	(Concept Index): Delete node.
+
+	* doc/Makefile.am: Update copyright.
+	(BUILT_SOURCES): New automake directive.
+	(doc-index-prep): New target.
+	(guile-www.texi): New dependency.
+	(twerp2texi): New var.
+	(.twerp.texi): New pattern rule.
+	(EXTRA_DIST): New automake directive.
+
+	* Makefile.am: Update copyright.
+	[MAINTAINER_MODE]
+	(SUFFIXES): New automake directive.
+	(.scm.doc): New pattern rule.
+	(DOT_DOC_FILES): New var.
+	(.doc-index): New target.
+	(CLEANFILES): New automake directive.
+
+	* configure.in: Update copyright.
+	(AM_MAINTAINER_MODE): New macro call.
 
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
