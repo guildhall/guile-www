@@ -20,6 +20,7 @@ dnl  Boston, MA 02111-1307, USA.
 dnl This is an adaptation of "guile-tools autofrisk" output.
 AC_DEFUN([AC_GUILE_WWW_MODULES_AOK],[
   GUILE_MODULE_REQUIRED(ice-9 regex)
+  GUILE_MODULE_REQUIRED(srfi srfi-13)
   GUILE_CHECK_ICE9_OPTARGS(need_optargs_kludge)
 ])
 
