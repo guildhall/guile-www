@@ -1,3 +1,8 @@
+2003-10-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:request): Always include `Host' in header.
+	Thanks to a bug report by Jose Roberto B. de A. Monteiro.
+
 2003-10-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* http.scm (http:message-status-ok?): Use `http:message-status-code'
