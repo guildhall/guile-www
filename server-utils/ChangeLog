@@ -1,0 +1,6 @@
+2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* parse-request.scm: New file.
+	* filesystem.scm: Likewise.
+	* answer.scm: Likewise.
+
