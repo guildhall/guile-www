@@ -1,0 +1,29 @@
+#!/bin/sh
+# usage: module-install DEST RELFILE ...
+
+prefix="@prefix@"
+infodir="@infodir@"
+INSTALL="@INSTALL@"
+INSTALL_DATA="@INSTALL_DATA@"
+srcdir="@srcdir@"
+GUILE_TOOLS=${GUILE_TOOLS-"@GUILE_TOOLS@"}
+need_optargs_kludge="@need_optargs_kludge@"
+
+if [ $need_optargs_kludge = yes ] ; then
+    filter='sed s/optargs-kw/optargs/'
+else
+    filter='cat'
+fi
+
+dest=$1 ; shift
+cd $srcdir
+for f in "$@" ; do
+    $GUILE_TOOLS punify $f > TMP1
+    ( echo ';;; METAINFO:' $dest/METAINFO ; $filter TMP1 ) > TMP2
+    $INSTALL_DATA TMP2 $dest/$f
+    echo ' 'wrote $dest/$f
+done
+rm -f TMP1 TMP2
+exit 0
+
+# module-install ends here
