@@ -1,0 +1,12 @@
+Tim Pierce wrote:
+	http.scm	url.scm		cgi.scm		main.scm
+	examples/wwwcat
+
+Aaron VanDevender wrote:
+	examples/cookie.cgi
+
+Aaron VanDevender modified:
+	cgi.scm
+
+Thien-Thi Nguyen wrote:
+	doc/guile-www.texi

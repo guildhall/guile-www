@@ -1,0 +1,242 @@
+\input texinfo  @c -*-texinfo-*-
+@comment $Id$
+@c %**start of header
+@setfilename guile-www.info
+@settitle @code{Guile-WWW} Modules Reference
+@c %**end of header
+@code{}
+@setchapternewpage odd
+
+@c ---------------------------------------------------------------------------
+@dircategory Guile modules
+@direntry
+* Guile-www: (guile-www).         Scheme modules for WWW interaction
+@end direntry
+
+@c ---------------------------------------------------------------------------
+@include version.texi
+
+@c ---------------------------------------------------------------------------
+@ifinfo
+This file is the Guile-WWW Modules Reference
+
+Copyright @copyright{} 2001,2002 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and
+print the results, provided the printed document carries a copying
+permission notice identical to this one except for the removal of this
+paragraph (this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Copying'' and ``GNU General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+
+@end ifinfo
+@titlepage
+@sp 10
+@comment The title is printed in a large font.
+@center @titlefont{Guile-WWW Modules Reference}
+
+@c ---------------------------------------------------------------------------
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2001,2002 Free Software Foundation, Inc.
+
+     Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+     Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled ``Copying'' and ``GNU General Public
+License'' are included exactly as in the original, and provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+     Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+
+@end titlepage
+
+@c ---------------------------------------------------------------------------
+@node Top
+@top  Guile-WWW
+
+Guile-WWW is a set of Guile Scheme modules providing support for navigating
+HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
+resources.  This is edition @value{EDITION} corresponding to guile-www
+@value{VERSION}.
+
+Each module is named @code{(www FOO)}.
+
+@menu
+* http::                Navigate HTTP connections.
+* url::                 Parse URLs, including decoding.
+* cgi::                 Write CGI scripts painlessly.
+* main::                Fetch world-wide-web resources.
+* Concept Index::
+* Function Index::
+@end menu
+
+@c ---------------------------------------------------------------------------
+@node    http
+@chapter http
+
+The (www http) library includes some support for navigating HTTP
+connections.  http:open, http:request and http:get may be used for
+opening connections and making HTTP requests; http:make-message,
+http:message-body and http:message-header may be used to
+manipulate HTTP messages.
+
+@c hopefully this is true, but we comment it out for now  --ttn
+@c Support is planned for the full
+@c HTTP/1.1 protocol, including cookies and persistent connections.
+
+@c snarfed from commentary -- todo: write proper documentation
+This module exports the following variables and procedures:
+@example
+    http:version
+    http:user-agent
+   (http:message-version msg)
+   (http:message-status-code msg)
+   (http:message-status-text msg)
+   (http:message-status-ok? msg)
+   (http:status-ok? status)
+   (http:message-body msg)
+   (http:message-headers msg)
+   (http:message-header header msg)
+   (http:get url)
+   (http:open host . args)
+   (http:request method url . args)
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    url
+@chapter url
+
+(www url) provides url:parse for parsing a URL into its component
+parts, and the selector functions url:scheme, url:host, url:port
+and url:path for selecting individual components of a parsed URL.
+For individual components that may have been URL-encoded in
+transit, url:decode translates a string into its raw (unencoded)
+form.
+
+@c snarfed from commentary -- todo: write proper documentation
+This module exports the following procedures:
+@example
+   (url:scheme url)
+   (url:address url)
+   (url:unknown url)
+   (url:user url)
+   (url:host url)
+   (url:port url)
+   (url:path url)
+   (url:make scheme . args)
+   (url:make-http host port path)
+   (url:make-ftp user host port path)
+   (url:make-mailto address)
+   (url:parse url)
+   (url:unparse url)
+   (url:decode str)
+   (url:encode str reserved-chars)
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    cgi
+@chapter cgi
+
+(www cgi) provides some functions helpful in writing CGI scripts
+painlessly.  The focus is on scripts to process interactive forms.
+cgi:init reads any form data and initializes a CGI environment.
+cgi:form-data? determines whether any form data has been returned
+by a browser for processing.  cgi-value returns the value
+associated with a form variable, and cgi-names and cgi-values
+return all of the names and values present in the current form.
+
+@c snarfed from commentary -- todo: write proper documentation
+This module exports the following variables and procedures:
+@example
+    cgi-server-software-type
+    cgi-server-software-version
+    cgi-server-hostname
+    cgi-gateway-interface
+    cgi-server-protocol-name
+    cgi-server-protocol-version
+    cgi-server-port
+    cgi-request-method
+    cgi-path-info
+    cgi-path-translated
+    cgi-script-name
+    cgi-query-string
+    cgi-remote-host
+    cgi-remote-addr
+    cgi-authentication-type
+    cgi-remote-user
+    cgi-remote-ident
+    cgi-content-type
+    cgi-content-length
+    cgi-http-accept-types
+    cgi-http-user-agent
+    cgi-http-cookie
+   (cgi:init)
+   (cgi:values name)
+   (cgi:value name)
+   (cgi:names)
+   (cgi:form-data?)
+   (cgi:uploads name)
+   (cgi:upload name)
+   (cgi:cookies name)
+   (cgi:cookie name)
+   (cgi:make-cookie value #&key path domain expires secure)
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    main
+@chapter main
+
+(www main) provides www:get, which decodes a URL and invokes the
+appropriate protocol handler for retrieving the desired object.
+It is intended to be a generic interface useful for retriving data
+named by any URL.
+
+@c snarfed from commentary -- todo: write proper documentation
+This module exports the following procedures:
+@example
+   (www:set-protocol-handler! proto handler)
+   (www:get url-str)
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    Concept Index
+@unnumbered Concept Index
+
+@printindex cp
+
+@c ---------------------------------------------------------------------------
+@node    Function Index
+@unnumbered Function Index
+
+@printindex fn
+
+@c ---------------------------------------------------------------------------
+@contents
+
+@c ---------------------------------------------------------------------------
+@bye

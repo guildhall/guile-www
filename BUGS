@@ -1,0 +1,31 @@
+BUGS
+
+
+bug 1 -- www:set-protocol-handler! dispatch not extensible
+reported-by: offby1@blarg.net 2001-08-15
+fixed: not-yet
+
+offby1 sez:
+;; BUG -- I don't really want this function to be public; I want
+;; people to use `www:get' instead.  But if I use `define' here,
+;; instead of `define-public', then when main.scm calls
+;; www:set-protocol-handler!, https-via-lynx isn't defined.  This
+;; means that I don't understand Guile's module system.
+
+a protocol may have extra configuration data and methods, but these cannot be
+expressed.  there are probably other instances of this restriction type in the
+implementation, since it is not yet fully generalized.
+		      
+decision required: we can either add ad-hoc hooks; or upgrade entire API and
+implementation, incorporating Evan Prodromou's (net http) module
+  ( http://evan.prodromou.san-francisco.ca.us/software/net-http/ )
+in the process, and use goops infrastructure.  this requires the user to use goops.
+the middle way is to do both, but hide the goops implementation under a
+functional hook interface (with placement more systematic than ad-hoc).
+
+because the end point of any generalization requires virtualization (which is
+what goops provides), but users are, generally, very specific; the middle way
+results in the most work, but is likely the most useful work.  argh.  --ttn
+
+
+BUGS ends here

@@ -1,0 +1,11 @@
+- version 1.1.1 released 2002-04-26
+  - new CGI cookies support by Aaron VanDevender
+  - miscellaneous distribution news
+    - new subdir examples/
+    - example program "wwwcat" no longer installed on "make install"
+    - INSTALL now explains which files are copied where on "make install"
+
+- version 1.0.1 released 2001-11-18
+  - fixed documentation bug that prevented guile-www.info from loading
+
+- version 1.0 released 2001-11-16
