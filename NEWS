@@ -1,5 +1,6 @@
 - 2.6 | NOT YET RELEASED
   - cgi:make-cookie now accepts keywords for `name' and `value' args
+  - bugfix: http:request handles missing response status-line TEXT as ""
 
 - 2.5 | 2004-03-11
   - new proc in (www server-utils parse-request): skip-headers
