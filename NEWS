@@ -1,4 +1,4 @@
-- 2.5 | NOT YET RELEASED
+- 2.5 | 2004-03-11
   - new proc in (www server-utils parse-request): skip-headers
   - new `(www server-utils answer) mouthpiece' command: #:add-formatted
   - new module: (www server-utils big-dishing-loop)
