@@ -24,6 +24,7 @@ AM_INIT_AUTOMAKE(guile-www, 2.0, no-define)
 AM_MAINTAINER_MODE
 GUILE_SITE_DIR
 AC_GUILE_WWW_MODULES_AOK
+AC_GUILE_WWW_TWERP_PREP
 AC_OUTPUT(Makefile doc/Makefile)
 
 dnl  configure.in ends here
