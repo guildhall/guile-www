@@ -1,5 +1,9 @@
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp: Rename from doc/guile-www.texi.
+
+2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* doc-snarf: New file.
 
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
