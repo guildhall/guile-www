@@ -98,6 +98,7 @@ Server Utilities
 * parse-request::       Read HTTP first line and headers.
 * filesystem::          Work with the local filesystem.
 * answer::              HTTP connection handling and responses.
+* log::                 Love notes to other programs.
 
 Data
 * http-status::         The dreaded 404 lives here.
@@ -257,7 +258,7 @@ Here is an example that uses most of the commands:
 @example
 (use-modules (www server-utils content-type) (scripts slurp))
 
-(define STATUS (list #f))
+(define STATUS (list #f #f))
 (define M (mouthpiece (open-output-file "fake") STATUS))
 
 (define (transmit-file filename)
@@ -266,17 +267,25 @@ Here is an example that uses most of the commands:
   (M #:add-header #:Content-Type (filename->content-type
                                    filename "text/plain"))
   (M #:add-content (slurp filename))
-  (format #t "~A --- ~A --- ~A\n"
-          (M #:content-length)
-          (M #:rechunk-content #f)
+  (format #t "rechunked: ~A\n"
           (M #:rechunk-content (* 8 1024)))
   (M #:send-reply))
 
 (transmit-file "COPYING")
-@print{} 17989 --- (17989) --- (8192 8192 1605)
-(car STATUS)
-@result{} 200
+@print{} rechunked: (8192 8192 1605)
+STATUS
+@result{} (200 17989)
 @end example
+
+@c ---------------------------------------------------------------------------
+@node    log
+@chapter log
+
+The @code{(www server-utils log)} module provides procedure generators for
+writing log information to an output port.  Each generator is conventionally
+named @code{log-SOMETHING-proc}.
+
+@twerpdoc (log-http-response-proc)
 
 @c ---------------------------------------------------------------------------
 @node    http-status
