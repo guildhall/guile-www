@@ -364,10 +364,6 @@
 				headers)
 			  headers)))
 
-        (write-line "BODY:")
-        (for-each (lambda (line) (format #t "> ~A\n" line)) body)
-        (write-line "_____")
-
 	(with-output-to-port sock
 	  (lambda ()
 	    (display-with-crlf request)
