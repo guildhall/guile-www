@@ -47,6 +47,11 @@
 ;; Subsequent calls to @code{#:add-content} append their trees to the
 ;; collected content tree thus far.
 ;;
+;; @item #:add-formatted FORMAT-STRING [ARGS ...]
+;; FORMAT-STRING may be #f to mean @code{~S}, #t to mean @code{~A}, or a
+;; normal format string.  It is used to format ARGS, and the result passed
+;; to #code{#:add-content}.
+;;
 ;; @item #:content-length
 ;; Return the total number of bytes in the content added thus far.
 ;;
@@ -72,6 +77,10 @@
     (if (pair? tree)
         (for-each (lambda (sub) (walk-tree proc sub)) tree)
         (proc tree)))
+
+  (and (not (null? status-box))         ; normalize
+       (not (list? (car status-box)))
+       (set! status-box '()))
 
   (let ((reply-status #f)
         (header-lines '())
@@ -111,6 +120,13 @@
                                            (string-length s))))
                  tree)
       (set! content (append content tree)))
+
+    (define (add-formatted fstr . args)
+      (add-content (list (apply format #f
+                                (cond ((eq? #f fstr) "~S")
+                                      ((eq? #t fstr) "~A")
+                                      (else fstr))
+                                args))))
 
     (define (rechunk-content chunk)
       (define (upd! proc get-new-content)
@@ -191,6 +207,7 @@
          ((#:set-reply-status:success) set-reply-status:success)
          ((#:add-header) add-header)
          ((#:add-content) add-content)
+         ((#:add-formatted) add-formatted)
          ((#:content-length) (lambda () content-length))
          ((#:rechunk-content) rechunk-content)
          ((#:send-reply) send-reply)
