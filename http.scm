@@ -82,7 +82,7 @@
 (define-public (http:message-status-code msg) (vector-ref msg 1))
 (define-public (http:message-status-text msg) (vector-ref msg 2))
 (define-public (http:message-status-ok? msg)
-  (http:status-ok? (http:status-code msg)))
+  (http:status-ok? (http:message-status-code msg)))
 (define-public (http:status-ok? status)
   (char=? #\2 (string-ref status 0)))
 
