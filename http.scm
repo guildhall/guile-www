@@ -20,21 +20,7 @@
 
 ;;; Commentary:
 
-;; This module exports the following variables and procedures:
-;;     http:version
-;;     http:user-agent
-;;    (http:message-version msg)
-;;    (http:message-status-code msg)
-;;    (http:message-status-text msg)
-;;    (http:message-status-ok? msg)
-;;    (http:status-ok? status)
-;;    (http:message-body msg)
-;;    (http:message-headers msg)
-;;    (http:message-header header msg)
-;;    (http:get url)
-;;    (http:post-form url extra-headers fields)
-;;    (http:open host . args)
-;;    (http:request method url . args)
+;; The (www http) module is fully documented in the guile-www.info file.
 
 ;;; Code:
 
@@ -51,8 +37,7 @@
 
 ;;; Variables that affect HTTP usage.
 
-(define-public http:version "HTTP/1.0")  ; bump up to 1.1 when ready
-(define-public http:user-agent "GuileHTTP/0.1")
+(define http:version "HTTP/1.0")
 
 ;; An HTTP message is represented by a vector:
 ;;	#(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
@@ -65,27 +50,21 @@
 
 ;;;; HTTP status predicates.
 
-;; (http:message-version MSG)
-;;	Returns the HTTP version in use in HTTP message MSG.
-;;
-;; (http:message-status-code MSG)
-;;	Returns the status code returned in HTTP message MSG.
-;;
-;; (http:message-status-text MSG)
-;;	Returns the text of the status line from HTTP message MSG.
-;;
-;; (http:message-status-ok? STATUS)
-;;	Returns #t if status code STATUS indicates a successful request,
-;;	#f otherwise.
-
+;; Return the HTTP version in use in HTTP message @var{msg}.
 (define-public (http:message-version msg)     (vector-ref msg 0))
+;; Return the status code returned in HTTP message @var{msg}.
 (define-public (http:message-status-code msg) (vector-ref msg 1))
+;; Return the text of the status line from HTTP message @var{msg}.
 (define-public (http:message-status-text msg) (vector-ref msg 2))
+;; Return #t iff status code STATUS indicates a successful request.
 (define-public (http:message-status-ok? msg)
   (http:status-ok? (http:message-status-code msg)))
+
+;; Return #t iff @var{status} (a string) begins with "2".
 (define-public (http:status-ok? status)
   (char=? #\2 (string-ref status 0)))
 
+;; Return the body of the HTTP message @var{msg}.
 (define-public (http:message-body msg) (vector-ref msg 4))
 
 ;; HTTP response headers functions
@@ -109,14 +88,14 @@
 ;;   Should Date and Last-Modified headers be run through strptime?
 ;;   It is advantageous to keep headers in a uniform format, but it may
 ;;   be convenient to parse headers that have unambiguous meanings.
-;;
-;; (http:message-headers MSG)
-;;	Returns a list of the headers from HTTP message MSG.
-;; (http:message-header HEADER MSG)
-;;	Return the header field named HEADER from HTTP message MSG, or
-;;	#f if no such header is present in the message.
 
+;; Return a list of the headers from HTTP message @var{msg}.
+;;
 (define-public (http:message-headers msg) (vector-ref msg 3))
+
+;; Return the header field named @var{header} from HTTP message @var{msg},
+;; or #f if no such header is present in the message.
+;;
 (define-public (http:message-header header msg)
   (http:fetch-header header (http:message-headers msg)))
 
@@ -169,22 +148,20 @@
 
 ;; Common methods: GET, POST etc.
 
-;; (http:get url)
-;;   Submit an http request using the "GET" method on the @var{url}.
-
+;; Submit an http request using the "GET" method on the @var{url}.
+;;
 (define-public (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
   (http:request "GET" url (list (string-append "Host: " (url:host url)))))
 
-;; (http:post-form URL EXTRA-HEADERS FIELDS)
-;;   Submnit an http request using the "POST" method on the @var{url}.
-;;   @var{extra-headers} is a list of extra headers, each a string of
-;;   form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
-;;   sent automatically and do not need to be specified.  @var{fields}
-;;   is a list of elements of the form (FKEY . FVALUE), where FKEY is a
-;;   symbol and FVALUE is a string.
-
+;; Submnit an http request using the "POST" method on the @var{url}.
+;; @var{extra-headers} is a list of extra headers, each a string of
+;; form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
+;; sent automatically and do not need to be specified.  @var{fields}
+;; is a list of elements of the form @code{(FKEY . FVALUE)}, where
+;; FKEY is a symbol and FVALUE is a string.
+;;
 (define-public (http:post-form url extra-headers fields)
   (http:request "POST" url
                 (append
@@ -201,12 +178,13 @@
                   '()))))
 
 ;; Connection-oriented functions:
-;;
-;; (http:open HOST [PORT])
-;;     Return an HTTP connection to HOST on TCP port PORT (default 80).
-;;     If an open connection already exists, use it; otherwise, create
-;;     a new socket.
 
+;; Return an HTTP connection to @var{host} on TCP port @var{port} (default 80
+;; if unspecified).  If an open connection already exists, use it; otherwise,
+;; create a new socket.
+;;
+;;-sig: (host [port])
+;;
 (define-public (http:open host . args)
   (let ((port (cond ((null? args) 80)
 		    ((not (car args)) 80)
@@ -219,25 +197,29 @@
 	  (add-open-connection! host port sock)
 	  sock))))
 
-;; (http:request METHOD URL [HEADERS [BODY]])
-;;	Submit an HTTP request.
-;;     URL is a structure returned by url:parse.
-;;     METHOD is the name of some HTTP method, e.g. "GET" or "POST".
-;;     The optional HEADERS and BODY arguments are lists of strings
-;;     which describe HTTP messages.  The `Content-Length' header
-;;     is calculated automatically and should not be supplied.
+;; Submit an HTTP request using @var{method} and @var{url}.
+;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
+;; @var{url} is a url object returned by @code{url:parse}.
+;; Optional args @var{headers} and @var{body} are lists of strings
+;; which describe HTTP messages.  The @code{Content-Length} header
+;; is calculated automatically and should not be supplied.
+;; Here are two examples:
 ;;
-;;	Example usage:
-;;	  (http:request "get" parsed-url
-;;			(list "User-Agent: GuileHTTP/0.1"
-;;			      "Content-Type: text/plain"))
-;;       (http:request "post" parsed-url
-;;			(list "User-Agent: GuileHTTP/0.1"
-;;			      "Content-Type: unknown/x-www-form-urlencoded")
-;;			(list "search=Gosper"
-;;			      "case=no"
-;;			      "max_hits=50"))
-
+;; @example
+;; (http:request "get" parsed-url
+;;               (list "User-Agent: Anonymous/0.1"
+;;                     "Content-Type: text/plain"))
+;;
+;; (http:request "post" parsed-url
+;;               (list "User-Agent: Fred/0.1"
+;;                     "Content-Type: unknown/x-www-form-urlencoded")
+;;               (list "search=Gosper"
+;;                     "case=no"
+;;                     "max_hits=50"))
+;; @end example
+;;
+;;-sig: (method url [headers [body]])
+;;
 (define-public (http:request method url . args)
   (let ((host     (url:host url))
 	(tcp-port (or (url:port url) 80))
