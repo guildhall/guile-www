@@ -1,3 +1,8 @@
+- 2.1 | 2004-01-15
+  - doc fix: `cgi:getenv' doc was missing
+  - new module: (www url-coding)
+  - proc `cgi:init' performance improvement (env var lazy init)
+
 - 2.0 | 2004-01-13
   - incompatible API changes
     - cgi:make-cookie no longer accepts #&-style keywords (#:-style ok)
