@@ -1,3 +1,10 @@
+2004-07-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm: Refill; nfc.
+	* main.scm: Likewise.
+	* url.scm: Likewise.
+	* url-coding.scm: Likewise.
+
 2004-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* doc/guile-www.twerp: Specify "@paragraphindent 0".
