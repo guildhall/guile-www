@@ -1,5 +1,16 @@
 2004-03-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp (Top): Add "big-dishing-loop" menu item.
+	(big-dishing-loop): New node/chapter.
+
+	* Makefile.am (kludgefiles): New var.
+	(install-data-hook): Use $(kludgefiles).
+	(DOT_DOC_FILES): Add server-utils/big-dishing-loop.doc.
+
+	* examples/you-are-here: New file.
+
+2004-03-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* doc/guile-www.twerp (parse-request):
 	Add @twerpdoc for `skip-headers'.
 
