@@ -289,13 +289,18 @@
 (define (init-environment)
 
   ;; SERVER_SOFTWARE format: name/version
+  ;; (but handle "/version" omission anyway)
   (let ((server-software (getenv "SERVER_SOFTWARE")))
     (if server-software
 	(let ((slash (string-index server-software #\/)))
-	  (set! cgi-server-software-type    (substring server-software
-                                                       0 slash))
-	  (set! cgi-server-software-version (substring server-software
-                                                       (1+ slash))))))
+	  (set! cgi-server-software-type
+                (if slash
+                    (substring server-software 0 slash)
+                    server-software))
+	  (set! cgi-server-software-version
+                (if slash
+                    (substring server-software (1+ slash))
+                    "(unavailable)")))))
 
   (set! cgi-server-hostname	   (getenv "SERVER_NAME"))
   (set! cgi-gateway-interface	   (getenv "GATEWAY_INTERFACE")) ;"CGI/revision"
@@ -330,10 +335,15 @@
   (let ((contlen (getenv "CONTENT_LENGTH")))
     (set! cgi-content-length (and contlen (string->number contlen))))
 
-  ;; HTTP_ACCEPT is a list of MIME types separated by commas.
-  (let ((types (getenv "HTTP_ACCEPT")))
-    (set! cgi-http-accept-types
-	  (and types (separate-fields-discarding-char #\, types))))
+  ;; list of MIME types separated by commas (and possibly spaces)
+  (cond ((getenv "HTTP_ACCEPT")
+         => (lambda (types)
+              (set! cgi-http-accept-types
+                    (map (lambda (s)
+                           (if (char=? #\space (string-ref s 0))
+                               (make-shared-substring s 1)
+                               s))
+                         (separate-fields-discarding-char #\, types))))))
 
   ;; HTTP_USER_AGENT format: software/version library/version.
   (set! cgi-http-user-agent		   (getenv "HTTP_USER_AGENT"))
