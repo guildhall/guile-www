@@ -1,3 +1,9 @@
+2004-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (cgi:make-cookie): Also
+	accept keywords for `name' and `value'.
+	Add example to docstring.  Add sig hint.
+
 2004-03-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* module-install.in: New file.
