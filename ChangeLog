@@ -1,3 +1,24 @@
+2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (*env-alist*): New var.
+	(env-look, env-set!): New procs.
+	(cgi-server-software-type cgi-server-software-type,
+	cgi-server-software-version, cgi-server-hostname,
+	cgi-gateway-interface, cgi-server-protocol-name,
+	cgi-server-protocol-version, cgi-server-port, cgi-request-method,
+	cgi-path-info, cgi-path-translated, cgi-script-name,
+	cgi-query-string, cgi-remote-host, cgi-remote-addr,
+	cgi-authentication-type, cgi-remote-user, cgi-remote-ident,
+	cgi-content-type, cgi-content-length, cgi-http-accept-types,
+	cgi-http-user-agent, cgi-http-cookie): Delete vars.  Update
+	references to either call `env-look' or `env-set!' as appropriate.
+	(init-environment): Delete; move functionality into `*env-alist*'.
+	(cgi:getenv): Use `env-look'.  Fix doc omission bug: Mention type
+	and possible values for `content-length' and `server-port'.  Also,
+	document "unrecognized key" error condition.
+	(read-raw-form-data): Take explicit arg `len'. Update callers.
+	(get-cookies): Take explicit arg `raw'. Update callers.
+
 2004-01-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* doc/guile-www.twerp (cgi):
