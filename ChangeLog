@@ -1,5 +1,9 @@
 2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* COPYING, INSTALL: Delete files.
+
+2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* Makefile.am [MAINTAINER_MODE] (cvs-state-summary): New target.
 
 2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
