@@ -1,5 +1,9 @@
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* configure.in (VERSION): Bump to 1.1.1ttn4 for release.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* url.scm (safe-chars): Use `string->list' for conciseness; nfc.
 
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
