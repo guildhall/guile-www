@@ -1,6 +1,6 @@
 ;;; www/url.scm --- URL manipulation tools
 
-;; 	Copyright (C) 1997,2001,2002,2003 Free Software Foundation, Inc.
+;; 	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@
 ;;     encoding methods (e.g. a url-scheme-reserved-char-alist)
 
 (define-module (www url)
-  :use-module (ice-9 regex))
+  #:use-module (ice-9 regex))
 
 ;; `url:scheme' is an unfortunate term, but it is the technical
 ;; name for that portion of the URL according to RFC 1738. Sigh.

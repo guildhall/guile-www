@@ -1,6 +1,6 @@
 ;;; www/cgi.scm --- Common Gateway Interface support for WWW scripts
 
-;; 	Copyright (C) 1997,2001,2002,2003 Free Software Foundation, Inc.
+;; 	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -57,9 +57,9 @@
 ;;; Code:
 
 (define-module (www cgi)
-  :use-module (www url)
-  :use-module (ice-9 regex)
-  :use-module (ice-9 optargs))
+  #:use-module (www url)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 optargs))
 
 (define form-variables '())
 

@@ -1,6 +1,6 @@
 ;;; www/main.scm --- General WWW navigation aids.
 
-;; 	Copyright (C) 1997,2001,2002,2003 Free Software Foundation, Inc.
+;;	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 ;;; Code:
 
 (define-module (www main)
-  :use-module (www http)
-  :use-module (www url))
+  #:use-module (www http)
+  #:use-module (www url))
 
 
 (define dispatch-table

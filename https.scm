@@ -1,6 +1,35 @@
-(define-module (www https))
-(use-modules (ice-9 format))
-(use-modules (ice-9 popen))
+;;; www/https.scm --- HTTPS client library for Guile
+
+;;	Copyright (C) 2003,2004 Free Software Foundation, Inc.
+;;
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this software; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+;; Boston, MA 02111-1307 USA
+;;
+
+;;; Commentary:
+
+;; This module exports the following variables and procedures:
+;;     https:version
+;;     https:user-agent
+;;    (https-via-lynx host ip-port path)
+
+;;; Code:
+
+(define-module (www https)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 popen))
 
 (define-public https:version "HTTP/1.0")  ; bump up to 1.1 when ready
 (define-public https:user-agent "GuileHTTP 0.1")
@@ -27,3 +56,5 @@
           (apply string-append (reverse lines))
         (loop (read-line p 'concat)
               (cons one-line lines))))))
+
+;;; www/https.scm ends here
