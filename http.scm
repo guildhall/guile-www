@@ -155,27 +155,121 @@
   ;; closed remotely, this will fail.
   (http:request "GET" url (list (string-append "Host: " (url:host url)))))
 
-;; Submnit an http request using the "POST" method on the @var{url}.
+;; Submit an http request using the "POST" method on the @var{url}.
 ;; @var{extra-headers} is a list of extra headers, each a string of
 ;; form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
 ;; sent automatically and do not need to be specified.  @var{fields}
 ;; is a list of elements of the form @code{(FKEY . FVALUE)}, where
-;; FKEY is a symbol and FVALUE is a string.
+;; FKEY is a symbol and FVALUE is normally a string.
+;;
+;; FVALUE can also be a list of file-upload specifications, each of which
+;; has the form @code{(SOURCE NAME MIME-TYPE TRANSFER-ENCODING)}.
+;; @code{SOURCE} can be a string or a thunk that returns a string.
+;; The rest of the elements are strings or symbols:
+;; @code{NAME} is the filename (only the basename of which is used);
+;; @code{MIME-TYPE} is a type/subtype pair such as "image/jpeg";
+;; @code{TRANSFER-ENCODING} is one of the tokens specified by RFC 1521,
+;; or #f to mean "binary".  Note that @code{SOURCE} is used directly
+;; without further processing; it is the caller's responsibility to
+;; ensure that the MIME type and transfer encoding specified describe
+;; @code{SOURCE} accurately.
 ;;
 (define-public (http:post-form url extra-headers fields)
-  (http:request "POST" url
-                (append
-                 (list "Content-Type: application/x-www-form-urlencoded"
-                       (format #f "Host: ~A" (url:host url)))
-                 extra-headers)
-                (list
-                 (url:encode
-                  (apply string-append
-                         (format #f "~A=~A" (caar fields) (cdar fields))
-                         (map (lambda (field)
-                                (format #f "&~A=~A" (car field) (cdr field)))
-                              (cdr fields)))
-                  '()))))
+
+  (define (source: spec)        (list-ref spec 0))
+  (define (name: spec)          (list-ref spec 1))
+  (define (mime-type: spec)     (list-ref spec 2))
+  (define (xfer-enc: spec)  (or (list-ref spec 3) "binary"))
+
+  (define (validate-upload-spec spec)
+    (define (string-or-symbol? obj) (or (string? obj) (symbol? obj)))
+    (or (and (list? spec)
+             (= 4 (length spec))
+             (and=> (source: spec) (lambda (source)
+                                     (or (procedure? source)
+                                         (string? source))))
+             (and=> (mime-type: spec) string-or-symbol?)
+             (and=> (xfer-enc: spec) string-or-symbol?))
+        (error "bad upload spec:" spec)))
+
+  (define (c-type type . boundary)
+    (format #f "Content-Type: ~A~A"
+            type
+            (if (null? boundary)
+                ""
+                (format #f "; boundary=~A" (car boundary)))))
+
+  (define (c-disp disp name . f?)
+    (format #f "Content-Disposition: ~A; ~Aname=\"~A\""
+            disp (if (null? f?) "" "file") name))
+
+  (let ((simple '()) (uploads '())      ; partition fields
+        (boundary "gUiLeWwWhTtPpOsTfOrM"))
+    (for-each (lambda (field)
+                (if (pair? (cdr field))
+                    (begin
+                      (for-each validate-upload-spec (cdr field))
+                      (set! uploads (cons field uploads)))
+                    (set! simple (cons field simple))))
+              fields)
+    ;; reorder
+    (set! simple (reverse! simple))
+    (set! uploads (reverse! uploads))
+    ;; do it!
+    (http:request
+     "POST" url
+     ;; headers
+     (append
+      (list (if (null? uploads)
+                (c-type "application/x-www-form-urlencoded")
+                (c-type "multipart/form-data" boundary))
+            (format #f "Host: ~A" (url:host url)))
+      extra-headers)
+     ;; body
+     (if (null? uploads)
+         (or (and (null? simple) simple)
+             (let* ((enc (lambda (extract pair)
+                           (url:encode (extract pair) '())))
+                    (one (lambda (fmt pair)
+                           (format #f fmt (enc car pair) (enc cdr pair)))))
+               (list                    ; all on one line
+                (apply string-append
+                       (one "~A=~A" (car simple))
+                       (map (lambda (field)
+                              (one "&~A=~A" field))
+                            (cdr simple))))))
+         (let ((boundary-line (string-append "--" boundary))
+               (aam (lambda (proc ls) (apply append (map proc ls)))))
+           `(,@(aam (lambda (pair)
+                      (list
+                       boundary-line
+                       (c-disp "form-data" (car pair))
+                       ""
+                       (cdr pair)))
+                    simple)
+             ,@(aam (lambda (name-spec)
+                      (let* ((sub-b (string-append "SuB" boundary))
+                             (sub-b-line (string-append "--" sub-b)))
+                        `(,boundary-line
+                          ,(c-disp "form-data" (car name-spec))
+                          ,(c-type "multipart/mixed" sub-b)
+                          ""
+                          ,@`(,@(aam (lambda (spec)
+                                       (list
+                                        sub-b-line
+                                        (c-disp "attachment"
+                                                (basename (name: spec))
+                                                #t)
+                                        (c-type (mime-type: spec))
+                                        (format #f "Content-Transfer-Encoding: ~A"
+                                                (xfer-enc: spec))
+                                        ""
+                                        (let ((s (source: spec)))
+                                          (if (string? s) s (s)))))
+                                     (cdr name-spec)))
+                          ,(string-append sub-b-line "--"))))
+                    uploads)
+             ,(string-append boundary-line "--")))))))
 
 ;; Connection-oriented functions:
 
@@ -220,15 +314,15 @@
 ;;
 ;; @example
 ;; (http:request "get" parsed-url
-;;               (list "User-Agent: Anonymous/0.1"
-;;                     "Content-Type: text/plain"))
+;;   (list "User-Agent: Anonymous/0.1"
+;;         "Content-Type: text/plain"))
 ;;
 ;; (http:request "post" parsed-url
-;;               (list "User-Agent: Fred/0.1"
-;;                     "Content-Type: application/x-www-form-urlencoded")
-;;               (list (string-append "search=Gosper"
-;;                                    "&case=no"
-;;                                    "&max_hits=50")))
+;;   (list "User-Agent: Fred/0.1"
+;;         "Content-Type: application/x-www-form-urlencoded")
+;;   (list (string-append "search=Gosper"
+;;                        "&case=no"
+;;                        "&max_hits=50")))
 ;; @end example
 ;;
 ;; As a special case (demonstrated in the second example above),
