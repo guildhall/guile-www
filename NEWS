@@ -1,3 +1,6 @@
+- 2.7 | 2004-10-21
+  - new proc in (www http): http:head
+
 - 2.6 | 2004-07-15
   - cgi:make-cookie now accepts keywords for `name' and `value' args
   - bugfix: http:request handles missing response status-line TEXT as ""
