@@ -18,7 +18,7 @@
 ;; Boston, MA 02111-1307, USA.
 
 (define-module (www server-utils parse-request)
-  #:export (read-first-line read-headers))
+  #:export (read-first-line read-headers skip-headers))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
 ;; return a list of the method, URL path and HTTP version indicator, or
@@ -172,5 +172,35 @@
                                            (cdr header)))
                          acc)
                        (cons header acc)))))))
+
+;; Scan without parsing the headers of the HTTP message from input @var{port},
+;; and return the empty list, or #f if the message ends prematurely.  A
+;; successful scan consumes the trailing CRLF of the header block as well.
+;;
+(define (skip-headers port)
+
+  (define (next)
+    (read-char port))
+
+  (let* ((ring (let ((ring (list #\nul #\nul #\nul #\nul)))
+                 (set-cdr! (last-pair ring) ring)
+                 ring))
+         (rv (let loop ((c (next)))
+               (cond ((eof-object? c)
+                      #f)
+                     (else
+                      (set-car! ring c)
+                      (set! ring (cdr ring))
+                      (if (and (char=? #\newline c)
+                               (let ((r ring))
+                                 (and (char=? #\cr (car r))
+                                      (begin (set! r (cdr r))
+                                             (char=? #\newline (car r)))
+                                      (begin (set! r (cdr r))
+                                             (char=? #\cr (car r))))))
+                          '()           ; done
+                          (loop (next))))))))
+    (set-cdr! ring '())
+    rv))
 
 ;;; www/server-utils/parse-request.scm ends here
