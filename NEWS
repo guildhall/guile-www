@@ -1,5 +1,5 @@
 - version 1.1.1ttn4 released 2003-02-12
-  - bug fix: http:get now passes `Host' header to in the http request
+  - bug fix: http:get now uses `Host' header in the http request
   - bug fix: examples/wwwcat handles non-#f `program-arguments' values
 
 - version 1.1.1ttn3 released 2002-12-03
