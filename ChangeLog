@@ -1,5 +1,9 @@
 2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* configure.in (VERSION): Bump to "2.4" for release.
+
+2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* Makefile.am (DOT_DOC_FILES): Add server-utils/log.doc.
 
 	* doc/guile-www.twerp (Top): Add menu item for `log'.
