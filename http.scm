@@ -186,8 +186,12 @@
     (or (and (list? spec)
              (= 4 (length spec))
              (and=> (source: spec) (lambda (source)
-                                     (or (procedure? source)
+                                     (or (and (procedure? source)
+                                              (equal? '(0 0 #f) ; thunk
+                                                      (procedure-property
+                                                       source 'arity)))
                                          (string? source))))
+             (and=> (name: spec) string-or-symbol?)
              (and=> (mime-type: spec) string-or-symbol?)
              (and=> (xfer-enc: spec) string-or-symbol?))
         (error "bad upload spec:" spec)))
@@ -197,7 +201,7 @@
             type
             (if (null? boundary)
                 ""
-                (format #f "; boundary=~A" (car boundary)))))
+                (format #f "; boundary=~S" (car boundary)))))
 
   (define (c-disp disp name . f?)
     (format #f "Content-Disposition: ~A; ~Aname=\"~A\""
@@ -359,6 +363,10 @@
 			  (cons (format #f "Content-Length: ~A" content-length)
 				headers)
 			  headers)))
+
+        (write-line "BODY:")
+        (for-each (lambda (line) (format #t "> ~A\n" line)) body)
+        (write-line "_____")
 
 	(with-output-to-port sock
 	  (lambda ()
