@@ -1,5 +1,12 @@
 2004-01-22  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* http.scm (form-hack-regex): New var.
+	(http:request): Check for "application/x-www-form-urlencoded"
+	content type and one-line body, in which case arrange to omit
+	CRLF and adjust content-length accordingly.
+
+2004-01-22  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* acinclude.m4 (AC_GUILE_WWW_MODULE_CHECK): Delete.
 	(AC_GUILE_WWW_CHECK_ICE9_OPTARGS): Delete.
 	(AC_GUILE_WWW_MODULES_AOK): Use GUILE_CHECK_ICE9_OPTARGS
