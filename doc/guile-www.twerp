@@ -95,6 +95,7 @@ Basic
 * url-coding::          URL decode and encode, only.
 
 Server Utilities
+* big-dishing-loop::    Customizable listener and dispatch.
 * parse-request::       Read HTTP first line and headers.
 * filesystem::          Work with the local filesystem.
 * answer::              HTTP connection handling and responses.
@@ -217,6 +218,37 @@ and encoding URL strings for safe transmission according to RFC 1738.
 
 @twerpdoc (url-coding:decode)
 @twerpdoc (url-coding:encode)
+
+@c ---------------------------------------------------------------------------
+@node    big-dishing-loop
+@chapter big-dishing-loop
+
+The @code{(www server-utils big-dishing-loop)} module provides a procedure
+that generates a customized listener/dispatch proc.
+
+@twerpdoc (make-big-dishing-loop)
+
+The combination of @code{#:need-headers}, @code{#:need-input-port} and
+@code{#:explicit-return} mean that the @code{#:GET-upath} proc can receive
+anywhere from two to five arguments.  Here is a table of all the possible
+combinations (1 means non-#f and 0 means #f):
+
+@example
++----- #:explicit-return
+| +--- #:need-input-port
+| | +- #:need-headers
+| | |
+| | |  args to #:GET-upath proc
+=====  ==============================
+0 0 0  M upath
+0 0 1  M upath headers
+0 1 0  M upath in-port
+0 1 1  M upath headers in-port
+1 0 0  M upath return
+1 0 1  M upath headers return
+1 1 0  M upath in-port return
+1 1 1  M upath headers in-port return
+@end example
 
 @c ---------------------------------------------------------------------------
 @node    parse-request
