@@ -1,5 +1,16 @@
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp: Remove RCS tag.
+	(Top): Change @top to "The (www *) Modules".
+	Remove Concept Index.
+	Add @twerpsetsearchpath directive.
+	(http): Spiff blurb.  Replace manual
+	commentary slice w/ @twerpcommentary directive.
+	(url, cgi, main): Likewise.
+	(Concept Index): Delete node.
+
+2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* doc/guile-www.twerp: Rename from doc/guile-www.texi.
 
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
