@@ -19,9 +19,7 @@
 
 ;;; Commentary:
 
-;; This module exports the following procedures:
-;;   (www:set-protocol-handler! proto handler)
-;;   (www:get url-str)
+;; The (www main) module is fully documented in the guile-www.info file.
 
 ;;; Code:
 
@@ -33,16 +31,24 @@
 (define dispatch-table
   (acons 'http http:get '()))
 
-;; (www:get URL)
-;;   parse a URL into portions, open a connection, and retrieve
-;;   selected document
-
+;; Associate for scheme @var{proto} the procedure @var{handler}.
+;; @var{proto} is a symbol, while @var{handler} is a procedure that
+;; takes three strings: the host, port and path portions, respectively
+;; of a url object.  Its return value is the return value of
+;; @code{www:get} (for @var{proto}), and need not be a string.
+;;
 (define-public (www:set-protocol-handler! proto handler)
   (set! dispatch-table
 	(assq-set! dispatch-table proto handler)))
 
-(define-public (www:get url-str)
-  (let ((url (url:parse url-str)))
+;; Parse @var{url-string} into portions.  For HTTP, open a connection,
+;; retrieve and return the specified document.  Otherwise, consult the
+;; handler procedure registered for the particular scheme and apply it
+;; to the host, port and path portions of @var{url-string}.  If no such
+;; handler exists, signal "unknown URL scheme" error.
+;;
+(define-public (www:get url-string)
+  (let ((url (url:parse url-string)))
     ;; get handler for this protocol
     (case (url:scheme url)
       ((http) (let ((msg (http:get url)))

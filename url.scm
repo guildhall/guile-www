@@ -20,22 +20,7 @@
 
 ;;; Commentary:
 
-;; This module exports the following procedures:
-;;   (url:scheme url)
-;;   (url:address url)
-;;   (url:unknown url)
-;;   (url:user url)
-;;   (url:host url)
-;;   (url:port url)
-;;   (url:path url)
-;;   (url:make scheme . args)
-;;   (url:make-http host port path)
-;;   (url:make-ftp user host port path)
-;;   (url:make-mailto address)
-;;   (url:parse url)
-;;   (url:unparse url)
-;;   (url:decode str)
-;;   (url:encode str reserved-chars)
+;; The (www url) module is fully documented in the guile-www.info file.
 
 ;;; Code:
 
@@ -50,23 +35,57 @@
 (define-module (www url)
   #:use-module (ice-9 regex))
 
-;; `url:scheme' is an unfortunate term, but it is the technical
-;; name for that portion of the URL according to RFC 1738. Sigh.
-
+;; Extract and return the "scheme" portion of a @var{url} object.
+;; @code{url:scheme} is an unfortunate term, but it is the technical
+;; name for that portion of the URL according to RFC 1738.  Sigh.
+;;
 (define-public (url:scheme url)  (vector-ref url 0))
+
+;; Extract and return the "address" portion of the @var{url} object.
+;;
 (define-public (url:address url) (vector-ref url 1))
+
+;; Extract and return the "unknown" portion of the @var{url} object.
+;;
 (define-public (url:unknown url) (vector-ref url 1))
+
+;; Extract and return the "user" portion of the @var{url} object.
+;;
 (define-public (url:user url)    (vector-ref url 1))
+
+;; Extract and return the "host" portion of the @var{url} object.
+;;
 (define-public (url:host url)    (vector-ref url 2))
+
+;; Extract and return the "port" portion of the @var{url} object.
+;;
 (define-public (url:port url)    (vector-ref url 3))
+
+;; Extract and return the "path" portion of the @var{url} object.
+;;
 (define-public (url:path url)    (vector-ref url 4))
 
+;; Construct a url object with specific @var{scheme} and other @var{args}.
+;; The number and meaning of @var{args} depends on the @var{scheme}.
+;;
 (define-public (url:make scheme . args)
   (apply vector scheme args))
+
+;; Construct a HTTP-specific url object with
+;; @var{host}, @var{port} and @var{path} portions.
+;;
 (define-public (url:make-http host port path)
   (vector 'http #f host port path))
+
+;; Construct a FTP-specific url object with
+;; @var{user}, @var{host}, @var{port} and @var{path} portions.
+;;
 (define-public (url:make-ftp user host port path)
   (vector 'ftp user host port path))
+
+;; Construct a mailto-specific url object with
+;; an @var{address} portion.
+;;
 (define-public (url:make-mailto address)
   (vector 'mailto address))
 
@@ -75,6 +94,11 @@
   (make-regexp "^ftp://(([^@:/]+)@)?([^:/]+)(:([0-9]+))?(/(.*))?$"))
 (define mailto-regexp (make-regexp "^mailto:(.*)$"))
 
+;; Parse @var{string} and return a url object, with one of the
+;; following "schemes": HTTP, FTP, mailto, unknown.
+;;
+;;-sig: (string)
+;;
 (define-public (url:parse url)
   (cond
    ((regexp-exec http-regexp url)
@@ -99,7 +123,9 @@
    (else
     (url:make 'unknown url))))
 
-
+;; Return the @var{url} object formatted as a string.
+;; Note: The username portion is not included!
+;;
 (define-public (url:unparse url)
   (define (pathy scheme username url)   ; username not used!
     (format #f "~A://~A~A~A"
@@ -116,14 +142,14 @@
     ((unknown) (url:unknown url))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (url-decode STR)
-;; Turn + into space, and hex-encoded %XX strings into their
-;; eight-bit characters.  Is a regexp faster than character
-;; scanning?  Does it incur more overhead (which may be more
-;; important for code that frequently gets restarted)?
-
+;; Return a new string made from url-decoding @var{str}.  Specifically,
+;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
+;; their eight-bit characters.
+;;
 (define-public (url:decode str)
+  ;; Implementation Questions: Is a regexp faster than character scanning?
+  ;; Does it incur more overhead (which may be more important for code that
+  ;; frequently gets restarted)?
   (regexp-substitute/global
    #f "\\+|%([0-9A-Fa-f][0-9A-Fa-f])" str
    'pre
@@ -135,17 +161,15 @@
                    16)))))
    'post))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (url-encode STR)
-;; The inverse of url-decode.  Can't be done easily with
-;; a regexp: we would have to construct a regular expression
-;; like "[\277-\377]", for example, and Guile strings don't
-;; let you interpolate character literals.  Pity.
-;;   URL-encode any characters in STR that are not safe: these
-;; include any character not in the SAFE-CHARS list and any
-;; character that *is* in the RESERVED-CHARS list argument.
 
+;; Return a new string made from url-encoding @var{str},
+;; unconditionally transforming those in @var{reserved-chars}, a list
+;; of characters, in addition to those in the standard (internal) set.
+;;
 (define-public (url:encode str reserved-chars)
+  ;; Can't be done easily with a regexp: we would have to construct a
+  ;; regular expression like "[\277-\377]", for example, and Guile
+  ;; strings don't let you interpolate character literals.  Pity.
   (with-output-to-string
     (lambda ()
       (for-each (lambda (ch)
