@@ -186,11 +186,27 @@
 (define-public (cgi:form-data?)
   (not (null? form-variables)))
 
-;; Fetch any files associated with @var{name}.  Return a list.  Can only
-;; be called once per particular @var{name}.  Subsequent calls return
-;; #f.  The caller had better hang onto the descriptor, lest the garbage
-;; man whisk it away for good.  This is done to minimize the amount of
-;; time the file is resident in memory.
+;; Return a list of strings, the contents of files associated with @var{name},
+;; or #f if no files are available.  Each string has an object property
+;; @code{#:guile-www-cgi} whose value is an alist with the following keys:
+;;
+;; @itemize
+;; @item #:name --- identical to @var{name} (sanity check)
+;;
+;; @item #:filename --- original/suggested filename for this bunch of bits
+;;
+;; @item #:mime-type --- something like "image/jpeg"
+;;
+;; @item #:raw-mime-headers --- the MIME headers before parsing
+;; @end itemize
+;;
+;; Note that the string's object property and the keys are all keywords.
+;; The associated values are strings.
+;;
+;; @code{cgi:uploads} can only be called once per particular @var{name}.
+;; Subsequent calls return #f.  Caller had better hang onto the information,
+;; lest the garbage man whisk it away for good.  This is done to minimize the
+;; amount of time the file is resident in memory.
 ;;
 (define-public (cgi:uploads name)
   (and=> (assoc name file-uploads)
@@ -284,10 +300,10 @@
   (define (stash-file-upload! name filename type value raw-headers)
     (stash-form-variable! name filename)
     (set-object-property! value #:guile-www-cgi
-                          `((name . ,name)
-                            (filename . ,filename)
-                            (mime-type . ,type)
-                            (raw-mime-headers . ,raw-headers)))
+                          `((#:name . ,name)
+                            (#:filename . ,filename)
+                            (#:mime-type . ,type)
+                            (#:raw-mime-headers . ,raw-headers)))
     (set! file-uploads (updated-alist file-uploads name value)))
 
   (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
