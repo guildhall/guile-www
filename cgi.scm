@@ -24,7 +24,7 @@
 ;;; Code:
 
 (define-module (www cgi)
-  #:use-module (www url)
+  #:use-module (www url-coding)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 optargs-kw))
 
@@ -248,13 +248,13 @@
 
 (define (parse-form raw-data)
   ;; get-name and get-value are used to parse individual `name=value' pairs.
-  ;; Values are URL-encoded, so url:decode must be called on each one.
+  ;; Values are URL-encoded, so each must be decoded.
   (define (get-name pair)
     (let ((p (string-index pair #\=)))
       (and p (make-shared-substring pair 0 p))))
   (define (get-value pair)
     (let ((p (string-index pair #\=)))
-      (and p (url:decode (make-shared-substring pair (+ p 1))))))
+      (and p (url-coding:decode (make-shared-substring pair (+ p 1))))))
   (for-each (lambda (pair)
               (let* ((name (get-name pair))
                      (value (get-value pair))
