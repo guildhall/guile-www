@@ -1,5 +1,11 @@
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* examples/wwwcat: Fix buglet: No longer assume
+	`program-arguments' non-#f is significant; make check
+	more fine-grained.  Thanks to Paul Emsley.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* http.scm (http:user-agent): Use "NAME/VERSION" format.
 	(http:get): Fix omission bug: Include `Host' header in `http:request' call.
 	Thanks to Paul Emsley for the bug report.
