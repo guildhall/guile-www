@@ -30,5 +30,6 @@ EXTRA_DIST = $(gwww_DATA) contrib examples
 
 dist-hook:
 	rm -rf `find $(distdir)/contrib -name CVS`
+	rm -rf `find $(distdir)/examples -name CVS`
 
 ## Makefile.am ends here
