@@ -213,9 +213,10 @@
 ;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
 ;; @var{url} is a url object returned by @code{url:parse}.
 ;; Optional args @var{headers} and @var{body} are lists of strings
-;; which describe HTTP messages.  The @code{Content-Length} header
-;; is calculated automatically and should not be supplied.
-;; Here are two examples:
+;; that comprise the lines of an HTTP message.  The strings should
+;; not end with CR or LF or CRLF; @code{http:request} handles that.
+;; Also, the @code{Content-Length} header is calculated automatically
+;; and should not be supplied.  Here are two examples:
 ;;
 ;; @example
 ;; (http:request "get" parsed-url
@@ -224,11 +225,16 @@
 ;;
 ;; (http:request "post" parsed-url
 ;;               (list "User-Agent: Fred/0.1"
-;;                     "Content-Type: unknown/x-www-form-urlencoded")
+;;                     "Content-Type: application/x-www-form-urlencoded")
 ;;               (list (string-append "search=Gosper"
 ;;                                    "&case=no"
 ;;                                    "&max_hits=50")))
 ;; @end example
+;;
+;; As a special case (demonstrated in the second example above),
+;; when Content-Type is @code{application/x-www-form-urlencoded}
+;; and there is only one line in the body, the final CRLF is omitted
+;; and the Content-Length is adjusted accordingly.
 ;;
 ;;-sig: (method url [headers [body]])
 ;;
