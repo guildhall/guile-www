@@ -5,13 +5,14 @@
 # tested with:
 # - automake 1.7.6
 # - autoconf 2.58
+# - guile 1.4.1.97
 
 [ -f configure.in ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
   exit 1
 }
 
-aclocal
+aclocal -I `guile-config info datadir`/aclocal
 autoconf
 
 # automake is not so smooth handling generated .texi
