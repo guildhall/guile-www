@@ -12,6 +12,9 @@
 	(url:decode): Rewrite to delegate to `url-coding:decode'.
 	(url:encode): Rewrite to delegate to `url-coding:encode'.
 
+	* Makefile.am (gwww_DATA): Add url-coding.scm.
+	(DOT_DOC_FILES): Add url-coding.doc.
+
 2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* acinclude.m4 (AC_GUILE_WWW_TWERP_PREP): New AC_DEFUN.
