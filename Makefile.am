@@ -23,8 +23,12 @@ AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = doc
 
-gwwwdir = $(datadir)/guile/www
+gwwwdir = $(GUILE_SITE)/www
 gwww_DATA = cgi.scm http.scm main.scm url.scm
+
+install-data-hook:
+	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then \
+	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
 
 if MAINTAINER_MODE
 
