@@ -26,6 +26,8 @@ SUBDIRS = doc
 gwwwdir = $(GUILE_SITE)/www
 gwww_DATA = cgi.scm http.scm main.scm url.scm url-coding.scm
 
+kludgefiles = cgi.scm server-utils/big-dishing-loop.scm
+
 install-data-hook:
 	$(mkinstalldirs) $(gwwwdir)/server-utils
 	for f in $(srcdir)/server-utils/*.scm ; do g=`basename $$f` ;	\
@@ -34,8 +36,9 @@ install-data-hook:
 	for f in $(srcdir)/data/*.scm ; do g=`basename $$f` ;	\
 	  $(INSTALL_DATA) $$f $(gwwwdir)/data/$$g ; done
 	if [ "$(need_optargs_kludge)" = yes ] ; then		\
-	  sed s/optargs-kw/optargs/ $(srcdir)/cgi.scm > TMP ;	\
-	  $(INSTALL_DATA) TMP $(gwwwdir)/cgi.scm ;		\
+	  for f in $(kludgefiles) ; do				\
+	    sed s/optargs-kw/optargs/ $(srcdir)/$$f > TMP ;	\
+	    $(INSTALL_DATA) TMP $(gwwwdir)/$$f ; done ;		\
 	  rm -f TMP ; fi
 	cd $(gwwwdir) ;						\
 	for f in *.scm server-utils/*.scm data/*.scm ; do	\
@@ -51,6 +54,7 @@ SUFFIXES = .scm .doc
 	$(top_srcdir)/doc-snarf -D -o $@ $<
 
 DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
+		server-utils/big-dishing-loop.doc \
 		server-utils/parse-request.doc \
 		server-utils/filesystem.doc \
 		server-utils/answer.doc \
