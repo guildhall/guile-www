@@ -26,11 +26,13 @@ SUBDIRS = doc
 wwwdir = $(GUILE_SITE)/www
 basic = cgi.scm http.scm main.scm url.scm url-coding.scm
 
+dw = $(DESTDIR)$(wwwdir)
+
 install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(wwwdir) \
-	  $(DESTDIR)$(wwwdir)/server-utils $(DESTDIR)$(wwwdir)/data
-	$(SHELL) ./module-install $(DESTDIR)$(wwwdir) \
-	   `cd $(srcdir) ; ls $(basic) server-utils/*.scm data/*.scm`
+	$(mkinstalldirs) $(dw) $(dw)/server-utils $(dw)/data
+	files="`cd $(srcdir) ; ls $(basic) server-utils/*.scm data/*.scm`" ; \
+	for f in $$files ; do rm -f $(dw)/$$f ; done ; \
+	$(SHELL) ./module-install $(dw) $$files
 
 install-data-hook:
 	if $(GUILE_TOOLS) | grep -q generate-METAINFO ; then	\
