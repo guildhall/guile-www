@@ -82,14 +82,27 @@ Guile-WWW is a set of Guile Scheme modules providing support for navigating
 HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
 resources.  This document corresponds to guile-www @value{VERSION}.
 
-Each module is named @code{(www FOO)}.
+The basic modules are named @code{(www FOO)}, server utilty modules
+are named @code{(www server-utils FOO)}, and data modules are named
+@code{(www data FOO)}.
 
 @menu
+Basic
 * http::                Navigate HTTP connections.
 * url::                 Parse URLs, including decoding.
 * cgi::                 Write CGI scripts painlessly.
 * main::                Fetch world-wide-web resources.
 * url-coding::          URL decode and encode, only.
+
+Server Utilities
+* parse-request::       Read HTTP first line and headers.
+* filesystem::          Work with the local filesystem.
+* answer::              HTTP connection handling and responses.
+
+Data
+* http-status::         The dreaded 404 lives here.
+* content-type::        Content-Type clues from filenames.
+
 
 * Procedure Index::
 @end menu
@@ -203,6 +216,100 @@ and encoding URL strings for safe transmission according to RFC 1738.
 
 @twerpdoc (url-coding:decode)
 @twerpdoc (url-coding:encode)
+
+@c ---------------------------------------------------------------------------
+@node    parse-request
+@chapter parse-request
+
+The @code{(www server-utils parse-request)} module provides two procedures to
+read the first line and the headers of an HTTP message on the input port.
+
+@twerpdoc (read-first-line)
+@twerpdoc (read-headers)
+
+@c ---------------------------------------------------------------------------
+@node    filesystem
+@chapter filesystem
+
+The @code{(www server-utils filesystem)} module provides procedures for
+cleaning filenames, checking filesystem access, and mapping from a URL path to
+a filename.
+
+@twerpdoc (cleanup-filename)
+@twerpdoc (access-forbidden?-proc)
+@twerpdoc (upath->filename-proc)
+@twerpdoc (filename->content-type)
+
+@c ---------------------------------------------------------------------------
+@node    answer
+@chapter answer
+
+The @code{(www server-utils answer)} module provides a simple wrapper
+around the formatting/accounting requirements of a standard HTTP
+response.  Additionally, the @code{#:rechunk-content} facility allows
+some degree of performance tuning; a server may be able to achieve
+better throughput with certain chunk sizes than with others.
+
+@twerpdoc (mouthpiece)
+
+Here is an example that uses most of the commands:
+
+@example
+(use-modules (www server-utils content-type) (scripts slurp))
+
+(define STATUS (list #f))
+(define M (mouthpiece (open-output-file "fake") STATUS))
+
+(define (transmit-file filename)
+  (M #:set-reply-status:success)
+  (M #:add-header #:Connection "close")
+  (M #:add-header #:Content-Type (filename->content-type
+                                   filename "text/plain"))
+  (M #:add-content (slurp filename))
+  (format #t "~A --- ~A --- ~A\n"
+          (M #:content-length)
+          (M #:rechunk-content #f)
+          (M #:rechunk-content (* 8 1024)))
+  (M #:send-reply))
+
+(transmit-file "COPYING")
+@print{} 17989 --- (17989) --- (8192 8192 1605)
+(car STATUS)
+@result{} 200
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    http-status
+@chapter http-status
+
+The module @code{(www data http-status)} exports two data structures:
+@code{*http-status*} and @code{*http-status*-META}, the latter an alist
+describing the former with keys @code{#:source} and @code{#:layout}.
+
+Here is a simple example using this module:
+
+@example
+(use-modules ((www data http-status)
+              #:select (*http-status*)))
+
+(define (h2 n)
+  (format #f "<H2>~A ~A</H2>"
+          n (assq-ref *http-status* n)))
+
+(h2 404) @result{} "<H2>404 Not Found</H2>"
+(h2 307) @result{} "<H2>307 Temporary Redirect</H2>"
+@end example
+
+@c ---------------------------------------------------------------------------
+@node    content-type
+@chapter content-type
+
+The module @code{(www data content-type)} exports two data structures:
+@code{*content-type-by-filename-extension*} and
+@code{*content-type-by-filename-extension*-META}, the latter an alist
+describing the former with keys @code{#:source} and @code{#:layout}.
+
+@xref{filesystem}, procedure @code{filename->content-type}.
 
 @c ---------------------------------------------------------------------------
 @node    Procedure Index
