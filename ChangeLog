@@ -15,6 +15,10 @@
 	* Makefile.am (gwww_DATA): Add url-coding.scm.
 	(DOT_DOC_FILES): Add url-coding.doc.
 
+	* doc/guile-www.twerp: Update direntry to use "Guile-WWW".
+	(Top): Add "url-coding" to menu.
+	(url-coding): New node/chapter.
+
 2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* acinclude.m4 (AC_GUILE_WWW_TWERP_PREP): New AC_DEFUN.
