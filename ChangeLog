@@ -1,5 +1,13 @@
 2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* url-coding.scm: New file.
+
+	* url.scm: Use module (www url-coding).
+	(url:decode): Rewrite to delegate to `url-coding:decode'.
+	(url:encode): Rewrite to delegate to `url-coding:encode'.
+
+2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* acinclude.m4 (AC_GUILE_WWW_TWERP_PREP): New AC_DEFUN.
 	* configure.in (AC_GUILE_WWW_TWERP_PREP): New macro call.
 	* doc/Makefile.am (.twerp.texi): Enable dependency tracking/update.
