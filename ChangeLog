@@ -1,3 +1,9 @@
+2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* autogen.sh: Add usage comment, w/ info on auto* tools versions.
+	Before calling automake, set up dummy doc/guile-www.texi file.
+	No longer pass "--verbose" to automake.
+
 2004-01-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* doc/guile-www.twerp: Update copyright.
