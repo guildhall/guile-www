@@ -1,5 +1,21 @@
 2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* acinclude.m4 (AC_GUILE_WWW_PROG_PUNIFY): New AC_DEFUN.
+
+	* configure.in: Call AC_GUILE_WWW_PROG_PUNIFY.
+
+	* module-install.in (infodir): Delete unused var.
+	(GUILE_TOOLS): Delete var.
+	(filter): Make into a (possibly degenerate) sed program.
+	(PUNIFY): New var. Use instead of "$GUILE_TOOLS punify".
+
+	* Makefile.am (dw): New var.
+	(install-data-local): Use $(dw).
+	Also, delete *.scm files under $(dw)
+	before doing `$(SHELL) module-install'.
+
+2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* http.scm (parse-status-line): Fix bug: Use "" if TEXT is missing.
 	Reported by Robert Marlow.
 
