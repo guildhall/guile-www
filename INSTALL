@@ -1,4 +1,4 @@
-How to Build and Install guile-www
+How to Build and Install Guile-WWW
 ==================================
 (See next page for generic installation instructions.)
 
@@ -18,8 +18,8 @@ Typically $(GUILE_SITE) is something like $(prefix)/share/guile/site
       and $(prefix)     is something like /usr/local
 
 For guile to resolve these module names as (www FOO), make sure that
-$(datadir)/guile is in the `%load-path'.  To see the value of this
-variable use the command:
+$(GUILE_SITE) is in the `%load-path'.  To see the value of this variable
+use the command:
 
   guile -c '(display %load-path)'
 
