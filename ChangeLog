@@ -1,5 +1,11 @@
 2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* http.scm (http:post-form): Interpret #f for file-upload
+	spec element "mime-type" to mean "text/plain".
+	Also, document "bad upload spec" error.
+
+2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* Makefile.am (install-data-hook): Also punify installed files.
 
 2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
