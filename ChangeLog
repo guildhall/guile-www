@@ -4,6 +4,10 @@
 
 2005-01-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc-snarf: Use `make-doc-snarfer' and `format-dot-doc'.
+
+2005-01-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* module-install.in: Update copyright year.
 
 2004-11-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
