@@ -6,7 +6,7 @@ infodir="@infodir@"
 INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 srcdir="@srcdir@"
-GUILE_TOOLS=${GUILE_TOOLS-"@GUILE_TOOLS@"}
+GUILE_TOOLS="@GUILE_TOOLS@"
 need_optargs_kludge="@need_optargs_kludge@"
 
 if [ $need_optargs_kludge = yes ] ; then
