@@ -171,9 +171,7 @@
 ;; value.
 ;;
 (define-public (cgi:value name)
-  ;; syntactic sugar for obtaining just one value from a particular key
-  (let ((values (cgi:values name)))
-    (and values (car values))))
+  (and=> (cgi:values name) car))
 
 ;; Return a list of variable names in the form.
 ;;
@@ -192,9 +190,10 @@
 ;; time the file is resident in memory.
 ;;
 (define-public (cgi:uploads name)
-  (let ((uploads (assoc-ref file-uploads name)))
-    (if uploads (assoc-remove! file-uploads name))
-    uploads))
+  (and=> (assoc name file-uploads)
+         (lambda (cell)
+           (set! file-uploads (delq cell file-uploads))
+           (cdr cell))))
 
 ;; Fetch the first file associated with form var @var{name}.  Can only be
 ;; called once per @var{name}, so the caller had better be sure that
@@ -202,8 +201,7 @@
 ;; if you are unsure.
 ;;
 (define-public (cgi:upload name)
-  (let ((uploads (cgi:uploads name)))
-    (and uploads (car uploads))))
+  (and=> (cgi:uploads name) car))
 
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
 ;; values in the order they were found in the HTTP header, which should
@@ -216,8 +214,7 @@
 ;; Fetch the first cookie value associated with @var{name}.
 ;;
 (define-public (cgi:cookie name)
-  (let ((cookie-values (cgi:cookies name)))
-    (and cookie-values (car cookie-values))))
+  (and=> (cgi:cookies name) car))
 
 ;; Return a string suitable for inclusion into an HTTP response header
 ;; as a cookie with @var{name} and @var{value}.  Recognize and format
