@@ -28,11 +28,12 @@
 ;; TODO:
 ;;   * support `user:password@' strings where appropriate in URLs.
 ;;   * make URL parsing smarter.  This is good for most TCP/IP-based
-;;	 URL schemes, but parsing is actually specific to each URL scheme.
+;;     URL schemes, but parsing is actually specific to each URL scheme.
 ;;   * fill out url:encode, include facilities for URL-scheme-specific
 ;;     encoding methods (e.g. a url-scheme-reserved-char-alist)
 
 (define-module (www url)
+  #:use-module (www url-coding)
   #:use-module (ice-9 regex))
 
 ;; Extract and return the "scheme" portion of a @var{url} object.
@@ -142,55 +143,14 @@
     ((unknown) (url:unknown url))))
 
 
-;; Return a new string made from url-decoding @var{str}.  Specifically,
-;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
-;; their eight-bit characters.
+;; Re-export @code{url-coding:decode}.  @xref{url-coding}.
 ;;
 (define-public (url:decode str)
-  ;; Implementation Questions: Is a regexp faster than character scanning?
-  ;; Does it incur more overhead (which may be more important for code that
-  ;; frequently gets restarted)?
-  (regexp-substitute/global
-   #f "\\+|%([0-9A-Fa-f][0-9A-Fa-f])" str
-   'pre
-   (lambda (m)
-     (cond ((string=? "+" (match:substring m 0)) " ")
-           (else (integer->char
-                  (string->number
-                   (match:substring m 1)
-                   16)))))
-   'post))
+  (url-coding:decode str))
 
-
-;; Return a new string made from url-encoding @var{str},
-;; unconditionally transforming those in @var{reserved-chars}, a list
-;; of characters, in addition to those in the standard (internal) set.
+;; Re-export @code{url-coding:encode}.  @xref{url-coding}.
 ;;
 (define-public (url:encode str reserved-chars)
-  ;; Can't be done easily with a regexp: we would have to construct a
-  ;; regular expression like "[\277-\377]", for example, and Guile
-  ;; strings don't let you interpolate character literals.  Pity.
-  (with-output-to-string
-    (lambda ()
-      (for-each (lambda (ch)
-		  (if (and (safe-char? ch)
-			   (not (memv ch reserved-chars)))
-		      (display ch)
-		      (begin
-			(display #\%)
-			(display (number->string (char->integer ch) 16)))))
-		(string->list str)))))
-
-(define safe-chars (append (string->list "$-_.+!*'(),")
-                           ;; reserved
-                           (string->list ";/?:@&=")))
-
-(define (safe-char? ch)
-  ;; ``Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
-  ;; reserved characters used for their reserved purposes may be used
-  ;; unencoded within a URL.'' RFC 1738, #2.2.
-  (or (char-alphabetic? ch)
-      (char-numeric? ch)
-      (memv ch safe-chars)))
+  (url-coding:encode str reserved-chars))
 
 ;;; www/url.scm ends here
