@@ -20,10 +20,13 @@
 (define-module (www server-utils answer)
   #:export (mouthpiece))
 
-;; Return a command-delegating closure capable of writing a properly
-;; formatted HTTP response to @var{out-port}.  Optional arg @var{status-box}
-;; is a list whose car is written with the numeric status code given to a
-;; @code{#:set-reply-status} command.  The commands and their args are:
+;; Return a command-delegating closure capable of writing a properly formatted
+;; HTTP response to @var{out-port}.  Optional arg @var{status-box} is a list
+;; whose @sc{car} is set to the numeric status code given to a
+;; @code{#:set-reply-status} command.  If @var{status-box} has length of two
+;; or more, its @sc{cadr} is set to the content-length on @code{#:send-reply}.
+;; A content-length value of #f means there have been no calls to
+;; @code{#:add-content}.  The commands and their args are:
 ;;
 ;; @table @code
 ;; @item #:reset-protocol!
@@ -56,7 +59,9 @@
 ;;
 ;; @item #:send-reply
 ;; Send the properly formatted response to @var{out-port}, and reset
-;; all internal state (status reset, content discarded, etc).
+;; all internal state (status reset, content discarded, etc).  It is
+;; an error to invoke @code{#:send-reply} without having first set
+;; the reply status.
 ;; @end table
 ;;
 ;;-sig: (out-port [status-box])
@@ -170,6 +175,10 @@
       (>OUT "\r\n")
       (walk-tree >OUT content)
       (force-output out-port)
+      (or (null? status-box)
+          (let ((box (car status-box)))
+            (or (null? (cdr box))
+                (set-car! (cdr box) content-length))))
       (reset-protocol!))
 
     ;; rv
