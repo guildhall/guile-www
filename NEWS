@@ -1,3 +1,7 @@
+- 2.5 | NOT YET RELEASED
+  - new proc in (www server-utils parse-request): skip-headers
+  - new `(www server-utils answer) mouthpiece' command: #:add-formatted
+
 - 2.4 | 2004-03-01
   - changes to (www server-utils answer) proc `mouthpiece'
     - bugfix in #:rechunk-content (fencepost error)
