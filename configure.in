@@ -20,7 +20,7 @@ dnl  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 dnl  Boston, MA 02111-1307, USA.
 
 AC_INIT(http.scm)
-AM_INIT_AUTOMAKE(guile-www, 2.7, no-define)
+AM_INIT_AUTOMAKE(guile-www, 2.8, no-define)
 AM_MAINTAINER_MODE
 GUILE_SITE_DIR
 AC_GUILE_WWW_MODULES_AOK
