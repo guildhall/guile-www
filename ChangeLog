@@ -1,5 +1,16 @@
 2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* Makefile.am (install-data-hook): Also handle
+	subdirs `server-utils' and `data'.
+	(DOT_DOC_FILES): Add server-utils/parse-request.doc,
+	server-utils/filesystem.doc and server-utils/answer.doc.
+	(asisdirs): New var.
+	(EXTRA_DIST): Remove contrib and examples. Add $(asisdirs).
+	(dist-hook): Iterate over $(asisdirs) instead of just
+	examples and contrib, removing CVS subdirs and *.doc files.
+
+2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* server-utils, data: New directories.
 
 2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
