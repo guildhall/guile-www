@@ -1,3 +1,17 @@
+2004-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm: Also use module (srfi srfi-13).
+	(subs): New alias for `make-shared-substring'.
+	(*env-alist*): Use `subs' instead of `substring'.
+	(cgi:init, parse-form, separate-fields-discarding-char): Use `subs'.
+	(parse-form-multipart): Rewrite to be able to recurse exactly once
+	for "multipart/mixed" content type, and also w/ fewer substring ops.
+	Also, save parsed metadata and raw MIME headers as an object property
+	of the string (file contents).
+	(cgi:uploads): Expand docstring; nfc.
+
+	* acinclude.m4 (AC_GUILE_WWW_MODULES_AOK): Also require (srfi srfi-13).
+
 2004-01-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* http.scm (http:post-form): For internal proc `validate-upload-spec',
