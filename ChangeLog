@@ -4,6 +4,10 @@
 
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* Makefile.am (dist-hook): Also clear out CVS dirs from examples/ subdir.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* url.scm (safe-chars): Use `string->list' for conciseness; nfc.
 
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
