@@ -40,7 +40,7 @@ CLEANFILES = *.doc
 
 endif
 
-EXTRA_DIST = $(gwww_DATA) contrib examples
+EXTRA_DIST = $(gwww_DATA) contrib examples doc-snarf
 
 dist-hook:
 	rm -rf `find $(distdir)/contrib -name CVS`
