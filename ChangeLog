@@ -1,5 +1,11 @@
 2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* cgi.scm: No longer use module (www url).
+	Instead, use module (www url-coding).
+	(parse-form): Use `url-coding:decode'.
+
+2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* url-coding.scm: New file.
 
 	* url.scm: Use module (www url-coding).
