@@ -42,4 +42,9 @@ CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
 
 EXTRA_DIST = guile-www.twerp
 
+if MAINTAINER_MODE
+html: guile-www.texi
+	$(MAKEINFO) --html $< -o $@
+endif
+
 ## Makefile.am ends here
