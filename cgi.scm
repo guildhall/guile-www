@@ -236,15 +236,23 @@
   (and=> (cgi:cookies name) car))
 
 ;; Return a string suitable for inclusion into an HTTP response header
-;; as a cookie with @var{name} and @var{value}.  Recognize and format
-;; appropriately the optional keyword parameters @code{#:path},
-;; @code{#:domain}, @code{#:expires} (strings); and @code{#:secure}
-;; (boolean).
+;; as a cookie with @var{name} and @var{value}.  Both args may be strings
+;; symbols or keywords.  Also, recognize and format appropriately the
+;; optional keyword parameters @code{#:path}, @code{#:domain},
+;; @code{#:expires} (strings); and @code{#:secure} (boolean).
+;;
+;; @example
+;; (cgi:make-cookie 'war 'lose #:path "/ignorance/suffering")
+;; @result{} "Set-Cookie: war=lose; path=/ignorance/suffering"
+;; @end example
+;;
+;;-sig: (name value [#:path P] [#:domain D] [#:expires E] [#:secure S])
 ;;
 (define*-public (cgi:make-cookie name value #:key (path #f)
                                  (domain #f) (expires #f) (secure #f))
   (format #f "Set-Cookie: ~A=~A~A~A~A~A"
-          name value
+          (if (keyword? name) (keyword->symbol name) name)
+          (if (keyword? value) (keyword->symbol value) value)
           (if path (format #f "; path=~A" path) "")
           (if domain (format #f "; domain=~A" domain) "")
           (if expires (format #f "; expires=~A" expires) "")
