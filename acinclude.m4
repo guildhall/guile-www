@@ -47,4 +47,19 @@ AC_DEFUN([AC_GUILE_WWW_MODULES_AOK],[
   AC_GUILE_WWW_CHECK_ICE9_OPTARGS(need_optargs_kludge)
 ])
 
+dnl This enables dependency tracking machinery so that "make" automatically
+dnl updates doc/guile-www.info whenever any *.scm file changes.
+AC_DEFUN([AC_GUILE_WWW_TWERP_PREP],[
+  AC_CONFIG_COMMANDS([twerp-prep],[
+    if echo "$ac_cs_version" | grep -q options.*--enable-maintainer-mode ; then
+      if guile-tools list | grep -q twerp2texi ; then
+        guile-tools prep-Ptexi doc/Makefile guile-www
+      else
+        AC_MSG_WARN([[automatic doc rebuild not supported; you need to]])
+        AC_MSG_WARN([[edit doc/guile-www.texi manually if source changes]])
+      fi
+    fi
+  ])
+])
+
 dnl acinclude.m4 ends here
