@@ -10,7 +10,7 @@
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
 @direntry
-* Guile-WWW: (guile-www).         Scheme modules for WWW interaction
+* Guile-WWW: (guile-www).         Scheme modules for WWW interaction.
 @end direntry
 
 @c ---------------------------------------------------------------------------
