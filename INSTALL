@@ -11,17 +11,20 @@ Briefly, you need to issue these standard commands:
 On "make install", these files are copied to these directories (creating
 them first if necessary):
 
-  *.scm        -- $(datadir)/guile/www
+  *.scm        -- $(GUILE_SITE)/www
   doc/*.info   -- $(prefix)/info
 
-Typically $(datadir) is something like $(prefix)/share
-      and $(prefix)  is something like /usr/local
+Typically $(GUILE_SITE) is something like $(prefix)/share/guile/site
+      and $(prefix)     is something like /usr/local
 
 For guile to resolve these module names as (www FOO), make sure that
 $(datadir)/guile is in the `%load-path'.  To see the value of this
 variable use the command:
 
   guile -c '(display %load-path)'
+
+For systems which have the "guile-tools make-module-catalog" program,
+"make install" also updates the $(GUILE_SITE)/.module-catalog file.
 
 
 
