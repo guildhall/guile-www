@@ -53,7 +53,8 @@ SUFFIXES = .scm .doc
 DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
 		server-utils/parse-request.doc \
 		server-utils/filesystem.doc \
-		server-utils/answer.doc
+		server-utils/answer.doc \
+		server-utils/log.doc
 
 .doc-index: $(DOT_DOC_FILES)
 	guile-tools make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
