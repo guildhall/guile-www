@@ -81,7 +81,7 @@ translation approved by the Free Software Foundation.
 
 Guile-WWW is a set of Guile Scheme modules providing support for navigating
 HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
-resources.  This document corresponds to guile-www @value{VERSION}.
+resources.  This document corresponds to Guile-WWW @value{VERSION}.
 
 The basic modules are named @code{(www FOO)}, server utilty modules
 are named @code{(www server-utils FOO)}, and data modules are named

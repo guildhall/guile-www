@@ -1,3 +1,14 @@
+2004-10-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in (VERSION): Bump to "2.7" for release.
+
+2004-10-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:head): New proc, exported.
+
+	* doc/guile-www.twerp (http): Add twerpdoc for `http:head'.
+	Also, add new section "Common Messages".
+
 2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (VERSION): Bump to "2.6" for release.
