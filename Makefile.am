@@ -62,7 +62,11 @@ DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
 
 CLEANFILES = *.doc
 
-endif
+cvs-state-summary:
+	cd $(srcdir) ; \
+	ttn-do display-cvs-state-summary . doc $(asisdirs)
+
+endif ## MAINTAINER_MODE
 
 asisdirs = server-utils data contrib examples
 
