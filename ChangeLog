@@ -1,5 +1,9 @@
 2004-11-20  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* configure.in (VERSION): Bump to "2.8" for release.
+
+2004-11-20  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* main.scm (www:http-head-get): New proc, exported.
 
 	* doc/guile-www.twerp (main):

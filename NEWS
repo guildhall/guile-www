@@ -1,3 +1,6 @@
+- 2.8 | 2004-11-20
+  - new proc in (www main): www:http-head-get
+
 - 2.7 | 2004-10-21
   - new proc in (www http): http:head
 
