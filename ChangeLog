@@ -1,5 +1,9 @@
 2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* Makefile.am [MAINTAINER_MODE] (cvs-state-summary): New target.
+
+2004-07-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* acinclude.m4 (AC_GUILE_WWW_PROG_PUNIFY): New AC_DEFUN.
 
 	* configure.in: Call AC_GUILE_WWW_PROG_PUNIFY.
