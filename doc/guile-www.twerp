@@ -1,5 +1,4 @@
 \input texinfo  @c -*-texinfo-*-
-@comment $Id$
 @c %**start of header
 @setfilename guile-www.info
 @settitle @code{Guile-WWW} Modules Reference
@@ -77,7 +76,7 @@ translation approved by the Free Software Foundation.
 
 @c ---------------------------------------------------------------------------
 @node Top
-@top  Guile-WWW
+@top The (www *) Modules
 
 Guile-WWW is a set of Guile Scheme modules providing support for navigating
 HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
@@ -91,148 +90,74 @@ Each module is named @code{(www FOO)}.
 * url::                 Parse URLs, including decoding.
 * cgi::                 Write CGI scripts painlessly.
 * main::                Fetch world-wide-web resources.
-* Concept Index::
-* Function Index::
+
+* Procedure Index::
 @end menu
 
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+
+@twerpsetsearchpath (".")
+
+@c ---------------------------------------------------------------------------
 @c ---------------------------------------------------------------------------
 @node    http
 @chapter http
 
-The (www http) library includes some support for navigating HTTP
-connections.  http:open, http:request and http:get may be used for
-opening connections and making HTTP requests; http:make-message,
-http:message-body and http:message-header may be used to
-manipulate HTTP messages.
+The @code{(www http)} module includes support for navigating HTTP
+connections.  @code{http:open}, @code{http:request} and @code{http:get}
+may be used for opening connections and making HTTP requests;
+@code{http:make-message}, @code{http:message-body} and
+@code{http:message-header} may be used to manipulate HTTP messages.
 
 @c hopefully this is true, but we comment it out for now  --ttn
 @c Support is planned for the full
 @c HTTP/1.1 protocol, including cookies and persistent connections.
 
-@c snarfed from commentary -- todo: write proper documentation
-This module exports the following variables and procedures:
-@example
-    http:version
-    http:user-agent
-   (http:message-version msg)
-   (http:message-status-code msg)
-   (http:message-status-text msg)
-   (http:message-status-ok? msg)
-   (http:status-ok? status)
-   (http:message-body msg)
-   (http:message-headers msg)
-   (http:message-header header msg)
-   (http:get url)
-   (http:post-form url extra-headers fields)
-   (http:open host . args)
-   (http:request method url . args)
-@end example
+@twerpcommentary (verbatim (www http))
 
 @c ---------------------------------------------------------------------------
 @node    url
 @chapter url
 
-(www url) provides url:parse for parsing a URL into its component
-parts, and the selector functions url:scheme, url:host, url:port
-and url:path for selecting individual components of a parsed URL.
-For individual components that may have been URL-encoded in
-transit, url:decode translates a string into its raw (unencoded)
-form.
+The @code{(www url)} module provides @code{url:parse} for parsing a URL
+into its component parts, and the procedures @code{url:scheme},
+@code{url:host}, @code{url:port} and @code{url:path} for selecting
+individual components of a parsed URL.  For individual components that
+may have been URL-encoded in transit, @code{url:decode} translates a
+string into its raw (unencoded) form.
 
-@c snarfed from commentary -- todo: write proper documentation
-This module exports the following procedures:
-@example
-   (url:scheme url)
-   (url:address url)
-   (url:unknown url)
-   (url:user url)
-   (url:host url)
-   (url:port url)
-   (url:path url)
-   (url:make scheme . args)
-   (url:make-http host port path)
-   (url:make-ftp user host port path)
-   (url:make-mailto address)
-   (url:parse url)
-   (url:unparse url)
-   (url:decode str)
-   (url:encode str reserved-chars)
-@end example
+@twerpcommentary (verbatim (www url))
 
 @c ---------------------------------------------------------------------------
 @node    cgi
 @chapter cgi
 
-(www cgi) provides some functions helpful in writing CGI scripts
-painlessly.  The focus is on scripts to process interactive forms.
-cgi:init reads any form data and initializes a CGI environment.
-cgi:form-data? determines whether any form data has been returned
-by a browser for processing.  cgi-value returns the value
-associated with a form variable, and cgi-names and cgi-values
-return all of the names and values present in the current form.
+The @code{(www cgi)} module provides procedures helpful in writing CGI
+scripts painlessly.  The focus is on scripts to process interactive
+forms.  @code{cgi:init} reads any form data and initializes a CGI
+environment.  @code{cgi:form-data?} determines whether any form data has
+been returned by a browser for processing.  @code{cgi:value} returns the
+value associated with a form variable, and @code{cgi:names} and
+@code{cgi:values} return all of the names and values, respectively,
+present in the current form.
 
-@c snarfed from commentary -- todo: write proper documentation
-This module exports the following variables and procedures:
-@example
-    cgi-server-software-type
-    cgi-server-software-version
-    cgi-server-hostname
-    cgi-gateway-interface
-    cgi-server-protocol-name
-    cgi-server-protocol-version
-    cgi-server-port
-    cgi-request-method
-    cgi-path-info
-    cgi-path-translated
-    cgi-script-name
-    cgi-query-string
-    cgi-remote-host
-    cgi-remote-addr
-    cgi-authentication-type
-    cgi-remote-user
-    cgi-remote-ident
-    cgi-content-type
-    cgi-content-length
-    cgi-http-accept-types
-    cgi-http-user-agent
-    cgi-http-cookie
-   (cgi:init)
-   (cgi:values name)
-   (cgi:value name)
-   (cgi:names)
-   (cgi:form-data?)
-   (cgi:uploads name)
-   (cgi:upload name)
-   (cgi:cookies name)
-   (cgi:cookie name)
-   (cgi:make-cookie value #&key path domain expires secure)
-@end example
+@twerpcommentary (verbatim (www cgi))
 
 @c ---------------------------------------------------------------------------
 @node    main
 @chapter main
 
-(www main) provides www:get, which decodes a URL and invokes the
-appropriate protocol handler for retrieving the desired object.
-It is intended to be a generic interface useful for retriving data
-named by any URL.
+The @code{(www main)} module provides @code{www:get}, which decodes a
+URL and invokes the appropriate protocol handler for retrieving the
+desired object.  It is intended to be a generic interface useful for
+retriving data named by any URL.
 
-@c snarfed from commentary -- todo: write proper documentation
-This module exports the following procedures:
-@example
-   (www:set-protocol-handler! proto handler)
-   (www:get url-str)
-@end example
+@twerpcommentary (verbatim (www main))
 
 @c ---------------------------------------------------------------------------
-@node    Concept Index
-@unnumbered Concept Index
-
-@printindex cp
-
-@c ---------------------------------------------------------------------------
-@node    Function Index
-@unnumbered Function Index
+@node    Procedure Index
+@unnumbered Procedure Index
 
 @printindex fn
 
