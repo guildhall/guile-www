@@ -1,5 +1,35 @@
 2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp (Top):
+	Omit edition in intro; version is enough.
+	Remove @twerpsetsearchpath directive.
+	(http, url, cgi, main): Rewrite chapters using
+	@twerpdoc directives and w/o @twerpcommentary directives.
+
+2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm: No longer use module (ice-9 optargs).
+	Instead, use module (ice-9 optargs-kw).
+	Adapt and/or write docs for all exported procs.
+	(cgi-server-software-type, cgi-server-software-version,
+	cgi-server-hostname, cgi-gateway-interface, cgi-server-protocol-name,
+	cgi-server-protocol-version, cgi-server-port, cgi-request-method,
+	cgi-path-info, cgi-path-translated, cgi-script-name,
+	cgi-query-string, cgi-remote-host, cgi-remote-addr,
+	cgi-authentication-type, cgi-remote-user, cgi-remote-ident,
+	cgi-content-type, cgi-content-length, cgi-http-accept-types,
+	cgi-http-user-agent, cgi-http-cookie): No longer export these vars.
+	(cgi:getenv): New proc, exported.
+	(cgi:make-cookie): Rewrite.
+
+	* http.scm: Adapt and/or write docs for all exported procs.
+	(http:version): No longer export var.
+	(http:user-agent): Delete var.
+
+	* main.scm, url.scm: Adapt and/or write docs for all exported procs.
+
+2004-01-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* autogen.sh: Also pass guile-specific "-I" args to aclocal.
 
 	* configure.in (GUILE_SITE_DIR): New macro call.
