@@ -152,16 +152,23 @@
 
 ;;; HTTP methods.
 
-;; Common methods: GET, POST etc.
+;; Common methods: HEAD, GET, POST etc.
 
-;; Submit an http request using the "GET" method on the @var{url}.
+;; Submit an http request using the @code{HEAD} method on the @var{url}.
+;; The @code{Host} header is automatically included.
+;;
+(define-public (http:head url)
+  (http:request "HEAD" url (list (string-append "Host: " (url:host url)))))
+
+;; Submit an http request using the @code{GET} method on the @var{url}.
+;; The @code{Host} header is automatically included.
 ;;
 (define-public (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
   (http:request "GET" url (list (string-append "Host: " (url:host url)))))
 
-;; Submit an http request using the "POST" method on the @var{url}.
+;; Submit an http request using the @code{POST} method on the @var{url}.
 ;; @var{extra-headers} is a list of extra headers, each a string of
 ;; form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
 ;; sent automatically and do not need to be specified.  @var{fields}
