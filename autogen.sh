@@ -4,8 +4,8 @@
 #
 # tested with:
 # - automake 1.7.6
-# - autoconf 2.58
-# - guile 1.4.1.97
+# - autoconf 2.59
+# - guile 1.4.1.98
 
 [ -f configure.in ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
