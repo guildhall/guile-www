@@ -22,6 +22,7 @@ dnl  Boston, MA 02111-1307, USA.
 AC_INIT(http.scm)
 AM_INIT_AUTOMAKE(guile-www, 1.1.1ttn5, no-define)
 AM_MAINTAINER_MODE
+GUILE_SITE_DIR
 AC_OUTPUT(Makefile doc/Makefile)
 
 dnl  configure.in ends here
