@@ -225,9 +225,9 @@
 ;; (http:request "post" parsed-url
 ;;               (list "User-Agent: Fred/0.1"
 ;;                     "Content-Type: unknown/x-www-form-urlencoded")
-;;               (list "search=Gosper"
-;;                     "case=no"
-;;                     "max_hits=50"))
+;;               (list (string-append "search=Gosper"
+;;                                    "&case=no"
+;;                                    "&max_hits=50")))
 ;; @end example
 ;;
 ;;-sig: (method url [headers [body]])
