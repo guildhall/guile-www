@@ -1,7 +1,9 @@
 - 2.2 | NOT YET RELEASED
+  - bug fix: `cgi:uploads' now handles "multipart/mixed" content properly
   - bug fix: `cgi:uploads' now deletes cell as documented
   - doc fix: `cgi:getenv' w/ key `http-accept-types' => list of strings
   - new feature: proc `http:post-form' now also handles "file uploads"
+  - installation change: .scm files are punified (whitespace/comments removed)
 
 - 2.1 | 2004-01-15
   - doc fix: `cgi:getenv' doc was missing
