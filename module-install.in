@@ -1,29 +1,32 @@
 #!/bin/sh
 # usage: module-install DEST RELFILE ...
+# Punify RELFILE and install under dest w/ ".scm" truncated.
+# The installed module has Copyright and METAINFO header comments.
 
 prefix="@prefix@"
-infodir="@infodir@"
 INSTALL="@INSTALL@"
 INSTALL_DATA="@INSTALL_DATA@"
 srcdir="@srcdir@"
-GUILE_TOOLS="@GUILE_TOOLS@"
+PUNIFY="@PUNIFY@"
 need_optargs_kludge="@need_optargs_kludge@"
 
 if [ $need_optargs_kludge = yes ] ; then
-    filter='sed s/optargs-kw/optargs/'
+    filter='s/optargs-kw/optargs/'
 else
-    filter='cat'
+    filter=''
 fi
 
 dest=$1 ; shift
 cd $srcdir
 for f in "$@" ; do
-    $GUILE_TOOLS punify $f > TMP1
-    ( echo ';;; METAINFO:' $dest/METAINFO ; $filter TMP1 ) > TMP2
-    $INSTALL_DATA TMP2 $dest/$f
-    echo ' 'wrote $dest/$f
+    ( echo ';;; Copyright (C) 2004 FSF' ;
+      echo ';;; METAINFO:' $dest/METAINFO ;
+      $PUNIFY $f | sed "$filter" ) > TMP
+    g=`echo $f | sed 's/[.]scm$//'`
+    $INSTALL_DATA TMP $dest/$g
+    echo ' 'wrote $dest/$g
 done
-rm -f TMP1 TMP2
+rm -f TMP
 exit 0
 
 # module-install ends here
