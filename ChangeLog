@@ -1,5 +1,16 @@
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* http.scm (http:user-agent): Use "NAME/VERSION" format.
+	(http:get): Fix omission bug: Include `Host' header in `http:request' call.
+	Thanks to Paul Emsley for the bug report.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
+	* http.scm (http:post-form): New public proc.
+	* doc/guile-www.texi: Mention http:post-form.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* cgi.scm (init-environment): Handle ", " as well as ","
 	as HTTP_ACCEPT element separator.  Also, handle
 	SERVER_SOFTWARE that omits "/version" information.
