@@ -31,6 +31,9 @@ install-data-hook:
 	  sed s/optargs-kw/optargs/ $(srcdir)/cgi.scm > TMP ;	\
 	  $(INSTALL_DATA) TMP $(gwwwdir)/cgi.scm ;		\
 	  rm -f TMP ; fi
+	cd $(gwwwdir) ; for f in *.scm ; do			\
+	  echo ';;; Copyright (C) 2004 FSF' > TMP ;		\
+	  $(GUILE_TOOLS) punify $$f >> TMP ; mv TMP $$f ; done
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
 	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
 
