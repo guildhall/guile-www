@@ -116,14 +116,12 @@ Data
 @chapter http
 
 The @code{(www http)} module includes procedures for high-level HTTP
-operation; and low-level HTTP message object access.
+operation, low-level HTTP message object access, and common messages.
 
 @section High-Level HTTP Operation
 
 @twerpdoc (http:open)
 @twerpdoc (http:request)
-@twerpdoc (http:get)
-@twerpdoc (http:post-form)
 
 @section Low-Level HTTP Message Object Access
 
@@ -135,6 +133,12 @@ operation; and low-level HTTP message object access.
 @twerpdoc (http:message-body)
 @twerpdoc (http:message-headers)
 @twerpdoc (http:message-header)
+
+@section Common Messages
+
+@twerpdoc (http:head)
+@twerpdoc (http:get)
+@twerpdoc (http:post-form)
 
 @c ---------------------------------------------------------------------------
 @node    url
