@@ -1,4 +1,4 @@
-- 2.2 | NOT YET RELEASED
+- 2.2 | 2004-01-24
   - bug fix: `cgi:uploads' now handles "multipart/mixed" content properly
   - bug fix: `cgi:uploads' now deletes cell as documented
   - doc fix: `cgi:getenv' w/ key `http-accept-types' => list of strings
