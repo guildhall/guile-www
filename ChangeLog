@@ -1,5 +1,9 @@
 2003-02-15  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* configure.in (VERSION): Bump to 1.1.1ttn5 for release.
+
+2003-02-15  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* http.scm (http:request): Fix bug: Change first arg to
 	`http:fetch-header' call to a symbol.  Thanks to Paul Emsley.
 
