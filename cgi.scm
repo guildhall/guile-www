@@ -1,6 +1,6 @@
 ;;; www/cgi.scm --- Common Gateway Interface support for WWW scripts
 
-;; 	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
+;;	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -16,50 +16,17 @@
 ;; along with this software; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;; Boston, MA 02111-1307 USA
-;;
 
 ;;; Commentary:
 
-;; This module exports the following variables and procedures:
-;;    cgi-server-software-type
-;;    cgi-server-software-version
-;;    cgi-server-hostname
-;;    cgi-gateway-interface
-;;    cgi-server-protocol-name
-;;    cgi-server-protocol-version
-;;    cgi-server-port
-;;    cgi-request-method
-;;    cgi-path-info
-;;    cgi-path-translated
-;;    cgi-script-name
-;;    cgi-query-string
-;;    cgi-remote-host
-;;    cgi-remote-addr
-;;    cgi-authentication-type
-;;    cgi-remote-user
-;;    cgi-remote-ident
-;;    cgi-content-type
-;;    cgi-content-length
-;;    cgi-http-accept-types
-;;    cgi-http-user-agent
-;;    cgi-http-cookie
-;;   (cgi:init)
-;;   (cgi:values name)
-;;   (cgi:value name)
-;;   (cgi:names)
-;;   (cgi:form-data?)
-;;   (cgi:uploads name)
-;;   (cgi:upload name)
-;;   (cgi:cookies name)
-;;   (cgi:cookie name)
-;;   (cgi:make-cookie value #&key path domain expires secure)
+;; The (www cgi) module is fully documented in the guile-www.info file.
 
 ;;; Code:
 
 (define-module (www cgi)
   #:use-module (www url)
   #:use-module (ice-9 regex)
-  #:use-module (ice-9 optargs))
+  #:use-module (ice-9 optargs-kw))
 
 (define form-variables '())
 
@@ -68,126 +35,183 @@
 (define cookies '())
 
 ;;; CGI environment variables.
-;;; Should these all be public?
 
-(define-public cgi-server-software-type #f)
-(define-public cgi-server-software-version #f)
-(define-public cgi-server-hostname #f)
-(define-public cgi-gateway-interface #f)
-(define-public cgi-server-protocol-name #f)
-(define-public cgi-server-protocol-version #f)
-(define-public cgi-server-port #f)
-(define-public cgi-request-method #f)
-(define-public cgi-path-info #f)
-(define-public cgi-path-translated #f)
-(define-public cgi-script-name #f)
-(define-public cgi-query-string #f)
-(define-public cgi-remote-host #f)
-(define-public cgi-remote-addr #f)
-(define-public cgi-authentication-type #f)
-(define-public cgi-remote-user #f)
-(define-public cgi-remote-ident #f)
-(define-public cgi-content-type #f)
-(define-public cgi-content-length #f)
-(define-public cgi-http-accept-types #f)
-(define-public cgi-http-user-agent #f)
-(define-public cgi-http-cookie #f)
+(define cgi-server-software-type #f)
+(define cgi-server-software-version #f)
+(define cgi-server-hostname #f)
+(define cgi-gateway-interface #f)
+(define cgi-server-protocol-name #f)
+(define cgi-server-protocol-version #f)
+(define cgi-server-port #f)
+(define cgi-request-method #f)
+(define cgi-path-info #f)
+(define cgi-path-translated #f)
+(define cgi-script-name #f)
+(define cgi-query-string #f)
+(define cgi-remote-host #f)
+(define cgi-remote-addr #f)
+(define cgi-authentication-type #f)
+(define cgi-remote-user #f)
+(define cgi-remote-ident #f)
+(define cgi-content-type #f)
+(define cgi-content-length #f)
+(define cgi-http-accept-types #f)
+(define cgi-http-user-agent #f)
+(define cgi-http-cookie #f)
+
 
 
 ;;; CGI high-level interface
 
-;; A typical CGI program will first call (cgi:init) to initialize
-;; the environment and read in any data returned from a form.  Form
-;; data can be extracted conveniently with these functions:
+;; Initialize the environment.
 ;;
-;; (cgi:values NAME)
-;;	Fetch any values associated with NAME found in the form data.
-;;	Returned value is a list, even if it contains only one element.
-;; (cgi:value NAME)
-;;	Fetch only the CAR from (cgi:values NAME).  Convenient for when
-;;	you are certain that NAME is associated with only one value.
-;; (cgi:uploads NAME)
-;;     Fetch any files associated with name. Returns list. Can only be
-;;     called once per particular name. Subsequent calls will return
-;;     #f. The caller had better hang onto the descriptor, lest the
-;;     garbage man wisk it away for good. This is done do minimize the
-;;     amount of time the file is resident in memory.
-;; (cgi:upload NAME)
-;;     Fetch the first file associated with form var NAME. Can only be
-;;     called once per NAME, so the called had better be sure that
-;;     there is only one file associated with NAME. Use (cgi:uploads
-;;     NAME) if you are unsure.
-;; (cgi:cookies NAME)
-;;     Fetch any cookie values associated with NAME. Return a list
-;;     of values in the order they were found in the HTTP header,
-;;     which should be the order of most specific to least specific
-;;     path associated with the cookie.
-;; (cgi:cookies NAME)
-;;     Fetch the first cookie value associated with NAME.
-;; (cgi:make-cookie NAME VALUE #&key path domain expires secure)
-;;     Create a cookie suitable for inclusion into an HTTP response
-;;     header. Recognize optional parameters path, doman, expires,
-;;     (which should be strings) and secure (which is boolean).
-
 (define-public (cgi:init)
   (init-environment)
   (and cgi-content-length
        (string-ci=? cgi-content-type
-		    "application/x-www-form-urlencoded")
+                    "application/x-www-form-urlencoded")
        (parse-form (read-raw-form-data)))
   (and cgi-content-length
        (string-ci=? (make-shared-substring cgi-content-type 0 19)
-		    "multipart/form-data")
+                    "multipart/form-data")
        (parse-form-multipart (read-raw-form-data)))
   (and cgi-query-string
        (parse-form cgi-query-string))
   (and cgi-http-cookie
        (get-cookies)))
 
+;; Return the possibly massaged value of the environment variable
+;; associated with @var{key}, a symbol.  The return value may be the
+;; null string and is never #f.  The following keys are recognized:
+;; @itemize
+;; @item server-software-type
+;; @item server-software-version
+;; @item server-hostname
+;; @item gateway-interface
+;; @item server-protocol-name
+;; @item server-protocol-version
+;; @item server-port
+;; @item request-method
+;; @item path-info
+;; @item path-translated
+;; @item script-name
+;; @item query-string
+;; @item remote-host
+;; @item remote-addr
+;; @item authentication-type
+;; @item remote-user
+;; @item remote-ident
+;; @item content-type
+;; @item content-length
+;; @item http-accept-types
+;; @item http-user-agent
+;; @item http-cookie
+;; @end itemize
+;;
+(define-public (cgi:getenv key)
+  (or (case key
+        ((server-software-type) cgi-server-software-type)
+        ((server-software-version) cgi-server-software-version)
+        ((server-hostname) cgi-server-hostname)
+        ((gateway-interface) cgi-gateway-interface)
+        ((server-protocol-name) cgi-server-protocol-name)
+        ((server-protocol-version) cgi-server-protocol-version)
+        ((server-port) cgi-server-port)
+        ((request-method) cgi-request-method)
+        ((path-info) cgi-path-info)
+        ((path-translated) cgi-path-translated)
+        ((script-name) cgi-script-name)
+        ((query-string) cgi-query-string)
+        ((remote-host) cgi-remote-host)
+        ((remote-addr) cgi-remote-addr)
+        ((authentication-type) cgi-authentication-type)
+        ((remote-user) cgi-remote-user)
+        ((remote-ident) cgi-remote-ident)
+        ((content-type) cgi-content-type)
+        ((content-length) cgi-content-length)
+        ((http-accept-types) cgi-http-accept-types)
+        ((http-user-agent) cgi-http-user-agent)
+        ((http-cookie) cgi-http-cookie)
+        (else (error "unrecognized key:" key)))
+      ""))
+
+;; Fetch any values associated with @var{name} found in the form data.
+;; Return a list, even if it contains only one element.
+;;
 (define-public (cgi:values name)
   (assoc-ref form-variables name))
 
+;; Fetch only the @sc{car} from @code{(cgi:values NAME)}.  Convenient
+;; for when you are certain that @var{name} is associated with only one
+;; value.
+;;
 (define-public (cgi:value name)
   ;; syntactic sugar for obtaining just one value from a particular key
   (let ((values (cgi:values name)))
     (and values (car values))))
 
-(define-public (cgi:names) (map car form-variables))
+;; Return a list of variable names in the form.
+;;
+(define-public (cgi:names)
+  (map car form-variables))
 
-(define-public (cgi:form-data?) (not (null? form-variables)))
+;; Return #t iff there is form data available.
+;;
+(define-public (cgi:form-data?)
+  (not (null? form-variables)))
 
+;; Fetch any files associated with @var{name}.  Return a list.  Can only
+;; be called once per particular @var{name}.  Subsequent calls return
+;; #f.  The caller had better hang onto the descriptor, lest the garbage
+;; man whisk it away for good.  This is done to minimize the amount of
+;; time the file is resident in memory.
+;;
 (define-public (cgi:uploads name)
   (let ((uploads (assoc-ref file-uploads name)))
     (if uploads (assoc-remove! file-uploads name))
     uploads))
 
+;; Fetch the first file associated with form var @var{name}.  Can only be
+;; called once per @var{name}, so the caller had better be sure that
+;; there is only one file associated with @var{name}.  Use @code{cgi:uploads}
+;; if you are unsure.
+;;
 (define-public (cgi:upload name)
   (let ((uploads (cgi:uploads name)))
     (and uploads (car uploads))))
 
+;; Fetch any cookie values associated with @var{name}.  Return a list of
+;; values in the order they were found in the HTTP header, which should
+;; be the order of most specific to least specific path associated with
+;; the cookie.
+;;
 (define-public (cgi:cookies name)
   (assoc-ref cookies name))
 
+;; Fetch the first cookie value associated with @var{name}.
+;;
 (define-public (cgi:cookie name)
   (let ((cookie-values (cgi:cookies name)))
     (and cookie-values (car cookie-values))))
 
-(define-public cgi:make-cookie
-  (lambda* (name value #&key path domain expires secure)
-           (format #f "Set-Cookie: ~A=~A~A~A~A~A"
-                   name value
-                   (if (bound? path)
-                       (format #f "; path=~A" path) "")
-                   (if (bound? domain)
-                       (format #f "; domain=~A" domain) "")
-                   (if (bound? expires)
-                       (format #f "; expires=~A" expires) "")
-                   (if (and (bound? secure) secure)
-                       "; secure" ""))))
+;; Return a string suitable for inclusion into an HTTP response header
+;; as a cookie with @var{name} and @var{value}.  Recognize and format
+;; appropriately the optional keyword parameters @code{#:path},
+;; @code{#:domain}, @code{#:expires} (strings); and @code{#:secure}
+;; (boolean).
+;;
+(define*-public (cgi:make-cookie name value #:key (path #f)
+                                 (domain #f) (expires #f) (secure #f))
+  (format #f "Set-Cookie: ~A=~A~A~A~A~A"
+          name value
+          (if path (format #f "; path=~A" path) "")
+          (if domain (format #f "; domain=~A" domain) "")
+          (if expires (format #f "; expires=~A" expires) "")
+          (if secure "; secure" "")))
 
 
 
-;;; Internal functions.
+;;; Internal procedures.
 
 ;; (parse-form DATA): parse DATA as raw form response data of enctype
 ;;  x-www-form-urlencoded, adding values as necessary to `form-variables'.
@@ -208,79 +232,78 @@
     (let ((p (string-index pair #\=)))
       (and p (url:decode (make-shared-substring pair (+ p 1))))))
   (for-each (lambda (pair)
-	      (let* ((name (get-name pair))
-		     (value (get-value pair))
-		     (old-value (cgi:values name)))
-		(set! form-variables
-		      (assoc-set! form-variables
-				  name
-				  (cons value (or old-value '()))))))
-	    (separate-fields-discarding-char #\& raw-data)))
-
+              (let* ((name (get-name pair))
+                     (value (get-value pair))
+                     (old-value (cgi:values name)))
+                (set! form-variables
+                      (assoc-set! form-variables
+                                  name
+                                  (cons value (or old-value '()))))))
+            (separate-fields-discarding-char #\& raw-data)))
 
 (define (parse-form-multipart raw-data)
   (let* ((boundary (format #f "--~A"
                            (match:substring
                             (string-match "boundary=(.*)$" cgi-content-type)
                             1)))
-	 (boundary-len (string-length boundary))
-	 (name-exp (make-regexp "name=\"([^\"]*)\""))
-	 (filename-exp (make-regexp "filename=\"([^\"]*)\""))
-	 (type-exp (make-regexp "Content-Type: (.*)\r\n"))
-	 (value-exp (make-regexp "\r\n\r\n")))
+         (boundary-len (string-length boundary))
+         (name-exp (make-regexp "name=\"([^\"]*)\""))
+         (filename-exp (make-regexp "filename=\"([^\"]*)\""))
+         (type-exp (make-regexp "Content-Type: (.*)\r\n"))
+         (value-exp (make-regexp "\r\n\r\n")))
     (define (get-pair raw-data)
       (define (get-segment str)
-	(define (find-bound str)
-	  (define (find-bound-h str n)
-	    (let ((n-str (string-length str)))
-	      (if (< n-str boundary-len)
-		  #f
-		  (if (string=? boundary (make-shared-substring
+        (define (find-bound str)
+          (define (find-bound-h str n)
+            (let ((n-str (string-length str)))
+              (if (< n-str boundary-len)
+                  #f
+                  (if (string=? boundary (make-shared-substring
                                           str 0 boundary-len))
-		      n
-		      (find-bound-h (make-shared-substring str 1 n-str)
+                      n
+                      (find-bound-h (make-shared-substring str 1 n-str)
                                     (+ n 1))))))
-	  (find-bound-h str 0))
-	(let* ((seg-start (find-bound str))
-	       (seg-length (find-bound (make-shared-substring
+          (find-bound-h str 0))
+        (let* ((seg-start (find-bound str))
+               (seg-length (find-bound (make-shared-substring
                                         str (+ seg-start boundary-len)
                                         (string-length str)))))
-	  (if (and seg-start seg-length)
-	      (cons (make-shared-substring
+          (if (and seg-start seg-length)
+              (cons (make-shared-substring
                      str (+ seg-start boundary-len)
                      (+ seg-start seg-length boundary-len -2))
-		    (make-shared-substring
+                    (make-shared-substring
                      str (+ seg-start seg-length boundary-len)
                      (string-length str)))
-	      #f)))
+              #f)))
       (let ((segment-pair (get-segment raw-data)))
-	(if segment-pair
-	    (let* ((segment (car segment-pair))
-		   (name-match (regexp-exec name-exp segment))
-		   (filename-match (regexp-exec filename-exp segment))
-		   (type-match (regexp-exec type-exp segment))
-		   (value-match (regexp-exec value-exp segment)))
-	      (if (and name-match value-match)
-		  (if (and filename-match type-match)
-		      (let* ((name (match:substring name-match 1))
-			     (value (match:substring filename-match 1))
-			     (old-value (cgi:values name))
-			     (file-data (match:suffix value-match))
-			     (old-file-data (assoc-ref file-uploads name)))
-			(set! form-variables
-			      (assoc-set! form-variables name
-					  (cons value (or old-value '()))))
-			(set! file-uploads
-			      (assoc-set! file-uploads name
-					  (cons file-data (or old-file-data
+        (if segment-pair
+            (let* ((segment (car segment-pair))
+                   (name-match (regexp-exec name-exp segment))
+                   (filename-match (regexp-exec filename-exp segment))
+                   (type-match (regexp-exec type-exp segment))
+                   (value-match (regexp-exec value-exp segment)))
+              (if (and name-match value-match)
+                  (if (and filename-match type-match)
+                      (let* ((name (match:substring name-match 1))
+                             (value (match:substring filename-match 1))
+                             (old-value (cgi:values name))
+                             (file-data (match:suffix value-match))
+                             (old-file-data (assoc-ref file-uploads name)))
+                        (set! form-variables
+                              (assoc-set! form-variables name
+                                          (cons value (or old-value '()))))
+                        (set! file-uploads
+                              (assoc-set! file-uploads name
+                                          (cons file-data (or old-file-data
                                                               '())))))
-		      (let* ((name (match:substring name-match 1))
-			     (value (match:suffix value-match))
-			     (old-value (cgi:values name)))
-			(set! form-variables
-			      (assoc-set! form-variables name
-					  (cons value (or old-value '())))))))
-	      (get-pair (cdr segment-pair))))))
+                      (let* ((name (match:substring name-match 1))
+                             (value (match:suffix value-match))
+                             (old-value (cgi:values name)))
+                        (set! form-variables
+                              (assoc-set! form-variables name
+                                          (cons value (or old-value '())))))))
+              (get-pair (cdr segment-pair))))))
     (get-pair raw-data)))
 
 (define (read-raw-form-data)
@@ -292,41 +315,41 @@
   ;; (but handle "/version" omission anyway)
   (let ((server-software (getenv "SERVER_SOFTWARE")))
     (if server-software
-	(let ((slash (string-index server-software #\/)))
-	  (set! cgi-server-software-type
+        (let ((slash (string-index server-software #\/)))
+          (set! cgi-server-software-type
                 (if slash
                     (substring server-software 0 slash)
                     server-software))
-	  (set! cgi-server-software-version
+          (set! cgi-server-software-version
                 (if slash
                     (substring server-software (1+ slash))
                     "(unavailable)")))))
 
-  (set! cgi-server-hostname	   (getenv "SERVER_NAME"))
-  (set! cgi-gateway-interface	   (getenv "GATEWAY_INTERFACE")) ;"CGI/revision"
+  (set! cgi-server-hostname        (getenv "SERVER_NAME"))
+  (set! cgi-gateway-interface      (getenv "GATEWAY_INTERFACE")) ;"CGI/revision"
 
   (let* ((server-protocol (getenv "SERVER_PROTOCOL")))
     (if server-protocol
-	(let ((slash (string-index server-protocol #\/)))
-	  (set! cgi-server-protocol-name     (substring server-protocol
+        (let ((slash (string-index server-protocol #\/)))
+          (set! cgi-server-protocol-name     (substring server-protocol
                                                         0 slash))
-	  (set! cgi-server-protocol-version  (substring server-protocol
+          (set! cgi-server-protocol-version  (substring server-protocol
                                                         (1+ slash))))))
 
   (let ((port (getenv "SERVER_PORT")))
     (set! cgi-server-port (and port (string->number port))))
 
-  (set! cgi-request-method	   (getenv "REQUEST_METHOD"))
-  (set! cgi-path-info		   (getenv "PATH_INFO"))
-  (set! cgi-path-translated	   (getenv "PATH_TRANSLATED"))
-  (set! cgi-script-name		   (getenv "SCRIPT_NAME"))
-  (set! cgi-remote-host		   (getenv "REMOTE_HOST"))
-  (set! cgi-remote-addr		   (getenv "REMOTE_ADDR"))
-  (set! cgi-authentication-type	   (getenv "AUTH_TYPE"))
-  (set! cgi-remote-user		   (getenv "REMOTE_USER"))
-  (set! cgi-remote-ident	   (getenv "REMOTE_IDENT"))
-  (set! cgi-content-type	   (getenv "CONTENT_TYPE"))
-  (set! cgi-query-string	   (getenv "QUERY_STRING"))
+  (set! cgi-request-method         (getenv "REQUEST_METHOD"))
+  (set! cgi-path-info              (getenv "PATH_INFO"))
+  (set! cgi-path-translated        (getenv "PATH_TRANSLATED"))
+  (set! cgi-script-name            (getenv "SCRIPT_NAME"))
+  (set! cgi-remote-host            (getenv "REMOTE_HOST"))
+  (set! cgi-remote-addr            (getenv "REMOTE_ADDR"))
+  (set! cgi-authentication-type    (getenv "AUTH_TYPE"))
+  (set! cgi-remote-user            (getenv "REMOTE_USER"))
+  (set! cgi-remote-ident           (getenv "REMOTE_IDENT"))
+  (set! cgi-content-type           (getenv "CONTENT_TYPE"))
+  (set! cgi-query-string           (getenv "QUERY_STRING"))
 
   (and cgi-query-string
        (string-null? cgi-query-string)
@@ -346,23 +369,24 @@
                          (separate-fields-discarding-char #\, types))))))
 
   ;; HTTP_USER_AGENT format: software/version library/version.
-  (set! cgi-http-user-agent		   (getenv "HTTP_USER_AGENT"))
+  (set! cgi-http-user-agent                (getenv "HTTP_USER_AGENT"))
   (set! cgi-http-cookie                    (getenv "HTTP_COOKIE")))
 
-;;; Seting up the cookies
+;; Setting up the cookies
+
 (define (get-cookies)
   (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
     (define (get-pair str)
       (let ((pair-match (regexp-exec pair-exp str)))
-	(if (not pair-match) '()
-	    (let ((name (match:substring pair-match 1))
-		  (value (match:substring pair-match 2)))
-	      (if (and name value)
-		  (set! cookies
-			(assoc-set! cookies name
-				    (append (or (cgi:cookies name) '())
+        (if (not pair-match) '()
+            (let ((name (match:substring pair-match 1))
+                  (value (match:substring pair-match 2)))
+              (if (and name value)
+                  (set! cookies
+                        (assoc-set! cookies name
+                                    (append (or (cgi:cookies name) '())
                                             (list value)))))
-	      (get-pair (match:suffix pair-match))))))
+              (get-pair (match:suffix pair-match))))))
     (get-pair cgi-http-cookie)))
 
 
@@ -370,24 +394,25 @@
 
 (define (read-n-chars num . port-arg)
   (let ((p (if (null? port-arg)
-	       (current-input-port)
-	       (car port-arg)))
-	(s (make-string num)))
+               (current-input-port)
+               (car port-arg)))
+        (s (make-string num)))
     (do ((i   0              (+ i 1))
-	 (ch  (read-char p)  (read-char p)))
-	((or (>= i num) (eof-object? ch)) s)
+         (ch  (read-char p)  (read-char p)))
+        ((or (>= i num) (eof-object? ch)) s)
       (string-set! s i ch))))
 
 ;; This is defined in (ice-9 string-fun), but the interface is
 ;; weird, the semantics perverse, and it doesn't work.  We use
 ;; a working copy here.
+
 (define (separate-fields-discarding-char ch str)
   (let loop ((fields '())
              (str str))
     (let ((pos (string-rindex str ch)))
       (if pos
-	  (loop (cons (make-shared-substring str (+ 1 pos)) fields)
-		(make-shared-substring str 0 pos))
-	  (cons str fields)))))
+          (loop (cons (make-shared-substring str (+ 1 pos)) fields)
+                (make-shared-substring str 0 pos))
+          (cons str fields)))))
 
 ;;; www/cgi.scm ends here
