@@ -24,7 +24,7 @@ AUTOMAKE_OPTIONS = gnu
 SUBDIRS = doc
 
 gwwwdir = $(GUILE_SITE)/www
-gwww_DATA = cgi.scm http.scm main.scm url.scm
+gwww_DATA = cgi.scm http.scm main.scm url.scm url-coding.scm
 
 install-data-hook:
 	if [ "$(need_optargs_kludge)" = yes ] ; then		\
@@ -40,7 +40,7 @@ SUFFIXES = .scm .doc
 .scm.doc:
 	$(top_srcdir)/doc-snarf -D -o $@ $<
 
-DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc
+DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc
 .doc-index: $(DOT_DOC_FILES)
 	guile-tools make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
 
