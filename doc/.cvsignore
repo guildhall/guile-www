@@ -3,3 +3,4 @@ Makefile.in
 *.info
 *.texi
 stamp-vti
+.deps
