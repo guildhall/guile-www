@@ -1,3 +1,7 @@
+2005-04-02  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/Makefile.am (html) [MAINTAINER_MODE]: New target.
+
 2005-02-20  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* doc/guile-www.twerp: End direntry w/ period.
