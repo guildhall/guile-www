@@ -26,7 +26,10 @@
 (define-module (www cgi)
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-13)
   #:use-module (ice-9 optargs-kw))
+
+(define subs make-shared-substring)
 
 (define form-variables '())
 
@@ -69,26 +72,26 @@
        . ,(delay (apply-to-args (force server-sw-info)
                                 (lambda (sw slash)
                                   (if slash
-                                      (substring sw 0 slash)
+                                      (subs sw 0 slash)
                                       sw)))))
       (server-software-version
        . ,(delay (apply-to-args (force server-sw-info)
                                 (lambda (sw slash)
-                                  (and slash (substring sw (1+ slash)))))))
+                                  (and slash (subs sw (1+ slash)))))))
       (server-protocol-name
        . ,(delay (apply-to-args (force server-pr-info)
                                 (lambda (pr slash)
-                                  (substring pr 0 slash)))))
+                                  (subs pr 0 slash)))))
       (server-protocol-version
        . ,(delay (apply-to-args (force server-pr-info)
                                 (lambda (pr slash)
-                                  (substring pr (1+ slash))))))
+                                  (subs pr (1+ slash))))))
       (http-accept-types
        . ,(delay (and=> (getenv "HTTP_ACCEPT")
                         (lambda (types)
                           (map (lambda (s)
                                  (if (char=? #\space (string-ref s 0))
-                                     (make-shared-substring s 1)
+                                     (subs s 1)
                                      s))
                                (separate-fields-discarding-char
                                 #\, types)))))))))
@@ -120,7 +123,7 @@
           ((string-ci=? (env-look 'content-type)
                         "application/x-www-form-urlencoded")
            (parse-form (read-raw-form-data len)))
-          ((string-ci=? (make-shared-substring (env-look 'content-type) 0 19)
+          ((string-ci=? (subs (env-look 'content-type) 0 19)
                         "multipart/form-data")
            (parse-form-multipart (read-raw-form-data len)))))
   (and=> (env-look 'query-string) parse-form)
@@ -248,10 +251,10 @@
   ;; Values are URL-encoded, so each must be decoded.
   (define (get-name pair)
     (let ((p (string-index pair #\=)))
-      (and p (make-shared-substring pair 0 p))))
+      (and p (subs pair 0 p))))
   (define (get-value pair)
     (let ((p (string-index pair #\=)))
-      (and p (url-coding:decode (make-shared-substring pair (+ p 1))))))
+      (and p (url-coding:decode (subs pair (+ p 1))))))
   (for-each (lambda (pair)
               (let* ((name (get-name pair))
                      (value (get-value pair))
@@ -263,70 +266,77 @@
             (separate-fields-discarding-char #\& raw-data)))
 
 (define (parse-form-multipart raw-data)
-  (let* ((boundary (format #f "--~A"
-                           (match:substring
-                            (string-match "boundary=(.*)$"
-                                          (env-look 'content-type))
-                            1)))
-         (boundary-len (string-length boundary))
-         (name-exp (make-regexp "name=\"([^\"]*)\""))
-         (filename-exp (make-regexp "filename=\"([^\"]*)\""))
-         (type-exp (make-regexp "Content-Type: (.*)\r\n"))
-         (value-exp (make-regexp "\r\n\r\n")))
-    (define (get-pair raw-data)
-      (define (get-segment str)
-        (define (find-bound str)
-          (define (find-bound-h str n)
-            (let ((n-str (string-length str)))
-              (if (< n-str boundary-len)
-                  #f
-                  (if (string=? boundary (make-shared-substring
-                                          str 0 boundary-len))
-                      n
-                      (find-bound-h (make-shared-substring str 1 n-str)
-                                    (+ n 1))))))
-          (find-bound-h str 0))
-        (let* ((seg-start (find-bound str))
-               (seg-length (find-bound (make-shared-substring
-                                        str (+ seg-start boundary-len)
-                                        (string-length str)))))
-          (if (and seg-start seg-length)
-              (cons (make-shared-substring
-                     str (+ seg-start boundary-len)
-                     (+ seg-start seg-length boundary-len -2))
-                    (make-shared-substring
-                     str (+ seg-start seg-length boundary-len)
-                     (string-length str)))
-              #f)))
-      (let ((segment-pair (get-segment raw-data)))
-        (if segment-pair
-            (let* ((segment (car segment-pair))
-                   (name-match (regexp-exec name-exp segment))
-                   (filename-match (regexp-exec filename-exp segment))
-                   (type-match (regexp-exec type-exp segment))
-                   (value-match (regexp-exec value-exp segment)))
-              (if (and name-match value-match)
-                  (if (and filename-match type-match)
-                      (let* ((name (match:substring name-match 1))
-                             (value (match:substring filename-match 1))
-                             (old-value (cgi:values name))
-                             (file-data (match:suffix value-match))
-                             (old-file-data (assoc-ref file-uploads name)))
-                        (set! form-variables
-                              (assoc-set! form-variables name
-                                          (cons value (or old-value '()))))
-                        (set! file-uploads
-                              (assoc-set! file-uploads name
-                                          (cons file-data (or old-file-data
-                                                              '())))))
-                      (let* ((name (match:substring name-match 1))
-                             (value (match:suffix value-match))
-                             (old-value (cgi:values name)))
-                        (set! form-variables
-                              (assoc-set! form-variables name
-                                          (cons value (or old-value '())))))))
-              (get-pair (cdr segment-pair))))))
-    (get-pair raw-data)))
+
+  (define (determine-boundary s)
+    (format #f "--~A" (match:substring
+                       (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
+                       1)))
+
+  (define (m1 m)
+    (match:substring m 1))
+
+  (define (updated-alist alist name value)
+    (assoc-set! alist name (cons value (or (assoc-ref alist name) '()))))
+
+  (define (stash-form-variable! name value)
+    (set! form-variables (updated-alist form-variables name value)))
+
+  (define (stash-file-upload! name filename type value raw-headers)
+    (stash-form-variable! name filename)
+    (set-object-property! value #:guile-www-cgi
+                          `((name . ,name)
+                            (filename . ,filename)
+                            (mime-type . ,type)
+                            (raw-mime-headers . ,raw-headers)))
+    (set! file-uploads (updated-alist file-uploads name value)))
+
+  (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
+        (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
+        (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
+        (value-exp    (make-regexp "\r\n\r\n")))
+
+    (let level ((str raw-data)
+                (boundary (determine-boundary (env-look 'content-type)))
+                (parent-name #f))
+
+      (let* ((boundary-len (string-length boundary))
+             (find-bound (lambda (start)
+                           (string-contains str boundary start))))
+
+        (let get-pair ((start 0))
+          (and=> (and=> (find-bound start)
+                        (lambda (outer-seg-start)
+                          (let ((seg-start (+ outer-seg-start boundary-len)))
+                            (and=> (find-bound seg-start)
+                                   (lambda (seg-finish)
+                                     (cons (subs str seg-start (- seg-finish 2))
+                                           seg-finish))))))
+                 (lambda (segment-newstart)
+                   (let* ((segment (car segment-newstart))
+                          (try (lambda (rx extract)
+                                 (and=> (regexp-exec rx segment)
+                                        extract)))
+                          (name (or parent-name
+                                    (try name-exp  m1)))
+                          (value    (try value-exp match:suffix))
+                          (type     (try type-exp  m1)))
+                     (and name
+                          value
+                          (cond ((and type
+                                      (not parent-name) ; only recurse once
+                                      (string-match "multipart/mixed" type))
+                                 (level value
+                                        (determine-boundary type)
+                                        name))
+                                ((and type (try filename-exp m1))
+                                 => (lambda (filename)
+                                      (stash-file-upload!
+                                       name filename type value
+                                       (subs (try value-exp match:prefix)
+                                             2))))
+                                (else
+                                 (stash-form-variable! name value)))))
+                   (get-pair (cdr segment-newstart)))))))))
 
 (define (read-raw-form-data len)
   (read-n-chars len))
@@ -370,8 +380,8 @@
              (str str))
     (let ((pos (string-rindex str ch)))
       (if pos
-          (loop (cons (make-shared-substring str (+ 1 pos)) fields)
-                (make-shared-substring str 0 pos))
+          (loop (cons (subs str (+ 1 pos)) fields)
+                (subs str 0 pos))
           (cons str fields)))))
 
 ;;; www/cgi.scm ends here
