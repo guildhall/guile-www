@@ -150,7 +150,7 @@
 ;; @item remote-ident
 ;; @item content-type
 ;; @item content-length (integer, possibly 0)
-;; @item http-accept-types
+;; @item http-accept-types (list of strings)
 ;; @item http-user-agent
 ;; @item http-cookie
 ;; @end itemize
