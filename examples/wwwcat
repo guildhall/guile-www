@@ -21,7 +21,7 @@
 
 (use-modules (www main))
 
-(if (program-arguments)
+(if (> (length (program-arguments)) 1)
     (display (www:get (list-ref (program-arguments) 1)))
     (display "wwwcat: no document specified" (current-error-port)))
 
