@@ -197,6 +197,18 @@
 	  (add-open-connection! host port sock)
 	  sock))))
 
+(define form-hack-regex
+  ;; Normally `http:request' formats the lines it sends over the socket to
+  ;; end with CRLF, and correspondingly adjusts Content-Length upward by 2
+  ;; for each line.  For `application/x-www-form-urlencoded' messages with
+  ;; only one one line in the body, however, this is inappropriate; often
+  ;; the cgi at the other end of the socket misinterprets the CRLF as part
+  ;; of the last value.  We help those programs avoid confusion by not
+  ;; sending the CRLF (and munging Content-Length appropriately) for this
+  ;; special case.
+  (make-regexp "content-type: *application/x-www-form-urlencoded"
+               regexp/icase))
+
 ;; Submit an HTTP request using @var{method} and @var{url}.
 ;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
 ;; @var{url} is a url object returned by @code{url:parse}.
@@ -231,8 +243,15 @@
 	  (body    (if (and (pair? args) (pair? (cdr args)))
 		       (cadr args)
 		       '())))
-      (let* ((content-length
+      (let* ((form-hack? (let loop ((ls headers))
+                           (cond ((null? ls) #f)
+                                 ((regexp-exec form-hack-regex (car ls))
+                                  (and (pair? body)
+                                       (not (pair? (cdr body)))))
+                                 (else (loop (cdr ls))))))
+             (content-length
 	      (apply +
+                     (if form-hack? -2 0)
 		     (map (lambda (line)
 			    (+ 2 (string-length line)))	; + 2 for CRLF
 			  body)))
@@ -246,7 +265,9 @@
 	    (display-with-crlf request)
 	    (for-each display-with-crlf headers)
 	    (display "\r\n")
-	    (for-each display-with-crlf body)))
+            (if form-hack?
+                (display (car body))
+                (for-each display-with-crlf body))))
 
 	;; parse and add status line
 	;; also cons up a list of response headers
