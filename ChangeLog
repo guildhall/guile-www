@@ -1,5 +1,12 @@
 2004-01-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* http.scm (http:post-form): For internal proc `validate-upload-spec',
+	add check for name, and expand check for source in the case where it
+	is a procedure, to make sure it is indeed a thunk.
+	For internal proc `c-type', output quotes around the boundary value.
+
+2004-01-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* http.scm (http:post-form): For arg `fields', also accept as
 	"fvalue" a file-upload specification in the form of (SOURCE NAME
 	MIME-TYPE TRANSFER-ENCODING).  In the presence of such a spec, use
