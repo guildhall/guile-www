@@ -209,10 +209,14 @@ discovery, data transfer in, data transfer out.
 @chapter main
 
 The @code{(www main)} module provides a generic interface useful for
-retriving data named by any URL.  The HTTP scheme is pre-registered.
+retriving data named by any URL.  The URL scheme @code{http} is pre-registered.
 
 @twerpdoc (www:set-protocol-handler!)
 @twerpdoc (www:get)
+
+There is also the convenience proc @code{www:http-head-get}.
+
+@twerpdoc (www:http-head-get)
 
 @c ---------------------------------------------------------------------------
 @node    url-coding
