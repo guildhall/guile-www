@@ -171,6 +171,7 @@ discovery, data transfer in, data transfer out.
 
 @section Data Transfer In
 
+@twerpdoc (cgi:getenv)
 @twerpdoc (cgi:values)
 @twerpdoc (cgi:value)
 @twerpdoc (cgi:uploads)
