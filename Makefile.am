@@ -27,11 +27,18 @@ gwwwdir = $(GUILE_SITE)/www
 gwww_DATA = cgi.scm http.scm main.scm url.scm url-coding.scm
 
 install-data-hook:
+	$(mkinstalldirs) $(gwwwdir)/server-utils
+	for f in $(srcdir)/server-utils/*.scm ; do g=`basename $$f` ;	\
+	  $(INSTALL_DATA) $$f $(gwwwdir)/server-utils/$$g ; done
+	$(mkinstalldirs) $(gwwwdir)/data
+	for f in $(srcdir)/data/*.scm ; do g=`basename $$f` ;	\
+	  $(INSTALL_DATA) $$f $(gwwwdir)/data/$$g ; done
 	if [ "$(need_optargs_kludge)" = yes ] ; then		\
 	  sed s/optargs-kw/optargs/ $(srcdir)/cgi.scm > TMP ;	\
 	  $(INSTALL_DATA) TMP $(gwwwdir)/cgi.scm ;		\
 	  rm -f TMP ; fi
-	cd $(gwwwdir) ; for f in *.scm ; do			\
+	cd $(gwwwdir) ;						\
+	for f in *.scm server-utils/*.scm data/*.scm ; do	\
 	  echo ';;; Copyright (C) 2004 FSF' > TMP ;		\
 	  $(GUILE_TOOLS) punify $$f >> TMP ; mv TMP $$f ; done
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
@@ -43,7 +50,11 @@ SUFFIXES = .scm .doc
 .scm.doc:
 	$(top_srcdir)/doc-snarf -D -o $@ $<
 
-DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc
+DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
+		server-utils/parse-request.doc \
+		server-utils/filesystem.doc \
+		server-utils/answer.doc
+
 .doc-index: $(DOT_DOC_FILES)
 	guile-tools make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
 
@@ -51,10 +62,14 @@ CLEANFILES = *.doc
 
 endif
 
-EXTRA_DIST = $(gwww_DATA) contrib examples doc-snarf
+asisdirs = server-utils data contrib examples
+
+EXTRA_DIST = $(gwww_DATA) $(asisdirs) doc-snarf
 
 dist-hook:
-	rm -rf `find $(distdir)/contrib -name CVS`
-	rm -rf `find $(distdir)/examples -name CVS`
+	for d in $(asisdirs) ; do			\
+	  rm -rf `find $(distdir)/$$d -name CVS`	\
+		 `find $(distdir)/$$d -name '*.doc'` ;	\
+	done
 
 ## Makefile.am ends here
