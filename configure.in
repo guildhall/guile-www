@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl	Copyright (C) 2001,2002 Free Software Foundation, Inc.
+dnl	Copyright (C) 2001,2002,2003 Free Software Foundation, Inc.
 dnl
 dnl  This file is part of GUILE-WWW
 dnl
@@ -22,3 +22,5 @@ dnl  Boston, MA 02111-1307, USA.
 AC_INIT(http.scm)
 AM_INIT_AUTOMAKE(guile-www, 1.1.1ttn4, no-define)
 AC_OUTPUT(Makefile doc/Makefile)
+
+dnl  configure.in ends here

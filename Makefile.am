@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in.
 ##
-##  	Copyright (C) 2001 Free Software Foundation, Inc.
+##  	Copyright (C) 2001, 2003 Free Software Foundation, Inc.
 ##
 ##   This file is part of GUILE-WWW.
 ##
@@ -30,3 +30,5 @@ EXTRA_DIST = $(gwww_DATA) contrib examples
 
 dist-hook:
 	rm -rf `find $(distdir)/contrib -name CVS`
+
+## Makefile.am ends here

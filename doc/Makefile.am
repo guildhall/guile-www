@@ -1,6 +1,6 @@
 ## Process this file with Automake to create Makefile.in
 ##
-##  	Copyright (C) 2001 Free Software Foundation, Inc.
+##  	Copyright (C) 2001,2003 Free Software Foundation, Inc.
 ##
 ##   This file is part of GUILE-WWW.
 ##
@@ -23,3 +23,5 @@ info_TEXINFOS = guile-www.texi
 guile_www_TEXINFOS = version.texi
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
+
+## Makefile.am ends here
