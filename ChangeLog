@@ -1,5 +1,15 @@
 2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp (Top): Add menu items for new nodes.
+	Expand blurb on module naming convention.  Add categories.
+	(parse-request): New node/chapter.
+	(filesystem): Likewise.
+	(answer): Likewise.
+	(http-status): Likewise.
+	(content-type): Likewise.
+
+2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* Makefile.am (install-data-hook): Also handle
 	subdirs `server-utils' and `data'.
 	(DOT_DOC_FILES): Add server-utils/parse-request.doc,

@@ -1,3 +1,10 @@
+- 2.3 | 2004-02-29
+  - new module: (www server-utils parse-request)
+  - new module: (www server-utils filesystem)
+  - new module: (www server-utils answer)
+  - new module: (www data http-status)
+  - new module: (www data content-type)
+
 - 2.2 | 2004-01-24
   - bug fix: `cgi:uploads' now handles "multipart/mixed" content properly
   - bug fix: `cgi:uploads' now deletes cell as documented
