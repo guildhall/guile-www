@@ -1,4 +1,4 @@
-This is version 1.1.1 of the Guile WWW library, a set of Guile Scheme
+This is the Guile WWW library, a set of Guile Scheme
 modules to facilitate HTTP, URL and CGI programming.
 
   COPYING	-- license
@@ -11,6 +11,5 @@ modules to facilitate HTTP, URL and CGI programming.
   contrib/	-- contributions
   examples/	-- using the modules
 
-This package is maintained by the Guile developers.
-Please send bug reports to <bug-guile@gnu.org>
-and other correspondance to <guile-user@gnu.org>.
+This package is maintained by Thien-Thi Nguyen <ttn@gnu.org>.
+Please send bug reports and other correspondance to the maintainer.
