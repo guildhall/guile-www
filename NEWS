@@ -1,4 +1,4 @@
-- 2.0 | NOT YET RELEASED
+- 2.0 | 2004-01-13
   - incompatible API changes
     - cgi:make-cookie no longer accepts #&-style keywords (#:-style ok)
     - non-procedures no longer exported
