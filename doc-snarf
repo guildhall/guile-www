@@ -3,4 +3,7 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 !#
 (use-modules (scripts doc-snarf))
 (read-hash-extend #\& (lambda (c port) (symbol->keyword (read port))))
-(apply doc-snarf (cdr (command-line)))
+(let ((-o (member "-o" (command-line))))
+  (with-output-to-file (cadr -o)
+    (lambda ()
+      ((make-doc-snarfer format-dot-doc) (caddr -o)))))
