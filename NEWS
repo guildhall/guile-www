@@ -1,27 +1,46 @@
-- version 1.1.1ttn5 released 2003-02-15
+- 2.0 | NOT YET RELEASED
+  - incompatible API changes
+    - cgi:make-cookie no longer accepts #&-style keywords (#:-style ok)
+    - non-procedures no longer exported
+      - for cgi-FOO (22 vars), read access now through proc `cgi:getenv'
+      - no longer provided: http:version, http:user-agent
+  - installation dir change
+    - configure script determines $(GUILE_SITE)
+    - modules installed as $(GUILE_SITE)/www/*.scm
+  - module catalog updated on "make install" (if supported by system)
+  - doc methodology/content improvements
+
+- 1.1.1ttn5 | 2003-02-15
   - bug fix: http:request now extracts content-length info properly
 
-- version 1.1.1ttn4 released 2003-02-12
+- 1.1.1ttn4 | 2003-02-12
   - bug fix: http:get now uses `Host' header in the http request
   - bug fix: examples/wwwcat handles non-#f `program-arguments' values
 
-- version 1.1.1ttn3 released 2002-12-03
+- 1.1.1ttn3 | 2002-12-03
   - new proc in (www http): http:post-form
 
-- version 1.1.1ttn2 released 2002-10-20
+- 1.1.1ttn2 | 2002-10-20
   - for CGI scripts, handle SERVER_SOFTWARE that omits "/version" info
 
-- version 1.1.1ttn1 released 2002-10-05
+- 1.1.1ttn1 | 2002-10-05
   - for CGI scripts, HTTP_ACCEPT parsing now also handles ", "
 
-- version 1.1.1 released 2002-04-26
+- 1.1.1 | 2002-04-26
   - new CGI cookies support by Aaron VanDevender
   - miscellaneous distribution news
     - new subdir examples/
     - example program "wwwcat" no longer installed on "make install"
     - INSTALL now explains which files are copied where on "make install"
 
-- version 1.0.1 released 2001-11-18
+- 1.0.1 | 2001-11-18
   - fixed documentation bug that prevented guile-www.info from loading
 
-- version 1.0 released 2001-11-16
+- 1.0 | 2001-11-16
+
+
+
+	Local Variables:
+	mode: outline
+	outline-regexp: "\\([ ][ ]\\)*- "
+	End:
