@@ -1,3 +1,8 @@
+2004-03-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/guile-www.twerp (parse-request):
+	Add @twerpdoc for `skip-headers'.
+
 2004-03-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (VERSION): Bump to "2.4" for release.
