@@ -7,3 +7,4 @@ config.status
 configure
 *.doc
 .doc-index
+autom4te.cache
