@@ -1,3 +1,12 @@
+2004-01-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:post-form): For arg `fields', also accept as
+	"fvalue" a file-upload specification in the form of (SOURCE NAME
+	MIME-TYPE TRANSFER-ENCODING).  In the presence of such a spec, use
+	content type "multipart/form-data" and format the headers and body
+	accordingly.  Per field, use content type "multipart/mixed" and
+	format components accordingly.
+
 2004-01-22  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* http.scm (http:request): Document special handling for
