@@ -293,7 +293,7 @@
 	  ;; that many chars.  Otherwise, read until EOF
 
 	  (let ((content-length (http:fetch-header
-				 "content-length"
+				 'content-length
 				 response-headers)))
 	    (let ((response-body
 		   (if (and content-length
