@@ -50,7 +50,7 @@
 ;; @item #:add-formatted FORMAT-STRING [ARGS ...]
 ;; FORMAT-STRING may be #f to mean @code{~S}, #t to mean @code{~A}, or a
 ;; normal format string.  It is used to format ARGS, and the result passed
-;; to #code{#:add-content}.
+;; to @code{#:add-content}.
 ;;
 ;; @item #:content-length
 ;; Return the total number of bytes in the content added thus far.
