@@ -20,7 +20,7 @@ dnl  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 dnl  Boston, MA 02111-1307, USA.
 
 AC_INIT(http.scm)
-AM_INIT_AUTOMAKE(guile-www, 1.1.1ttn4, no-define)
+AM_INIT_AUTOMAKE(guile-www, 1.1.1ttn5, no-define)
 AC_OUTPUT(Makefile doc/Makefile)
 
 dnl  configure.in ends here
