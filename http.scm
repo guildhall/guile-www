@@ -160,25 +160,26 @@
 ;; form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
 ;; sent automatically and do not need to be specified.  @var{fields}
 ;; is a list of elements of the form @code{(FKEY . FVALUE)}, where
-;; FKEY is a symbol and FVALUE is normally a string.
+;; @var{fkey} is a symbol and @var{fvalue} is normally a string.
 ;;
-;; FVALUE can also be a list of file-upload specifications, each of which
-;; has the form @code{(SOURCE NAME MIME-TYPE TRANSFER-ENCODING)}.
-;; @code{SOURCE} can be a string or a thunk that returns a string.
-;; The rest of the elements are strings or symbols:
-;; @code{NAME} is the filename (only the basename of which is used);
-;; @code{MIME-TYPE} is a type/subtype pair such as "image/jpeg";
-;; @code{TRANSFER-ENCODING} is one of the tokens specified by RFC 1521,
-;; or #f to mean "binary".  Note that @code{SOURCE} is used directly
-;; without further processing; it is the caller's responsibility to
-;; ensure that the MIME type and transfer encoding specified describe
-;; @code{SOURCE} accurately.
+;; FVALUE can also be a list of file-upload specifications, each of
+;; which has the form @code{(SOURCE NAME MIME-TYPE TRANSFER-ENCODING)}.
+;; @var{source} can be a string or a thunk that returns a string.  The
+;; rest of the elements are strings or symbols: @var{name} is the
+;; filename (only the non-directory part is used); @var{mime-type} is a
+;; type/subtype pair such as "image/jpeg", or #f to mean "text/plain".
+;; @var{transfer-encoding} is one of the tokens specified by RFC 1521,
+;; or #f to mean "binary".  File-upload spec elements with invalid types
+;; result in a "bad upload spec" error prior to the http request.  Note
+;; that @var{source} is used directly without further processing; it is
+;; the caller's responsibility to ensure that the MIME type and transfer
+;; encoding specified describe @var{source} accurately.
 ;;
 (define-public (http:post-form url extra-headers fields)
 
   (define (source: spec)        (list-ref spec 0))
   (define (name: spec)          (list-ref spec 1))
-  (define (mime-type: spec)     (list-ref spec 2))
+  (define (mime-type: spec) (or (list-ref spec 2) "text/plain"))
   (define (xfer-enc: spec)  (or (list-ref spec 3) "binary"))
 
   (define (validate-upload-spec spec)
@@ -313,7 +314,7 @@
 ;; Optional args @var{headers} and @var{body} are lists of strings
 ;; that comprise the lines of an HTTP message.  The strings should
 ;; not end with CR or LF or CRLF; @code{http:request} handles that.
-;; Also, the @code{Content-Length} header is calculated automatically
+;; Also, the Content-Length header is calculated automatically
 ;; and should not be supplied.  Here are two examples:
 ;;
 ;; @example
