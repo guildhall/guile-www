@@ -1,5 +1,9 @@
 2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
+	* url.scm (safe-chars): Use `string->list' for conciseness; nfc.
+
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
 	* examples/wwwcat: Fix buglet: No longer assume
 	`program-arguments' non-#f is significant; make check
 	more fine-grained.  Thanks to Paul Emsley.
