@@ -1,5 +1,11 @@
 2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* acinclude.m4 (AC_GUILE_WWW_TWERP_PREP): New AC_DEFUN.
+	* configure.in (AC_GUILE_WWW_TWERP_PREP): New macro call.
+	* doc/Makefile.am (.twerp.texi): Enable dependency tracking/update.
+
+2004-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (*env-alist*): New var.
 	(env-look, env-set!): New procs.
 	(cgi-server-software-type cgi-server-software-type,
