@@ -8,7 +8,14 @@ Aaron VanDevender wrote:
 Aaron VanDevender modified:
 	cgi.scm
 
+Martin Grabmueller wrote:
+	server-utils/filesystem.scm
+	server-utils/answer.scm
+	data/content-type.scm
+
 Thien-Thi Nguyen wrote:
+	server-utils/parse-request.scm
+	data/http-status.scm
 	doc/guile-www.twerp
 
 Thien-Thi Nguyen modified: everything else, as well.
