@@ -80,8 +80,7 @@ translation approved by the Free Software Foundation.
 
 Guile-WWW is a set of Guile Scheme modules providing support for navigating
 HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
-resources.  This is edition @value{EDITION} corresponding to guile-www
-@value{VERSION}.
+resources.  This document corresponds to guile-www @value{VERSION}.
 
 Each module is named @code{(www FOO)}.
 
@@ -96,64 +95,102 @@ Each module is named @code{(www FOO)}.
 
 @c ---------------------------------------------------------------------------
 @c ---------------------------------------------------------------------------
-
-@twerpsetsearchpath (".")
-
-@c ---------------------------------------------------------------------------
-@c ---------------------------------------------------------------------------
 @node    http
 @chapter http
 
-The @code{(www http)} module includes support for navigating HTTP
-connections.  @code{http:open}, @code{http:request} and @code{http:get}
-may be used for opening connections and making HTTP requests;
-@code{http:make-message}, @code{http:message-body} and
-@code{http:message-header} may be used to manipulate HTTP messages.
+The @code{(www http)} module includes procedures for high-level HTTP
+operation; and low-level HTTP message object access.
 
-@c hopefully this is true, but we comment it out for now  --ttn
-@c Support is planned for the full
-@c HTTP/1.1 protocol, including cookies and persistent connections.
+@section High-Level HTTP Operation
 
-@twerpcommentary (verbatim (www http))
+@twerpdoc (http:open)
+@twerpdoc (http:request)
+@twerpdoc (http:get)
+@twerpdoc (http:post-form)
+
+@section Low-Level HTTP Message Object Access
+
+@twerpdoc (http:message-version)
+@twerpdoc (http:message-status-code)
+@twerpdoc (http:message-status-text)
+@twerpdoc (http:message-status-ok?)
+@twerpdoc (http:status-ok?)
+@twerpdoc (http:message-body)
+@twerpdoc (http:message-headers)
+@twerpdoc (http:message-header)
 
 @c ---------------------------------------------------------------------------
 @node    url
 @chapter url
 
-The @code{(www url)} module provides @code{url:parse} for parsing a URL
-into its component parts, and the procedures @code{url:scheme},
-@code{url:host}, @code{url:port} and @code{url:path} for selecting
-individual components of a parsed URL.  For individual components that
-may have been URL-encoded in transit, @code{url:decode} translates a
-string into its raw (unencoded) form.
+The @code{(www url)} module provides procedures for high-level url
+object conversion, low-level url object construction and access,
+and character decoding/encoding.
 
-@twerpcommentary (verbatim (www url))
+@section High-Level URL Object Conversion
+
+@twerpdoc (url:parse)
+@twerpdoc (url:unparse)
+
+@section Low-Level URL Object Construction
+
+@twerpdoc (url:make)
+@twerpdoc (url:make-http)
+@twerpdoc (url:make-ftp)
+@twerpdoc (url:make-mailto)
+
+@section Low-Level URL Object Access
+
+@twerpdoc (url:scheme)
+@twerpdoc (url:address)
+@twerpdoc (url:unknown)
+@twerpdoc (url:user)
+@twerpdoc (url:host)
+@twerpdoc (url:port)
+@twerpdoc (url:path)
+
+@section Character Decoding/Encoding
+
+@twerpdoc (url:decode)
+@twerpdoc (url:encode)
 
 @c ---------------------------------------------------------------------------
 @node    cgi
 @chapter cgi
 
-The @code{(www cgi)} module provides procedures helpful in writing CGI
-scripts painlessly.  The focus is on scripts to process interactive
-forms.  @code{cgi:init} reads any form data and initializes a CGI
-environment.  @code{cgi:form-data?} determines whether any form data has
-been returned by a browser for processing.  @code{cgi:value} returns the
-value associated with a form variable, and @code{cgi:names} and
-@code{cgi:values} return all of the names and values, respectively,
-present in the current form.
+The @code{(www cgi)} module provides procedures to support painlessly
+writing Common Gateway Interface scripts to process interactive forms.
+These scripts typically follow the following steps: initialization and
+discovery, data transfer in, data transfer out.
 
-@twerpcommentary (verbatim (www cgi))
+@section Initialization and Discovery
+
+@twerpdoc (cgi:init)
+@twerpdoc (cgi:form-data?)
+@twerpdoc (cgi:names)
+
+@section Data Transfer In
+
+@twerpdoc (cgi:values)
+@twerpdoc (cgi:value)
+@twerpdoc (cgi:uploads)
+@twerpdoc (cgi:upload)
+@twerpdoc (cgi:cookies)
+@twerpdoc (cgi:cookie)
+
+@section Data Transfer Out
+
+@twerpdoc (cgi:make-cookie)
 
 @c ---------------------------------------------------------------------------
 @node    main
 @chapter main
 
-The @code{(www main)} module provides @code{www:get}, which decodes a
-URL and invokes the appropriate protocol handler for retrieving the
-desired object.  It is intended to be a generic interface useful for
-retriving data named by any URL.
+The @code{(www main)} module provides a generic interface useful for
+retriving data named by any URL.  The HTTP scheme is pre-registered.
 
-@twerpcommentary (verbatim (www main))
+@twerpdoc (www:set-protocol-handler!)
+@twerpdoc (www:get)
 
 @c ---------------------------------------------------------------------------
 @node    Procedure Index
