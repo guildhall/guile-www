@@ -1,5 +1,9 @@
 2004-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp: Specify "@paragraphindent 0".
+
+2004-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (cgi:make-cookie): Also
 	accept keywords for `name' and `value'.
 	Add example to docstring.  Add sig hint.
