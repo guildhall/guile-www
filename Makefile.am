@@ -27,7 +27,11 @@ gwwwdir = $(GUILE_SITE)/www
 gwww_DATA = cgi.scm http.scm main.scm url.scm
 
 install-data-hook:
-	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then \
+	if [ "$(need_optargs_kludge)" = yes ] ; then		\
+	  sed s/optargs-kw/optargs/ $(srcdir)/cgi.scm > TMP ;	\
+	  $(INSTALL_DATA) TMP $(gwwwdir)/cgi.scm ;		\
+	  rm -f TMP ; fi
+	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
 	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
 
 if MAINTAINER_MODE
