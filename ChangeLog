@@ -1,3 +1,8 @@
+2003-10-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:message-status-ok?): Use `http:message-status-code'
+	instead of non-existent `http:status-code'.  Thanks to Kevin Ryde.
+
 2003-02-15  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
 	* configure.in (VERSION): Bump to 1.1.1ttn5 for release.
