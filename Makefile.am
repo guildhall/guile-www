@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in.
 ##
-##  	Copyright (C) 2001, 2003 Free Software Foundation, Inc.
+##  	Copyright (C) 2001, 2003, 2004 Free Software Foundation, Inc.
 ##
 ##   This file is part of GUILE-WWW.
 ##
@@ -25,6 +25,20 @@ SUBDIRS = doc
 
 gwwwdir = $(datadir)/guile/www
 gwww_DATA = cgi.scm http.scm main.scm url.scm
+
+if MAINTAINER_MODE
+
+SUFFIXES = .scm .doc
+.scm.doc:
+	$(top_srcdir)/doc-snarf -D -o $@ $<
+
+DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc
+.doc-index: $(DOT_DOC_FILES)
+	guile-tools make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
+
+CLEANFILES = *.doc
+
+endif
 
 EXTRA_DIST = $(gwww_DATA) contrib examples
 
