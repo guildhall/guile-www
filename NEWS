@@ -1,3 +1,6 @@
+- version 1.1.1ttn5 released 2003-02-15
+  - bug fix: http:request now extracts content-length info properly
+
 - version 1.1.1ttn4 released 2003-02-12
   - bug fix: http:get now uses `Host' header in the http request
   - bug fix: examples/wwwcat handles non-#f `program-arguments' values
