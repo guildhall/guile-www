@@ -126,10 +126,9 @@
   (and=> (env-look 'query-string) parse-form)
   (and=> (env-look 'http-cookie) get-cookies))
 
-;; Return the possibly massaged value of the environment variable
-;; associated with @var{key}, a symbol.  Unless otherwise specified
-;; below, the return value is a (possibly empty) string.  The following
-;; keys are recognized:
+;; Return the value of the environment variable associated with @var{key}, a
+;; symbol.  Unless otherwise specified below, the return value is a (possibly
+;; massaged, possibly empty) string.  The following keys are recognized:
 ;;
 ;; @itemize
 ;; @item server-software-type
