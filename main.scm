@@ -61,4 +61,14 @@
                      (url:path url))
              (error "unknown URL scheme" (url:scheme url))))))))
 
+
+;; Parse @var{url-string} into portions; issue an "HTTP HEAD" request.
+;; Signal error if the scheme for @var{url-string} is not @code{http}.
+;;
+(define-public (www:http-head-get url-string)
+  (let ((url (url:parse url-string)))
+    (or (eq? 'http (url:scheme url))
+        (error "URL scheme not `http'" url-string))
+    (http:head url)))
+
 ;;; www/main.scm ends here
