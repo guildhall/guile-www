@@ -113,11 +113,17 @@
           (match:suffix match))))
 
 (define (parse-status-line statline)
+  ;; Handle:     VERSION CODE
+  ;; as well as: VERSION CODE TEXT
+  ;; For the former, use the null string for TEXT.
   (let* ((first (string-index statline #\space))
          (second (string-index statline #\space (1+ first))))
     (list (make-shared-substring statline 0 first)
-          (make-shared-substring statline (1+ first) second)
-          (make-shared-substring statline (1+ second)))))
+          (make-shared-substring statline (1+ first)
+                                 (or second (string-length statline)))
+          (if second
+              (make-shared-substring statline (1+ second))
+              ""))))
 
 
 ;;; HTTP connection management functions.
