@@ -145,8 +145,9 @@
                                  (new-dpos (remainder wpos chunk)))
                              (cond ((= 0 new-dpos)
                                     (set! nw (cdr nw))
-                                    (set! dest (car nw))
-                                    (set! dlen (string-length dest))))
+                                    (cond ((not (null? nw))
+                                           (set! dest (car nw))
+                                           (set! dlen (string-length dest))))))
                              (or (= size new-start)
                                  (begin
                                    (set! dpos new-dpos)
