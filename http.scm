@@ -32,6 +32,7 @@
 ;;    (http:message-headers msg)
 ;;    (http:message-header header msg)
 ;;    (http:get url)
+;;    (http:post-form url extra-headers fields)
 ;;    (http:open host . args)
 ;;    (http:request method url . args)
 
@@ -51,7 +52,7 @@
 ;;; Variables that affect HTTP usage.
 
 (define-public http:version "HTTP/1.0")  ; bump up to 1.1 when ready
-(define-public http:user-agent "GuileHTTP 0.1")
+(define-public http:user-agent "GuileHTTP/0.1")
 
 ;; An HTTP message is represented by a vector:
 ;;	#(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
@@ -168,10 +169,36 @@
 
 ;; Common methods: GET, POST etc.
 
+;; (http:get url)
+;;   Submit an http request using the "GET" method on the @var{url}.
+
 (define-public (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
-  (http:request "GET" url))
+  (http:request "GET" url (list (string-append "Host: " (url:host url)))))
+
+;; (http:post-form URL EXTRA-HEADERS FIELDS)
+;;   Submnit an http request using the "POST" method on the @var{url}.
+;;   @var{extra-headers} is a list of extra headers, each a string of
+;;   form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
+;;   sent automatically and do not need to be specified.  @var{fields}
+;;   is a list of elements of the form (FKEY . FVALUE), where FKEY is a
+;;   symbol and FVALUE is a string.
+
+(define-public (http:post-form url extra-headers fields)
+  (http:request "POST" url
+                (append
+                 (list "Content-Type: application/x-www-form-urlencoded"
+                       (format #f "Host: ~A" (url:host url)))
+                 extra-headers)
+                (list
+                 (url:encode
+                  (apply string-append
+                         (format #f "~A=~A" (caar fields) (cdar fields))
+                         (map (lambda (field)
+                                (format #f "&~A=~A" (car field) (cdr field)))
+                              (cdr fields)))
+                  '()))))
 
 ;; Connection-oriented functions:
 ;;
@@ -202,10 +229,10 @@
 ;;
 ;;	Example usage:
 ;;	  (http:request "get" parsed-url
-;;			(list "User-Agent: GuileHTTP 0.1"
+;;			(list "User-Agent: GuileHTTP/0.1"
 ;;			      "Content-Type: text/plain"))
 ;;       (http:request "post" parsed-url
-;;			(list "User-Agent: GuileHTTP 0.1"
+;;			(list "User-Agent: GuileHTTP/0.1"
 ;;			      "Content-Type: unknown/x-www-form-urlencoded")
 ;;			(list "search=Gosper"
 ;;			      "case=no"
