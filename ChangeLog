@@ -1,3 +1,9 @@
+2003-02-12  Thien-Thi Nguyen  <ttn@giblet.glug.org>
+
+	* cgi.scm (init-environment): Handle ", " as well as ","
+	as HTTP_ACCEPT element separator.  Also, handle
+	SERVER_SOFTWARE that omits "/version" information.
+
 2002-04-26  Thien-Thi Nguyen  <ttn@giblet.glug.org>
 
 	* configure.in: Update copyright.
