@@ -295,17 +295,10 @@
 ;; (get-cookies RAW): initialize the cookie list.
 
 (define (parse-form raw-data)
-  ;; get-name and get-value are used to parse individual `name=value' pairs.
-  ;; Values are URL-encoded, so each must be decoded.
-  (define (get-name pair)
-    (let ((p (string-index pair #\=)))
-      (and p (url-coding:decode (subs pair 0 p)))))
-  (define (get-value pair)
-    (let ((p (string-index pair #\=)))
-      (and p (url-coding:decode (subs pair (+ p 1))))))
   (for-each (lambda (pair)
-              (let* ((name (get-name pair))
-                     (value (get-value pair))
+              (let* ((p (string-index pair #\=))
+                     (name (and p (url-coding:decode (subs pair 0 p))))
+                     (value (and p (url-coding:decode (subs pair (+ p 1)))))
                      (old-value (cgi:values name)))
                 (set! form-variables
                       (assoc-set! form-variables
