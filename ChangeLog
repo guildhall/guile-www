@@ -1,5 +1,15 @@
 2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* configure.in (AC_INIT): Use modern two-arg form.
+	(AM_INIT_AUTOMAKE): Use zero-arg form.
+	(AC_CONFIG_FILES): Move AC_OUTPUT arg here.
+	(AC_OUTPUT): Use zero-arg form.
+
+	* Makefile.am (install-data-hook): Use $(PACKAGE_NAME),
+	$(PACKAGE_VERSION) and $(PACKAGE_TARNAME).
+
+2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (parse-form): Elide redundant `string-index' call.
 
 2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
