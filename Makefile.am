@@ -37,9 +37,9 @@ install-data-local:
 install-data-hook:
 	if $(GUILE_TOOLS) | grep -q generate-METAINFO ; then	\
 	   $(GUILE_TOOLS) generate-METAINFO '(www)'		\
-		package "$(PACKAGE)"				\
-		version "$(VERSION)"				\
-		info "$(infodir)/$(PACKAGE).info"		\
+		package "$(PACKAGE_NAME)"			\
+		version "$(PACKAGE_VERSION)"			\
+		info "$(infodir)/$(PACKAGE_TARNAME).info"	\
 	   > $(DESTDIR)$(wwwdir)/METAINFO ; fi
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
 	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
