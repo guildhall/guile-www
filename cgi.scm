@@ -275,7 +275,7 @@
   ;; Values are URL-encoded, so each must be decoded.
   (define (get-name pair)
     (let ((p (string-index pair #\=)))
-      (and p (subs pair 0 p))))
+      (and p (url-coding:decode (subs pair 0 p)))))
   (define (get-value pair)
     (let ((p (string-index pair #\=)))
       (and p (url-coding:decode (subs pair (+ p 1))))))
