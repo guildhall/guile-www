@@ -39,97 +39,97 @@
 
 ;;; CGI environment variables.
 
-(define env-thunks
-  (let ()
-    (define (server-sw-info)
-      (and=> (getenv "SERVER_SOFTWARE")
-             (lambda (sw) (list sw (string-index sw #\/)))))
-    (define (server-pr-info)
-      (and=> (getenv "SERVER_PROTOCOL")
-             (lambda (pr) (list pr (string-index pr #\/)))))
-    (define (extract make-args proc)
-      (apply-to-args (make-args) proc))
-    ;; rv
-    `(server-hostname
-      ,(lambda () (getenv "SERVER_NAME"))
-      gateway-interface
-      ,(lambda () (getenv "GATEWAY_INTERFACE"))
-      server-port
-      ,(lambda () (and=> (getenv "SERVER_PORT") string->number))
-      request-method
-      ,(lambda () (getenv "REQUEST_METHOD"))
-      path-info
-      ,(lambda () (getenv "PATH_INFO"))
-      path-translated
-      ,(lambda () (getenv "PATH_TRANSLATED"))
-      script-name
-      ,(lambda () (getenv "SCRIPT_NAME"))
-      query-string
-      ,(lambda () (getenv "QUERY_STRING"))
-      remote-host
-      ,(lambda () (getenv "REMOTE_HOST"))
-      remote-addr
-      ,(lambda () (getenv "REMOTE_ADDR"))
-      authentication-type
-      ,(lambda () (getenv "AUTH_TYPE"))
-      remote-user
-      ,(lambda () (getenv "REMOTE_USER"))
-      remote-ident
-      ,(lambda () (getenv "REMOTE_IDENT"))
-      content-type
-      ,(lambda () (getenv "CONTENT_TYPE"))
-      content-length
-      ,(lambda () (or (and=> (getenv "CONTENT_LENGTH")
-                             string->number)
-                      0))
-      http-user-agent
-      ,(lambda () (getenv "HTTP_USER_AGENT"))
-      http-cookie
-      ,(lambda () (getenv "HTTP_COOKIE"))
-      server-software-type
-      ,(lambda () (extract server-sw-info
-                           (lambda (sw slash)
-                             (if slash
-                                 (subs sw 0 slash)
-                                 sw))))
-      server-software-version
-      ,(lambda () (extract server-sw-info
-                           (lambda (sw slash)
-                             (and slash (subs sw (1+ slash))))))
-      server-protocol-name
-      ,(lambda () (extract server-pr-info
-                           (lambda (pr slash)
-                             (subs pr 0 slash))))
-      server-protocol-version
-      ,(lambda () (extract server-pr-info
-                           (lambda (pr slash)
-                             (subs pr (1+ slash)))))
-      http-accept-types
-      ,(lambda () (and=> (getenv "HTTP_ACCEPT")
-                         (lambda (types)
-                           (map (lambda (s)
-                                  (if (char=? #\space (string-ref s 0))
-                                      (subs s 1)
-                                      s))
-                                (separate-fields-discarding-char
-                                 #\, types))))))))
+(define (env-extraction-methods)        ; => (VAR METHOD ...)
+  (define (server-sw-info)
+    (and=> (getenv "SERVER_SOFTWARE")
+           (lambda (sw) (list sw (string-index sw #\/)))))
+  (define (server-pr-info)
+    (and=> (getenv "SERVER_PROTOCOL")
+           (lambda (pr) (list pr (string-index pr #\/)))))
+  (define (extract make-args proc)
+    (apply-to-args (make-args) proc))
+  ;; rv -- methods may be a string to be passed to `getenv', or a thunk
+  `(server-hostname
+    "SERVER_NAME"
+    gateway-interface
+    "GATEWAY_INTERFACE"
+    server-port
+    ,(lambda () (and=> (getenv "SERVER_PORT") string->number))
+    request-method
+    "REQUEST_METHOD"
+    path-info
+    "PATH_INFO"
+    path-translated
+    "PATH_TRANSLATED"
+    script-name
+    "SCRIPT_NAME"
+    query-string
+    "QUERY_STRING"
+    remote-host
+    "REMOTE_HOST"
+    remote-addr
+    "REMOTE_ADDR"
+    authentication-type
+    "AUTH_TYPE"
+    remote-user
+    "REMOTE_USER"
+    remote-ident
+    "REMOTE_IDENT"
+    content-type
+    "CONTENT_TYPE"
+    content-length
+    ,(lambda () (or (and=> (getenv "CONTENT_LENGTH")
+                           string->number)
+                    0))
+    http-user-agent
+    "HTTP_USER_AGENT"
+    http-cookie
+    "HTTP_COOKIE"
+    server-software-type
+    ,(lambda () (extract server-sw-info
+                         (lambda (sw slash)
+                           (if slash
+                               (subs sw 0 slash)
+                               sw))))
+    server-software-version
+    ,(lambda () (extract server-sw-info
+                         (lambda (sw slash)
+                           (and slash (subs sw (1+ slash))))))
+    server-protocol-name
+    ,(lambda () (extract server-pr-info
+                         (lambda (pr slash)
+                           (subs pr 0 slash))))
+    server-protocol-version
+    ,(lambda () (extract server-pr-info
+                         (lambda (pr slash)
+                           (subs pr (1+ slash)))))
+    http-accept-types
+    ,(lambda () (and=> (getenv "HTTP_ACCEPT")
+                       (lambda (types)
+                         (map (lambda (s)
+                                (if (char=? #\space (string-ref s 0))
+                                    (subs s 1)
+                                    s))
+                              (separate-fields-discarding-char
+                               #\, types)))))))
 
-(define *env-hash* #f)
-
-(define (hash-environment!)
-  (set! *env-hash* (make-hash-table 23))
-  (let loop ((ls env-thunks))
-    (or (null? ls)
-        (begin
-          (hashq-set! *env-hash* (car ls) (cadr ls))
-          (loop (cddr ls))))))
+(define *env-extraction*
+  (let ((ht (make-hash-table 23)))
+    (let loop ((ls (env-extraction-methods)))
+      (or (null? ls)
+          (let ((var (car ls)))
+            (hashq-set! ht var
+                        (let ((v (cadr ls)))
+                          (if (string? v)
+                              (lambda () (getenv v))
+                              v)))
+            (loop (cddr ls)))))
+    ht))
 
 (define (env-look key)                  ; may return #f
-  ((or (hashq-ref *env-hash* key)
-       (lambda () #f))))
-
-(define (env-clear! key)
-  (hashq-remove! *env-hash* key))
+  ((hashq-ref *env-extraction* key
+              (lambda ()
+                (error "unrecognized key:" key)))))
 
 
 ;;; CGI high-level interface
@@ -137,11 +137,6 @@
 ;; Initialize the environment.
 ;;
 (define-public (cgi:init)
-  (hash-environment!)
-  (and=> (env-look 'query-string)
-         (lambda (s)
-           (and (string-null? s)
-                (env-clear! 'query-string))))
   (let ((len (env-look 'content-length)))
     (cond ((= 0 len))
           ((string-ci=? (env-look 'content-type)
@@ -150,7 +145,10 @@
           ((string-ci=? (subs (env-look 'content-type) 0 19)
                         "multipart/form-data")
            (parse-form-multipart (read-raw-form-data len)))))
-  (and=> (env-look 'query-string) parse-form)
+  (cond ((env-look 'query-string)
+         => (lambda (qs)
+              (or (string-null? qs)
+                  (parse-form qs)))))
   (and=> (env-look 'http-cookie) get-cookies))
 
 ;; Return the value of the environment variable associated with @var{key}, a
