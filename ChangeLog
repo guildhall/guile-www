@@ -1,3 +1,24 @@
+2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (parse-form): Elide redundant `string-index' call.
+
+2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (*env-alist*): Delete.
+	(env-thunks): New data table.
+	(*env-hash*): New var.
+	(hash-environment!): New proc.
+	(env-look): Rewrite to use `*env-hash*'.
+	(env-set!): Delete proc.
+	(env-clear!): New proc.
+	(cgi:init): Call `hash-environment!'.
+	Also, use `env-clear!'.
+
+2005-04-12  Alan Grover  <awgrover@mail.msen.com>  (tiny change)
+
+	* cgi.scm (parse-form): Fix omission bug:
+	Also url-decode name in each name/value pair.
+
 2005-04-02  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* doc/Makefile.am (html) [MAINTAINER_MODE]: New target.
