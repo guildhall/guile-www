@@ -1,5 +1,18 @@
 2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* cgi.scm (env-thunks): Delete data structure.
+	(env-extraction-methods): New proc.
+	(*env-hash*): Delete data structure.
+	(hash-environment!): Delete proc.
+	(*env-extraction*): New data structure.
+	(env-look): Use `*env-extraction*'.
+	(env-clear!): Delete proc.
+	(cgi:init): No longer call `hash-environment!'.  Also, no longer
+	write to environment; instead, avoid calling `parse-form' also
+	when `query-string' value is the empty string.
+
+2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* configure.in (AC_INIT): Use modern two-arg form.
 	(AM_INIT_AUTOMAKE): Use zero-arg form.
 	(AC_CONFIG_FILES): Move AC_OUTPUT arg here.
