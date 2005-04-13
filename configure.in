@@ -27,6 +27,7 @@ AC_GUILE_WWW_MODULES_AOK
 AC_GUILE_WWW_TWERP_PREP
 AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 AC_CONFIG_FILES(module-install Makefile doc/Makefile)
+AC_CONFIG_FILES([examples/id.cgi],[chmod +x examples/id.cgi])
 AC_OUTPUT
 
 dnl  configure.in ends here
