@@ -74,7 +74,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 (section
  "Environment Variables (using `cgi:getenv')"
  (for-each (lambda (var)
-             (fso "~A:\n~S\n" var (cgi:getenv var)))
+             (fso "\n~A:\n~S\n" var (cgi:getenv var)))
            '(server-hostname
              gateway-interface
              server-port
@@ -104,7 +104,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
      (let ((ls (cgi:names)))
        (fso "(~A names)\n" (length ls))
        (for-each (lambda (name)
-                   (fso "~A:\n~S\n" name (cgi:values name)))
+                   (fso "\n~A:\n~S\n" name (cgi:values name)))
                  ls))
      (fso "(none)\n")))
 
@@ -119,7 +119,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
           (for-each (lambda (u)
                       (let* ((minfo (object-property u #:guile-www-cgi))
                              (m (lambda (part) (assq-ref minfo part))))
-                        (fso "~A: ~A (~A, ~A bytes)\n~A\n"
+                        (fso "\n~A: ~A (~A, ~A bytes)\n~A\n"
                              (m #:name)
                              (m #:filename)
                              (m #:mime-type)
@@ -136,7 +136,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
          (else
           (fso "(~A cookies)\n" tot)
           (for-each (lambda (name/c)
-                      (fso "~A: ~A\n" (car name/c) (length (cdr name/c)))
+                      (fso "\n~A: ~A\n" (car name/c) (length (cdr name/c)))
                       (for-each (lambda (c)
                                   (fso " ~A\n" c))
                                 (cdr name/c)))
