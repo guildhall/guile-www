@@ -186,7 +186,8 @@
   (or (env-look key) ""))
 
 ;; Fetch any values associated with @var{name} found in the form data.
-;; Return a list, even if it contains only one element.
+;; Return a list, even if it contains only one element.  A value is
+;; either a string, or #f.
 ;;
 (define-public (cgi:values name)
   (assoc-ref form-variables name))
