@@ -1,5 +1,10 @@
 2005-04-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* examples/id.cgi.in: New file.
+	* configure.in: Add AC_CONFIG_FILES for examples/id.cgi.
+
+2005-04-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (cgi:cookies): Document #f return value.
 
 2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
