@@ -247,7 +247,7 @@
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
 ;; values in the order they were found in the HTTP header, which should
 ;; be the order of most specific to least specific path associated with
-;; the cookie.
+;; the cookie.  If no cookies are associated with @var{name}, return #f.
 ;;
 (define-public (cgi:cookies name)
   (assoc-ref cookies name))
