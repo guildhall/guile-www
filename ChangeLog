@@ -1,3 +1,7 @@
+2005-04-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (cgi:cookies): Document #f return value.
+
 2005-04-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* cgi.scm (env-thunks): Delete data structure.
