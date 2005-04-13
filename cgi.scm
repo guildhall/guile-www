@@ -292,17 +292,25 @@
 ;; (read-raw-form-data LEN): read in LEN bytes from stdin
 ;; (get-cookies RAW): initialize the cookie list.
 
-(define (parse-form raw-data)
-  (for-each (lambda (pair)
-              (let* ((p (string-index pair #\=))
-                     (name (and p (url-coding:decode (subs pair 0 p))))
-                     (value (and p (url-coding:decode (subs pair (+ p 1)))))
-                     (old-value (cgi:values name)))
-                (set! form-variables
-                      (assoc-set! form-variables
-                                  name
-                                  (cons value (or old-value '()))))))
-            (separate-fields-discarding-char #\& raw-data)))
+(define (parse-form data)
+  (let* ((all (list #f))
+         (tp all))                      ; tail pointer (to maintain order)
+    (for-each (lambda (pair)
+                (define (decode . args)
+                  (url-coding:decode (apply subs pair args)))
+                (or (string-null? pair)
+                    (let* ((p (string-index pair #\=))
+                           (name (if p (decode 0 p) (decode 0)))
+                           (value (and p (decode (1+ p)))))
+                      (cond ((assoc-ref all name)
+                             => (lambda (so-far)
+                                  ;; maintain order
+                                  (append! so-far (list value))))
+                            (else
+                             (set-cdr! tp (list (list name value)))
+                             (set! tp (cdr tp)))))))
+              (separate-fields-discarding-char #\& data))
+    (set! form-variables (cdr all))))
 
 (define (parse-form-multipart raw-data)
 
