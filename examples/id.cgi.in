@@ -27,9 +27,10 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 
 ;;; Code:
 
-;; Load the module.  Normally, this `load-from-path' can be omitted --
+;; Load the module.  Normally, these explicit loads can be omitted --
 ;; we use it to help the perpetually confused Guile module system DTRT.
 
+(load-from-path "@abs_top_builddir@/url-coding.scm")
 (load-from-path "@abs_top_builddir@/cgi.scm")
 (use-modules (www cgi))
 
