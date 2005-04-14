@@ -187,7 +187,8 @@
 
 ;; Fetch any values associated with @var{name} found in the form data.
 ;; Return a list, even if it contains only one element.  A value is
-;; either a string, or #f.
+;; either a string, or #f.  When there are multiple values, the order
+;; is the same as that found in the form.
 ;;
 (define-public (cgi:values name)
   (assoc-ref form-variables name))
@@ -199,7 +200,11 @@
 (define-public (cgi:value name)
   (and=> (cgi:values name) car))
 
-;; Return a list of variable names in the form.
+;; Return a list of variable names in the form.  The order of the
+;; list is the same as that found in the form for the first occurance
+;; of each variable and each variable appears at most once.  For example,
+;; if the form has variables ordered @code{a b a c d b e}, then the
+;; returned list would have order @code{a b c d e}.
 ;;
 (define-public (cgi:names)
   (map car form-variables))
@@ -213,15 +218,19 @@
 ;; or #f if no files are available.  Each string has an object property
 ;; @code{#:guile-www-cgi} whose value is an alist with the following keys:
 ;;
-;; @itemize
-;; @item #:name --- identical to @var{name} (sanity check)
+;; @table @code
+;; @item #:name
+;; identical to @var{name} (sanity check)
 ;;
-;; @item #:filename --- original/suggested filename for this bunch of bits
+;; @item #:filename
+;; original/suggested filename for this bunch of bits
 ;;
-;; @item #:mime-type --- something like "image/jpeg"
+;; @item #:mime-type
+;; something like "image/jpeg"
 ;;
-;; @item #:raw-mime-headers --- the MIME headers before parsing
-;; @end itemize
+;; @item #:raw-mime-headers
+;; the MIME headers before parsing
+;; @end table
 ;;
 ;; Note that the string's object property and the keys are all keywords.
 ;; The associated values are strings.
