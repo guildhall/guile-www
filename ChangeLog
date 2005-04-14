@@ -1,5 +1,9 @@
 2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* cgi.scm (cgi:values, cgi:names): Document ordering.
+
+2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* examples/id.cgi.in: Load url-coding.scm explicitly.
 
 2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
