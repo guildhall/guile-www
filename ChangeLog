@@ -1,5 +1,12 @@
 2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* doc/guile-www.twerp (Top): Add to menu "cgi-prep".
+	(cgi-prep): New node/chapter.
+
+	* Makefile.am (DOT_DOC_FILES): Add server-utils/cgi-prep.doc.
+
+2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (cgi:values, cgi:names): Document ordering.
 
 2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
