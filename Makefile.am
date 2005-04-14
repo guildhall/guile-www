@@ -54,6 +54,7 @@ DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
 		server-utils/big-dishing-loop.doc \
 		server-utils/parse-request.doc \
 		server-utils/filesystem.doc \
+		server-utils/cgi-prep.doc \
 		server-utils/answer.doc \
 		server-utils/log.doc
 
