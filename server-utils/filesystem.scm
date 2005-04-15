@@ -33,6 +33,8 @@
             upath->filename-proc
             filename->content-type))
 
+(define subs make-shared-substring)
+
 ;; Create and return a filesystem-access procedure based on @var{docroot}
 ;; and @var{forbid-rx}.  The returned procedure @var{p} takes a @var{filename}
 ;; and returns #t if access to that file should be denied for any of the
@@ -143,8 +145,7 @@
   (or (and=> (string-rindex filename #\.)
              (lambda (cut)
                (assq-ref *content-type-by-filename-extension*
-                         (string->symbol
-                          (make-shared-substring filename (1+ cut))))))
+                         (string->symbol (subs filename (1+ cut))))))
       ;; use `if' here to allow #f for `default'
       (if (not (null? default))
           (car default)
