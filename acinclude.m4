@@ -41,7 +41,7 @@ AC_DEFUN([AC_GUILE_WWW_DISABLE_SHARED_SUBTRING],[
       AS_HELP_STRING([--disable-shsub],
                      [replace "make-shared-substring" with "substring"
                       (default: replace only if not available)]),
-      [test no = $enableval -o no = $$1 && $$1=no])
+      [test no = $enableval -o no = $$1 && $1=no])
   fi
 ])
 
