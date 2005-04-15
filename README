@@ -50,5 +50,5 @@ How to Build and Install Guile-WWW
 Maintenance
 ===========
 
-	Guile-WWW is maintained by Thien-Thi Nguyen <ttn@gnu.org>.
-	Please send bug reports and other correspondance to the maintainer.
+	Guile-WWW is maintained by Thien-Thi Nguyen.
+	Please send bug reports to <bug-guile@gnu.org>.
