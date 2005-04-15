@@ -1,3 +1,8 @@
+2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* filesystem.scm (subs): New alias.
+	(filename->content-type): Use `subs'.
+
 2005-04-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* cgi-prep.scm: New file.
