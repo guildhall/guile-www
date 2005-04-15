@@ -1,5 +1,10 @@
 2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* acinclude.m4 (AC_GUILE_WWW_GUILE_SITE_DIR): New macro.
+	(AC_GUILE_WWW_INST_METH_AOK): Use `AC_GUILE_WWW_GUILE_SITE_DIR'.
+
+2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* acinclude.m4 (AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING): New macro.
 	(AC_GUILE_WWW_DISABLE_SHARED_SUBTRING): Likewise.
 	(AC_GUILE_WWW_CORE_AOK): Likewise.
