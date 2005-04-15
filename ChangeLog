@@ -1,5 +1,20 @@
 2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* acinclude.m4 (AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING): New macro.
+	(AC_GUILE_WWW_DISABLE_SHARED_SUBTRING): Likewise.
+	(AC_GUILE_WWW_CORE_AOK): Likewise.
+	(AC_GUILE_WWW_INST_METH_AOK): Likewise.
+
+	* configure.in (GUILE_SITE_DIR): Delete.
+	(AC_GUILE_WWW_PROG_PUNIFY): Likewise.
+	(AC_GUILE_WWW_CORE_AOK): New.
+	(AC_GUILE_WWW_INST_METH_AOK): Likewise.
+
+	* module-install.in (use_shsub): New var.  If not "no",
+	arrange to substitute "make-shared-substring" with "substring".
+
+2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* http.scm (subs): New alias.
 	(parse-status-line): Use `subs'.
 	(sans-trailing-whitespace): Likewise.
