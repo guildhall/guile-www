@@ -34,6 +34,9 @@
 (or (defined? 'read-line)
     (use-modules (ice-9 rdelim)))
 
+(define subs make-shared-substring)
+
+
 
 ;;; Variables that affect HTTP usage.
 
@@ -118,11 +121,10 @@
   ;; For the former, use the null string for TEXT.
   (let* ((first (string-index statline #\space))
          (second (string-index statline #\space (1+ first))))
-    (list (make-shared-substring statline 0 first)
-          (make-shared-substring statline (1+ first)
-                                 (or second (string-length statline)))
+    (list (subs statline 0 first)
+          (subs statline (1+ first) (or second (string-length statline)))
           (if second
-              (make-shared-substring statline (1+ second))
+              (subs statline (1+ second))
               ""))))
 
 
@@ -466,6 +468,6 @@
       (set! end (1- end)))
     (if (< end st)
         ""
-        (make-shared-substring s st end))))
+        (subs s st end))))
 
 ;;; www/http.scm ends here
