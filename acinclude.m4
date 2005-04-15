@@ -19,6 +19,37 @@ dnl  along with GUILE; see the file COPYING.  If not, write to the
 dnl  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 dnl  Boston, MA 02111-1307, USA.
 
+dnl Determine if `make-shared-substring' is available; if not, set
+dnl shell var $1 to "no" and mark it for substitution, as by AC_SUBST.
+AC_DEFUN([AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING],[
+  AC_MSG_CHECKING([if Guile has make-shared-substring])
+  GUILE_CHECK([$1],[make-shared-substring])
+  if test 0 = $$1 ; then $1=yes ; else $1=no ; fi
+  AC_MSG_RESULT([$$1])
+  AC_SUBST([$1])
+])
+
+dnl Add configure option `--disable-shared-substring'.
+dnl $1 is a shell var to set to "no" if `make-shared-substring'
+dnl should be replaced by `substring'.  If Guile doesn't provide
+dnl `make-shared-substring', this will be set to "no" regardless
+dnl of the configure option.
+AC_DEFUN([AC_GUILE_WWW_DISABLE_SHARED_SUBTRING],[
+  AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING([$1])
+  if test no = $$1 ; then : ; else
+    AC_ARG_ENABLE([shsub],
+      AS_HELP_STRING([--disable-shsub],
+                     [replace "make-shared-substring" with "substring"
+                      (default: replace only if not available)]),
+      [test no = $enableval -o no = $$1 && $$1=no])
+  fi
+])
+
+dnl Encapsulate Guile core-capabilities checks.
+AC_DEFUN([AC_GUILE_WWW_CORE_AOK],[
+  AC_GUILE_WWW_DISABLE_SHARED_SUBTRING([use_shsub])
+])
+
 dnl This is an adaptation of "guile-tools autofrisk" output.
 AC_DEFUN([AC_GUILE_WWW_MODULES_AOK],[
   GUILE_MODULE_REQUIRED(ice-9 regex)
@@ -57,6 +88,12 @@ AC_DEFUN([AC_GUILE_WWW_PROG_PUNIFY],[
   fi
   AC_MSG_RESULT([$$1])
   AC_SUBST([$1])
+])
+
+dnl Encapsulate installation methodology 
+AC_DEFUN([AC_GUILE_WWW_INST_METH_AOK],[
+  GUILE_SITE_DIR
+  AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 ])
 
 dnl acinclude.m4 ends here
