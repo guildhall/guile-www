@@ -301,15 +301,9 @@
 
 ;;; Internal procedures.
 
-;; (parse-form DATA): parse DATA as raw form response data of enctype
-;;  x-www-form-urlencoded, adding values as necessary to `form-variables'.
-;; (parse-form-multipart DATA): parse DATA as raw form response data
-;;  of enctype multipart/form-data, adding values as necessary to
-;;  'form-variables' and file data to 'file-uploads'.
-;; (read-raw-form-data LEN): read in LEN bytes from stdin
-;; (get-cookies RAW): initialize the cookie list.
-
 (define (parse-form data)
+  ;; Parse DATA as raw form response data of enctype x-www-form-urlencoded.
+  ;; Return a list of elements each of the form (name value1 value2...).
   (let ((all (list)))
     (for-each (lambda (pair)
                 (define (decode . args)
@@ -323,6 +317,10 @@
     (set! form-variables (reverse! all))))
 
 (define (parse-form-multipart raw-data)
+  ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
+  ;; Return a cons (VARS . UPLOADS), where VARS is a list of elements each of
+  ;; the form (name value1 value2...), and UPLOADS is a list of strings, each
+  ;; w/ the object property #:guile-www-cgi set.
 
   (define (determine-boundary s)
     (format #f "--~A" (match:substring
@@ -393,11 +391,11 @@
                    (get-pair (cdr segment-newstart)))))))))
 
 (define (read-raw-form-data len)
+  ;; Read in LEN bytes from stdin.
   (read-n-chars len))
 
-;; Setting up the cookies
-
 (define (get-cookies raw)
+  ;; Initialize the cookie list from RAW.
   (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
     (define (get-pair str)
       (let ((pair-match (regexp-exec pair-exp str)))
