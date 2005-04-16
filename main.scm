@@ -25,7 +25,10 @@
 
 (define-module (www main)
   #:use-module (www http)
-  #:use-module (www url))
+  #:use-module (www url)
+  #:export (www:set-protocol-handler!
+            www:get
+            www:http-head-get))
 
 
 (define dispatch-table
@@ -37,7 +40,7 @@
 ;; of a url object.  Its return value is the return value of
 ;; @code{www:get} (for @var{proto}), and need not be a string.
 ;;
-(define-public (www:set-protocol-handler! proto handler)
+(define (www:set-protocol-handler! proto handler)
   (set! dispatch-table
         (assq-set! dispatch-table proto handler)))
 
@@ -47,7 +50,7 @@
 ;; to the host, port and path portions of @var{url-string}.  If no such
 ;; handler exists, signal "unknown URL scheme" error.
 ;;
-(define-public (www:get url-string)
+(define (www:get url-string)
   (let ((url (url:parse url-string)))
     ;; get handler for this protocol
     (case (url:scheme url)
@@ -69,7 +72,7 @@
 ;;
 ;;-sig: (url-string [alist?])
 ;;
-(define-public (www:http-head-get url-string . alist?)
+(define (www:http-head-get url-string . alist?)
   (let ((url (url:parse url-string)))
     (or (eq? 'http (url:scheme url))
         (error "URL scheme not `http'" url-string))

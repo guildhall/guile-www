@@ -27,7 +27,14 @@
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-13)
-  #:use-module (ice-9 optargs-kw))
+  #:use-module (ice-9 optargs-kw)
+  #:export (cgi:init
+            cgi:getenv
+            cgi:values cgi:value
+            cgi:names
+            cgi:form-data?
+            cgi:uploads cgi:upload
+            cgi:cookies cgi:cookie cgi:make-cookie))
 
 (define subs make-shared-substring)
 
@@ -136,7 +143,7 @@
 
 ;; Initialize the environment.
 ;;
-(define-public (cgi:init)
+(define (cgi:init)
   (let ((len (env-look 'content-length)))
     (cond ((= 0 len))
           ((string-ci=? (env-look 'content-type)
@@ -182,7 +189,7 @@
 ;;
 ;; Keys not listed above result in an "unrecognized key" error.
 ;;
-(define-public (cgi:getenv key)
+(define (cgi:getenv key)
   (or (env-look key) ""))
 
 ;; Fetch any values associated with @var{name} found in the form data.
@@ -190,14 +197,14 @@
 ;; either a string, or #f.  When there are multiple values, the order
 ;; is the same as that found in the form.
 ;;
-(define-public (cgi:values name)
+(define (cgi:values name)
   (assoc-ref form-variables name))
 
 ;; Fetch only the @sc{car} from @code{(cgi:values NAME)}.  Convenient
 ;; for when you are certain that @var{name} is associated with only one
 ;; value.
 ;;
-(define-public (cgi:value name)
+(define (cgi:value name)
   (and=> (cgi:values name) car))
 
 ;; Return a list of variable names in the form.  The order of the
@@ -206,12 +213,12 @@
 ;; if the form has variables ordered @code{a b a c d b e}, then the
 ;; returned list would have order @code{a b c d e}.
 ;;
-(define-public (cgi:names)
+(define (cgi:names)
   (map car form-variables))
 
 ;; Return #t iff there is form data available.
 ;;
-(define-public (cgi:form-data?)
+(define (cgi:form-data?)
   (not (null? form-variables)))
 
 ;; Return a list of strings, the contents of files associated with @var{name},
@@ -240,7 +247,7 @@
 ;; lest the garbage man whisk it away for good.  This is done to minimize the
 ;; amount of time the file is resident in memory.
 ;;
-(define-public (cgi:uploads name)
+(define (cgi:uploads name)
   (and=> (assoc name file-uploads)
          (lambda (cell)
            (set! file-uploads (delq cell file-uploads))
@@ -251,7 +258,7 @@
 ;; there is only one file associated with @var{name}.  Use @code{cgi:uploads}
 ;; if you are unsure.
 ;;
-(define-public (cgi:upload name)
+(define (cgi:upload name)
   (and=> (cgi:uploads name) car))
 
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
@@ -259,12 +266,12 @@
 ;; be the order of most specific to least specific path associated with
 ;; the cookie.  If no cookies are associated with @var{name}, return #f.
 ;;
-(define-public (cgi:cookies name)
+(define (cgi:cookies name)
   (assoc-ref cookies name))
 
 ;; Fetch the first cookie value associated with @var{name}.
 ;;
-(define-public (cgi:cookie name)
+(define (cgi:cookie name)
   (and=> (cgi:cookies name) car))
 
 ;; Return a string suitable for inclusion into an HTTP response header
@@ -280,8 +287,8 @@
 ;;
 ;;-sig: (name value [#:path P] [#:domain D] [#:expires E] [#:secure S])
 ;;
-(define*-public (cgi:make-cookie name value #:key (path #f)
-                                 (domain #f) (expires #f) (secure #f))
+(define* (cgi:make-cookie name value #:key (path #f)
+                          (domain #f) (expires #f) (secure #f))
   (format #f "Set-Cookie: ~A=~A~A~A~A~A"
           (if (keyword? name) (keyword->symbol name) name)
           (if (keyword? value) (keyword->symbol value) value)

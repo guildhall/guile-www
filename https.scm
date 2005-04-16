@@ -24,15 +24,20 @@
 ;;     https:version
 ;;     https:user-agent
 ;;    (https-via-lynx host ip-port path)
+;;
+;; TODO: clean up (no longer export data structures) and release
 
 ;;; Code:
 
 (define-module (www https)
   #:use-module (ice-9 format)
-  #:use-module (ice-9 popen))
+  #:use-module (ice-9 popen)
+  #:export (https:version
+            https:user-agent
+            https-via-lynx))
 
-(define-public https:version "HTTP/1.0")  ; bump up to 1.1 when ready
-(define-public https:user-agent "GuileHTTP 0.1")
+(define https:version "HTTP/1.0")  ; bump up to 1.1 when ready
+(define https:user-agent "GuileHTTP 0.1")
 
 ;; BUG -- I don't really want this function to be public; I want
 ;; people to use `www:get' instead.  But if I use `define' here,
@@ -40,7 +45,7 @@
 ;; www:set-protocol-handler!, https-via-lynx isn't defined.  This
 ;; means that I don't understand Guile's module system.
 
-(define-public (https-via-lynx host ip-port path)
+(define (https-via-lynx host ip-port path)
   (let ((p (open-pipe
             (format
              ;; We set TERM to prevent lynx from complaining about an

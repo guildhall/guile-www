@@ -26,7 +26,20 @@
 
 (define-module (www http)
   #:use-module (www url)
-  #:use-module (ice-9 regex))
+  #:use-module (ice-9 regex)
+  #:export (http:message-version
+            http:message-status-code
+            http:message-status-text
+            http:message-status-ok?
+            http:status-ok?
+            http:message-body
+            http:message-headers
+            http:message-header
+            http:head
+            http:get
+            http:post-form
+            http:open
+            http:request))
 
 
 ;;; Compatibility
@@ -54,21 +67,21 @@
 ;;;; HTTP status predicates.
 
 ;; Return the HTTP version in use in HTTP message @var{msg}.
-(define-public (http:message-version msg)     (vector-ref msg 0))
+(define (http:message-version msg)     (vector-ref msg 0))
 ;; Return the status code returned in HTTP message @var{msg}.
-(define-public (http:message-status-code msg) (vector-ref msg 1))
+(define (http:message-status-code msg) (vector-ref msg 1))
 ;; Return the text of the status line from HTTP message @var{msg}.
-(define-public (http:message-status-text msg) (vector-ref msg 2))
+(define (http:message-status-text msg) (vector-ref msg 2))
 ;; Return #t iff status code STATUS indicates a successful request.
-(define-public (http:message-status-ok? msg)
+(define (http:message-status-ok? msg)
   (http:status-ok? (http:message-status-code msg)))
 
 ;; Return #t iff @var{status} (a string) begins with "2".
-(define-public (http:status-ok? status)
+(define (http:status-ok? status)
   (char=? #\2 (string-ref status 0)))
 
 ;; Return the body of the HTTP message @var{msg}.
-(define-public (http:message-body msg) (vector-ref msg 4))
+(define (http:message-body msg) (vector-ref msg 4))
 
 ;; HTTP response headers functions
 ;;
@@ -94,12 +107,12 @@
 
 ;; Return a list of the headers from HTTP message @var{msg}.
 ;;
-(define-public (http:message-headers msg) (vector-ref msg 3))
+(define (http:message-headers msg) (vector-ref msg 3))
 
 ;; Return the header field named @var{header} from HTTP message @var{msg},
 ;; or #f if no such header is present in the message.
 ;;
-(define-public (http:message-header header msg)
+(define (http:message-header header msg)
   (http:fetch-header header (http:message-headers msg)))
 
 (define (http:fetch-header header header-alist)
@@ -159,13 +172,13 @@
 ;; Submit an http request using the @code{HEAD} method on the @var{url}.
 ;; The @code{Host} header is automatically included.
 ;;
-(define-public (http:head url)
+(define (http:head url)
   (http:request "HEAD" url (list (string-append "Host: " (url:host url)))))
 
 ;; Submit an http request using the @code{GET} method on the @var{url}.
 ;; The @code{Host} header is automatically included.
 ;;
-(define-public (http:get url)
+(define (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
   (http:request "GET" url (list (string-append "Host: " (url:host url)))))
@@ -190,7 +203,7 @@
 ;; the caller's responsibility to ensure that the MIME type and transfer
 ;; encoding specified describe @var{source} accurately.
 ;;
-(define-public (http:post-form url extra-headers fields)
+(define (http:post-form url extra-headers fields)
 
   (define (source: spec)        (list-ref spec 0))
   (define (name: spec)          (list-ref spec 1))
@@ -299,7 +312,7 @@
 ;;
 ;;-sig: (host [port])
 ;;
-(define-public (http:open host . args)
+(define (http:open host . args)
   (let ((port (cond ((null? args) 80)
                     ((not (car args)) 80)
                     (else (car args)))))
@@ -352,7 +365,7 @@
 ;;
 ;;-sig: (method url [headers [body]])
 ;;
-(define-public (http:request method url . args)
+(define (http:request method url . args)
   (let ((host     (url:host url))
         (tcp-port (or (url:port url) 80))
         (path     (format #f "/~A" (or (url:path url) ""))))
