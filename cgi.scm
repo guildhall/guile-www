@@ -44,6 +44,43 @@
 
 (define cookies '())
 
+;;; System I/O and low-level stuff.
+
+(define (read-n-chars num . port-arg)
+  (let ((p (if (null? port-arg)
+               (current-input-port)
+               (car port-arg)))
+        (s (make-string num)))
+    (do ((i   0              (+ i 1))
+         (ch  (read-char p)  (read-char p)))
+        ((or (>= i num) (eof-object? ch)) s)
+      (string-set! s i ch))))
+
+;; This is defined in (ice-9 string-fun), but the interface is
+;; weird, the semantics perverse, and it doesn't work.  We use
+;; a working copy here.
+
+(define (separate-fields-discarding-char ch str)
+  (let loop ((fields '())
+             (str str))
+    (let ((pos (string-rindex str ch)))
+      (if pos
+          (loop (cons (subs str (+ 1 pos)) fields)
+                (subs str 0 pos))
+          (cons str fields)))))
+
+(define (updated-alist alist name value)
+  ;; Update ALIST with NAME and VALUE.
+  ;; If NAME already exists, append VALUE to the list of old values.
+  ;; ALIST grows at the head, so callers need to:
+  ;;  - set! alist to the return value;
+  ;;  - `reverse!' it when done accumuating if order is to be maintained.
+  (or (and=> (assoc-ref alist name)
+             (lambda (old)
+               (append! old (list value))
+               alist))
+      (acons name (list value) alist)))
+
 ;;; CGI environment variables.
 
 (define (env-extraction-methods)        ; => (VAR METHOD ...)
@@ -138,8 +175,119 @@
               (lambda ()
                 (error "unrecognized key:" key)))))
 
+;;; Other internal procedures.
+
+(define (parse-form data)
+  ;; Parse DATA as raw form response data of enctype x-www-form-urlencoded.
+  ;; Return a list of elements each of the form (name value1 value2...).
+  (let ((all (list)))
+    (for-each (lambda (pair)
+                (define (decode . args)
+                  (url-coding:decode (apply subs pair args)))
+                (or (string-null? pair)
+                    (set! all (let* ((p (string-index pair #\=))
+                                     (name (if p (decode 0 p) (decode 0)))
+                                     (value (and p (decode (1+ p)))))
+                                (updated-alist all name value)))))
+              (separate-fields-discarding-char #\& data))
+    (set! form-variables (reverse! all))))
+
+(define (parse-form-multipart raw-data)
+  ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
+  ;; Return a cons (VARS . UPLOADS), where VARS is a list of elements each of
+  ;; the form (name value1 value2...), and UPLOADS is a list of strings, each
+  ;; w/ the object property #:guile-www-cgi set.
+
+  (define (determine-boundary s)
+    (format #f "--~A" (match:substring
+                       (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
+                       1)))
+
+  (define (m1 m)
+    (match:substring m 1))
+
+  (define (stash-form-variable! name value)
+    (set! form-variables (updated-alist form-variables name value)))
+
+  (define (stash-file-upload! name filename type value raw-headers)
+    (stash-form-variable! name filename)
+    (set-object-property! value #:guile-www-cgi
+                          `((#:name . ,name)
+                            (#:filename . ,filename)
+                            (#:mime-type . ,type)
+                            (#:raw-mime-headers . ,raw-headers)))
+    (set! file-uploads (updated-alist file-uploads name value)))
+
+  (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
+        (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
+        (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
+        (value-exp    (make-regexp "\r\n\r\n")))
+
+    (let level ((str raw-data)
+                (boundary (determine-boundary (env-look 'content-type)))
+                (parent-name #f))
+
+      (let* ((boundary-len (string-length boundary))
+             (find-bound (lambda (start)
+                           (string-contains str boundary start))))
+
+        (let get-pair ((start 0))
+          (and=> (and=> (find-bound start)
+                        (lambda (outer-seg-start)
+                          (let ((seg-start (+ outer-seg-start boundary-len)))
+                            (and=> (find-bound seg-start)
+                                   (lambda (seg-finish)
+                                     (cons (subs str seg-start (- seg-finish 2))
+                                           seg-finish))))))
+                 (lambda (segment-newstart)
+                   (let* ((segment (car segment-newstart))
+                          (try (lambda (rx extract)
+                                 (and=> (regexp-exec rx segment)
+                                        extract)))
+                          (name (or parent-name
+                                    (try name-exp  m1)))
+                          (value    (try value-exp match:suffix))
+                          (type     (try type-exp  m1)))
+                     (and name
+                          value
+                          (cond ((and type
+                                      (not parent-name) ; only recurse once
+                                      (string-match "multipart/mixed" type))
+                                 (level value
+                                        (determine-boundary type)
+                                        name))
+                                ((and type (try filename-exp m1))
+                                 => (lambda (filename)
+                                      (stash-file-upload!
+                                       name filename type value
+                                       (subs (try value-exp match:prefix)
+                                             2))))
+                                (else
+                                 (stash-form-variable! name value)))))
+                   (get-pair (cdr segment-newstart)))))))))
+
+(define (read-raw-form-data len)
+  ;; Read in LEN bytes from stdin.
+  (read-n-chars len))
+
+(define (get-cookies raw)
+  ;; Initialize the cookie list from RAW.
+  (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
+    (define (get-pair str)
+      (let ((pair-match (regexp-exec pair-exp str)))
+        (if (not pair-match) '()
+            (let ((name (match:substring pair-match 1))
+                  (value (match:substring pair-match 2)))
+              (if (and name value)
+                  (set! cookies
+                        (assoc-set! cookies name
+                                    (append (or (cgi:cookies name) '())
+                                            (list value)))))
+              (get-pair (match:suffix pair-match))))))
+    (get-pair raw)))
+
 
-;;; CGI high-level interface
+;;; Public interface.
 
 ;; Initialize the environment.
 ;;
@@ -296,156 +444,5 @@
           (if domain (format #f "; domain=~A" domain) "")
           (if expires (format #f "; expires=~A" expires) "")
           (if secure "; secure" "")))
-
-
-
-;;; Internal procedures.
-
-(define (parse-form data)
-  ;; Parse DATA as raw form response data of enctype x-www-form-urlencoded.
-  ;; Return a list of elements each of the form (name value1 value2...).
-  (let ((all (list)))
-    (for-each (lambda (pair)
-                (define (decode . args)
-                  (url-coding:decode (apply subs pair args)))
-                (or (string-null? pair)
-                    (set! all (let* ((p (string-index pair #\=))
-                                     (name (if p (decode 0 p) (decode 0)))
-                                     (value (and p (decode (1+ p)))))
-                                (updated-alist all name value)))))
-              (separate-fields-discarding-char #\& data))
-    (set! form-variables (reverse! all))))
-
-(define (parse-form-multipart raw-data)
-  ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
-  ;; Return a cons (VARS . UPLOADS), where VARS is a list of elements each of
-  ;; the form (name value1 value2...), and UPLOADS is a list of strings, each
-  ;; w/ the object property #:guile-www-cgi set.
-
-  (define (determine-boundary s)
-    (format #f "--~A" (match:substring
-                       (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
-                       1)))
-
-  (define (m1 m)
-    (match:substring m 1))
-
-  (define (stash-form-variable! name value)
-    (set! form-variables (updated-alist form-variables name value)))
-
-  (define (stash-file-upload! name filename type value raw-headers)
-    (stash-form-variable! name filename)
-    (set-object-property! value #:guile-www-cgi
-                          `((#:name . ,name)
-                            (#:filename . ,filename)
-                            (#:mime-type . ,type)
-                            (#:raw-mime-headers . ,raw-headers)))
-    (set! file-uploads (updated-alist file-uploads name value)))
-
-  (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
-        (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
-        (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
-        (value-exp    (make-regexp "\r\n\r\n")))
-
-    (let level ((str raw-data)
-                (boundary (determine-boundary (env-look 'content-type)))
-                (parent-name #f))
-
-      (let* ((boundary-len (string-length boundary))
-             (find-bound (lambda (start)
-                           (string-contains str boundary start))))
-
-        (let get-pair ((start 0))
-          (and=> (and=> (find-bound start)
-                        (lambda (outer-seg-start)
-                          (let ((seg-start (+ outer-seg-start boundary-len)))
-                            (and=> (find-bound seg-start)
-                                   (lambda (seg-finish)
-                                     (cons (subs str seg-start (- seg-finish 2))
-                                           seg-finish))))))
-                 (lambda (segment-newstart)
-                   (let* ((segment (car segment-newstart))
-                          (try (lambda (rx extract)
-                                 (and=> (regexp-exec rx segment)
-                                        extract)))
-                          (name (or parent-name
-                                    (try name-exp  m1)))
-                          (value    (try value-exp match:suffix))
-                          (type     (try type-exp  m1)))
-                     (and name
-                          value
-                          (cond ((and type
-                                      (not parent-name) ; only recurse once
-                                      (string-match "multipart/mixed" type))
-                                 (level value
-                                        (determine-boundary type)
-                                        name))
-                                ((and type (try filename-exp m1))
-                                 => (lambda (filename)
-                                      (stash-file-upload!
-                                       name filename type value
-                                       (subs (try value-exp match:prefix)
-                                             2))))
-                                (else
-                                 (stash-form-variable! name value)))))
-                   (get-pair (cdr segment-newstart)))))))))
-
-(define (read-raw-form-data len)
-  ;; Read in LEN bytes from stdin.
-  (read-n-chars len))
-
-(define (get-cookies raw)
-  ;; Initialize the cookie list from RAW.
-  (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
-    (define (get-pair str)
-      (let ((pair-match (regexp-exec pair-exp str)))
-        (if (not pair-match) '()
-            (let ((name (match:substring pair-match 1))
-                  (value (match:substring pair-match 2)))
-              (if (and name value)
-                  (set! cookies
-                        (assoc-set! cookies name
-                                    (append (or (cgi:cookies name) '())
-                                            (list value)))))
-              (get-pair (match:suffix pair-match))))))
-    (get-pair raw)))
-
-
-;;; System I/O and low-level stuff.
-
-(define (read-n-chars num . port-arg)
-  (let ((p (if (null? port-arg)
-               (current-input-port)
-               (car port-arg)))
-        (s (make-string num)))
-    (do ((i   0              (+ i 1))
-         (ch  (read-char p)  (read-char p)))
-        ((or (>= i num) (eof-object? ch)) s)
-      (string-set! s i ch))))
-
-;; This is defined in (ice-9 string-fun), but the interface is
-;; weird, the semantics perverse, and it doesn't work.  We use
-;; a working copy here.
-
-(define (separate-fields-discarding-char ch str)
-  (let loop ((fields '())
-             (str str))
-    (let ((pos (string-rindex str ch)))
-      (if pos
-          (loop (cons (subs str (+ 1 pos)) fields)
-                (subs str 0 pos))
-          (cons str fields)))))
-
-(define (updated-alist alist name value)
-  ;; Update ALIST with NAME and VALUE.
-  ;; If NAME already exists, append VALUE to the list of old values.
-  ;; ALIST grows at the head, so callers need to:
-  ;;  - set! alist to the return value;
-  ;;  - `reverse!' it when done accumuating if order is to be maintained.
-  (or (and=> (assoc-ref alist name)
-             (lambda (old)
-               (append! old (list value))
-               alist))
-      (acons name (list value) alist)))
 
 ;;; www/cgi.scm ends here
