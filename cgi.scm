@@ -310,24 +310,17 @@
 ;; (get-cookies RAW): initialize the cookie list.
 
 (define (parse-form data)
-  (let* ((all (list #f))
-         (tp all))                      ; tail pointer (to maintain order)
+  (let ((all (list)))
     (for-each (lambda (pair)
                 (define (decode . args)
                   (url-coding:decode (apply subs pair args)))
                 (or (string-null? pair)
-                    (let* ((p (string-index pair #\=))
-                           (name (if p (decode 0 p) (decode 0)))
-                           (value (and p (decode (1+ p)))))
-                      (cond ((assoc-ref all name)
-                             => (lambda (so-far)
-                                  ;; maintain order
-                                  (append! so-far (list value))))
-                            (else
-                             (set-cdr! tp (list (list name value)))
-                             (set! tp (cdr tp)))))))
+                    (set! all (let* ((p (string-index pair #\=))
+                                     (name (if p (decode 0 p) (decode 0)))
+                                     (value (and p (decode (1+ p)))))
+                                (updated-alist all name value)))))
               (separate-fields-discarding-char #\& data))
-    (set! form-variables (cdr all))))
+    (set! form-variables (reverse! all))))
 
 (define (parse-form-multipart raw-data)
 
