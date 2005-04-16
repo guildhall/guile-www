@@ -186,7 +186,7 @@
                                      (value (and p (decode (1+ p)))))
                                 (updated-alist all name value)))))
               (separate-fields-discarding-char #\& data))
-    (set! form-variables (reverse! all))))
+    (reverse! all)))
 
 (define (parse-form-multipart raw-data)
   ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
@@ -288,14 +288,14 @@
     (cond ((= 0 len))
           ((string-ci=? (env-look 'content-type)
                         "application/x-www-form-urlencoded")
-           (parse-form (read-n-bytes len)))
+           (set! form-variables (parse-form (read-n-bytes len))))
           ((string-ci=? (subs (env-look 'content-type) 0 19)
                         "multipart/form-data")
            (parse-form-multipart (read-n-bytes len)))))
   (cond ((env-look 'query-string)
          => (lambda (qs)
               (or (string-null? qs)
-                  (parse-form qs)))))
+                  (set! form-variables (parse-form qs))))))
   (and=> (env-look 'http-cookie) get-cookies))
 
 ;; Return the value of the environment variable associated with @var{key}, a
