@@ -46,6 +46,9 @@
 
 ;;; System I/O and low-level stuff.
 
+(define (fs s . args)
+  (apply simple-format #f s args)) 
+
 (define (read-n-bytes num)
   (let ((p (current-input-port))
         (s (make-string num)))
@@ -197,9 +200,9 @@
   (let ((v (list)) (u (list)))
 
     (define (determine-boundary s)
-      (format #f "--~A" (match:substring
-                         (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
-                         1)))
+      (fs "--~A" (match:substring
+                  (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
+                  1)))
 
     (define (m1 m)
       (match:substring m 1))
@@ -435,12 +438,12 @@
 ;;
 (define* (cgi:make-cookie name value #:key (path #f)
                           (domain #f) (expires #f) (secure #f))
-  (format #f "Set-Cookie: ~A=~A~A~A~A~A"
-          (if (keyword? name) (keyword->symbol name) name)
-          (if (keyword? value) (keyword->symbol value) value)
-          (if path (format #f "; path=~A" path) "")
-          (if domain (format #f "; domain=~A" domain) "")
-          (if expires (format #f "; expires=~A" expires) "")
-          (if secure "; secure" "")))
+  (fs "Set-Cookie: ~A=~A~A~A~A~A"
+      (if (keyword? name) (keyword->symbol name) name)
+      (if (keyword? value) (keyword->symbol value) value)
+      (if path (fs "; path=~A" path) "")
+      (if domain (fs "; domain=~A" domain) "")
+      (if expires (fs "; expires=~A" expires) "")
+      (if secure "; secure" "")))
 
 ;;; www/cgi.scm ends here
