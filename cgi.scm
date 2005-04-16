@@ -47,7 +47,7 @@
 ;;; System I/O and low-level stuff.
 
 (define (fs s . args)
-  (apply simple-format #f s args)) 
+  (apply simple-format #f s args))
 
 (define (read-n-bytes num)
   (let ((p (current-input-port))
@@ -270,20 +270,19 @@
     (cons (reverse! v) (reverse! u))))
 
 (define (get-cookies raw)
-  ;; Initialize the cookie list from RAW.
-  (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
+  ;; Parse RAW (a string) for cookie-like frags.  Return an alist.
+  (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)"))
+        (c (list)))
     (define (get-pair str)
       (let ((pair-match (regexp-exec pair-exp str)))
         (if (not pair-match) '()
             (let ((name (match:substring pair-match 1))
                   (value (match:substring pair-match 2)))
               (if (and name value)
-                  (set! cookies
-                        (assoc-set! cookies name
-                                    (append (or (cgi:cookies name) '())
-                                            (list value)))))
+                  (set! c (updated-alist c name value)))
               (get-pair (match:suffix pair-match))))))
-    (get-pair raw)))
+    (get-pair raw)
+    (reverse! c)))
 
 
 ;;; Public interface.
@@ -305,7 +304,7 @@
          => (lambda (qs)
               (or (string-null? qs)
                   (set! form-variables (parse-form qs))))))
-  (and=> (env-look 'http-cookie) get-cookies))
+  (set! cookies (or (and=> (env-look 'http-cookie) get-cookies) '())))
 
 ;; Return the value of the environment variable associated with @var{key}, a
 ;; symbol.  Unless otherwise specified below, the return value is a (possibly
