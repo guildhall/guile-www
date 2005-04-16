@@ -339,9 +339,6 @@
   (define (m1 m)
     (match:substring m 1))
 
-  (define (updated-alist alist name value)
-    (assoc-set! alist name (cons value (or (assoc-ref alist name) '()))))
-
   (define (stash-form-variable! name value)
     (set! form-variables (updated-alist form-variables name value)))
 
@@ -447,5 +444,17 @@
           (loop (cons (subs str (+ 1 pos)) fields)
                 (subs str 0 pos))
           (cons str fields)))))
+
+(define (updated-alist alist name value)
+  ;; Update ALIST with NAME and VALUE.
+  ;; If NAME already exists, append VALUE to the list of old values.
+  ;; ALIST grows at the head, so callers need to:
+  ;;  - set! alist to the return value;
+  ;;  - `reverse!' it when done accumuating if order is to be maintained.
+  (or (and=> (assoc-ref alist name)
+             (lambda (old)
+               (append! old (list value))
+               alist))
+      (acons name (list value) alist)))
 
 ;;; www/cgi.scm ends here
