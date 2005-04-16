@@ -34,60 +34,65 @@
 
 (define-module (www url)
   #:use-module (www url-coding)
-  #:use-module (ice-9 regex))
+  #:use-module (ice-9 regex)
+  #:export (url:scheme url:address url:unknown
+                       url:user url:host url:port url:path
+                       url:make url:make-http url:make-ftp url:make-mailto
+                       url:parse url:unparse
+                       url:decode url:encode))
 
 ;; Extract and return the "scheme" portion of a @var{url} object.
 ;; @code{url:scheme} is an unfortunate term, but it is the technical
 ;; name for that portion of the URL according to RFC 1738.  Sigh.
 ;;
-(define-public (url:scheme url)  (vector-ref url 0))
+(define (url:scheme url)  (vector-ref url 0))
 
 ;; Extract and return the "address" portion of the @var{url} object.
 ;;
-(define-public (url:address url) (vector-ref url 1))
+(define (url:address url) (vector-ref url 1))
 
 ;; Extract and return the "unknown" portion of the @var{url} object.
 ;;
-(define-public (url:unknown url) (vector-ref url 1))
+(define (url:unknown url) (vector-ref url 1))
 
 ;; Extract and return the "user" portion of the @var{url} object.
 ;;
-(define-public (url:user url)    (vector-ref url 1))
+(define (url:user url)    (vector-ref url 1))
 
 ;; Extract and return the "host" portion of the @var{url} object.
 ;;
-(define-public (url:host url)    (vector-ref url 2))
+(define (url:host url)    (vector-ref url 2))
 
 ;; Extract and return the "port" portion of the @var{url} object.
 ;;
-(define-public (url:port url)    (vector-ref url 3))
+(define (url:port url)    (vector-ref url 3))
 
 ;; Extract and return the "path" portion of the @var{url} object.
 ;;
-(define-public (url:path url)    (vector-ref url 4))
+(define (url:path url)    (vector-ref url 4))
 
 ;; Construct a url object with specific @var{scheme} and other @var{args}.
 ;; The number and meaning of @var{args} depends on the @var{scheme}.
 ;;
-(define-public (url:make scheme . args)
+(define (url:make scheme . args)
   (apply vector scheme args))
 
 ;; Construct a HTTP-specific url object with
 ;; @var{host}, @var{port} and @var{path} portions.
 ;;
-(define-public (url:make-http host port path)
+(define (url:make-http host port path)
   (vector 'http #f host port path))
 
 ;; Construct a FTP-specific url object with
 ;; @var{user}, @var{host}, @var{port} and @var{path} portions.
 ;;
-(define-public (url:make-ftp user host port path)
+(define (url:make-ftp user host port path)
   (vector 'ftp user host port path))
 
 ;; Construct a mailto-specific url object with
 ;; an @var{address} portion.
 ;;
-(define-public (url:make-mailto address)
+(define (url:make-mailto address)
   (vector 'mailto address))
 
 (define http-regexp (make-regexp "^http://([^:/]+)(:([0-9]+))?(/(.*))?$"))
@@ -100,7 +105,7 @@
 ;;
 ;;-sig: (string)
 ;;
-(define-public (url:parse url)
+(define (url:parse url)
   (cond
    ((regexp-exec http-regexp url)
     => (lambda (m)
@@ -127,7 +132,7 @@
 ;; Return the @var{url} object formatted as a string.
 ;; Note: The username portion is not included!
 ;;
-(define-public (url:unparse url)
+(define (url:unparse url)
   (define (pathy scheme username url)   ; username not used!
     (format #f "~A://~A~A~A"
             scheme
@@ -145,12 +150,12 @@
 
 ;; Re-export @code{url-coding:decode}.  @xref{url-coding}.
 ;;
-(define-public (url:decode str)
+(define (url:decode str)
   (url-coding:decode str))
 
 ;; Re-export @code{url-coding:encode}.  @xref{url-coding}.
 ;;
-(define-public (url:encode str reserved-chars)
+(define (url:encode str reserved-chars)
   (url-coding:encode str reserved-chars))
 
 ;;; www/url.scm ends here

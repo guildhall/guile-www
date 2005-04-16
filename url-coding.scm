@@ -25,13 +25,15 @@
 ;;; Code:
 
 (define-module (www url-coding)
-  #:use-module (ice-9 regex))
+  #:use-module (ice-9 regex)
+  #:export (url-coding:decode
+            url-coding:encode))
 
 ;; Return a new string made from url-decoding @var{str}.  Specifically,
 ;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
 ;; their eight-bit characters.
 ;;
-(define-public (url-coding:decode str)
+(define (url-coding:decode str)
   ;; Implementation Questions: Is a regexp faster than character scanning?
   ;; Does it incur more overhead (which may be more important for code that
   ;; frequently gets restarted)?
@@ -50,7 +52,7 @@
 ;; unconditionally transforming those in @var{reserved-chars}, a list
 ;; of characters, in addition to those in the standard (internal) set.
 ;;
-(define-public (url-coding:encode str reserved-chars)
+(define (url-coding:encode str reserved-chars)
   ;; Can't be done easily with a regexp: we would have to construct a
   ;; regular expression like "[\277-\377]", for example, and Guile
   ;; strings don't let you interpolate character literals.  Pity.
