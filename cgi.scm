@@ -54,11 +54,9 @@
         ((or (>= i num) (eof-object? ch)) s)
       (string-set! s i ch))))
 
-;; This is defined in (ice-9 string-fun), but the interface is
-;; weird, the semantics perverse, and it doesn't work.  We use
-;; a working copy here.
-
 (define (separate-fields-discarding-char ch str)
+  ;; Return a list formed by splitting at character CH the string STR.
+  ;; This proc is named after the one in (ice-9 string-fun).
   (let loop ((fields '())
              (str str))
     (let ((pos (string-rindex str ch)))
