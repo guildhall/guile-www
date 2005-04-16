@@ -194,73 +194,77 @@
   ;; the form (name value1 value2...), and UPLOADS is a list of strings, each
   ;; w/ the object property #:guile-www-cgi set.
 
-  (define (determine-boundary s)
-    (format #f "--~A" (match:substring
-                       (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
-                       1)))
+  (let ((v (list)) (u (list)))
 
-  (define (m1 m)
-    (match:substring m 1))
+    (define (determine-boundary s)
+      (format #f "--~A" (match:substring
+                         (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
+                         1)))
 
-  (define (stash-form-variable! name value)
-    (set! form-variables (updated-alist form-variables name value)))
+    (define (m1 m)
+      (match:substring m 1))
 
-  (define (stash-file-upload! name filename type value raw-headers)
-    (stash-form-variable! name filename)
-    (set-object-property! value #:guile-www-cgi
-                          `((#:name . ,name)
-                            (#:filename . ,filename)
-                            (#:mime-type . ,type)
-                            (#:raw-mime-headers . ,raw-headers)))
-    (set! file-uploads (updated-alist file-uploads name value)))
+    (define (stash-form-variable! name value)
+      (set! v (updated-alist v name value)))
 
-  (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
-        (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
-        (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
-        (value-exp    (make-regexp "\r\n\r\n")))
+    (define (stash-file-upload! name filename type value raw-headers)
+      (stash-form-variable! name filename)
+      (set-object-property! value #:guile-www-cgi
+                            `((#:name . ,name)
+                              (#:filename . ,filename)
+                              (#:mime-type . ,type)
+                              (#:raw-mime-headers . ,raw-headers)))
+      (set! u (updated-alist u name value)))
 
-    (let level ((str raw-data)
-                (boundary (determine-boundary (env-look 'content-type)))
-                (parent-name #f))
+    (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
+          (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
+          (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
+          (value-exp    (make-regexp "\r\n\r\n")))
 
-      (let* ((boundary-len (string-length boundary))
-             (find-bound (lambda (start)
-                           (string-contains str boundary start))))
+      (let level ((str raw-data)
+                  (boundary (determine-boundary (env-look 'content-type)))
+                  (parent-name #f))
 
-        (let get-pair ((start 0))
-          (and=> (and=> (find-bound start)
-                        (lambda (outer-seg-start)
-                          (let ((seg-start (+ outer-seg-start boundary-len)))
-                            (and=> (find-bound seg-start)
-                                   (lambda (seg-finish)
-                                     (cons (subs str seg-start (- seg-finish 2))
-                                           seg-finish))))))
-                 (lambda (segment-newstart)
-                   (let* ((segment (car segment-newstart))
-                          (try (lambda (rx extract)
-                                 (and=> (regexp-exec rx segment)
-                                        extract)))
-                          (name (or parent-name
-                                    (try name-exp  m1)))
-                          (value    (try value-exp match:suffix))
-                          (type     (try type-exp  m1)))
-                     (and name
-                          value
-                          (cond ((and type
-                                      (not parent-name) ; only recurse once
-                                      (string-match "multipart/mixed" type))
-                                 (level value
-                                        (determine-boundary type)
-                                        name))
-                                ((and type (try filename-exp m1))
-                                 => (lambda (filename)
-                                      (stash-file-upload!
-                                       name filename type value
-                                       (subs (try value-exp match:prefix)
-                                             2))))
-                                (else
-                                 (stash-form-variable! name value)))))
-                   (get-pair (cdr segment-newstart)))))))))
+        (let* ((boundary-len (string-length boundary))
+               (find-bound (lambda (start)
+                             (string-contains str boundary start))))
+
+          (let get-pair ((start 0))
+            (and=> (and=> (find-bound start)
+                          (lambda (outer-seg-start)
+                            (let ((seg-start (+ outer-seg-start boundary-len)))
+                              (and=> (find-bound seg-start)
+                                     (lambda (seg-finish)
+                                       (cons (subs str seg-start (- seg-finish 2))
+                                             seg-finish))))))
+                   (lambda (segment-newstart)
+                     (let* ((segment (car segment-newstart))
+                            (try (lambda (rx extract)
+                                   (and=> (regexp-exec rx segment)
+                                          extract)))
+                            (name (or parent-name
+                                      (try name-exp  m1)))
+                            (value    (try value-exp match:suffix))
+                            (type     (try type-exp  m1)))
+                       (and name
+                            value
+                            (cond ((and type
+                                        (not parent-name) ; only recurse once
+                                        (string-match "multipart/mixed" type))
+                                   (level value
+                                          (determine-boundary type)
+                                          name))
+                                  ((and type (try filename-exp m1))
+                                   => (lambda (filename)
+                                        (stash-file-upload!
+                                         name filename type value
+                                         (subs (try value-exp match:prefix)
+                                               2))))
+                                  (else
+                                   (stash-form-variable! name value)))))
+                     (get-pair (cdr segment-newstart))))))))
+
+    (cons (reverse! v) (reverse! u))))
 
 (define (get-cookies raw)
   ;; Initialize the cookie list from RAW.
@@ -291,7 +295,9 @@
            (set! form-variables (parse-form (read-n-bytes len))))
           ((string-ci=? (subs (env-look 'content-type) 0 19)
                         "multipart/form-data")
-           (parse-form-multipart (read-n-bytes len)))))
+           (let ((v/u (parse-form-multipart (read-n-bytes len))))
+             (set! form-variables (car v/u))
+             (set! file-uploads (cdr v/u))))))
   (cond ((env-look 'query-string)
          => (lambda (qs)
               (or (string-null? qs)
