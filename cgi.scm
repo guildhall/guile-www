@@ -302,7 +302,7 @@
                       (set! V (parse-form qs))))))
       (set! C (or (and=> (env-look 'http-cookie) get-cookies) '())))
 
-    (define (getenv-or-null-string)
+    (define (getenv-or-null-string key)
       (or (env-look key) ""))
 
     (define (values name)
@@ -336,7 +336,7 @@
     (lambda (command . args)
       (case command
         ((#:init!) (init!))
-        ((#:getenv) (getenv-or-null-string (car rags)))
+        ((#:getenv) (getenv-or-null-string (car args)))
         ((#:values) (values (car args)))
         ((#:value) (value (car args)))
         ((#:names) (names))
