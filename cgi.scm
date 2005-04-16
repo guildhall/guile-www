@@ -38,12 +38,6 @@
 
 (define subs make-shared-substring)
 
-(define form-variables '())
-
-(define file-uploads '())
-
-(define cookies '())
-
 ;;; System I/O and low-level stuff.
 
 (define (fs s . args)
@@ -284,27 +278,85 @@
     (get-pair raw)
     (reverse! c)))
 
+;;; CGI context closure.
+
+(define (make-ccc)
+  (let ((V '())                         ; form variables
+        (U '())                         ; file uploads
+        (C '()))                        ; cookies
+
+    (define (init!)
+      (let ((len (env-look 'content-length)))
+        (cond ((= 0 len))
+              ((string-ci=? (env-look 'content-type)
+                            "application/x-www-form-urlencoded")
+               (set! V (parse-form (read-n-bytes len))))
+              ((string-ci=? (subs (env-look 'content-type) 0 19)
+                            "multipart/form-data")
+               (let ((v/u (parse-form-multipart (read-n-bytes len))))
+                 (set! V (car v/u))
+                 (set! U (cdr v/u))))))
+      (cond ((env-look 'query-string)
+             => (lambda (qs)
+                  (or (string-null? qs)
+                      (set! V (parse-form qs))))))
+      (set! C (or (and=> (env-look 'http-cookie) get-cookies) '())))
+
+    (define (getenv-or-null-string)
+      (or (env-look key) ""))
+
+    (define (values name)
+      (assoc-ref V name))
+
+    (define (value name)
+      (and=> (values name) car))
+
+    (define (names)
+      (map car V))
+
+    (define (form-data?)
+      (not (null? V)))
+
+    (define (uploads name)
+      (and=> (assoc name U)
+             (lambda (cell)
+               (set! U (delq cell U))
+               (cdr cell))))
+
+    (define (upload name)
+      (and=> (uploads name) car))
+
+    (define (cookies name)
+      (assoc-ref C name))
+
+    (define (cookie name)
+      (and=> (cookies name) car))
+
+    ;; rv
+    (lambda (command . args)
+      (case command
+        ((#:init!) (init!))
+        ((#:getenv) (getenv-or-null-string (car rags)))
+        ((#:values) (values (car args)))
+        ((#:value) (value (car args)))
+        ((#:names) (names))
+        ((#:form-data?) (form-data?))
+        ((#:uploads) (uploads (car args)))
+        ((#:upload) (upload (car args)))
+        ((#:cookies) (cookies (car args)))
+        ((#:cookie) (cookie (car args)))
+        (else (error "bad command:" command))))))
+
+(define ONE #f)
+
 
 ;;; Public interface.
 
 ;; Initialize the environment.
 ;;
 (define (cgi:init)
-  (let ((len (env-look 'content-length)))
-    (cond ((= 0 len))
-          ((string-ci=? (env-look 'content-type)
-                        "application/x-www-form-urlencoded")
-           (set! form-variables (parse-form (read-n-bytes len))))
-          ((string-ci=? (subs (env-look 'content-type) 0 19)
-                        "multipart/form-data")
-           (let ((v/u (parse-form-multipart (read-n-bytes len))))
-             (set! form-variables (car v/u))
-             (set! file-uploads (cdr v/u))))))
-  (cond ((env-look 'query-string)
-         => (lambda (qs)
-              (or (string-null? qs)
-                  (set! form-variables (parse-form qs))))))
-  (set! cookies (or (and=> (env-look 'http-cookie) get-cookies) '())))
+  (set! ONE (make-ccc))
+  (ONE #:init!))
 
 ;; Return the value of the environment variable associated with @var{key}, a
 ;; symbol.  Unless otherwise specified below, the return value is a (possibly
@@ -338,7 +390,7 @@
 ;; Keys not listed above result in an "unrecognized key" error.
 ;;
 (define (cgi:getenv key)
-  (or (env-look key) ""))
+  (ONE #:getenv key))
 
 ;; Fetch any values associated with @var{name} found in the form data.
 ;; Return a list, even if it contains only one element.  A value is
@@ -346,14 +398,14 @@
 ;; is the same as that found in the form.
 ;;
 (define (cgi:values name)
-  (assoc-ref form-variables name))
+  (ONE #:values name))
 
 ;; Fetch only the @sc{car} from @code{(cgi:values NAME)}.  Convenient
 ;; for when you are certain that @var{name} is associated with only one
 ;; value.
 ;;
 (define (cgi:value name)
-  (and=> (cgi:values name) car))
+  (ONE #:value name))
 
 ;; Return a list of variable names in the form.  The order of the
 ;; list is the same as that found in the form for the first occurance
@@ -362,12 +414,12 @@
 ;; returned list would have order @code{a b c d e}.
 ;;
 (define (cgi:names)
-  (map car form-variables))
+  (ONE #:names))
 
 ;; Return #t iff there is form data available.
 ;;
 (define (cgi:form-data?)
-  (not (null? form-variables)))
+  (ONE #:form-data?))
 
 ;; Return a list of strings, the contents of files associated with @var{name},
 ;; or #f if no files are available.  Each string has an object property
@@ -396,10 +448,7 @@
 ;; amount of time the file is resident in memory.
 ;;
 (define (cgi:uploads name)
-  (and=> (assoc name file-uploads)
-         (lambda (cell)
-           (set! file-uploads (delq cell file-uploads))
-           (cdr cell))))
+  (ONE #:uploads name))
 
 ;; Fetch the first file associated with form var @var{name}.  Can only be
 ;; called once per @var{name}, so the caller had better be sure that
@@ -407,7 +456,7 @@
 ;; if you are unsure.
 ;;
 (define (cgi:upload name)
-  (and=> (cgi:uploads name) car))
+  (ONE #:upload name))
 
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
 ;; values in the order they were found in the HTTP header, which should
@@ -415,12 +464,12 @@
 ;; the cookie.  If no cookies are associated with @var{name}, return #f.
 ;;
 (define (cgi:cookies name)
-  (assoc-ref cookies name))
+  (ONE #:cookies name))
 
 ;; Fetch the first cookie value associated with @var{name}.
 ;;
 (define (cgi:cookie name)
-  (and=> (cgi:cookies name) car))
+  (ONE #:cookie name))
 
 ;; Return a string suitable for inclusion into an HTTP response header
 ;; as a cookie with @var{name} and @var{value}.  Both args may be strings
