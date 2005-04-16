@@ -46,10 +46,8 @@
 
 ;;; System I/O and low-level stuff.
 
-(define (read-n-chars num . port-arg)
-  (let ((p (if (null? port-arg)
-               (current-input-port)
-               (car port-arg)))
+(define (read-n-bytes num)
+  (let ((p (current-input-port))
         (s (make-string num)))
     (do ((i   0              (+ i 1))
          (ch  (read-char p)  (read-char p)))
@@ -266,10 +264,6 @@
                                  (stash-form-variable! name value)))))
                    (get-pair (cdr segment-newstart)))))))))
 
-(define (read-raw-form-data len)
-  ;; Read in LEN bytes from stdin.
-  (read-n-chars len))
-
 (define (get-cookies raw)
   ;; Initialize the cookie list from RAW.
   (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)")))
@@ -296,10 +290,10 @@
     (cond ((= 0 len))
           ((string-ci=? (env-look 'content-type)
                         "application/x-www-form-urlencoded")
-           (parse-form (read-raw-form-data len)))
+           (parse-form (read-n-bytes len)))
           ((string-ci=? (subs (env-look 'content-type) 0 19)
                         "multipart/form-data")
-           (parse-form-multipart (read-raw-form-data len)))))
+           (parse-form-multipart (read-n-bytes len)))))
   (cond ((env-look 'query-string)
          => (lambda (qs)
               (or (string-null? qs)
