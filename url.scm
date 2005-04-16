@@ -1,6 +1,6 @@
 ;;; www/url.scm --- URL manipulation tools
 
-;;	Copyright (C) 1997,2001,02,03,2004 Free Software Foundation, Inc.
+;;	Copyright (C) 1997,2001,02,03,04,2005 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
