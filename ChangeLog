@@ -1,3 +1,64 @@
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in (AC_INIT): Bump version to "2.10" for release.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (make-ccc): In subproc `init!', explicitly reset state.
+	(cgi:init): Only set `ONE' once.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (form-variables): Delete data structure.
+	(file-uploads, cookies): Likewise.
+	(make-ccc): New proc.
+	(ONE): New var.
+	(cgi:init, cgi:getenv, cgi:values, cgi:value): Rewrite.
+	(cgi:names, cgi:form-data?, cgi:uploads, cgi:upload): Likewise.
+	(cgi:cookies, cgi:cookie): Likewise.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (get-cookies): No longer set `cookies'.
+	Instead, simply return value to set.
+	(cgi:init): Set `cookies' from `get-cookies' rv.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (fs): New proc.
+	(parse-form-multipart, cgi:make-cookie): Use `fs'.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (parse-form-multipart): No longer set `form-variables' or
+	`file-uploads'.  Instead, simply return a cons of the values to set.
+	(cgi:init): Set `form-variables' and
+	`file-uploads' from `parse-form-multipart' rv.
+
+2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (parse-form): No longer set `form-variables'.
+	Instead, simply return value to set.
+	(cgi:init): Set `form-variables' from `parse-form' rv.
+
+2005-04-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (read-n-bytes): Rename from `read-n-chars'.
+	Also, no longer take optional arg PORT-ARG.
+	(read-raw-form-data): Delete proc.
+	(cgi:init): Use `read-n-bytes'.
+
+2005-04-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (parse-form-multipart): Promote internal proc ...
+	(updated-alist): ...to top-level.
+	(parse-form): Use `updated-alist'.
+
+2005-04-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm: Convert `define-public' to `define' + #:export clause.
+	* url-coding.scm, url.scm, main.scm, https.scm, http.scm: Likewise.
+
 2005-04-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* acinclude.m4 (AC_GUILE_WWW_GUILE_SITE_DIR): New macro.
