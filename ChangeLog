@@ -1,9 +1,5 @@
 2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
-	* configure.in (AC_INIT): Bump version to "2.10" for release.
-
-2005-04-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
-
 	* cgi.scm (make-ccc): In subproc `init!', explicitly reset state.
 	(cgi:init): Only set `ONE' once.
 
