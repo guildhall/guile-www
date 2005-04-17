@@ -1,5 +1,12 @@
 NEWS for Guile-WWW
 
+- 2.10 | 2005-04-17
+  - changes to (www cgi)
+    - cgi:values now maintains same order as in submitted form
+    - cgi:init now resets all internal state (suitable for fastcgi)
+  - new configure option: --disable-shsub
+  - new module: (www server-utils cgi-prep)
+
 - 2.9 | 2005-01-25
   - www:http-head-get can discard all but the alist portion of the msg obj
 
