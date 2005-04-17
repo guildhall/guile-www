@@ -286,6 +286,7 @@
         (C '()))                        ; cookies
 
     (define (init!)
+      (set! V '()) (set! U '())
       (let ((len (env-look 'content-length)))
         (cond ((= 0 len))
               ((string-ci=? (env-look 'content-type)
@@ -355,7 +356,7 @@
 ;; Initialize the environment.
 ;;
 (define (cgi:init)
-  (set! ONE (make-ccc))
+  (or ONE (set! ONE (make-ccc)))
   (ONE #:init!))
 
 ;; Return the value of the environment variable associated with @var{key}, a
