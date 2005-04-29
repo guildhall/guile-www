@@ -30,6 +30,22 @@
   #:use-module (www server-utils answer)
   #:export (make-big-dishing-loop))
 
+;;; Support
+
+;; These two macros are used in `make-big-dishing-loop'.
+;; Both are unhygienic and thus somewhat unsatisfying...
+
+(define-macro (GET-simple . more-args)
+  `(lambda (M upath headers inport)
+     (GET-upath M upath ,@more-args)))
+
+(define-macro (GET-return . more-args)
+  `(lambda (M upath headers inport)
+     (call-with-current-continuation
+      (lambda (return)
+        (GET-upath M upath ,@more-args return)
+        (not loop-break-bool)))))
+
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg, either a TCP port number, or pre-configured
 ;; socket.  @var{dish} behavior is controlled by the keyword arguments given
@@ -127,17 +143,6 @@
 
   (define (ferv n vector)
     (vector-ref vector n))
-
-  (defmacro GET-simple more-args
-    `(lambda (M upath headers inport)
-       (GET-upath M upath ,@more-args)))
-
-  (defmacro GET-return more-args
-    `(lambda (M upath headers inport)
-       (call-with-current-continuation
-        (lambda (return)
-          (GET-upath M upath ,@more-args return)
-          (not loop-break-bool)))))
 
   (let ((GET (ferv (+ (if need-headers    1 0)          ;;; We are knocking
                       (if need-input-port 2 0)          ;;; at the doors of
