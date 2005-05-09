@@ -1,5 +1,9 @@
 NEWS for Guile-WWW
 
+- 2.11 | 2005-05-09
+  - big-dishing-loop macros moved to (module) top-level
+  - FSF street address updated in copyright notices
+
 - 2.10 | 2005-04-17
   - changes to (www cgi)
     - cgi:values now maintains same order as in submitted form
