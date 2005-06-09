@@ -40,6 +40,7 @@ exec ${GUILE-guile} --debug -s $0 "$@" # -*-scheme-*-
    "val=1&noval2"
    "val=1&val2=2"
    "val=a&val"
+   (cons "val=a%20b" "val=a%20b")
    (cons "val=a+b" "val=a%20b")
    (cons "=bad-term"  "=bad-term")
    (cons "noval1&&noval2"  "noval1&noval2")
@@ -49,8 +50,8 @@ exec ${GUILE-guile} --debug -s $0 "$@" # -*-scheme-*-
    "with%3damper"
    (cons "val=a&val2=c&val=b" "val=a&val=b&val2=c")
    "a=1&b=2&c=3"
+   "a%3d=withequal"
    ))
-
 
 (define (join binder str-list)
   "join binder list => appends the list together with binder between"
@@ -119,10 +120,7 @@ exec ${GUILE-guile} --debug -s $0 "$@" # -*-scheme-*-
         (list (equal? normalized-qstring rebuilt-qstring)
               (list (list 'qstring qstring)
                     (list 'wanted normalized-qstring)
-                    (list 'rebuilt rebuilt-qstring)
-                    ;; ttn-sez: unnecessary
-                    ;;- cgi:names-values
-                    )))))
+                    (list 'rebuilt rebuilt-qstring))))))
 
   (let ((results (map comparer test-values)))
 
