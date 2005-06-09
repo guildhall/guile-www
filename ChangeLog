@@ -1,5 +1,9 @@
 2005-06-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* configure.in (AC_INIT): Bump version to "2.12" for release.
+
+2005-06-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* cgi.scm (parse-form): Return pair: uncollated and collated.
 	(make-ccc): Unpack `parse-form' rv.  Add command #:nv-pairs.
 	(cgi:nv-pairs): New proc, exported.
