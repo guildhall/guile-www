@@ -201,6 +201,15 @@ discovery, data transfer in, data transfer out.
 @twerpdoc (cgi:cookies)
 @twerpdoc (cgi:cookie)
 
+@section Uncollated Form Data
+
+With @code{cgi:values}, when a name occurs more than once, its associated
+values are collated, thus losing information about the relative order of
+different and intermingled names.  For this, you can use @code{cgi:nv-pairs}
+to access the uncollated (albeit ordered) form data.
+
+@twerpdoc (cgi:nv-pairs)
+
 @section Data Transfer Out
 
 @twerpdoc (cgi:make-cookie)
