@@ -1,3 +1,16 @@
+2005-06-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (parse-form): Return pair: uncollated and collated.
+	(make-ccc): Unpack `parse-form' rv.  Add command #:nv-pairs.
+	(cgi:nv-pairs): New proc, exported.
+	Suggested by Alan Grover.
+
+	* doc/guile-www.twerp (cgi): Add section "Uncollated Form Data"
+	and @twerpdoc for `cgi:nv-pairs'.
+
+	* contrib/qs-check (test-values): Add some test cases.
+	* contrib/qs-nv-check: New file.
+
 2005-05-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (AC_INIT): Bump version to "2.11" for release.
