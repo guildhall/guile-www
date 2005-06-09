@@ -30,6 +30,7 @@
   #:use-module (ice-9 optargs-kw)
   #:export (cgi:init
             cgi:getenv
+            cgi:nv-pairs
             cgi:values cgi:value
             cgi:names
             cgi:form-data?
@@ -171,19 +172,25 @@
 ;;; Other internal procedures.
 
 (define (parse-form data)
-  ;; Parse DATA as raw form response data of enctype x-www-form-urlencoded.
-  ;; Return a list of elements each of the form (name value1 value2...).
-  (let ((all (list)))
+  ;; Parse form-response DATA, a x-www-form-urlencoded string.
+  ;; Return a pair of order-maintained lists, (NV-PAIRS . COLLATED).
+  ;; Elements of NV-PAIRS have the form (name . value), while
+  ;; elements of COLLATED have the form (name value1 value2...).
+  (let ((nv-pairs (list))
+        (collated (list)))
     (for-each (lambda (pair)
                 (define (decode . args)
                   (url-coding:decode (apply subs pair args)))
                 (or (string-null? pair)
-                    (set! all (let* ((p (string-index pair #\=))
-                                     (name (if p (decode 0 p) (decode 0)))
-                                     (value (and p (decode (1+ p)))))
-                                (updated-alist all name value)))))
+                    (let* ((p (string-index pair #\=))
+                           (name (if p (decode 0 p) (decode 0)))
+                           (value (and p (decode (1+ p)))))
+                      (set! nv-pairs (acons name value nv-pairs))
+                      (set! collated (updated-alist collated name value)))))
               (separate-fields-discarding-char #\& data))
-    (reverse! all)))
+    (cons                               ; rv
+     (reverse! nv-pairs)
+     (reverse! collated))))
 
 (define (parse-form-multipart raw-data)
   ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
@@ -281,26 +288,32 @@
 ;;; CGI context closure.
 
 (define (make-ccc)
-  (let ((V '())                         ; form variables
+  (let ((P '())                         ; form variables as pairs
+        (V '())                         ; form variables collated
         (U '())                         ; file uploads
         (C '()))                        ; cookies
 
     (define (init!)
-      (set! V '()) (set! U '())
+      (set! P '()) (set! V '()) (set! U '())
       (let ((len (env-look 'content-length)))
         (cond ((= 0 len))
               ((string-ci=? (env-look 'content-type)
                             "application/x-www-form-urlencoded")
-               (set! V (parse-form (read-n-bytes len))))
+               (let ((p/v (parse-form (read-n-bytes len))))
+                 (set! P (car p/v))
+                 (set! V (cdr p/v))))
               ((string-ci=? (subs (env-look 'content-type) 0 19)
                             "multipart/form-data")
                (let ((v/u (parse-form-multipart (read-n-bytes len))))
                  (set! V (car v/u))
                  (set! U (cdr v/u))))))
-      (cond ((env-look 'query-string)
-             => (lambda (qs)
-                  (or (string-null? qs)
-                      (set! V (parse-form qs))))))
+      (and=> (env-look 'query-string)
+             (lambda (qs)
+               (and=> (and (not (string-null? qs))
+                           (parse-form qs))
+                      (lambda (p/v)
+                        (set! P (car p/v))
+                        (set! V (cdr p/v))))))
       (set! C (or (and=> (env-look 'http-cookie) get-cookies) '())))
 
     (define (getenv-or-null-string key)
@@ -338,6 +351,7 @@
       (case command
         ((#:init!) (init!))
         ((#:getenv) (getenv-or-null-string (car args)))
+        ((#:nv-pairs) P)
         ((#:values) (values (car args)))
         ((#:value) (value (car args)))
         ((#:names) (names))
@@ -392,6 +406,13 @@
 ;;
 (define (cgi:getenv key)
   (ONE #:getenv key))
+
+;; Fetch the list of @code{(name . value)}, in the same order as found
+;; in the form data.  A name may appear more than once.  A value is
+;; either a string, or #f.
+;;
+(define (cgi:nv-pairs)
+  (ONE #:nv-pairs))
 
 ;; Fetch any values associated with @var{name} found in the form data.
 ;; Return a list, even if it contains only one element.  A value is
