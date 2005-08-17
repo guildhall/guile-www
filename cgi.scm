@@ -138,10 +138,9 @@
                          (lambda (pr slash)
                            (subs pr (1+ slash)))))
     http-accept-types
-    ,(lambda () (and=> (getenv "HTTP_ACCEPT")
-                       (lambda (types)
-                         (split (char-set-adjoin char-set:whitespace #\,)
-                                types))))))
+    ,(lambda () (split (char-set-adjoin char-set:whitespace #\,)
+                       ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
+                       (or (getenv "HTTP_ACCEPT") "")))))
 
 (define *env-extraction*
   (let ((ht (make-hash-table 23)))
@@ -389,7 +388,7 @@
 ;; @item remote-ident
 ;; @item content-type
 ;; @item content-length (integer, possibly 0)
-;; @item http-accept-types (list of strings)
+;; @item http-accept-types (list, possibly empty, of strings)
 ;; @item http-user-agent
 ;; @item http-cookie
 ;; @end itemize
