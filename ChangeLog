@@ -1,3 +1,15 @@
+2005-08-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm: Use modules (srfi srfi-14) and (ice-9 rw).
+	(read-n-bytes): Use `read-string!/partial'.
+	(separate-fields-discarding-char): Delete proc.
+	(split): New proc.
+	(env-extraction-methods, parse-form): Use `split'.
+
+	* http.scm: Use module (ice-9 rw).
+	(read-n-chars): Use `read-string!/partial'.
+	(display-with-crlf): No longer take optional arg P.
+
 2005-06-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (AC_INIT): Bump version to "2.12" for release.
