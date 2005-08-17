@@ -1,3 +1,9 @@
+2005-08-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi.scm (env-extraction-methods): For `http-accept-types',
+	handle case where env var HTTP_ACCEPT is not set.
+	(cgi:init): Mention `http-accept-types' value may be the empty list.
+
 2005-08-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (AC_INIT): Bump version to "2.13" for release.
