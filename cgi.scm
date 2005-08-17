@@ -27,7 +27,9 @@
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-13)
+  #:use-module (srfi srfi-14)
   #:use-module (ice-9 optargs-kw)
+  #:use-module (ice-9 rw)
   #:export (cgi:init
             cgi:getenv
             cgi:nv-pairs
@@ -47,21 +49,15 @@
 (define (read-n-bytes num)
   (let ((p (current-input-port))
         (s (make-string num)))
-    (do ((i   0              (+ i 1))
-         (ch  (read-char p)  (read-char p)))
-        ((or (>= i num) (eof-object? ch)) s)
-      (string-set! s i ch))))
+    (let loop ((start 0))
+      (or (= start num)
+          (let ((try (read-string!/partial s p start)))
+            (and (number? try)
+                 (loop (+ start try))))))
+    s))
 
-(define (separate-fields-discarding-char ch str)
-  ;; Return a list formed by splitting at character CH the string STR.
-  ;; This proc is named after the one in (ice-9 string-fun).
-  (let loop ((fields '())
-             (str str))
-    (let ((pos (string-rindex str ch)))
-      (if pos
-          (loop (cons (subs str (+ 1 pos)) fields)
-                (subs str 0 pos))
-          (cons str fields)))))
+(define (split cs string)
+  (string-tokenize string (char-set-complement cs)))
 
 (define (updated-alist alist name value)
   ;; Update ALIST with NAME and VALUE.
@@ -144,12 +140,8 @@
     http-accept-types
     ,(lambda () (and=> (getenv "HTTP_ACCEPT")
                        (lambda (types)
-                         (map (lambda (s)
-                                (if (char=? #\space (string-ref s 0))
-                                    (subs s 1)
-                                    s))
-                              (separate-fields-discarding-char
-                               #\, types)))))))
+                         (split (char-set-adjoin char-set:whitespace #\,)
+                                types))))))
 
 (define *env-extraction*
   (let ((ht (make-hash-table 23)))
@@ -187,7 +179,7 @@
                            (value (and p (decode (1+ p)))))
                       (set! nv-pairs (acons name value nv-pairs))
                       (set! collated (updated-alist collated name value)))))
-              (separate-fields-discarding-char #\& data))
+              (split (char-set #\&) data))
     (cons                               ; rv
      (reverse! nv-pairs)
      (reverse! collated))))
