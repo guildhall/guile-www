@@ -26,6 +26,7 @@
 (define-module (www http)
   #:use-module (www url)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 rw)
   #:export (http:message-version
             http:message-status-code
             http:message-status-text
@@ -458,14 +459,16 @@
                (current-input-port)
                (car port-arg)))
         (s (make-string num)))
-    (do ((i   0              (+ i 1))
-         (ch  (read-char p)  (read-char p)))
-        ((or (>= i num) (eof-object? ch)) s)
-      (string-set! s i ch))))
+    (let loop ((start 0))
+      (or (= start num)
+          (let ((try (read-string!/partial s p start)))
+            (and (number? try)
+                 (loop (+ start try))))))
+    s))
 
-(define (display-with-crlf line . p)
-  (apply display line p)
-  (apply display "\r\n" p))
+(define (display-with-crlf line)
+  (display line)
+  (display "\r\n"))
 
 ;; (sans-trailing-whitespace STR)
 ;;      These are defined in module (ice-9 string-fun), so this code
