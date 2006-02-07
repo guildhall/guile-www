@@ -29,7 +29,7 @@ AC_DEFUN([AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING],[
   AC_SUBST([$1])
 ])
 
-dnl Add configure option `--disable-shared-substring'.
+dnl Add configure option `--disable-shsub'.
 dnl $1 is a shell var to set to "no" if `make-shared-substring'
 dnl should be replaced by `substring'.  If Guile doesn't provide
 dnl `make-shared-substring', this will be set to "no" regardless
