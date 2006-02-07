@@ -34,7 +34,7 @@ dnl $1 is a shell var to set to "no" if `make-shared-substring'
 dnl should be replaced by `substring'.  If Guile doesn't provide
 dnl `make-shared-substring', this will be set to "no" regardless
 dnl of the configure option.
-AC_DEFUN([AC_GUILE_WWW_DISABLE_SHARED_SUBTRING],[
+AC_DEFUN([AC_GUILE_WWW_DISABLE_SHARED_SUBSTRING],[
   AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING([$1])
   if test no = $$1 ; then : ; else
     AC_ARG_ENABLE([shsub],
@@ -47,7 +47,7 @@ AC_DEFUN([AC_GUILE_WWW_DISABLE_SHARED_SUBTRING],[
 
 dnl Encapsulate Guile core-capabilities checks.
 AC_DEFUN([AC_GUILE_WWW_CORE_AOK],[
-  AC_GUILE_WWW_DISABLE_SHARED_SUBTRING([use_shsub])
+  AC_GUILE_WWW_DISABLE_SHARED_SUBSTRING([use_shsub])
 ])
 
 dnl This is an adaptation of "guile-tools autofrisk" output.
