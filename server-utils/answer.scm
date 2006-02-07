@@ -21,8 +21,8 @@
   #:export (mouthpiece))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
-;; HTTP response to @var{out-port}.  Optional arg @var{status-box} is a list
-;; whose @sc{car} is set to the numeric status code given to a
+;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a
+;; list whose @sc{car} is set to the numeric status code given to a
 ;; @code{#:set-reply-status} command.  If @var{status-box} has length of two
 ;; or more, its @sc{cadr} is set to the content-length on @code{#:send-reply}.
 ;; A content-length value of #f means there have been no calls to
