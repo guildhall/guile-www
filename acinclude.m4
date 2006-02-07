@@ -1,6 +1,6 @@
 dnl Some -*-autoconf-*- macros for Guile-WWW.
 dnl
-dnl	Copyright (C) 2004,2005 Free Software Foundation, Inc.
+dnl	Copyright (C) 2004,2005,2006 Free Software Foundation, Inc.
 dnl
 dnl  This file is part of GUILE-WWW
 dnl
