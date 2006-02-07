@@ -5,7 +5,7 @@
 # tested with:
 # - GNU Automake 1.9.6
 # - GNU Autoconf 2.59
-# - Guile 1.4.1.106 (see HACKING)
+# - Guile 1.4.1.107 (see HACKING)
 
 [ -f configure.in ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
