@@ -90,30 +90,9 @@ AC_DEFUN([AC_GUILE_WWW_PROG_PUNIFY],[
   AC_SUBST([$1])
 ])
 
-dnl Adapted from Guile's GUILE_SITE, but fixed to always use ${prefix}.
-dnl TODO: Drop after next Guile 1.4.x release (and use GUILE_SITE directly).
-AC_DEFUN([AC_GUILE_WWW_GUILE_SITE_DIR],
- [AC_REQUIRE([GUILE_PROGS])dnl
-  AC_MSG_CHECKING(for Guile site directory)
-  # Try built-in reprefixing.
-  GUILE_SITE=`[$GUILE_CONFIG] re-prefix-info scheme_site_dir 2>/dev/null`
-  # If no joy, do it "manually".
-  if test x"$GUILE_SITE" = x ; then
-    GUILE_SITE=`[$GUILE_CONFIG] info prefix`
-    GUILE_SITE=`[$GUILE_CONFIG] info pkgdatadir | sed s,$GUILE_SITE,'${prefix}',`
-    GUILE_SITE="$GUILE_SITE/site"
-  fi
-  # If still no joy, make an educated guess.
-  if test x"$GUILE_SITE" = x/site ; then
-    GUILE_SITE='${datadir}/guile/site'
-  fi
-  AC_MSG_RESULT($GUILE_SITE)
-  AC_SUBST(GUILE_SITE)
-])
-
 dnl Encapsulate installation methodology
 AC_DEFUN([AC_GUILE_WWW_INST_METH_AOK],[
-  AC_GUILE_WWW_GUILE_SITE_DIR
+  GUILE_SITE_DIR
   AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 ])
 
