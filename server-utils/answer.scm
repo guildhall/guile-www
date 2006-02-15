@@ -19,7 +19,16 @@
 
 (define-module (www server-utils answer)
   #:use-module ((ice-9 rw) #:select (write-string/partial))
-  #:export (mouthpiece))
+  #:export (CRLF fs mouthpiece))
+
+(define CRLF "\r\n")
+
+;; Return a new string made by using format string @var{s} on @var{args}.
+;; As in @code{simple-format} (which this procedure uses), @code{~A} expands
+;; as with @code{display}, while @code{~S} expands as with @code{write}.
+;;
+(define (fs s . args)
+  (apply simple-format #f s args))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a
@@ -98,7 +107,7 @@
 
     (define (set-reply-status number msg)
       (or (null? status-box) (set-car! (car status-box) number))
-      (set! reply-status (format #f "HTTP/1.0 ~A ~A\r\n" number msg)))
+      (set! reply-status (fs "HTTP/1.0 ~A ~A\r\n" number msg)))
 
     (define (set-reply-status:success)
       (set-reply-status 200 "OK"))
@@ -106,15 +115,15 @@
     (define (add-header name value)
       (set! header-lines
             (cons (cond ((eq? #f name)
-                         (string-append value "\r\n"))
+                         (string-append value CRLF))
                         ((eq? #t name)
                          value)
                         (else
-                         (format #f "~A: ~A\r\n"
-                                 (if (keyword? name)
-                                     (keyword->symbol name)
-                                     name)
-                                 value)))
+                         (fs "~A: ~A\r\n"
+                             (if (keyword? name)
+                                 (keyword->symbol name)
+                                 name)
+                             value)))
                   header-lines)))
 
     (define (add-content . tree)
@@ -125,7 +134,7 @@
       (set! content (append content tree)))
 
     (define (add-formatted fstr . args)
-      (add-content (list (apply format #f
+      (add-content (list (apply fs
                                 (cond ((eq? #f fstr) "~S")
                                       ((eq? #t fstr) "~A")
                                       (else fstr))
@@ -191,7 +200,7 @@
       (and content-length (add-header #:Content-Length content-length))
       (>OUT reply-status)
       (>OUT (apply string-append (reverse! header-lines)))
-      (>OUT "\r\n")
+      (>OUT CRLF)
       (walk-tree >OUT content)
       (force-output out-port)
       (or (null? status-box)
