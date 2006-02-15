@@ -21,6 +21,9 @@
   #:use-module ((ice-9 rw) #:select (write-string/partial))
   #:export (CRLF fs mouthpiece))
 
+(define-macro (+! v n)
+  `(set! ,v (+ ,v ,n)))
+
 (define CRLF "\r\n")
 
 ;; Return a new string made by using format string @var{s} on @var{args}.
@@ -127,9 +130,9 @@
                   header-lines)))
 
     (define (add-content . tree)
+      (or content-length (set! content-length 0))
       (walk-tree (lambda (s)
-                   (set! content-length (+ (or content-length 0)
-                                           (string-length s))))
+                   (+! content-length (string-length s)))
                  tree)
       (set! content (append content tree)))
 
@@ -173,7 +176,7 @@
                          (let loop ((start 0) (move (min size left)))
                            (substring-move! s start (+ start move)
                                             dest dpos)
-                           (set! wpos (+ wpos move))
+                           (+! wpos move)
                            (let ((new-start (+ start move))
                                  (new-dpos (remainder wpos chunk)))
                              (cond ((= 0 new-dpos)
