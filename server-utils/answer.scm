@@ -18,6 +18,7 @@
 ;; Boston, MA  02110-1301  USA
 
 (define-module (www server-utils answer)
+  #:use-module ((ice-9 rw) #:select (write-string/partial))
   #:export (mouthpiece))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
@@ -185,7 +186,7 @@
 
     (define (send-reply)
       (define (>OUT x)
-        (display x out-port))
+        (write-string/partial x out-port))
       (or reply-status (error "reply status not set"))
       (and content-length (add-header #:Content-Length content-length))
       (>OUT reply-status)
