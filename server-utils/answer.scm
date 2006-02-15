@@ -40,7 +40,9 @@
 ;; This is equivalent to @code{#:set-reply-status 200 "OK"}.
 ;;
 ;; @item #:add-header NAME VALUE
-;; NAME may be a string, symbol or keyword.  VALUE is a string.
+;; NAME may be #f, #t, a string, symbol or keyword.  VALUE is a string.
+;; If NAME is #f or #t, VALUE is taken to be pre-formatted as "A: B"
+;; or "A: B\r\n", respectively.
 ;;
 ;; @item #:add-content [TREE ...]
 ;; TREE may be a string, a nested list of strings, or a series of such.
