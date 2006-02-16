@@ -362,28 +362,76 @@ better throughput with certain chunk sizes than with others.
 
 @twerpdoc (mouthpiece)
 
-Here is an example that uses most of the commands:
+Here is an example that uses most of the @code{mouthpiece} commands:
 
 @example
 (use-modules (www server-utils content-type) (scripts slurp))
 
+(define SERVER-NAME "Guile-WWW-example-server")
+(define SERVER-VERSION "1.0")
 (define STATUS (list #f #f))
 (define M (mouthpiece (open-output-file "fake") STATUS))
 
 (define (transmit-file filename)
   (M #:set-reply-status:success)
+  (M #:add-header #:Server (string-append SERVER-NAME " "
+                                          SERVER-VERSION))
   (M #:add-header #:Connection "close")
   (M #:add-header #:Content-Type (filename->content-type
-                                   filename "text/plain"))
+                                  filename "text/plain"))
   (M #:add-content (slurp filename))
-  (format #t "rechunked: ~A\n"
-          (M #:rechunk-content (* 8 1024)))
+  (simple-format #t "rechunked: ~A\n"
+                 (M #:rechunk-content (* 8 1024)))
   (M #:send-reply))
 
 (transmit-file "COPYING")
 @print{} rechunked: (8192 8192 1605)
 STATUS
 @result{} (200 17989)
+@end example
+
+For higher performance, you can preformat parts of the response, using
+@code{CRLF}, and some lower-level convenience procedures.
+
+@defvr {Scheme String} CRLF
+The string ``\r\f''.
+@end defvr
+
+@twerpdoc (fs)
+@twerpdoc (walk-tree)
+@twerpdoc (string<-header-components)
+
+Here is @code{transmit-file} from the above example, slightly modified to use
+preformatted headers and @code{fs}:
+
+@example
+(define CONSTANT-HEADERS
+  (string<-header-components
+   #:Server (fs "~A ~A" SERVER-NAME SERVER-VERSION)
+   #:Connection "close"))
+
+(define (transmit-file filename)
+  (M #:set-reply-status:success)
+  (M #:add-header #t CONSTANT-HEADERS)
+  (M #:add-header #:Content-Type (filename->content-type
+                                  filename "text/plain"))
+  (M #:add-content (slurp filename))
+  (display (fs "rechunked: ~A\n" (M #:rechunk-content (* 8 1024))))
+  (M #:send-reply))
+@end example
+
+Note that @code{mouthpiece} accepts trees for both @code{#:add-header} and
+@code{#:add-content} commands.  Thus, the following two fragments give the
+same result, although the latter is both more elegant and more efficient:
+
+@example
+;; Doing things "manually".
+(walk-tree (lambda (string)
+             (M #:add-content string))
+           tree)
+
+;; Letting the mouthpiece handle things.
+(M #:add-content tree)
 @end example
 
 @c ---------------------------------------------------------------------------
