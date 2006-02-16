@@ -19,7 +19,8 @@
 
 (define-module (www server-utils answer)
   #:use-module ((ice-9 rw) #:select (write-string/partial))
-  #:export (CRLF fs mouthpiece))
+  #:export (CRLF fs walk-tree string<-header-components
+                 mouthpiece))
 
 (define-macro (+! v n)
   `(set! ,v (+ ,v ,n)))
@@ -32,6 +33,55 @@
 ;;
 (define (fs s . args)
   (apply simple-format #f s args))
+
+;; Call @var{proc} for each recursively-visited leaf in @var{tree}, excluding
+;; empty lists.  It is an error for @var{tree} to contain improper lists.
+;;
+(define (walk-tree proc tree)
+  (cond ((null? tree))
+        ((pair? tree) (for-each (lambda (sub) (walk-tree proc sub)) tree))
+        (else (proc tree))))
+
+(define (length/tree<-header-components name value . etc)
+  (let ((len 4)                         ; colon space CR LF
+        (lhs (if (string? name)
+                 name
+                 (fs "~A" (if (keyword? name)
+                              (keyword->symbol name)
+                              name))))
+        (rhs (if (or (pair? value) (null? value))
+                 value
+                 (fs "~A" value))))
+    (define (more s)
+      (+! len (string-length s)))
+    (walk-tree more lhs)
+    (walk-tree more rhs)
+    (if (null? etc)
+        (list len lhs ": " rhs CRLF)
+        (let ((rest (apply length/tree<-header-components etc)))
+          (list (+ len (car rest))
+                lhs ": " rhs CRLF
+                (cdr rest))))))
+
+;; Return a string made from formatting header name @var{n} and value @var{v}.
+;; Additional headers can be specified as alternating name and value args.
+;; Each header is formatted like so: ``NAME: VALUE\r\n''.
+;;
+;; Each @var{n} may be a string, symbol or keyword.  Each @var{v} may be a
+;; string, number, or a tree of strings.
+;;
+;;-sig: (n v [n1 v1...])
+;;
+(define (string<-header-components name value . etc)
+  (let* ((l/t (apply length/tree<-header-components name value etc))
+         (wp 0)
+         (rv (make-string (car l/t))))
+    (walk-tree (lambda (s)
+                 (let ((len (string-length s)))
+                   (substring-move! s 0 len rv wp)
+                   (+! wp len)))
+               (cdr l/t))
+    rv))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a
@@ -54,8 +104,9 @@
 ;;
 ;; @item #:add-header NAME VALUE
 ;; NAME may be #f, #t, a string, symbol or keyword.  VALUE is a string.
-;; If NAME is #f or #t, VALUE is taken to be pre-formatted as "A: B"
-;; or "A: B\r\n", respectively.
+;; If NAME is #f or #t, VALUE is taken to be a pre-formatted string,
+;; "A: B" or "A: B\r\n", respectively.  If NAME is not a boolean, VALUE
+;; may also be a tree of strings or a number.
 ;;
 ;; @item #:add-content [TREE ...]
 ;; TREE may be a string, a nested list of strings, or a series of such.
@@ -88,46 +139,49 @@
 ;;
 (define (mouthpiece out-port . status-box)
 
-  (define (walk-tree proc tree)
-    (if (pair? tree)
-        (for-each (lambda (sub) (walk-tree proc sub)) tree)
-        (proc tree)))
-
   (and (not (null? status-box))         ; normalize
        (not (list? (car status-box)))
        (set! status-box '()))
 
-  (let ((reply-status #f)
-        (header-lines '())
-        (content '())
-        (content-length #f))
+  (let* ((pre-tree (list #f))
+         (pre-tp pre-tree)
+         (pre-len 0)
+         (preamble (make-string (- 1024 16)))
+         (content '())
+         (content-length #f))
 
     (define (reset-protocol!)
-      (set! reply-status #f)
-      (set! header-lines '())
+      (set! pre-tree (list #f))
+      (set! pre-tp pre-tree)
+      (set! pre-len 0)
       (set! content '())
       (set! content-length #f))
 
     (define (set-reply-status number msg)
       (or (null? status-box) (set-car! (car status-box) number))
-      (set! reply-status (fs "HTTP/1.0 ~A ~A\r\n" number msg)))
+      (let ((s (fs "HTTP/1.0 ~A ~A\r\n" number msg)))
+        (+! pre-len (string-length s))
+        (set-car! pre-tree s)))
 
     (define (set-reply-status:success)
-      (set-reply-status 200 "OK"))
+      (+! pre-len 17)
+      (set-car! pre-tree "HTTP/1.0 200 OK\r\n"))
+
+    (define (preamble-append! len new)
+      (+! pre-len len)
+      (set-cdr! pre-tp (list new)))
 
     (define (add-header name value)
-      (set! header-lines
-            (cons (cond ((eq? #f name)
-                         (string-append value CRLF))
-                        ((eq? #t name)
-                         value)
-                        (else
-                         (fs "~A: ~A\r\n"
-                             (if (keyword? name)
-                                 (keyword->symbol name)
-                                 name)
-                             value)))
-                  header-lines)))
+      (define (up! len new)
+        (preamble-append! len new)
+        (set! pre-tp (cdr pre-tp)))
+      (cond ((eq? #f name)
+             (up! (+ 2 (string-length value)) (list value CRLF)))
+            ((eq? #t name)
+             (up! (string-length value) value))
+            (else
+             (let ((l/t (length/tree<-header-components name value)))
+               (up! (car l/t) (cdr l/t))))))
 
     (define (add-content . tree)
       (or content-length (set! content-length 0))
@@ -197,14 +251,21 @@
              (error "chunk must be #f, #t or a number:" chunk))))
 
     (define (send-reply)
-      (define (>OUT x)
-        (write-string/partial x out-port))
-      (or reply-status (error "reply status not set"))
+      (or (car pre-tree) (error "reply status not set"))
       (and content-length (add-header #:Content-Length content-length))
-      (>OUT reply-status)
-      (>OUT (apply string-append (reverse! header-lines)))
-      (>OUT CRLF)
-      (walk-tree >OUT content)
+      (preamble-append! 2 CRLF)
+      (and (< (string-length preamble) pre-len)
+           (set! preamble (make-string (+ pre-len 64))))
+      (let ((wp 0))
+        (walk-tree (lambda (s)
+                     (let ((len (string-length s)))
+                       (substring-move! s 0 len preamble wp)
+                       (+! wp len)))
+                   pre-tree))
+      (write-string/partial preamble out-port 0 pre-len)
+      (walk-tree (lambda (x)
+                   (write-string/partial x out-port))
+                 content)
       (force-output out-port)
       (or (null? status-box)
           (let ((box (car status-box)))
