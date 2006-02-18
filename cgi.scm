@@ -28,8 +28,8 @@
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
-  #:use-module (ice-9 optargs-kw)
   #:use-module (ice-9 rw)
+  #:autoload (www server-utils cookies) (rfc2109-set-cookie-string)
   #:export (cgi:init
             cgi:getenv
             cgi:nv-pairs
@@ -484,27 +484,10 @@
 (define (cgi:cookie name)
   (ONE #:cookie name))
 
-;; Return a string suitable for inclusion into an HTTP response header
-;; as a cookie with @var{name} and @var{value}.  Both args may be strings
-;; symbols or keywords.  Also, recognize and format appropriately the
-;; optional keyword parameters @code{#:path}, @code{#:domain},
-;; @code{#:expires} (strings); and @code{#:secure} (boolean).
+;; Return a string suitable for inclusion into an HTTP response header.
+;; This proc just applies @code{rfc2109-set-cookie-string} to @var{args}.
 ;;
-;; @example
-;; (cgi:make-cookie 'war 'lose #:path "/ignorance/suffering")
-;; @result{} "Set-Cookie: war=lose; path=/ignorance/suffering"
-;; @end example
-;;
-;;-sig: (name value [#:path P] [#:domain D] [#:expires E] [#:secure S])
-;;
-(define* (cgi:make-cookie name value #:key (path #f)
-                          (domain #f) (expires #f) (secure #f))
-  (fs "Set-Cookie: ~A=~A~A~A~A~A"
-      (if (keyword? name) (keyword->symbol name) name)
-      (if (keyword? value) (keyword->symbol value) value)
-      (if path (fs "; path=~A" path) "")
-      (if domain (fs "; domain=~A" domain) "")
-      (if expires (fs "; expires=~A" expires) "")
-      (if secure "; secure" "")))
+(define (cgi:make-cookie . args)
+  (apply rfc2109-set-cookie-string args))
 
 ;;; www/cgi.scm ends here
