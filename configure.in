@@ -19,7 +19,7 @@ dnl  along with GUILE; see the file COPYING.  If not, write to the
 dnl  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor
 dnl  Boston, MA  02110-1301  USA
 
-AC_INIT(Guile-WWW,2.13)
+AC_INIT([Guile-WWW],[2.14])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AC_GUILE_WWW_CORE_AOK
