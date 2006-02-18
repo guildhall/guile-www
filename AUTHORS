@@ -17,6 +17,7 @@ Thien-Thi Nguyen wrote:
 	server-utils/big-dishing-loop.scm
 	server-utils/parse-request.scm
 	server-utils/cgi-prep.scm
+	server-utils/cookies.scm
 	server-utils/log.scm
 	data/http-status.scm
 	doc/guile-www.twerp
