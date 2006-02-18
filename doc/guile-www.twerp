@@ -100,6 +100,7 @@ Server Utilities
 * parse-request::       Read HTTP first line and headers.
 * filesystem::          Work with the local filesystem.
 * cgi-prep::            Prepare environment for CGI handoff.
+* cookies::             Handling bits of client-side state.
 * answer::              HTTP connection handling and responses.
 * log::                 Love notes to other programs.
 
@@ -211,6 +212,9 @@ to access the uncollated (albeit ordered) form data.
 @twerpdoc (cgi:nv-pairs)
 
 @section Data Transfer Out
+
+The following procedure will be removed after 2006-12-31.
+Do @emph{not} rely on it.  @xref{cookies}, instead.
 
 @twerpdoc (cgi:make-cookie)
 
@@ -349,6 +353,57 @@ afterwards.
 @end example
 
 Now we can re-use @code{M} for another connection.
+
+@c ---------------------------------------------------------------------------
+@node    cookies
+@chapter cookies
+
+Cookies are bits of client-side state the server can maintain through
+designated HTTP response headers.  At this time (early 2006), there are two
+specifications,
+RFC2109@footnote{@uref{http://www.faqs.org/rfcs/rfc2109.html,RFC2109}}
+and
+RFC2965@footnote{@uref{http://www.faqs.org/rfcs/rfc2965.html,RFC2965}},
+the latter obsoleting the former.
+
+This chapter describes facilities for creating such headers, and parsing those
+sent by the client.  Procedures that return trees are meant to be used with
+the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
+
+@twerpdoc (rfc2109-set-cookie-string)
+@twerpdoc (rfc2965-set-cookie2-tree)
+
+Here is an example that demonstates both RFC2109 and RFC2965 formatting.
+Notable differences: the keyword to specify the path is now capitalized; the
+representation of the cookie's value is now double-quoted.
+
+@example
+;; RFC2109
+(rfc2109-set-cookie-string 'war 'lose #:path "/ignorance/suffering")
+@result{} "Set-Cookie: war=lose; path=/ignorance/suffering"
+
+;; RFC2965
+(use-modules ((www server-utils answer) #:select (walk-tree)))
+
+(define TREE (rfc2965-set-cookie2-tree
+              '(war lose #:Path "/ignorance/suffering" #:Discard)))
+
+(car TREE)
+@result{} #:Set-Cookie2
+
+(walk-tree display (cdr TREE))
+@print{} war="lose";Path="/ignorance/suffering";Discard;Version=1
+@end example
+
+To generate a cookie spec from the @code{Cookie} http response header sent by
+a client, you can use @code{rfc2965-parse-cookie-header-value}.
+
+@twerpdoc (rfc2965-parse-cookie-header-value)
+
+RFC2965 also specifies some other small algorithms, some of which are codified
+as procedures available in this module.
+
+@twerpdoc (reach)
 
 @c ---------------------------------------------------------------------------
 @node    answer
