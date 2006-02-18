@@ -1,5 +1,15 @@
 NEWS for Guile-WWW
 
+- 2.14 | 2006-02-19
+  - (www cgi) now handles unset HTTP_ACCEPT
+  - additions to module (www server-utils answer)
+    - string: CRLF
+    - procedure: fs
+    - procedure: walk-tree
+    - procedure: string<-header-components
+    - `mouthpiece' #:add-header now also takes boolean NAME
+  - new module: (www server-utils cookies)
+
 - 2.13 | 2005-08-17
   - for speed, use `read-string!/partial' in (www cgi) and (www http)
 

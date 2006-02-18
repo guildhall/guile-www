@@ -1,3 +1,37 @@
+2006-02-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in (AC_INIT): Bump version to "2.14" for release.
+
+2006-02-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/guile-www.twerp (Top): Add to menu "cookies".
+	(cgi): Add warning about pending removal of `cgi:make-cookie'.
+	(cookies): New node/chapter.
+
+	* Makefile.am (DOT_DOC_FILES): Add server-utils/cookies.doc.
+
+	* cgi.scm: No longer use module (ice-9 optargs-kw).
+	Instead, autoload module (www server-utils cookies).
+	(cgi:make-cookie): Use `rfc2109-set-cookie-string'.
+
+2006-02-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/guile-www.twerp (answer):
+	Include server name and version in example.
+	Also, use `simple-format' in example.
+	Also, add intro blurbs, examples, and @twerpdoc entries for
+	`CRLF', `fs', `walk-tree' and `string<-header-components'.
+
+2006-02-07  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* acinclude.m4 (AC_GUILE_WWW_DISABLE_SHARED_SUBSTRING):
+	Rename from `AC_GUILE_WWW_DISABLE_SHARED_SUBTRING'.
+
+2006-02-07  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* acinclude.m4 (AC_GUILE_WWW_GUILE_SITE_DIR): Delete macro.
+	(AC_GUILE_WWW_INST_METH_AOK): Use `GUILE_SITE_DIR' directly.
+
 2005-08-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* cgi.scm (env-extraction-methods): For `http-accept-types',

@@ -1,3 +1,48 @@
+2006-02-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cookies.scm: New file.
+
+2006-02-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm (walk-tree): New proc, exported.
+	(length/tree<-header-components): New proc.
+	(string<-header-components): New proc, exported.
+	(mouthpiece walk-tree): Move internal proc to top; fix ()-handling.
+	(mouthpiece): Coalesce accumulation and send of reply status and
+	headers; accept trees for header value; hardcode success status
+	constants.
+
+2006-02-16  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm (+!): New macro.  Use it throughout.
+
+2006-02-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm (CRLF): New string, exported.
+	(fs): New proc, exported.
+	(mouthpiece set-reply-status): Use `fs'.
+	(mouthpiece add-header): Use `CRLF' and `fs'.
+	(mouthpiece add-formatted): Use `fs'.
+	(mouthpiece send-reply): Use `CRLF'.
+
+2006-02-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm: Use module (ice-9 rw).
+	(mouthpiece send-reply >OUT): Use `write-string/partial'.
+
+2006-02-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* cgi-prep.scm (cgi-environment-manager add!): Remove debugging `pk'.
+
+2006-02-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm (mouthpiece): Fix doc omission bug:
+	For #:add-header, describe operation when given boolean NAME.
+
+2006-02-07  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* answer.scm (mouthpiece): Specify "HTTP 1.0" in documentation.
+
 2005-04-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* big-dishing-loop.scm (GET-simple, GET-return): New macros.
