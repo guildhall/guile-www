@@ -72,7 +72,7 @@
 (define (http:message-status-code msg) (vector-ref msg 1))
 ;; Return the text of the status line from HTTP message @var{msg}.
 (define (http:message-status-text msg) (vector-ref msg 2))
-;; Return #t iff status code STATUS indicates a successful request.
+;; Return #t iff status code of @var{msg} indicates a successful request.
 (define (http:message-status-ok? msg)
   (http:status-ok? (http:message-status-code msg)))
 
