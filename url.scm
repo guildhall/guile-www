@@ -132,18 +132,20 @@
 ;; Note: The username portion is not included!
 ;;
 (define (url:unparse url)
+  (define (fs s . args)
+    (apply simple-format #f s args))
   (define (pathy scheme username url)   ; username not used!
-    (format #f "~A://~A~A~A"
-            scheme
-            (url:host url)
-            (cond ((url:port url) => (lambda (port) (format #f ":~A" port)))
-                  (else ""))
-            (cond ((url:path url) => (lambda (path) (format #f "/~A" path)))
-                  (else ""))))
+    (fs "~A://~A~A~A"
+        scheme
+        (url:host url)
+        (cond ((url:port url) => (lambda (port) (fs ":~A" port)))
+              (else ""))
+        (cond ((url:path url) => (lambda (path) (fs "/~A" path)))
+              (else ""))))
   (case (url:scheme url)
     ((http) (pathy 'http #f url))
     ((ftp)  (pathy 'ftp (url:user url) url))
-    ((mailto) (format #f "mailto:~A" (url:address url)))
+    ((mailto) (fs "mailto:~A" (url:address url)))
     ((unknown) (url:unknown url))))
 
 
