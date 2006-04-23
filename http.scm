@@ -49,6 +49,8 @@
 
 (define subs make-shared-substring)
 
+(define (fs s . args)
+  (apply simple-format #f s args))
 
 
 ;;; Variables that affect HTTP usage.
@@ -226,15 +228,15 @@
         (error "bad upload spec:" spec)))
 
   (define (c-type type . boundary)
-    (format #f "Content-Type: ~A~A"
-            type
-            (if (null? boundary)
-                ""
-                (format #f "; boundary=~S" (car boundary)))))
+    (fs "Content-Type: ~A~A"
+        type
+        (if (null? boundary)
+            ""
+            (fs "; boundary=~S" (car boundary)))))
 
   (define (c-disp disp name . f?)
-    (format #f "Content-Disposition: ~A; ~Aname=\"~A\""
-            disp (if (null? f?) "" "file") name))
+    (fs "Content-Disposition: ~A; ~Aname=\"~A\""
+        disp (if (null? f?) "" "file") name))
 
   (let ((simple '()) (uploads '())      ; partition fields
         (boundary "gUiLeWwWhTtPpOsTfOrM"))
@@ -256,7 +258,7 @@
       (list (if (null? uploads)
                 (c-type "application/x-www-form-urlencoded")
                 (c-type "multipart/form-data" boundary))
-            (format #f "Host: ~A" (url:host url)))
+            (fs "Host: ~A" (url:host url)))
       extra-headers)
      ;; body
      (if (null? uploads)
@@ -264,7 +266,7 @@
              (let* ((enc (lambda (extract pair)
                            (url:encode (extract pair) '())))
                     (one (lambda (fmt pair)
-                           (format #f fmt (enc car pair) (enc cdr pair)))))
+                           (fs fmt (enc car pair) (enc cdr pair)))))
                (list                    ; all on one line
                 (apply string-append
                        (one "~A=~A" (car simple))
@@ -294,8 +296,8 @@
                                                 (basename (name: spec))
                                                 #t)
                                         (c-type (mime-type: spec))
-                                        (format #f "Content-Transfer-Encoding: ~A"
-                                                (xfer-enc: spec))
+                                        (fs "Content-Transfer-Encoding: ~A"
+                                            (xfer-enc: spec))
                                         ""
                                         (let ((s (source: spec)))
                                           (if (string? s) s (s)))))
@@ -370,10 +372,10 @@
 (define (http:request method url . args)
   (let ((host     (url:host url))
         (tcp-port (or (url:port url) 80))
-        (path     (format #f "/~A" (or (url:path url) ""))))
+        (path     (fs "/~A" (or (url:path url) ""))))
     (let ((sock (http:open host tcp-port))
-          (request (format #f "~A ~A ~A" method path http:version))
-          (headers (cons (format #f "Host: ~A" (url:host url))
+          (request (fs "~A ~A ~A" method path http:version))
+          (headers (cons (fs "Host: ~A" (url:host url))
                          (if (pair? args) (car args) '())))
           (body    (if (and (pair? args) (pair? (cdr args)))
                        (cadr args)
@@ -391,7 +393,7 @@
                             (+ 2 (string-length line))) ; + 2 for CRLF
                           body)))
              (headers (if (positive? content-length)
-                          (cons (format #f "Content-Length: ~A" content-length)
+                          (cons (fs "Content-Length: ~A" content-length)
                                 headers)
                           headers)))
 
