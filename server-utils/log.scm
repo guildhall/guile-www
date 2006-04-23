@@ -55,18 +55,18 @@
          (mpair? (and (<= 3 len) (caddr opts)))
          (meth (if mpair? car identity))
          (vers (if mpair?
-                   (lambda (x) (format #f " ~A" (cdr x)))
+                   (lambda (x) (simple-format #f " ~A" (cdr x)))
                    (lambda (x) ""))))
     ;; rv
     (lambda (client method upath status)
-      (format port "~A - - [~A] \"~A ~A~A\" ~A"
-              client
-              (strftime tfmt (rep (current-time)))
-              (meth method) upath (vers method)
-              (if (pair? status) (car status) status))
+      (simple-format port "~A - - [~A] \"~A ~A~A\" ~A"
+                     client
+                     (strftime tfmt (rep (current-time)))
+                     (meth method) upath (vers method)
+                     (if (pair? status) (car status) status))
       (and (pair? status)
            (for-each (lambda (x)
-                       (format port " ~A" x))
+                       (simple-format port " ~A" x))
                      (cdr status)))
       (newline port))))
 
