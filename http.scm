@@ -336,7 +336,9 @@
   (make-regexp "content-type: *application/x-www-form-urlencoded"
                regexp/icase))
 
-;; Submit an HTTP request using @var{method} and @var{url}.
+;; Submit an HTTP request using @var{method} and @var{url}, wait
+;; for a response, and return the response as an HTTP message object.
+;;
 ;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
 ;; @var{url} is a url object returned by @code{url:parse}.
 ;; Optional args @var{headers} and @var{body} are lists of strings
