@@ -135,6 +135,23 @@ operation, low-level HTTP message object access, and common messages.
 @twerpdoc (http:message-status-ok?)
 @twerpdoc (http:status-ok?)
 @twerpdoc (http:message-body)
+
+An HTTP message header is represented by a pair.  The @sc{car} is a
+symbol representing the header name, and the @sc{cdr} is a string containing
+the header text.  E.g.:
+
+@example
+'((date . "Thu, 29 May 1997 23:48:27 GMT")
+  (server . "NCSA/1.5.1")
+  (last-modified . "Tue, 06 May 1997 18:32:03 GMT")
+  (content-type . "text/html")
+  (content-length . "8097"))
+@end example
+
+Note: these symbols are all lowercase, although the original headers may be
+mixed-case.  Clients using this library should keep this in mind, since Guile
+symbols are case-sensitive.
+
 @twerpdoc (http:message-headers)
 @twerpdoc (http:message-header)
 
