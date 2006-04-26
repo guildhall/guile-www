@@ -175,7 +175,7 @@
 ;; The @code{Host} header is automatically included.
 ;;
 (define (http:head url)
-  (http:request "HEAD" url (list (string-append "Host: " (url:host url)))))
+  (http:request "HEAD" url))
 
 ;; Submit an http request using the @code{GET} method on the @var{url}.
 ;; The @code{Host} header is automatically included.
@@ -183,7 +183,7 @@
 (define (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
-  (http:request "GET" url (list (string-append "Host: " (url:host url)))))
+  (http:request "GET" url))
 
 ;; Submit an http request using the @code{POST} method on the @var{url}.
 ;; @var{extra-headers} is a list of extra headers, each a string of
@@ -257,8 +257,7 @@
      (append
       (list (if (null? uploads)
                 (c-type "application/x-www-form-urlencoded")
-                (c-type "multipart/form-data" boundary))
-            (fs "Host: ~A" (url:host url)))
+                (c-type "multipart/form-data" boundary)))
       extra-headers)
      ;; body
      (if (null? uploads)
@@ -346,8 +345,8 @@
 ;; Optional args @var{headers} and @var{body} are lists of strings
 ;; that comprise the lines of an HTTP message.  The strings should
 ;; not end with CR or LF or CRLF; @code{http:request} handles that.
-;; Also, the Content-Length header is calculated automatically
-;; and should not be supplied.  Here are two examples:
+;; Also, the Content-Length header and Host header are calculated
+;; automatically and should not be supplied.  Here are two examples:
 ;;
 ;; @example
 ;; (http:request "get" parsed-url
