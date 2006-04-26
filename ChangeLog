@@ -1,3 +1,30 @@
+2006-04-26  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:head, http:get, http:post-form):
+	Fix bug: No longer specify `Host' header to `http:request'.
+	(http:request): Doc fix: Mention `Host' automatic inclusion.
+
+	* doc/guile-www.twerp (http):
+	Add explanation of headers representation.
+
+2006-04-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (fs): New proc.
+	(http:post-form, http:request): Use `fs'.
+
+	* url.scm (url:unparse fs): New internal proc.
+	(url:unparse): Use it.
+
+	* log.scm (log-http-response-proc): Use `simple-format'.
+
+2006-04-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:request): Doc fix: Mention return value.
+
+2006-04-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http.scm (http:message-status-ok?): Doc fix.
+
 2006-02-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (AC_INIT): Bump version to "2.14" for release.
