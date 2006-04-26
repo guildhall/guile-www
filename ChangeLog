@@ -1,5 +1,9 @@
 2006-04-26  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
+	* configure.in (AC_INIT): Bump version to "2.15" for release.
+
+2006-04-26  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
 	* http.scm (http:head, http:get, http:post-form):
 	Fix bug: No longer specify `Host' header to `http:request'.
 	(http:request): Doc fix: Mention `Host' automatic inclusion.
