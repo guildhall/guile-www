@@ -64,6 +64,11 @@
 ;; The number of clients to queue, as set by the @code{listen} system call.
 ;; Setting the queue length is done for both new and pre-configured sockets.
 ;;
+;; @item #:concurrency #:new-process
+;; The type of concurrency (or none if the value is not recognized).  At
+;; this time, there is only @code{#:new-process}, which means to fork a
+;; new process for each request.
+;;
 ;; @item #:bad-request-handler #f
 ;; If the first line of an HTTP message is not in the proper form, this
 ;; specifies a proc that takes a mouthpiece @var{m}.  Its return value should
@@ -139,6 +144,7 @@
           (loop-break-bool #f)
           (queue-length 0)
           (bad-request-handler #f)
+          (concurrency #:new-process)
           (log #f))
 
   (define (ferv n vector)
@@ -218,17 +224,27 @@
         (listen sock queue-length)
         (let loop ((conn (accept sock)))
           (let ((p (car conn))
-                (client (make-client conn))
-                (pid (primitive-fork)))
-            (cond ((= 0 pid)
-                   (exit (let ((req (read-first-line p)))
-                           (if (not req)
-                               (handle-bad-request p)
-                               (apply handle-request client p req)))))
-                  (else
-                   (close-port p)
-                   (set! p #f)
-                   (and (= 0 (status:exit-val (cdr (waitpid pid))))
-                        (loop (accept sock)))))))))))
+                (client (make-client conn)))
+            (define (child)
+              (let ((req (read-first-line p)))
+                (if (not req)
+                    (handle-bad-request p)
+                    (apply handle-request client p req))))
+            (define (butt-out!)
+              (close-port p)
+              (set! p #f))
+            (case concurrency
+              ((#:new-process)
+               (let ((pid (primitive-fork)))
+                 (cond ((= 0 pid)
+                        (exit (child)))
+                       (else
+                        (butt-out!)
+                        (and (= 0 (status:exit-val (cdr (waitpid pid))))
+                             (loop (accept sock)))))))
+              (else
+               (and (child)
+                    (begin (butt-out!)
+                           (loop (accept sock))))))))))))
 
 ;;; www/server-utils/big-dishing-loop.scm ends here
