@@ -1,5 +1,8 @@
 NEWS for Guile-WWW
 
+- 2.16 | 2006-07-14
+  - make-big-dishing-loop accepts keyword arg #:concurrency
+
 - 2.15 | 2006-04-26
   - bugfix: don't include Host twice (http:head, http:get, http:post-form)
   - maintenance uses Automake 1.9.6 and Texinfo 4.8
