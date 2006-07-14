@@ -1,3 +1,14 @@
+2006-07-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* big-dishing-loop.scm (make-big-dishing-loop):
+	Handle #:concurrency value #:new-process/nowait.
+
+2006-07-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* big-dishing-loop.scm (make-big-dishing-loop):
+	Handle keyword #:concurrency.  If its value
+	is unrecognized, operate w/o any concurrency.
+
 2006-02-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* cookies.scm: New file.
