@@ -65,9 +65,19 @@
 ;; Setting the queue length is done for both new and pre-configured sockets.
 ;;
 ;; @item #:concurrency #:new-process
-;; The type of concurrency (or none if the value is not recognized).  At
-;; this time, there is only @code{#:new-process}, which means to fork a
-;; new process for each request.
+;; The type of concurrency (or none if the value is not recognized).
+;; Here are the recognized values:
+;;
+;; @table @code
+;; @item #:new-process
+;; @itemx #:new-process/nowait
+;; Fork a new process for each request.  The latter does not wait for the
+;; child process to terminate before continuing the listen loop.
+;;
+;; @item #f
+;; Handle everything in the current in process (no concurrency).
+;; Unrecognized values are treated the same as @code{#f}.
+;; @end table
 ;;
 ;; @item #:bad-request-handler #f
 ;; If the first line of an HTTP message is not in the proper form, this
@@ -234,13 +244,14 @@
               (close-port p)
               (set! p #f))
             (case concurrency
-              ((#:new-process)
+              ((#:new-process #:new-process/nowait)
                (let ((pid (primitive-fork)))
                  (cond ((= 0 pid)
                         (exit (child)))
                        (else
                         (butt-out!)
-                        (and (= 0 (status:exit-val (cdr (waitpid pid))))
+                        (and (or (eq? #:new-process/nowait concurrency)
+                                 (= 0 (status:exit-val (cdr (waitpid pid)))))
                              (loop (accept sock)))))))
               (else
                (and (child)
