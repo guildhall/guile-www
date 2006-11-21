@@ -104,7 +104,8 @@
 ;; @code{#:loop-break-bool}.
 ;;
 ;; The default is named @code{echo-upath} because it composes and sends a
-;; "text/plain" response whose are solely the given upath.  This can be used
+;; "text/plain" response which has the given upath as its sole content.
+;; This can be used
 ;; to ensure basic network connectivity (i.e., aliveness testing).
 ;; @xref{answer}.
 ;;
