@@ -46,9 +46,12 @@
 ;; that might fall over less than gracefully otherwise.  Please enjoy the
 ;; slack.
 ;;
+;; The buffering mode for @var{port} is set to line-buffered.
+;;
 ;;-sig: (port [gmtime? [stamp-format [method-pair?]]])
 ;;
 (define (log-http-response-proc port . opts)
+  (setvbuf port _IOLBF)
   (let* ((len (length opts))
          (rep (or (and (<= 1 len) (car opts) gmtime) localtime))
          (tfmt (or (and (<= 2 len) (cadr opts)) "%Y-%m-%d:%H:%M:%S %Z"))
