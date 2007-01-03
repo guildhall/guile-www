@@ -1,5 +1,9 @@
 NEWS for Guile-WWW
 
+- 2.17 | NOT YET RELEASED
+  - log-http-response-proc sets output port to be line-buffered
+  - maintenance uses Autoconf 2.60
+
 - 2.16 | 2006-07-14
   - make-big-dishing-loop accepts keyword arg #:concurrency
 
