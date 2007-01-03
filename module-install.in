@@ -24,7 +24,7 @@ fi
 dest=$1 ; shift
 cd $srcdir
 for f in "$@" ; do
-    ( echo ';;; Copyright (C) 2005 FSF' ;
+    ( echo ';;; Copyright (C) 2007 FSF' ;
       echo ';;; METAINFO:' $dest/METAINFO ;
       $PUNIFY $f | sed "$filter" ) > TMP
     g=`echo $f | sed 's/[.]scm$//'`
