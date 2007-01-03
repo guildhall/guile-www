@@ -4,7 +4,7 @@
 #
 # tested with:
 # - GNU Automake 1.9.6
-# - GNU Autoconf 2.59
+# - GNU Autoconf 2.60
 # - Guile 1.4.1.107 (see HACKING)
 
 [ -f configure.in ] || {
