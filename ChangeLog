@@ -1,3 +1,14 @@
+2007-01-11  Thien-Thi Nguyen  <ttn@ambire>
+
+	* configure.in (AC_INIT): Bump version to "2.17" for release.
+
+2007-01-11  Thien-Thi Nguyen  <ttn@ambire>
+
+	* examples/Makefile.am: New file.
+	* configure.in: Specify examples/Makefile in AC_CONFIG_FILES.
+	* Makefile.am (SUBDIRS): Add "examples".
+	(asisdirs): Remove "examples".
+
 2006-07-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* configure.in (AC_INIT): Bump version to "2.16" for release.

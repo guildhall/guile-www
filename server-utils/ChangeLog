@@ -1,3 +1,8 @@
+2007-01-11  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop child):
+	Close port when done.
+
 2007-01-03  Thien-Thi Nguyen  <ttn@ambire>
 
 	* log.scm (log-http-response-proc):

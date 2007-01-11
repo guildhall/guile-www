@@ -1,7 +1,8 @@
 NEWS for Guile-WWW
 
-- 2.17 | NOT YET RELEASED
+- 2.17 | 2007-01-11
   - log-http-response-proc sets output port to be line-buffered
+  - make-big-dishing-loop child (when concurrent) closes port when done
   - maintenance uses Autoconf 2.60
 
 - 2.16 | 2006-07-14
