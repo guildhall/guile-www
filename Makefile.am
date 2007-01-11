@@ -21,7 +21,7 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = doc
+SUBDIRS = doc examples
 
 wwwdir = $(GUILE_SITE)/www
 basic = cgi.scm http.scm main.scm url.scm url-coding.scm
@@ -70,7 +70,7 @@ cvs-state-summary:
 
 endif ## MAINTAINER_MODE
 
-asisdirs = server-utils data contrib examples
+asisdirs = server-utils data contrib
 
 EXTRA_DIST = $(basic) $(asisdirs) doc-snarf module-install.in
 
