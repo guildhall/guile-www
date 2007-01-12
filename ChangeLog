@@ -1,3 +1,7 @@
+2007-01-12  Thien-Thi Nguyen  <ttn@ambire>
+
+	* doc/guile-www.twerp (answer): Fix description of `CRLF'.
+
 2007-01-11  Thien-Thi Nguyen  <ttn@ambire>
 
 	* configure.in (AC_INIT): Bump version to "2.17" for release.
