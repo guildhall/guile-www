@@ -468,7 +468,7 @@ For higher performance, you can preformat parts of the response, using
 @code{CRLF}, and some lower-level convenience procedures.
 
 @defvr {Scheme String} CRLF
-The string ``\r\f''.
+The string ``\r\n''.
 @end defvr
 
 @twerpdoc (fs)
