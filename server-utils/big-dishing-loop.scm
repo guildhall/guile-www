@@ -182,7 +182,7 @@
                         ((list? socket-setup)
                          (lambda (sock)
                            (for-each (lambda (pair)
-                                       (setsockopt socket SOL_SOCKET
+                                       (setsockopt sock SOL_SOCKET
                                                    (car pair)
                                                    (cdr pair)))
                                      socket-setup)))
