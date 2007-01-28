@@ -259,7 +259,6 @@
                              (loop (accept sock)))))))
               (else
                (and (child)
-                    (begin (butt-out!)
-                           (loop (accept sock))))))))))))
+                    (loop (accept sock)))))))))))
 
 ;;; www/server-utils/big-dishing-loop.scm ends here
