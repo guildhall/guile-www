@@ -1,3 +1,20 @@
+2007-01-28  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop): When no concurrency,
+	don't have "parent" close the port; `child' already did it.
+
+2007-01-27  Thien-Thi Nguyen  <ttn@ambire>
+
+	* answer.scm (mouthpiece send-reply out!): New internal proc.
+
+2007-01-26  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop): Fix typo.
+
+2007-01-26  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop child): Use `return-it'.
+
 2007-01-11  Thien-Thi Nguyen  <ttn@ambire>
 
 	* big-dishing-loop.scm (make-big-dishing-loop child):
