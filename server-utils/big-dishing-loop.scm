@@ -28,7 +28,8 @@
   #:use-module (ice-9 optargs-kw)
   #:use-module (www server-utils parse-request)
   #:use-module (www server-utils answer)
-  #:export (make-big-dishing-loop))
+  #:export (echo-upath
+            make-big-dishing-loop))
 
 ;;; Support
 
@@ -45,6 +46,21 @@
       (lambda (return)
         (GET-upath M upath ,@more-args return)
         (not loop-break-bool)))))
+
+;; Use mouthpiece @var{M} (@pxref{answer}) to compose and send a
+;; "text/plain" response which has the given @var{upath} (a string)
+;; and any @var{extra-args} as its content.  This can be used to
+;; ensure basic network connectivity (i.e., aliveness testing).
+;;
+(define (echo-upath M upath . extra-args)
+  (M #:set-reply-status:success)
+  (M #:add-header #:Connection "close")
+  (M #:add-header #:Content-Type "text/plain")
+  (M #:add-content upath "\n")
+  (for-each (lambda (arg)
+              (M #:add-formatted "extra-arg: ~S\n" arg))
+            extra-args)
+  (M #:send-reply))
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg, either a TCP port number, or pre-configured
@@ -103,12 +119,6 @@
 ;; the proc's return value is configured by @code{#:explicit-return} and
 ;; @code{#:loop-break-bool}.
 ;;
-;; The default is named @code{echo-upath} because it composes and sends a
-;; "text/plain" response which has the given upath as its sole content.
-;; This can be used
-;; to ensure basic network connectivity (i.e., aliveness testing).
-;; @xref{answer}.
-;;
 ;; @item #:need-headers #f
 ;; @itemx #:need-input-port #f
 ;; If non-#f, these cause additional arguments to be supplied to the
@@ -144,12 +154,7 @@
           (need-headers #f)
           (need-input-port #f)
           (explicit-return #f)
-          (GET-upath (lambda (M upath)
-                       (M #:set-reply-status:success)
-                       (M #:add-header #:Connection "close")
-                       (M #:add-header #:Content-Type "text/plain")
-                       (M #:add-content upath)
-                       (M #:send-reply)))
+          (GET-upath echo-upath)
           (unknown-http-method-handler #f)
           (status-box-size #f)
           (loop-break-bool #f)
