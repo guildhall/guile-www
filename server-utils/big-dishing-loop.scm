@@ -49,7 +49,9 @@
 
 ;; Use mouthpiece @var{M} (@pxref{answer}) to compose and send a
 ;; "text/plain" response which has the given @var{upath} (a string)
-;; and any @var{extra-args} as its content.  This can be used to
+;; and any @var{extra-args} as its content.  Return @code{#t}.
+;;
+;; This proc can be used to
 ;; ensure basic network connectivity (i.e., aliveness testing).
 ;;
 (define (echo-upath M upath . extra-args)
@@ -60,7 +62,8 @@
   (for-each (lambda (arg)
               (M #:add-formatted "extra-arg: ~S\n" arg))
             extra-args)
-  (M #:send-reply))
+  (M #:send-reply)
+  #t)
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg, either a TCP port number, or pre-configured
