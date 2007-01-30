@@ -265,8 +265,10 @@ and encoding URL strings for safe transmission according to RFC 1738.
 @node    big-dishing-loop
 @chapter big-dishing-loop
 
-The @code{(www server-utils big-dishing-loop)} module provides a procedure
-that generates a customized listener/dispatch proc.
+The @code{(www server-utils big-dishing-loop)} module provides procedures
+that facilitate generation of a customized listener/dispatch proc.
+
+@twerpdoc (echo-upath)
 
 @twerpdoc (make-big-dishing-loop)
 
