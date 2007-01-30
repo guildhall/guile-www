@@ -237,13 +237,11 @@
           (let ((p (car conn))
                 (client (make-client conn)))
             (define (child)
-              (return-it (cond ((read-first-line p)
-                                => (lambda (req)
-                                     (setvbuf p _IONBF)
-                                     (apply handle-request client p req)))
-                               (else
-                                (handle-bad-request p)))
-                (close-port p)))
+              (cond ((read-first-line p)
+                     => (lambda (req)
+                          (apply handle-request client p req)))
+                    (else
+                     (handle-bad-request p))))
             (define (butt-out!)
               (close-port p)
               (set! p #f))
