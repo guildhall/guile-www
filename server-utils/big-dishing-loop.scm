@@ -137,6 +137,10 @@
 ;; Looping stops if the effective return value of @code{#:GET-upath} is
 ;; @code{eq?} to this value.
 ;;
+;; @item #:parent-finish close-port
+;; When operating concurrently (@code{#:concurrency} non-#f), the
+;; ``parent'' applies this proc to the port after the split.
+;;
 ;; @item #:log #f
 ;; This proc is called after the @var{#:GET-upath} proc returns.
 ;; @xref{log}.
@@ -161,6 +165,7 @@
           (queue-length 0)
           (bad-request-handler #f)
           (concurrency #:new-process)
+          (parent-finish close-port)
           (log #f))
 
   (define (ferv n vector)
@@ -248,7 +253,7 @@
                     (else
                      (handle-bad-request p))))
             (define (butt-out!)
-              (close-port p)
+              (parent-finish p)
               (set! p #f))
             (case concurrency
               ((#:new-process #:new-process/nowait)
