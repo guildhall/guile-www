@@ -1,3 +1,28 @@
+2007-01-31  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop child): When done,
+	shutdown the socket in both directions, unless `need-input-port'.
+
+2007-01-30  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (echo-upath): Return #t.
+
+2007-01-30  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop): New keyword
+	arg `parent-finish' specifies a procedure that parent, when
+	operating concurrently, applies to the port after the split.
+
+2007-01-30  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (echo-upath): New proc, exported.
+	(make-big-dishing-loop): Specify `echo-upath' as #:GET-upath default.
+
+2007-01-30  Thien-Thi Nguyen  <ttn@ambire>
+
+	* big-dishing-loop.scm (make-big-dishing-loop child):
+	No longer close port when done.
+
 2007-01-28  Thien-Thi Nguyen  <ttn@ambire>
 
 	* big-dishing-loop.scm (make-big-dishing-loop): When no concurrency,

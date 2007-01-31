@@ -1,8 +1,13 @@
 NEWS for Guile-WWW
 
-- 2.17 | 2007-01-11
+- 2.17 | 2007-02-01
   - log-http-response-proc sets output port to be line-buffered
-  - make-big-dishing-loop child (when concurrent) closes port when done
+  - new proc in (www server-utils big-dishing-loop): echo-upath
+  - changes to make-big-dishing-loop
+    - bugfix: #:socket-setup works (crippling typo corrected)
+    - for #:concurrency #f, no longer close port when done
+    - for #:concurrency non-#f, "parent" calls #:parent-finish proc
+    - unless #:need-input-port, "child" does `shutdown 2' on the socket
   - maintenance uses Autoconf 2.60
 
 - 2.16 | 2006-07-14
