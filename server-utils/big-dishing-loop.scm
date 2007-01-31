@@ -129,6 +129,12 @@
 ;; port arg.  @xref{parse-request}.  The input port is always positioned at
 ;; the beginning of the HTTP message body.
 ;;
+;; If @code{#:need-input-port} is @code{#f}, after the @code{#:GET-upath}
+;; proc returns, the port is @code{shutdown} in both (r/w) directions.  When
+;; operating concurrently, this is done on the child side of the split.
+;; @xref{Network Sockets and Communication,,,
+;; guile, The Guile Reference Manual}.
+;;
 ;; @item #:explicit-return #f
 ;; If non-#f, this arranges for a continuation to be passed (as the last
 ;; argument) to the @code{#:GET-upath} proc, and ignores that proc's normal
@@ -250,11 +256,12 @@
           (let ((p (car conn))
                 (client (make-client conn)))
             (define (child)
-              (cond ((read-first-line p)
-                     => (lambda (req)
-                          (apply handle-request client p req)))
-                    (else
-                     (handle-bad-request p))))
+              (return-it (cond ((read-first-line p)
+                                => (lambda (req)
+                                     (apply handle-request client p req)))
+                               (else
+                                (handle-bad-request p)))
+                (or need-input-port (shutdown p 2))))
             (define (butt-out!)
               (parent-finish p)
               (set! p #f))
