@@ -188,7 +188,7 @@
       (walk-tree (lambda (s)
                    (+! content-length (string-length s)))
                  tree)
-      (set! content (append content tree)))
+      (set! content (append! content tree)))
 
     (define (add-formatted fstr . args)
       (add-content (list (apply fs
