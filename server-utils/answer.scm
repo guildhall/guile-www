@@ -118,6 +118,12 @@
 ;; normal format string.  It is used to format ARGS, and the result passed
 ;; to @code{#:add-content}.
 ;;
+;; @item #:add-direct-writer LEN WRITE
+;; LEN is the number of bytes that procedure WRITE will output to its
+;; arg, @var{out-port} (passed back), when called during
+;; @code{#:send-reply}.  This is to allow sendfile(2) and related
+;; hackery.
+;;
 ;; @item #:content-length
 ;; Return the total number of bytes in the content added thus far.
 ;;
@@ -127,6 +133,9 @@
 ;; chunk size (effectively producing one chunk); or a number specifying
 ;; the maximum size of a chunk.  The return value is a list of the chunk
 ;; sizes.
+;;
+;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
+;; CHUNK in the presence of a previous @code{#:add-direct-writer}.
 ;;
 ;; @item #:send-reply
 ;; Send the properly formatted response to @var{out-port}, and reset
@@ -147,6 +156,7 @@
          (pre-tp pre-tree)
          (pre-len 0)
          (preamble (make-string (- 1024 16)))
+         (direct-writers '())
          (content '())
          (content-length #f))
 
@@ -154,6 +164,7 @@
       (set! pre-tree (list #f))
       (set! pre-tp pre-tree)
       (set! pre-len 0)
+      (set! direct-writers '())
       (set! content '())
       (set! content-length #f))
 
@@ -197,17 +208,27 @@
                                       (else fstr))
                                 args))))
 
+    (define (add-direct-writer len write)
+      (or content-length (set! content-length 0))
+      (+! content-length len)
+      (set! direct-writers (acons write len direct-writers))
+      (set! content (append! content (list write))))
+
     (define (rechunk-content chunk)
       (define (upd! proc get-new-content)
         (walk-tree proc content)
         (set! content (get-new-content)))
       (cond ((eq? #f chunk)
              (let ((ls '()))
-               (walk-tree (lambda (s)
-                            (set! ls (cons (string-length s)
+               (walk-tree (lambda (x)
+                            (set! ls (cons (if (procedure? x)
+                                               (assq-ref direct-writers x)
+                                               (string-length x))
                                            ls)))
                           content)
                (reverse ls)))
+            ((not (null? direct-writers))
+             (error "cannot rechunk in the presence of direct-writers"))
             ((eq? #t chunk)
              (rechunk-content content-length))
             ((and (number? chunk) (not (< 0 chunk)))    ;;; slack
@@ -270,7 +291,9 @@
                    pre-tree))
       (out! preamble pre-len)
       (walk-tree (lambda (x)
-                   (out! x (string-length x)))
+                   (if (procedure? x)
+                       (x out-port)
+                       (out! x (string-length x))))
                  content)
       (force-output out-port)
       (or (null? status-box)
@@ -290,6 +313,7 @@
          ((#:add-header) add-header)
          ((#:add-content) add-content)
          ((#:add-formatted) add-formatted)
+         ((#:add-direct-writer) add-direct-writer)
          ((#:content-length) (lambda () content-length))
          ((#:rechunk-content) rechunk-content)
          ((#:send-reply) send-reply)
