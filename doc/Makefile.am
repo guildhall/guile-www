@@ -36,7 +36,8 @@ guile-www.texi: guile-www.twerp
 twerp2texi = guile-tools twerp2texi
 
 .twerp.texi:
-	$(twerp2texi) -I ../.doc-index -d .deps/$*.Ptexi -o $@ $<
+	$(twerp2texi) --scheme-implied -I ../.doc-index -d .deps/$*.Ptexi \
+	  -o $@ $<
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
 
