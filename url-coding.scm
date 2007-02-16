@@ -66,9 +66,9 @@
                         (display (number->string (char->integer ch) 16)))))
                 (string->list str)))))
 
-(define safe-chars (append (string->list "$-_.+!*'(),")
-                           ;; reserved
-                           (string->list ";/?:@&=")))
+(define safe-chars (append! (string->list "$-_.+!*'(),")
+                            ;; reserved
+                            (string->list ";/?:@&=")))
 
 (define (safe-char? ch)
   ;; ``Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
