@@ -96,6 +96,7 @@ Basic
 * cgi::                 Write CGI scripts painlessly.
 * main::                Fetch world-wide-web resources.
 * url-coding::          URL decode and encode, only.
+* utcsec::              Seconds after epoch, UTC.
 
 Server Utilities
 * big-dishing-loop::    Customizable listener and dispatch.
@@ -260,6 +261,18 @@ and encoding URL strings for safe transmission according to RFC 1738.
 
 @twerpdoc (url-coding:decode)
 @twerpdoc (url-coding:encode)
+
+@c ---------------------------------------------------------------------------
+@node    utcsec
+@chapter utcsec
+@twerpcommentary (include (www utcsec))
+
+@twerpdoc (format-utcsec)
+@twerpdoc (rfc1123-date<-)
+@twerpdoc (<-rfc1123-date)
+@twerpdoc (<-mtime)
+@twerpdoc (<-ctime)
+@twerpdoc (rfc1123-now)
 
 @c ---------------------------------------------------------------------------
 @node    big-dishing-loop

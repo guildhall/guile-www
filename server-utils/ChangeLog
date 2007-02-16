@@ -1,3 +1,15 @@
+2007-02-15  Thien-Thi Nguyen  <ttn@ambire>
+
+	* answer.scm (mouthpiece add-direct-writer): New internal proc.
+	(mouthpiece rechunk-content): Count direct-writer bytes.
+	Also, signal error if any direct-writers for non-counting operations.
+	(mouthpiece send-reply): Accomodate direct writers.
+	(mouthpiece): Handle #:add-direct-writer.
+
+2007-02-15  Thien-Thi Nguyen  <ttn@ambire>
+
+	* answer.scm (mouthpiece add-content): Use `append!'.
+
 2007-01-31  Thien-Thi Nguyen  <ttn@ambire>
 
 	* big-dishing-loop.scm (make-big-dishing-loop child): When done,
