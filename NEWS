@@ -1,5 +1,9 @@
 NEWS for Guile-WWW
 
+- 2.18 | 2007-02-16
+  - new `(www server-utils answer) mouthpiece' command: #:add-direct-writer
+  - new module: (www utcsec)
+
 - 2.17 | 2007-02-01
   - log-http-response-proc sets output port to be line-buffered
   - new proc in (www server-utils big-dishing-loop): echo-upath

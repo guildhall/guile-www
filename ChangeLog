@@ -1,3 +1,33 @@
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* configure.in (AC_INIT): Bump version to "2.18" for release.
+
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* utcsec.scm: New file.
+
+	* Makefile.am (basic): Add utcsec.scm.
+	(DOT_DOC_FILES): Add utcsec.doc.
+
+	* doc/guile-www.twerp (Top): Add to menu "utcsec".
+	(utcsec): New node/chapter.
+
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* doc/Makefile.am (.twerp.texi): Use option `--scheme-implied'.
+
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* url-coding.scm (safe-chars): Use `append!'.
+
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* http.scm (http:post-form aam): New internal proc.
+
+2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
+
+	* http.scm (http:post-form): Use `cons'.
+
 2007-01-31  Thien-Thi Nguyen  <ttn@ambire>
 
 	* configure.in (AC_INIT): Bump version to "2.17" for release.
