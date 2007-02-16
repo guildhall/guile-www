@@ -255,10 +255,10 @@
     (http:request
      "POST" url
      ;; headers
-     (append
-      (list (if (null? uploads)
-                (c-type "application/x-www-form-urlencoded")
-                (c-type "multipart/form-data" boundary)))
+     (cons
+      (if (null? uploads)
+          (c-type "application/x-www-form-urlencoded")
+          (c-type "multipart/form-data" boundary))
       extra-headers)
      ;; body
      (if (null? uploads)
