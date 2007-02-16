@@ -51,7 +51,7 @@ SUFFIXES = .scm .doc
 .scm.doc:
 	$(top_srcdir)/doc-snarf -D -o $@ $<
 
-DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc \
+DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc utcsec.doc \
 		server-utils/big-dishing-loop.doc \
 		server-utils/parse-request.doc \
 		server-utils/filesystem.doc \
