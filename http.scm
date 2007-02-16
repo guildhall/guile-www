@@ -273,8 +273,10 @@
                        (map (lambda (field)
                               (one "&~A=~A" field))
                             (cdr simple))))))
-         (let ((boundary-line (string-append "--" boundary))
-               (aam (lambda (proc ls) (apply append (map proc ls)))))
+         (let ((boundary-line (string-append "--" boundary)))
+           (define (aam proc ls)
+             ;; note: PROC must cons else `append!' will corrupt LS
+             (apply append! (map proc ls)))
            `(,@(aam (lambda (pair)
                       (list
                        boundary-line
