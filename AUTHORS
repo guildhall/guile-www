@@ -14,6 +14,7 @@ Martin Grabmueller wrote:
 	data/content-type.scm
 
 Thien-Thi Nguyen wrote:
+	utcsec.scm
 	server-utils/big-dishing-loop.scm
 	server-utils/parse-request.scm
 	server-utils/cgi-prep.scm
