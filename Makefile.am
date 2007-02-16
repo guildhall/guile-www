@@ -25,7 +25,7 @@ AUTOMAKE_OPTIONS = gnu
 SUBDIRS = doc examples
 
 wwwdir = $(GUILE_SITE)/www
-basic = cgi.scm http.scm main.scm url.scm url-coding.scm
+basic = cgi.scm http.scm main.scm url.scm url-coding.scm utcsec.scm
 
 dw = $(DESTDIR)$(wwwdir)
 
