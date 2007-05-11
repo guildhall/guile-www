@@ -20,9 +20,15 @@ How to Build and Install Guile-WWW
 
 	Briefly, you need to issue these standard commands:
 
-	  ./configure
+	  ./configure [options]
 	  make
 	  make install
+
+	You can use the configure script option `--disable-shsub' to
+	explicitly build a version where `make-shared-substring' is
+	replaced w/ simply `substring'.  By default, configure arranges
+	for the replacement only if it can't detect that your Guile has
+	`make-shared-substring'.
 
 	On "make install", these files are copied to these directories
 	(creating them first if necessary), renaming each FOO.scm to
