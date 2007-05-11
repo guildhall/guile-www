@@ -62,11 +62,11 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 
  ;; dish takes a socket (re-usable)
  (else
-  (define sock (socket AF_INET SOCK_STREAM 0))
-  (bind sock AF_INET INADDR_ANY 8001)
-  (dish sock)
-  (set! blurb "you asked (again perhaps?) for: ")
-  (for-each (lambda (p) (set-cdr! p (* (cdr p) (cdr p)))) state)
-  (dish sock)))
+  (let ((sock (socket AF_INET SOCK_STREAM 0)))
+    (bind sock AF_INET INADDR_ANY 8001)
+    (dish sock)
+    (set! blurb "you asked (again perhaps?) for: ")
+    (for-each (lambda (p) (set-cdr! p (* (cdr p) (cdr p)))) state)
+    (dish sock))))
 
 ;;; you-are-here ends here
