@@ -1,7 +1,7 @@
 #!/bin/sh
 # usage: module-install DEST RELFILE ...
 # Punify RELFILE and install under dest w/ ".scm" truncated.
-# The installed module has Copyright and METAINFO header comments.
+# The installed module has Copyright header comments.
 
 prefix="@prefix@"
 INSTALL="@INSTALL@"
@@ -25,7 +25,6 @@ dest=$1 ; shift
 cd $srcdir
 for f in "$@" ; do
     ( echo ';;; Copyright (C) 2007 FSF' ;
-      echo ';;; METAINFO:' $dest/METAINFO ;
       $PUNIFY $f | sed "$filter" ) > TMP
     g=`echo $f | sed 's/[.]scm$//'`
     $INSTALL_DATA TMP $dest/$g
