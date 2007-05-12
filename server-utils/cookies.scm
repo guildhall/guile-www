@@ -52,23 +52,6 @@
 ;;;---------------------------------------------------------------------------
 ;;; RFC2965
 
-(define *OLD-attribute-names*
-  (let ((ht (make-hash-table 11)))
-    (for-each (lambda (a)
-                (hashq-set! ht a (symbol->string (keyword->symbol a))))
-              '(#:Comment
-                #:CommentURL
-                #:Discard
-                #:Domain
-                #:Max-Age
-                #:Path
-                #:Port
-                #:Secure
-                ;; Automatically appended; cannot be user-specified.
-                ;;- #:Version
-                ))
-    ht))
-
 (define *attribute-names*
   (map (lambda (kw)
          (cons kw (symbol->string (keyword->symbol kw))))
