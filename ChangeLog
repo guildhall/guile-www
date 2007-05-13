@@ -1,3 +1,59 @@
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* module-install.in: Delete file.
+	* doc-snarf: Delete file.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* Makefile.am (SUBDIRS): Add server-utils and data.
+	(basic, dw): Delete vars.
+	(www_DATA): New var.
+	(install-data-local): Delete target.
+	Instead, include $(top_srcdir)/build-aux/common.mk.
+	(install-data-local): Use `$(DESTDIR)$(wwwdir)' directly.
+	(SUFFIXES, DOT_DOC_FILES, CLEANFILES): Delete vars.
+	(.scm.doc): Delete pattern rule.
+	(.doc-index): Delete target.
+	(asisdirs): Remove server-utils and data.
+	(EXTRADIST): Add scm files, via $(www_DATA).
+	Remove doc-snarf and module-install.in.
+
+	* doc/Makefile.am (doc-index-prep): Make .doc-index
+	also in dirs ../server-utils and ../data.
+	(.twerp.texi): Include .doc-index
+	also from dirs ../server-utils and ../data.
+
+	* configure.in (AC_CONFIG_FILES): Remove module-install.
+	Add server-utils/Makefile and data/Makefile.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* build-aux/module-compile.in: New file.
+	* configure.in (AC_CONFIG_FILES): Add build-aux/module-compile,
+	and arrange to make it executable.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* build-aux/common.mk: New file.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* doc/guile-www.twerp: Add @twerpsetsearchpath.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* configure.in (AC_CONFIG_AUX_DIR): New; specify subdir `build-aux'.
+
+2007-05-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* Makefile.am (install-data-hook): Remove (www METAINFO)
+	from inst dir.  Also, no longer generate it.
+	* module-install.in: No longer output METAINFO comment.
+
+2007-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* examples/you-are-here: Use `let' in `else' clause.
+
 2007-02-16  Thien-Thi Nguyen  <ttn@ambire>
 
 	* configure.in (AC_INIT): Bump version to "2.18" for release.
