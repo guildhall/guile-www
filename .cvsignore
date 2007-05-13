@@ -9,4 +9,3 @@ configure
 .doc-index
 autom4te.cache
 .ttn.*
-module-install
