@@ -51,19 +51,19 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
               #:GET-upath you-are-here
               #:explicit-return #t))
 
-(format #t "try visiting: http://localhost:8001${UPATH} ")
+(format #t "try visiting: http://localhost:9999${UPATH} ")
 (format #t "with UPATH /0 through /999 or /quit\n")
 
 (cond
 
  ;; dish takes a port
  ((= 1 (length (command-line)))
-  (dish 8001))
+  (dish 9999))
 
  ;; dish takes a socket (re-usable)
  (else
   (let ((sock (socket AF_INET SOCK_STREAM 0)))
-    (bind sock AF_INET INADDR_ANY 8001)
+    (bind sock AF_INET INADDR_ANY 9999)
     (dish sock)
     (set! blurb "you asked (again perhaps?) for: ")
     (for-each (lambda (p) (set-cdr! p (* (cdr p) (cdr p)))) state)
