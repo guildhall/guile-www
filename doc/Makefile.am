@@ -26,7 +26,8 @@ BUILT_SOURCES = doc-index-prep
 doc-index-prep:
 if MAINTAINER_MODE
 	test -h www || ln -s $(top_srcdir) www
-	( cd .. ; $(MAKE) .doc-index )
+	for d in . server-utils data ; do		\
+	  ( cd ../$$d ; $(MAKE) .doc-index ) ; done
 else
 	@echo "nothing to do for $@"
 endif
@@ -36,7 +37,11 @@ guile-www.texi: guile-www.twerp
 twerp2texi = guile-tools twerp2texi
 
 .twerp.texi:
-	$(twerp2texi) --scheme-implied -I ../.doc-index -d .deps/$*.Ptexi \
+	$(twerp2texi) --scheme-implied		\
+	  -I ../.doc-index			\
+	  -I ../server-utils/.doc-index		\
+	  -I ../data/.doc-index			\
+	  -d .deps/$*.Ptexi			\
 	  -o $@ $<
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
