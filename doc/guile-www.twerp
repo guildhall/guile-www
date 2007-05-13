@@ -6,6 +6,7 @@
 @c %**end of header
 @code{}
 @setchapternewpage odd
+@twerpsetsearchpath (".")
 
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
