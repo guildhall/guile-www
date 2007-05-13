@@ -1,0 +1,11 @@
+#!/bin/sh
+guile="@GUILE@"
+top="@abs_top_builddir@"
+www="$top/examples/www"
+
+test -h "$www" || ( cd $top/examples ; ln -s .. www )
+
+GUILE_LOAD_PATH=`echo "$www:$GUILE_LOAD_PATH" | sed 's/:$//'`
+export GUILE_LOAD_PATH
+
+exec $guile "$@"
