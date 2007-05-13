@@ -22,43 +22,25 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = doc examples
+SUBDIRS = server-utils data doc examples
 
 wwwdir = $(GUILE_SITE)/www
-basic = cgi.scm http.scm main.scm url.scm url-coding.scm utcsec.scm
+www_DATA =					\
+ cgi						\
+ http						\
+ main						\
+ url						\
+ url-coding					\
+ utcsec
 
-dw = $(DESTDIR)$(wwwdir)
-
-install-data-local:
-	$(mkinstalldirs) $(dw) $(dw)/server-utils $(dw)/data
-	files="`cd $(srcdir) ; ls $(basic) server-utils/*.scm data/*.scm`" ; \
-	for f in $$files ; do rm -f $(dw)/$$f ; done ; \
-	$(SHELL) ./module-install $(dw) $$files
+include $(top_srcdir)/build-aux/common.mk
 
 install-data-hook:
-	rm -f $(dw)/METAINFO
+	rm -f $(DESTDIR)$(wwwdir)/METAINFO
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
 	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
 
 if MAINTAINER_MODE
-
-SUFFIXES = .scm .doc
-.scm.doc:
-	$(top_srcdir)/doc-snarf -D -o $@ $<
-
-DOT_DOC_FILES = cgi.doc http.doc main.doc url.doc url-coding.doc utcsec.doc \
-		server-utils/big-dishing-loop.doc \
-		server-utils/parse-request.doc \
-		server-utils/filesystem.doc \
-		server-utils/cgi-prep.doc \
-		server-utils/cookies.doc \
-		server-utils/answer.doc \
-		server-utils/log.doc
-
-.doc-index: $(DOT_DOC_FILES)
-	guile-tools make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
-
-CLEANFILES = *.doc
 
 cvs-state-summary:
 	cd $(srcdir) ; \
@@ -66,9 +48,9 @@ cvs-state-summary:
 
 endif ## MAINTAINER_MODE
 
-asisdirs = server-utils data contrib
+asisdirs = contrib
 
-EXTRA_DIST = $(basic) $(asisdirs) doc-snarf module-install.in
+EXTRA_DIST = $(www_DATA:%=%.scm) $(asisdirs)
 
 dist-hook:
 	for d in $(asisdirs) ; do			\
