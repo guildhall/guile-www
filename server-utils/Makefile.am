@@ -15,8 +15,8 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public
-# License along with GUILE; see the file COPYING.  If not, write
-# to the Free Software Foundation, Inc., 51 Franklin Street,
+# License along with Guile-WWW; see the file COPYING.  If not,
+# write to the Free Software Foundation, Inc., 51 Franklin Street,
 # Fifth Floor, Boston, MA  02110-1301  USA
 
 AUTOMAKE_OPTIONS = gnu
