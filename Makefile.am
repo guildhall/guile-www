@@ -50,7 +50,7 @@ endif ## MAINTAINER_MODE
 
 asisdirs = contrib
 
-EXTRA_DIST = $(www_DATA:%=%.scm) $(asisdirs)
+EXTRA_DIST += $(asisdirs)
 
 dist-hook:
 	for d in $(asisdirs) ; do			\
