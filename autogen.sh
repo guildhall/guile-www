@@ -20,7 +20,7 @@ texi='doc/guile-www.texi'
 if [ ! -f $texi ] ; then
     echo '@setfilename guile-www.info' > $texi
     echo '@include version.texi' >> $texi
-    touch -m 01010000 $texi
+    touch -r configure.in $texi
 fi
 
 automake --add-missing
