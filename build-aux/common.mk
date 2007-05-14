@@ -22,6 +22,8 @@
 %: %.scm
 	$(top_builddir)/build-aux/module-compile -o $@ $<
 
+EXTRA_DIST = $(www_DATA:%=%.scm)
+
 if MAINTAINER_MODE
 
 SUFFIXES = .scm .doc
