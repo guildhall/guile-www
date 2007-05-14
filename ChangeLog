@@ -1,3 +1,36 @@
+2007-05-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* configure.in (AC_INIT): Bump version to "2.19" for release.
+
+2007-05-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* Makefile.am (cvs-state-summary): Also scan $(SUBDIRS).
+
+2007-05-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* build-aux/common.mk (EXTRA_DIST): New var.
+	* Makefile.am (EXTRA_DIST): Remove $(www_DATA:%=%.scm).
+	Convert assignment from "=" to "+=".
+
+2007-05-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* autogen.sh: For dummy guile-www.texi,
+	use configure.in as reference file for timestamp.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* examples/wily-guile.in: New file.
+	* configure.in (AC_CONFIG_FILES): Add examples/wily-guile,
+	and arrange to make it executable.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* examples/you-are-here: Throughout, use port 9999.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* configure.in (AC_INIT): Use three-arg form.
+
 2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* module-install.in: Delete file.
