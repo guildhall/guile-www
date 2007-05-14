@@ -44,7 +44,7 @@ if MAINTAINER_MODE
 
 cvs-state-summary:
 	cd $(srcdir) ; \
-	ttn-do display-cvs-state-summary . doc $(asisdirs)
+	ttn-do display-cvs-state-summary . $(SUBDIRS) $(asisdirs)
 
 endif ## MAINTAINER_MODE
 
