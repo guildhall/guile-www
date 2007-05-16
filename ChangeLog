@@ -1,3 +1,11 @@
+2007-05-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* configure.in (AC_INIT): Bump version to "2.20" for release.
+
+2007-05-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* examples/wily-guile.in: Fix bug: Add cwd to `%load-path'.
+
 2007-05-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* configure.in (AC_INIT): Bump version to "2.19" for release.
