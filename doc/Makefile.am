@@ -46,11 +46,6 @@ twerp2texi = guile-tools twerp2texi
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
 
-EXTRA_DIST = guile-www.twerp
-
-if MAINTAINER_MODE
-html: guile-www.texi
-	$(MAKEINFO) --html $< -o $@
-endif
+EXTRA_DIST = guile-www.twerp guile-www.html
 
 ## Makefile.am ends here
