@@ -2,6 +2,19 @@
 
 	* configure.in (AC_INIT): Bump version to "2.20" for release.
 
+2007-05-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* doc/Makefile.am (EXTRA_DIST): Add guile-www.html.
+	[MAINTAINER_MODE] (html): Delete target.
+
+2007-05-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* cgi.scm: No longer autoload (www server-utils cookies).
+	(cgi:make-cookie): Delete proc.
+
+	* doc/guile-www.twerp (cgi): Remove `cgi:make-cookie'
+	and its containing section "Data Transfer Out".
+
 2007-05-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* examples/wily-guile.in: Fix bug: Add cwd to `%load-path'.

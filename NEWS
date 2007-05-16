@@ -2,6 +2,8 @@ NEWS for Guile-WWW
 
 - 2.20 | 2007-05-16
   - bugfix for examples/wily-guile: add correct dir to %load-path
+  - (www cgi) proc deleted: cgi:make-cookie (notice given in version 2.14)
+  - distribution includes docs in HTML
 
 - 2.19 | 2007-05-14
   - pre-install felicity
