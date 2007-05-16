@@ -30,7 +30,6 @@
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module (ice-9 rw)
-  #:autoload (www server-utils cookies) (rfc2109-set-cookie-string)
   #:export (cgi:init
             cgi:getenv
             cgi:nv-pairs
@@ -38,7 +37,7 @@
             cgi:names
             cgi:form-data?
             cgi:uploads cgi:upload
-            cgi:cookies cgi:cookie cgi:make-cookie))
+            cgi:cookies cgi:cookie))
 
 (define subs make-shared-substring)
 
@@ -484,11 +483,5 @@
 ;;
 (define (cgi:cookie name)
   (ONE #:cookie name))
-
-;; Return a string suitable for inclusion into an HTTP response header.
-;; This proc just applies @code{rfc2109-set-cookie-string} to @var{args}.
-;;
-(define (cgi:make-cookie . args)
-  (apply rfc2109-set-cookie-string args))
 
 ;;; www/cgi.scm ends here
