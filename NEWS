@@ -1,6 +1,6 @@
 NEWS for Guile-WWW
 
-- 2.21 | NOT YET RELEASED
+- 2.21 | 2007-10-04
   - license now GPLv3+ (see COPYING)
   - bugfix: mouthpiece #:set-reply-status:success updates status box
   - maintenance uses GNU Autoconf 2.61
