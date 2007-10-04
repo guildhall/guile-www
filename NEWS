@@ -1,5 +1,10 @@
 NEWS for Guile-WWW
 
+- 2.21 | NOT YET RELEASED
+  - license now GPLv3+ (see COPYING)
+  - bugfix: mouthpiece #:set-reply-status:success updates status box
+  - maintenance uses GNU Autoconf 2.61
+
 - 2.20 | 2007-05-16
   - bugfix for examples/wily-guile: add correct dir to %load-path
   - (www cgi) proc deleted: cgi:make-cookie (notice given in version 2.14)

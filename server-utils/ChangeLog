@@ -1,3 +1,18 @@
+2007-10-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* answer.scm (mouthpiece): Move earlier the computation
+	of conditions and procs required to save status number and
+	content-length.  Define dynamically procs `status-number!'
+	and `status-content-length!'.
+	(mouthpiece set-reply-status): Use `status-number!'.
+	(mouthpiece set-reply-status:success): Likewise.
+	(mouthpiece send-reply): Use `status-content-length!'.
+
+2007-10-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* answer.scm (mouthpiece set-reply-status):
+	Fix omission bug: Set (caar status-box), if possible.
+
 2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* Makefile.am: New file.
