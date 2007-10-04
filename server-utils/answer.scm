@@ -156,6 +156,17 @@
          (pre-tp pre-tree)
          (pre-len 0)
          (preamble (make-string (- 1024 16)))
+         (status-number! (if (null? status-box)
+                             identity
+                             (let ((place (car status-box)))
+                               (lambda (number)
+                                 (set-car! place number)))))
+         (status-content-length! (if (or (null? status-box)
+                                         (null? (cdar status-box)))
+                                     identity
+                                     (let ((place (cdar status-box)))
+                                       (lambda (length)
+                                         (set-car! place length)))))
          (direct-writers '())
          (content '())
          (content-length #f))
@@ -169,14 +180,14 @@
       (set! content-length #f))
 
     (define (set-reply-status number msg)
-      (or (null? status-box) (set-car! (car status-box) number))
+      (status-number! number)
       (let ((s (fs "HTTP/1.0 ~A ~A\r\n" number msg)))
         (+! pre-len (string-length s))
         (set-car! pre-tree s)))
 
     (define (set-reply-status:success)
       (+! pre-len 17)
-      (or (null? status-box) (set-car! (car status-box) 200))
+      (status-number! 200)
       (set-car! pre-tree "HTTP/1.0 200 OK\r\n"))
 
     (define (preamble-append! len new)
@@ -297,10 +308,7 @@
                        (out! x (string-length x))))
                  content)
       (force-output out-port)
-      (or (null? status-box)
-          (let ((box (car status-box)))
-            (or (null? (cdr box))
-                (set-car! (cdr box) content-length))))
+      (status-content-length! content-length)
       (reset-protocol!))
 
     ;; rv
