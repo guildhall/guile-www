@@ -4,7 +4,7 @@ A Simple -*-outline-*- to HACKING Guile-WWW
 
 	Guile-WWW is primarily maintained using Guile 1.4.x, at:
 
-	http://www.gnuovla.org/software/guile/
+	http://www.gnuvola.org/software/guile/
 
 	In particular, the autoconf macro GUILE_CHECK_ICE9_OPTARGS, used
 	in acinclude.m4, can be found there (since 1.4.x takes pains to
