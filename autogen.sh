@@ -5,7 +5,7 @@
 # tested with:
 # - GNU Automake 1.9.6
 # - GNU Autoconf 2.60
-# - Guile 1.4.1.107 (see HACKING)
+# - Guile 1.4.1.111 (see HACKING)
 
 [ -f configure.in ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
@@ -24,5 +24,13 @@ if [ ! -f $texi ] ; then
 fi
 
 automake --add-missing
+
+if grep -q "Version 2" COPYING ; then
+    v3='../.copyright/GPLv3'
+    if [ -f $v3 ]
+    then ln -sf $v3 COPYING
+    else echo WARNING: COPYING is v2
+    fi
+fi
 
 # autogen.sh ends here
