@@ -40,22 +40,13 @@ install-data-hook:
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
 	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
 
-if MAINTAINER_MODE
-
-cvs-state-summary:
-	cd $(srcdir) ; \
-	ttn-do display-cvs-state-summary . $(SUBDIRS) $(asisdirs)
-
-endif ## MAINTAINER_MODE
-
 asisdirs = contrib
 
 EXTRA_DIST += $(asisdirs)
 
 dist-hook:
 	for d in $(asisdirs) ; do			\
-	  rm -rf `find $(distdir)/$$d -name CVS`	\
-		 `find $(distdir)/$$d -name '*.doc'` ;	\
+	  rm -rf `find $(distdir)/$$d -name '*.doc'` ;	\
 	done
 
 ## Makefile.am ends here

@@ -1,3 +1,9 @@
+2008-02-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Replace CVS-isms w/ Git-isms.
+
+	* .cvsignore: Delete file.
+
 2007-10-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* answer.scm (mouthpiece): Move earlier the computation
