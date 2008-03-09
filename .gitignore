@@ -1,6 +1,8 @@
 *.doc
 .doc-index
 .ttn.*
+COPYING
+INSTALL
 Makefile
 Makefile.in
 aclocal.m4
@@ -9,6 +11,11 @@ config.cache
 config.log
 config.status
 configure
+
+build-aux/install-sh
+build-aux/mdate-sh
+build-aux/missing
+build-aux/texinfo.tex
 
 doc/*.info
 doc/*.texi
