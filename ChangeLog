@@ -1,3 +1,10 @@
+2008-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Expand documentation for `cgi:init'.
+
+	* cgi.scm (cgi:init): Rewrite pre-form doc comment.
+	Reported by Sebastian Tennant <sebyte@smolny.plus.com>.
+
 2008-02-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Replace CVS-isms w/ Git-isms.

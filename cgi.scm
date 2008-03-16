@@ -359,7 +359,9 @@
 
 ;;; Public interface.
 
-;; Initialize the environment.
+;; (Re-)initialize internal data structures.  This must be called before
+;; calling any other @samp{cgi:foo} procedure.  For FastCGI, call this
+;; ``inside the loop'' (that is, for each CGI invocation).
 ;;
 (define (cgi:init)
   (or ONE (set! ONE (make-ccc)))
