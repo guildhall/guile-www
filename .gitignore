@@ -15,6 +15,7 @@ configure
 build-aux/install-sh
 build-aux/mdate-sh
 build-aux/missing
+build-aux/module-compile
 build-aux/texinfo.tex
 
 doc/*.info
@@ -27,5 +28,6 @@ doc/stamp-vti
 examples/Makefile
 examples/Makefile.in
 examples/id.cgi
+examples/wily-guile
 
 server-utils/*.doc
