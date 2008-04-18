@@ -1,6 +1,6 @@
-;;; www/server-utils/parse-request.scm --- Read HTTP first line and headers
+;;; (www server-utils parse-request) --- Read HTTP first line and headers
 
-;; 	Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -203,4 +203,4 @@
     (set-cdr! ring '())
     rv))
 
-;;; www/server-utils/parse-request.scm ends here
+;;; (www server-utils parse-request) ends here

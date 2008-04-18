@@ -1,4 +1,4 @@
-;; www/utcsec.scm --- seconds after epoch, UTC
+;; (www utcsec) --- seconds after epoch, UTC
 ;;
 ;; Copyright (C) 2007 Free Software Foundation, Inc.
 ;;
@@ -109,4 +109,4 @@
 (define (rfc1123-now)
   (rfc1123-date<- #f (current-time)))
 
-;;; www/utcsec.scm ends here
+;;; (www utcsec) ends here

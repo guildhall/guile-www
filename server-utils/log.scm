@@ -1,4 +1,4 @@
-;;; www/server-utils/log.scm --- Love notes to other programs
+;;; (www server-utils log) --- Love notes to other programs
 
 ;; Copyright (C) 2004, 2006, 2007 Free Software Foundation, Inc.
 ;;
@@ -73,4 +73,4 @@
                      (cdr status)))
       (newline port))))
 
-;;; www/server-utils/log.scm ends here
+;;; (www server-utils log) ends here

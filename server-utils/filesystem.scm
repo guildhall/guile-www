@@ -1,7 +1,7 @@
-;;; www/server-utils/filesystem.scm --- Work with the local filesystem
+;;; (www server-utils filesystem) --- Work with the local filesystem
 
-;; 	Copyright (C) 2004, 2005 Free Software Foundation, Inc.
-;;      Copyright (C) 2000, 2001 Martin Grabmueller
+;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2001 Martin Grabmueller
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -151,4 +151,4 @@
           (car default)
           "application/octet-stream")))
 
-;;; www/server-utils/filesystem.scm ends here
+;;; (www server-utils filesystem) ends here

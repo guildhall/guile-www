@@ -1,4 +1,4 @@
-;;; www/http.scm --- HTTP client library for Guile
+;;; (www http) --- HTTP client library
 
 ;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005,
 ;;   2006, 2007 Free Software Foundation, Inc.
@@ -478,7 +478,7 @@
 
 ;; (sans-trailing-whitespace STR)
 ;;      These are defined in module (ice-9 string-fun), so this code
-;;      will prob.  be discarded when the module system and boot-9
+;;      will probably be discarded when the module system and boot-9
 ;;      settle down.
 
 (define (sans-trailing-whitespace s)
@@ -491,4 +491,4 @@
         ""
         (subs s st end))))
 
-;;; www/http.scm ends here
+;;; (www http) ends here

@@ -1,6 +1,6 @@
-;; www/server-utils/answer.scm --- HTTP connection handling and responses
+;; (www server-utils answer) --- HTTP connection handling and responses
 ;;
-;; 	Copyright (C) 2004,2006,2007 Free Software Foundation, Inc.
+;; Copyright (C) 2004,2006,2007 Free Software Foundation, Inc.
 ;;
 ;; This is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -329,4 +329,4 @@
          (else (error "unrecognized command:" command)))
        args))))
 
-;;; www/server-utils/answer.scm ends here
+;;; (www server-utils answer) ends here

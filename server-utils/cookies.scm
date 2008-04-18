@@ -1,6 +1,6 @@
-;; www/server-utils/cookies.scm --- Handling bits of client-side state
+;; (www server-utils cookies) --- Handling bits of client-side state
 ;;
-;; 	Copyright (C) 2006 Free Software Foundation, Inc.
+;; Copyright (C) 2006 Free Software Foundation, Inc.
 ;;
 ;; This is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -401,4 +401,4 @@
                            (subs h pos))))))
       h))
 
-;;; www/server-utils/cookies.scm ends here
+;;; (www server-utils cookies) ends here

@@ -1,4 +1,4 @@
-;;; www/url.scm --- URL manipulation tools
+;;; (www url) --- URL manipulation tools
 
 ;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005,
 ;;   2006 Free Software Foundation, Inc.
@@ -160,4 +160,4 @@
 (define (url:encode str reserved-chars)
   (url-coding:encode str reserved-chars))
 
-;;; www/url.scm ends here
+;;; (www url) ends here

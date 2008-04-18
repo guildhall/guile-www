@@ -1,4 +1,4 @@
-;;; www/url-coding.scm --- URL character coding: decode/encode
+;;; (www url-coding) --- URL character coding: decode/encode
 
 ;; Copyright (C) 2004, 2005, 2007 Free Software Foundation, Inc.
 ;;
@@ -78,4 +78,4 @@
       (char-numeric? ch)
       (memv ch safe-chars)))
 
-;;; www/url-coding.scm ends here
+;;; (www url-coding) ends here

@@ -1,6 +1,6 @@
-;;; www/data/http-status.scm
+;;; (www data http-status)
 
-;; 	Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -67,4 +67,4 @@
     (504 . "Gateway Time-out")
     (505 . "HTTP Version not supported")))
 
-;;; www/data/http-status.scm ends here
+;;; (www data http-status) ends here

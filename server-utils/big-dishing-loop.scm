@@ -1,6 +1,6 @@
-;;; www/server-utils/big-dishing-loop.scm --- Customizable listener and dispatch
+;;; (www server-utils big-dishing-loop) --- Customizable listener and dispatch
 
-;; 	Copyright (C) 2004,2005,2006,2007 Free Software Foundation, Inc.
+;; Copyright (C) 2004,2005,2006,2007 Free Software Foundation, Inc.
 ;;
 ;; This is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -279,4 +279,4 @@
                (and (child)
                     (loop (accept sock)))))))))))
 
-;;; www/server-utils/big-dishing-loop.scm ends here
+;;; (www server-utils big-dishing-loop) ends here

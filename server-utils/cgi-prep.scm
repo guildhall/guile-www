@@ -1,6 +1,6 @@
-;;; www/server-utils/cgi-prep.scm --- Prepare environment for CGI handoff
+;;; (www server-utils cgi-prep) --- Prepare environment for CGI handoff
 
-;; 	Copyright (C) 2005,2006 Free Software Foundation, Inc.
+;; Copyright (C) 2005,2006 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -172,4 +172,4 @@
             ((#:environ-list) (append! (elist init-ht) (elist addl-ht)))
             (else (error "bad command:" command)))))))
 
-;;; www/server-utils/cgi-prep.scm ends here
+;;; (www server-utils cgi-prep) ends here
