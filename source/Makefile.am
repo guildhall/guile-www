@@ -1,4 +1,4 @@
-## common.mk
+## Makefile.am
 ##
 ## Copyright (C) 2007 Thien-Thi Nguyen
 ##
@@ -19,26 +19,19 @@
 ## write to the Free Software Foundation, Inc., 51 Franklin Street,
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
-.scm:
-	$(top_builddir)/build-aux/module-compile -o $@ $<
+AUTOMAKE_OPTIONS = gnu
 
-EXTRA_DIST = $(www_DATA:%=%.scm)
+SUBDIRS = server-utils data
 
-CLEANFILES = $(www_DATA)
+wwwdir = $(GUILE_SITE)/www
+www_DATA =					\
+ cgi						\
+ http						\
+ main						\
+ url						\
+ url-coding					\
+ utcsec
 
-if MAINTAINER_MODE
+include $(top_srcdir)/build-aux/common.mk
 
-SUFFIXES = .scm .doc
-.scm.doc:
-	$(GUILE_TOOLS) doc-snarf -D -o $@ $<
-
-DOT_DOC_FILES = $(www_DATA:%=%.doc)
-
-CLEANFILES += $(DOT_DOC_FILES)
-
-.doc-index: $(DOT_DOC_FILES)
-	$(GUILE_TOOLS) make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
-
-endif ## MAINTAINER_MODE
-
-## common.mk ends here
+## Makefile.am ends here

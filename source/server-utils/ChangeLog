@@ -1,3 +1,17 @@
+2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Move scheme files under source/.
+
+	Here, $(prev)/foo stands for ../../server-utils/foo.
+	* Makefile.am: Rename from $(prev)/Makefile.am.
+	* answer.scm: Rename from $(prev)/answer.scm.
+	* big-dishing-loop.scm: Rename from $(prev)/big-dishing-loop.scm.
+	* cgi-prep.scm: Rename from $(prev)/cgi-prep.scm.
+	* cookies.scm: Rename from $(prev)/cookies.scm.
+	* filesystem.scm: Rename from $(prev)/filesystem.scm.
+	* log.scm: Rename from $(prev)/log.scm.
+	* parse-request.scm: Rename from $(prev)/parse-request.scm.
+
 2008-02-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Replace CVS-isms w/ Git-isms.

@@ -1,6 +1,3 @@
-*.doc
-.doc-index
-.ttn.*
 COPYING
 INSTALL
 Makefile
@@ -23,6 +20,7 @@ doc/*.texi
 doc/.deps
 doc/Makefile
 doc/Makefile.in
+doc/guile-www.html
 doc/stamp-vti
 
 examples/Makefile
@@ -30,4 +28,17 @@ examples/Makefile.in
 examples/id.cgi
 examples/wily-guile
 
-server-utils/*.doc
+source/*.doc
+source/.doc-index
+
+source/data/*.doc
+source/data/.doc-index
+
+source/server-utils/*.doc
+source/server-utils/.doc-index
+
+# here we try to express:
+# everything else under source except Makefile.am and *.scm
+source/*
+!source/*.am
+!source/*.scm

@@ -22,31 +22,16 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = server-utils data doc examples
-
-wwwdir = $(GUILE_SITE)/www
-www_DATA =					\
- cgi						\
- http						\
- main						\
- url						\
- url-coding					\
- utcsec
-
-include $(top_srcdir)/build-aux/common.mk
+SUBDIRS = source doc examples
 
 install-data-hook:
-	rm -f $(DESTDIR)$(wwwdir)/METAINFO
+	rm -f "$(DESTDIR)$(GUILE_SITE)/www/METAINFO"
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
-	   $(GUILE_TOOLS) make-module-catalog $(GUILE_SITE) ; fi
+	   $(GUILE_TOOLS) make-module-catalog \
+	      -t "$(DESTDIR)" "$(GUILE_SITE)" ; fi
 
 asisdirs = contrib
 
-EXTRA_DIST += $(asisdirs)
-
-dist-hook:
-	for d in $(asisdirs) ; do			\
-	  rm -rf `find $(distdir)/$$d -name '*.doc'` ;	\
-	done
+EXTRA_DIST = $(asisdirs)
 
 ## Makefile.am ends here

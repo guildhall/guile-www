@@ -1,0 +1,18 @@
+2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Move scheme files under source/.
+
+	Here, $(prev)/foo stands for ../../data/foo.
+	* Makefile.am: Rename from $(prev)/Makefile.am.
+	* content-type.scm: Rename from $(prev)/content-type.scm.
+	* http-status.scm: Rename from $(prev)/http-status.scm.
+
+2007-05-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* Makefile.am: New file.
+
+2004-02-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* http-status.scm: New file.
+	* content-type.scm: Likewise.
+

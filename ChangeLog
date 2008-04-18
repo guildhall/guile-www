@@ -1,3 +1,28 @@
+2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Move scheme files under source/.
+
+	* build-aux/common.mk: Use ".scm:" for portability.
+	(CLEANFILES): New var.
+	(CLEANFILES) [MAINTAINER_MODE]: Move $(www_DATA) outside
+	conditional and convert from = to += (appending assignment).
+
+	* doc/Makefile.am (doc-index-prep): No longer make symlink.
+	Also, update location of source files.
+	(.twerp.texi): Update location of .doc-index files.
+
+	* Makefile.am: No longer include build-aux/common.mk.
+	(SUBDIRS): Remove server-utils and data; add source.
+	(wwwdir, www_DATA): Delete vars.
+	(install-data-hook): Arrange for "guile-tools
+	make-module-catalog" to trim $(DESTDIR), if any.
+	(EXTRA_DIST): Change from += to = (normal assignment).
+	(dist-hook): Delete target.
+
+	* configure.in (AC_CONFIG_FILES): Remove server-utils/Makefile
+	and data/Makefile; add source/server-utils/Makefile,
+	source/data/Makefile and source/Makefile.
+
 2008-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Expand documentation for `cgi:init'.

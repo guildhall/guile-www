@@ -1,0 +1,13 @@
+2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Move scheme files under source/.
+
+	Here, $(prev)/foo stands for ../foo.
+	* Makefile.am: New file.
+	* cgi.scm: Rename from $(prev)/cgi.scm.
+	* http.scm: Rename from $(prev)/http.scm.
+	* https.scm: Rename from $(prev)/https.scm.
+	* main.scm: Rename from $(prev)/main.scm.
+	* url-coding.scm: Rename from $(prev)/url-coding.scm.
+	* url.scm: Rename from $(prev)/url.scm.
+	* utcsec.scm: Rename from $(prev)/utcsec.scm.

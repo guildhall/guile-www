@@ -30,8 +30,9 @@ AC_GUILE_WWW_TWERP_PREP
 AC_GUILE_WWW_INST_METH_AOK
 AC_CONFIG_FILES([
   Makefile
-  server-utils/Makefile
-  data/Makefile
+  source/server-utils/Makefile
+  source/data/Makefile
+  source/Makefile
   doc/Makefile
   examples/Makefile
 ])
