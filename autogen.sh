@@ -3,9 +3,9 @@
 # usage: sh -x autogen.sh
 #
 # tested with:
-# - GNU Automake 1.9.6
-# - GNU Autoconf 2.61
-# - Guile 1.4.1.114 (see HACKING)
+# - GNU Automake 1.10.1
+# - GNU Autoconf 2.62
+# - Guile 1.4.1.116 (see HACKING)
 
 [ -f configure.in ] || {
   echo "autogen.sh: run this command only at the top of a source tree."

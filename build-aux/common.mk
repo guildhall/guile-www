@@ -1,6 +1,6 @@
 ## common.mk
 ##
-## Copyright (C) 2007 Thien-Thi Nguyen
+## Copyright (C) 2007, 2008 Thien-Thi Nguyen
 ##
 ## This file is part of Guile-WWW.
 ##

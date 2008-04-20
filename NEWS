@@ -1,5 +1,11 @@
 NEWS for Guile-WWW
 
+- 2.22 | 2008-04-20
+  - bug-report address updated (see output of ./configure --help)
+  - mouthpiece #:send-reply now also takes `shutdown' "how arg" CLOSE
+  - maintenance uses GNU Autoconf 2.62, GNU Automake 1.10.1
+  - public repo: http://www.gnuovla.org/wip/  (guile-www)
+
 - 2.21 | 2007-10-04
   - license now GPLv3+ (see COPYING)
   - bugfix: mouthpiece #:set-reply-status:success updates status box
