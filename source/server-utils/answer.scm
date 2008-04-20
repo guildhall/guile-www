@@ -137,11 +137,21 @@
 ;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
 ;; CHUNK in the presence of a previous @code{#:add-direct-writer}.
 ;;
-;; @item #:send-reply
+;; @item #:send-reply [close]
 ;; Send the properly formatted response to @var{out-port}, and reset
 ;; all internal state (status reset, content discarded, etc).  It is
 ;; an error to invoke @code{#:send-reply} without having first set
 ;; the reply status.
+;;
+;; Optional arg @var{close} means do a @code{shutdown} on @var{out-port}
+;; using @var{close} --- directly, if an integer, or called with no
+;; arguments, if a thunk --- as the shutdown @code{how} argument.
+;; (Note: If @var{out-port} is not a socket, this does nothing silently.)
+;; @xref{Network Sockets and Communication,,,guile}.
+;;
+;; If @var{close} is specified, the closure forgets about @var{out-port}
+;; internally; it is an error to call other mouthpiece commands,
+;; subsequently.
 ;; @end table
 ;;
 ;;-sig: (out-port [status-box])
@@ -283,7 +293,7 @@
             (else
              (error "chunk must be #f, #t or a number:" chunk))))
 
-    (define (send-reply)
+    (define (send-reply . close)
       (define (out! s stop)
         ;; todo: use `write-string/partial/never-fewer' from Guile 1.4.1.108
         (let loop ((start 0))
@@ -309,7 +319,14 @@
                  content)
       (force-output out-port)
       (status-content-length! content-length)
-      (reset-protocol!))
+      (reset-protocol!)
+      (or (null? close)
+          (let ((close (car close)))
+            (and (eq? 'socket (port-filename out-port))
+                 (shutdown out-port (if (thunk? close)
+                                        (close)
+                                        close)))
+            (set! out-port #f))))
 
     ;; rv
     (lambda (command . args)

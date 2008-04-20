@@ -469,6 +469,9 @@ Here is an example that uses most of the @code{mouthpiece} commands:
   (M #:add-content (slurp filename))
   (simple-format #t "rechunked: ~A\n"
                  (M #:rechunk-content (* 8 1024)))
+  ;; We don't shutdown because this is a file port;
+  ;; if it were a socket, we might specify 2 to
+  ;; stop both reception and transmission.
   (M #:send-reply))
 
 (transmit-file "COPYING")

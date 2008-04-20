@@ -1,3 +1,12 @@
+2008-04-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make mouthpiece command #:send-reply handle optional arg CLOSE.
+
+	* answer.scm (mouthpiece send-reply): Take optional arg CLOSE;
+	if `out-port' is a socket, do `shutdown' on the socket w/ a `how'
+	value computed from CLOSE, then forget `out-port' regardless of
+	`out-port' type.
+
 2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Move scheme files under source/.
