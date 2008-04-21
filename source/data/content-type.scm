@@ -40,6 +40,7 @@
     (bin . "application/octet-stream")
     (com . "application/octet-stream")
     (dll . "application/octet-stream")
+    (xml . "application/xml")
     (bmp . "image/x-MS-bmp")
     (exe . "application/octet-stream")
     (mid . "audio/x-midi")

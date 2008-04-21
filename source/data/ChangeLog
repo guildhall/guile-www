@@ -1,3 +1,10 @@
+2008-04-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Recognize extension .xml as application/xml.
+
+	* content-type.scm (*content-type-by-filename-extension*):
+	Add entry mapping `xml' to "application/xml".
+
 2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Move scheme files under source/.
