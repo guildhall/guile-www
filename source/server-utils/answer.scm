@@ -138,6 +138,13 @@
 ;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
 ;; CHUNK in the presence of a previous @code{#:add-direct-writer}.
 ;;
+;; @item #:inhibit-content! BOOL
+;; Non-#f BOOL arranges for @code{#:send-reply} (below) to compute
+;; content length and add the appropriate header, as usual, but
+;; no content is actually sent.  This is useful, e.g., when answering
+;; a @code{HEAD} request.  If BOOL is #f, @code{#:send-reply} acts
+;; normally (i.e., sends both headers and content).
+;;
 ;; @item #:send-reply [close]
 ;; Send the properly formatted response to @var{out-port}, and reset
 ;; all internal state (status reset, content discarded, etc).  It is
@@ -178,6 +185,7 @@
                                      (let ((place (cdar status-box)))
                                        (lambda (length)
                                          (set-car! place length)))))
+         (inhibit-content? #f)
          (direct-writers '())
          (content '())
          (content-length #f))
@@ -186,6 +194,7 @@
       (set! pre-tree (list #f))
       (set! pre-tp pre-tree)
       (set! pre-len 0)
+      (set! inhibit-content? #f)
       (set! direct-writers '())
       (set! content '())
       (set! content-length #f))
@@ -294,6 +303,9 @@
             (else
              (error "chunk must be #f, #t or a number:" chunk))))
 
+    (define (inhibit-content! value)
+      (set! inhibit-content? (->bool value)))
+
     (define (send-reply . close)
       (define (out! s stop)
         ;; todo: use `write-string/partial/never-fewer' from Guile 1.4.1.108
@@ -313,13 +325,14 @@
                        (+! wp len)))
                    pre-tree))
       (out! preamble pre-len)
-      (walk-tree (lambda (x)
-                   (if (procedure? x)
-                       (x out-port)
-                       (out! x (string-length x))))
-                 content)
+      (or inhibit-content?
+          (walk-tree (lambda (x)
+                       (if (procedure? x)
+                           (x out-port)
+                           (out! x (string-length x))))
+                     content))
       (force-output out-port)
-      (status-content-length! content-length)
+      (status-content-length! (if inhibit-content? 0 content-length))
       (reset-protocol!)
       (or (null? close)
           (let ((close (car close)))
@@ -343,6 +356,7 @@
          ((#:add-direct-writer) add-direct-writer)
          ((#:content-length) (lambda () content-length))
          ((#:rechunk-content) rechunk-content)
+         ((#:inhibit-content!) inhibit-content!)
          ((#:send-reply) send-reply)
          (else (error "unrecognized command:" command)))
        args))))

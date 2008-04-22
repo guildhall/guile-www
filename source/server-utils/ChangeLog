@@ -1,5 +1,16 @@
 2008-04-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Add `mouthpiece' command: `#:inhibit-content! BOOL'.
+
+	* answer.scm (mouthpiece): Keep state: inhibit content?
+	Also, add command `#:inhibit-content!' to update this state.
+	(mouthpiece reset-protocol!): Reset `inhibit-content?'.
+	(mouthpiece inhibit-content!): New internal proc.
+	(mouthpiece send-reply): If `inhibit-content?', don't
+	send content and set the status content-length to zero.
+
+2008-04-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	For `echo-upath', shut down transmission and reception when done.
 
 	* big-dishing-loop.scm (echo-upath): Use `#:send-reply 2'.
