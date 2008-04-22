@@ -49,7 +49,8 @@
 
 ;; Use mouthpiece @var{M} (@pxref{answer}) to compose and send a
 ;; "text/plain" response which has the given @var{upath} (a string)
-;; and any @var{extra-args} as its content.  Return @code{#t}.
+;; and any @var{extra-args} as its content.  Shut down the socket
+;; for both transmission and reception, then return @code{#t}.
 ;;
 ;; This proc can be used to
 ;; ensure basic network connectivity (i.e., aliveness testing).
@@ -62,7 +63,7 @@
   (for-each (lambda (arg)
               (M #:add-formatted "extra-arg: ~S\n" arg))
             extra-args)
-  (M #:send-reply)
+  (M #:send-reply 2)
   #t)
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
