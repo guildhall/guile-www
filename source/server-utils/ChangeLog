@@ -1,5 +1,13 @@
 2008-04-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Remove unhygienic macros in (www server-utils big-dishing-loop).
+
+	* big-dishing-loop.scm (GET-simple, GET-return): Delete macros.
+	(make-big-dishing-loop handle-request): Compute args to pass
+	to `GET-upath' here; use `call-with-current-continuation'.
+
+2008-04-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Add `mouthpiece' command: `#:inhibit-content! BOOL'.
 
 	* answer.scm (mouthpiece): Keep state: inhibit content?

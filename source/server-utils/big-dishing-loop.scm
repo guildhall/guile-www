@@ -31,22 +31,6 @@
   #:export (echo-upath
             make-big-dishing-loop))
 
-;;; Support
-
-;; These two macros are used in `make-big-dishing-loop'.
-;; Both are unhygienic and thus somewhat unsatisfying...
-
-(define-macro (GET-simple . more-args)
-  `(lambda (M upath headers inport)
-     (GET-upath M upath ,@more-args)))
-
-(define-macro (GET-return . more-args)
-  `(lambda (M upath headers inport)
-     (call-with-current-continuation
-      (lambda (return)
-        (GET-upath M upath ,@more-args return)
-        (not loop-break-bool)))))
-
 ;; Use mouthpiece @var{M} (@pxref{answer}) to compose and send a
 ;; "text/plain" response which has the given @var{upath} (a string)
 ;; and any @var{extra-args} as its content.  Shut down the socket
@@ -181,20 +165,7 @@
   (define (ferv n vector)
     (vector-ref vector n))
 
-  (let ((GET (ferv (+ (if need-headers    1 0)          ;;; We are knocking
-                      (if need-input-port 2 0)          ;;; at the doors of
-                      (if explicit-return 4 0))         ;;; a combinatorial
-                   (vector                              ;;; explosion; DWR!
-                    (GET-simple)
-                    (GET-simple headers)
-                    (GET-simple inport)
-                    (GET-simple headers inport)
-                    (GET-return)
-                    (GET-return headers)
-                    (GET-return inport)
-                    (GET-return headers inport))))
-
-        (UNK (or unknown-http-method-handler
+  (let ((UNK (or unknown-http-method-handler
                  (lambda args (not loop-break-bool))))
 
         (sockprep (cond ((not socket-setup) #f)
@@ -239,7 +210,13 @@
              (b (make-b))               ; status box
              (M (mouthpiece p b))
              (res (case method
-                    ((GET) (GET M upath h p))
+                    ((GET) (call-with-current-continuation
+                            (lambda (k)
+                              (apply GET-upath M upath
+                                     (append (if need-headers (list h) '())
+                                             (if need-input-port (list p) '())
+                                             (if explicit-return (list k) '())))
+                              (not loop-break-bool))))
                     (else (UNK M method upath)))))
         (do-log client method upath b)
         (not (eq? loop-break-bool res)))) ; return #t => keep going
