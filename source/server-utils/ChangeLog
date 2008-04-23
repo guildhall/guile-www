@@ -1,5 +1,12 @@
 2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www server-utils big-dishing-loop) proc: named-socket
+
+	* big-dishing-loop.scm (named-socket): New proc, exported.
+	(make-big-dishing-loop named-socket): Move proc to module top-level.
+
+2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Add `make-big-dishing-loop #:method-handlers'.
 
 	* big-dishing-loop.scm

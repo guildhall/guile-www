@@ -28,8 +28,62 @@
   #:use-module (ice-9 optargs-kw)
   #:use-module (www server-utils parse-request)
   #:use-module (www server-utils answer)
-  #:export (echo-upath
+  #:export (named-socket
+            echo-upath
             make-big-dishing-loop))
+
+;; Return a new socket in protocol @var{family} with address @var{name}.
+;; First, evaluate @code{(socket @var{family} SOCK_STREAM 0)} to create
+;; a new socket @var{sock}.  Next, handle @code{#:socket-setup}, with
+;; value @var{setup}, like so:
+;;
+;; @table @code
+;; @item #f
+;; Do nothing.
+;;
+;; @item @var{procedure}
+;; Call @var{procedure} on @var{sock}.
+;;
+;; @item ((@var{opt} . @var{val}) ...)
+;; For each pair in this alist, call @code{setsockopt}
+;; on @var{sock} with the pair's @var{opt} and @var{val}.
+;; @end table
+;;
+;; Lastly, @code{bind} @var{sock} to @var{name}, which should be in a
+;; form that is appopriate for @var{family}.  Two common cases are:
+;;
+;; @table @code
+;; @item PF_INET
+;; @code{(AF_INET @var{ipaddr} @var{portno})}, made, for example, by@*
+;; @code{(list AF_INET INADDR_ANY 4242)}.
+;;
+;; @item PF_UNIX
+;; @code{(AF_UNIX @var{filename})}, made, for example, by@*
+;; @code{(list AF_UNIX "/tmp/foo-control")}.
+;; @end table
+;;
+;; Note that @code{PF_foo}, @code{AF_foo}, and @code{INADDR_foo} are
+;; names of variables that have constant values, not symbols.
+;;
+;;-sig: (family name [[keyword value] ...])
+;;
+(define* (named-socket family name #:key
+                       (socket-setup #f))
+  (let ((new (socket family SOCK_STREAM 0)))
+    ((cond ((not socket-setup) identity)
+           ((procedure? socket-setup) socket-setup)
+           ((list? socket-setup)
+            (lambda (sock)
+              (for-each (lambda (pair)
+                          (setsockopt sock SOL_SOCKET
+                                      (car pair)
+                                      (cdr pair)))
+                        socket-setup)))
+           (else
+            (error "bad socket-setup:" socket-setup)))
+     new)
+    (apply bind new name)
+    new))
 
 ;; Use mouthpiece @var{M} (@pxref{answer}) to compose and send a
 ;; "text/plain" response which has the given @var{upath} (a string)
@@ -176,25 +230,6 @@
           (concurrency #:new-process)
           (parent-finish close-port)
           (log #f))
-
-
-  (define* (named-socket family name #:key
-                         (socket-setup #f))
-    (let ((new (socket family SOCK_STREAM 0)))
-      ((cond ((not socket-setup) identity)
-             ((procedure? socket-setup) socket-setup)
-             ((list? socket-setup)
-              (lambda (sock)
-                (for-each (lambda (pair)
-                            (setsockopt sock SOL_SOCKET
-                                        (car pair)
-                                        (cdr pair)))
-                          socket-setup)))
-             (else
-              (error "bad socket-setup:" socket-setup)))
-       new)
-      (apply bind new name)
-      new))
 
   (define (bdlcore queue-length sock handle-request)
     (listen sock queue-length)

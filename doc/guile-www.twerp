@@ -281,6 +281,8 @@ epoch, in the GMT time zone (also known as UTC).
 The @code{(www server-utils big-dishing-loop)} module provides procedures
 that facilitate generation of a customized listener/dispatch proc.
 
+@twerpdoc (named-socket)
+
 @twerpdoc (echo-upath)
 
 @twerpdoc (make-big-dishing-loop)
