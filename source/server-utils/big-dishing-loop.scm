@@ -89,23 +89,28 @@
 ;; be the opposite boston value of the @code{#:loop-break-bool} value, below.
 ;; @xref{answer}.
 ;;
-;; @item #:unknown-http-method-handler #f
-;; A vast majority of the time, an HTTP request is of the @code{GET} method.
-;; A @code{#:unknown-http-method-handler} value of #f means to silently ignore
-;; other request methods.  The value may also be a procedure that takes three
-;; arguments: a mouthpiece @var{m}, the @var{method} (symbol) and the
-;; @var{upath} (string).  Its return value should be the opposite boolean
-;; value of the @code{#:loop-break-bool} value, below.
-;; @xref{answer}.
+;; @item #:method-handlers ()
+;; This alist describes how to handle the (valid) HTTP methods.
+;; Each element has the form @code{(@var{method} . @var{handler})}.
+;; @var{method} is a symbol, such as @code{GET}; and @var{handler} is
+;; a procedure that handles the request for @var{method}.
+;;
+;; @var{handler} normally takes two arguments, the mouthpiece @var{m}
+;; and the @var{upath} (string), composes and sends a response, and
+;; returns non-#f to indicate that the big dishing loop should continue.
+;; The proc's argument list is configured by @code{#:need-headers},
+;; @code{#:need-input-port} and @code{#:explicit-return}.
+;; Interpretation of the proc's return value is configured by
+;; @code{#:explicit-return} and @code{#:loop-break-bool}.  See below.
 ;;
 ;; @item #:GET-upath echo-upath
-;; This proc handles GET method requests.  It normally takes two arguments,
-;; the mouthpiece @var{m} and the @var{upath} (string), composes and sends a
-;; response, and returns non-#f to indicate that the big dishing loop should
-;; continue.  The proc's argument list is configured by @code{#:need-headers},
-;; @code{#:need-input-port} and @code{#:explicit-return}.  Interpretation of
-;; the proc's return value is configured by @code{#:explicit-return} and
-;; @code{#:loop-break-bool}.
+;; This proc handles GET method requests.  It is a shorthand way of
+;; specifying a @code{GET} entry in @code{#:method-handlers} (above).
+;; Note, however, that this proc is ignored if there is a @code{GET}
+;; entry specified in @code{#:method-handlers}.
+;;
+;; NOTE: @code{#:GET-upath} is obsoleted by @code{#:method-handlers}
+;; and will be removed after 2009-12-31.  Do @emph{not} rely on it.
 ;;
 ;; @item #:need-headers #f
 ;; @itemx #:need-input-port #f
@@ -131,6 +136,15 @@
 ;; Looping stops if the effective return value of @code{#:GET-upath} is
 ;; @code{eq?} to this value.
 ;;
+;; @item #:unknown-http-method-handler #f
+;; If #f, silently ignore unknown HTTP methods, i.e., those not
+;; specified in @code{#:method-handlers} and/or @code{#:GET-upath}.
+;; The value may also be a procedure that takes three
+;; arguments: a mouthpiece @var{m}, the @var{method} (symbol) and the
+;; @var{upath} (string).  Its return value should be the opposite boolean
+;; value of the @code{#:loop-break-bool} value, below.
+;; @xref{answer}.
+;;
 ;; @item #:parent-finish close-port
 ;; When operating concurrently (@code{#:concurrency} non-#f), the
 ;; ``parent'' applies this proc to the port after the split.
@@ -144,7 +158,7 @@
 ;; @code{#:log} (has no meaning if @code{#:log} is #f).  @xref{log}.
 ;; @end table
 ;;
-;;-sig: ([#:keyword value ...])
+;;-sig: ([keyword value ...])
 ;;
 (define* (make-big-dishing-loop
           #:key
@@ -152,6 +166,7 @@
           (need-headers #f)
           (need-input-port #f)
           (explicit-return #f)
+          (method-handlers '())
           (GET-upath echo-upath)
           (unknown-http-method-handler #f)
           (status-box-size #f)
@@ -162,99 +177,98 @@
           (parent-finish close-port)
           (log #f))
 
-  (define (ferv n vector)
-    (vector-ref vector n))
 
-  (let ((UNK (or unknown-http-method-handler
-                 (lambda args (not loop-break-bool))))
+  (define* (named-socket family name #:key
+                         (socket-setup #f))
+    (let ((new (socket family SOCK_STREAM 0)))
+      ((cond ((not socket-setup) identity)
+             ((procedure? socket-setup) socket-setup)
+             ((list? socket-setup)
+              (lambda (sock)
+                (for-each (lambda (pair)
+                            (setsockopt sock SOL_SOCKET
+                                        (car pair)
+                                        (cdr pair)))
+                          socket-setup)))
+             (else
+              (error "bad socket-setup:" socket-setup)))
+       new)
+      (apply bind new name)
+      new))
 
-        (sockprep (cond ((not socket-setup) #f)
-                        ((procedure? socket-setup) socket-setup)
-                        ((list? socket-setup)
-                         (lambda (sock)
-                           (for-each (lambda (pair)
-                                       (setsockopt sock SOL_SOCKET
-                                                   (car pair)
-                                                   (cdr pair)))
-                                     socket-setup)))
-                        (else
-                         (error "bad socket-setup:" socket-setup))))
+  (define (bdlcore queue-length sock handle-request)
+    (listen sock queue-length)
+    (let loop ((conn (accept sock)))
+      (and (handle-request conn (read-first-line (car conn)))
+           (loop (accept sock)))))
 
-        (make-h (ferv (+ (if need-headers    1 0)
-                         (if need-input-port 2 0))
-                      (vector
-                       (lambda (p) #f)
-                       read-headers
-                       skip-headers
-                       read-headers)))
+  (define (handle-request conn upath method)
+    (let* ((p (car conn))
+           ;; headers
+           (h (cond ((and (not need-headers) (not need-input-port)))
+                    (need-input-port (read-headers p))
+                    (else (skip-headers p))))
+           ;; status box
+           (b (and (number? status-box-size)
+                   (make-list status-box-size #f)))
+           (M (mouthpiece p b))
+           (res (cond ((assq-ref method-handlers method)
+                       => (lambda (mh)
+                            (call-with-current-continuation
+                             (lambda (k)
+                               (apply mh M upath
+                                      (append
+                                       (if need-headers    (list h) '())
+                                       (if need-input-port (list p) '())
+                                       (if explicit-return (list k) '())))
+                               (not loop-break-bool)))))
+                      (unknown-http-method-handler
+                       => (lambda (umh)
+                            (umh M method upath)))
+                      (else
+                       (not loop-break-bool)))))
+      (and log (log (inet-ntoa (sockaddr:addr (cdr conn)))
+                    method upath b))
+      ;; return #t => keep going
+      (not (eq? loop-break-bool res))))
 
-        (make-b (if (number? status-box-size)
-                    (lambda () (make-list status-box-size #f))
-                    (lambda () #f)))
+  ;; backward compatibility
+  (or (assq 'GET method-handlers)
+      (set! method-handlers (assq-set! method-handlers 'GET GET-upath)))
 
-        (do-log (or log (lambda ignored #f)))
+  ;; rv
+  (lambda (inet-port)
+    (bdlcore
+     queue-length
 
-        (handle-bad-request (if bad-request-handler
-                                (lambda (p)
-                                  (bad-request-handler (mouthpiece p)))
-                                (lambda ignored
-                                  (not loop-break-bool))))
+     (if (port? inet-port)
+         inet-port
+         (named-socket PF_INET (list AF_INET INADDR_ANY inet-port)
+                       #:socket-setup socket-setup))
 
-        (make-client (if log
-                         (lambda (conn)
-                           (inet-ntoa (sockaddr:addr (cdr conn))))
-                         (lambda ignored #f))))
+     (lambda (conn req)
+       (let ((p (car conn)))
 
-    (define (handle-request client p method upath http-version)
-      (let* ((h (make-h p))             ; headers
-             (b (make-b))               ; status box
-             (M (mouthpiece p b))
-             (res (case method
-                    ((GET) (call-with-current-continuation
-                            (lambda (k)
-                              (apply GET-upath M upath
-                                     (append (if need-headers (list h) '())
-                                             (if need-input-port (list p) '())
-                                             (if explicit-return (list k) '())))
-                              (not loop-break-bool))))
-                    (else (UNK M method upath)))))
-        (do-log client method upath b)
-        (not (eq? loop-break-bool res)))) ; return #t => keep going
+         (define (child)
+           (return-it (cond (req
+                             (apply handle-request conn (cdr (reverse! req))))
+                            (bad-request-handler
+                             (bad-request-handler (mouthpiece p)))
+                            (else
+                             (not loop-break-bool)))
+             (or need-input-port (shutdown p 2))))
 
-    ;; rv
-    (lambda (inet-port)
-      (let ((sock (if (port? inet-port)
-                      inet-port
-                      (let ((new (socket AF_INET SOCK_STREAM 0)))
-                        (and sockprep (sockprep new))
-                        (bind new AF_INET INADDR_ANY inet-port)
-                        new))))
-        (listen sock queue-length)
-        (let loop ((conn (accept sock)))
-          (let ((p (car conn))
-                (client (make-client conn)))
-            (define (child)
-              (return-it (cond ((read-first-line p)
-                                => (lambda (req)
-                                     (apply handle-request client p req)))
-                               (else
-                                (handle-bad-request p)))
-                (or need-input-port (shutdown p 2))))
-            (define (butt-out!)
-              (parent-finish p)
-              (set! p #f))
-            (case concurrency
-              ((#:new-process #:new-process/nowait)
-               (let ((pid (primitive-fork)))
-                 (cond ((= 0 pid)
-                        (exit (child)))
-                       (else
-                        (butt-out!)
-                        (and (or (eq? #:new-process/nowait concurrency)
-                                 (= 0 (status:exit-val (cdr (waitpid pid)))))
-                             (loop (accept sock)))))))
-              (else
-               (and (child)
-                    (loop (accept sock)))))))))))
+         (case concurrency
+           ((#:new-process #:new-process/nowait)
+            (let ((pid (primitive-fork)))
+              (cond ((= 0 pid)
+                     (exit (child)))
+                    (else
+                     (parent-finish p)
+                     (set! p #f)
+                     (or (eq? #:new-process/nowait concurrency)
+                         (= 0 (status:exit-val (cdr (waitpid pid)))))))))
+           (else
+            (child))))))))
 
 ;;; (www server-utils big-dishing-loop) ends here

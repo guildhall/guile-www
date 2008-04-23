@@ -1,3 +1,15 @@
+2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Add `make-big-dishing-loop #:method-handlers'.
+
+	* big-dishing-loop.scm
+	(make-big-dishing-loop ferv): Delete internal proc.
+	(make-big-dishing-loop named-socket): New internal proc.
+	(make-big-dishing-loop bdlcore): New internal proc.
+	(make-big-dishing-loop handle-request): Rewrite.
+	(make-big-dishing-loop): Take keyword option #:method-handlers;
+	use it in preference to #:GET-upath if it has a `GET' entry.
+
 2008-04-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Remove unhygienic macros in (www server-utils big-dishing-loop).
