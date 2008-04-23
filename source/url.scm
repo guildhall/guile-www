@@ -103,18 +103,16 @@
 ;; Parse @var{string} and return a url object, with one of the
 ;; following "schemes": HTTP, FTP, mailto, unknown.
 ;;
-;;-sig: (string)
-;;
-(define (url:parse url)
+(define (url:parse string)
   (cond
-   ((regexp-exec http-regexp url)
+   ((regexp-exec http-regexp string)
     => (lambda (m)
          (url:make-http (match:substring m 1)
                         (cond ((match:substring m 3) => string->number)
                               (else #f))
                         (match:substring m 5))))
 
-   ((regexp-exec ftp-regexp url)
+   ((regexp-exec ftp-regexp string)
     => (lambda (m)
          (url:make-ftp (match:substring m 2)
                        (match:substring m 3)
@@ -122,12 +120,12 @@
                              (else #f))
                        (match:substring m 7))))
 
-   ((regexp-exec mailto-regexp url)
+   ((regexp-exec mailto-regexp string)
     => (lambda (m)
          (url:make-mailto (match:substring m 1))))
 
    (else
-    (url:make 'unknown url))))
+    (url:make 'unknown string))))
 
 ;; Return the @var{url} object formatted as a string.
 ;; Note: The username portion is not included!
