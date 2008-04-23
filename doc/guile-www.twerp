@@ -6,7 +6,6 @@
 @c %**end of header
 @code{}
 @setchapternewpage odd
-@twerpsetsearchpath (".")
 
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
@@ -263,7 +262,10 @@ and encoding URL strings for safe transmission according to RFC 1738.
 @c ---------------------------------------------------------------------------
 @node    utcsec
 @chapter utcsec
-@twerpcommentary (include (www utcsec))
+
+The @code{(www utcsec)} module provides procedures to work with the
+@dfn{utc-seconds} of an object, that is, the number of seconds after
+epoch, in the GMT time zone (also known as UTC).
 
 @twerpdoc (format-utcsec)
 @twerpdoc (rfc1123-date<-)

@@ -19,9 +19,7 @@
 
 ;;; Commentary:
 
-;; The @code{(www utcsec)} module provides procedures to work with the
-;; @dfn{utc-seconds} of an object, that is, the number of seconds after
-;; epoch, in the GMT time zone (also known as UTC).
+;; The (www utcsec) module is fully documented in the guile-www.info file.
 
 ;;; Code:
 

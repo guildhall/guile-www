@@ -1,3 +1,12 @@
+2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug introduced in 2.22, change:
+	Move scheme files under source/:
+	For doc extraction, don't search for module commentary.
+
+	* doc/guile-www.twerp: No longer do @twerpsetsearchpath.
+	(utcsec): Delete @twerpcommentary; add text directly.
+
 2008-04-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.22

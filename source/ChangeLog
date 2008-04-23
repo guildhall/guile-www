@@ -1,3 +1,11 @@
+2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug introduced in 2.22, change:
+	Move scheme files under source/:
+	For doc extraction, don't search for module commentary.
+
+	* utcsec.scm: Move commentary to ../doc/guile-info.twerp.
+
 2008-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Move scheme files under source/.
