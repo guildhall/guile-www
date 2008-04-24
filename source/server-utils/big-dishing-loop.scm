@@ -105,8 +105,18 @@
   #t)
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
-;; @var{dish} takes one arg, either a TCP port number, or pre-configured
-;; socket.  @var{dish} behavior is controlled by the keyword arguments given
+;; @var{dish} takes one arg @var{ear}, which may be a pre-configured socket,
+;; a TCP port number, or a list of the form:
+;; @code{(@var{family} @var{address}...)}.
+;; When @var{ear} is a TCP port number, it is taken
+;; to be the list @code{(PF_INET AF_INET INADDR_ANY @var{ear})}.
+;;
+;; In the latter two cases, the socket is realized by calling
+;; @code{named-socket} with parameters @var{family} and @var{name} taken
+;; from the @sc{car} and @sc{cdr}, respectively, of the list, with the
+;; @code{#:socket-setup} paramater (see below) passed along unchanged.
+;;
+;; @var{dish} behavior is controlled by the keyword arguments given
 ;; to @code{make-big-dishing-loop}.  The following table is presented roughly
 ;; in order of the steps involved in processing a request, with default values
 ;; shown next to the keyword.
@@ -204,7 +214,9 @@
 ;; ``parent'' applies this proc to the port after the split.
 ;;
 ;; @item #:log #f
-;; This proc is called after the @var{#:GET-upath} proc returns.
+;; This proc is called after the @code{#:GET-upath} proc returns.
+;; Note that if @var{ear} is a unix-domain socket, the @var{client}
+;; parameter will be simply "localhost".
 ;; @xref{log}.
 ;;
 ;; @item #:status-box-size #f
@@ -262,7 +274,21 @@
                             (umh M method upath)))
                       (else
                        (not loop-break-bool)))))
-      (and log (log (inet-ntoa (sockaddr:addr (cdr conn)))
+      (and log (log (let* ((sock (cdr conn))
+                           (fam (sockaddr:fam sock)))
+                      (cond ((= PF_INET fam)
+                             (let ((addr (sockaddr:addr sock))
+                                   (port (sockaddr:port sock)))
+                               (simple-format #f "~A:~A"
+                                              (inet-ntoa addr)
+                                              port)))
+                            ((= PF_UNIX fam)
+                             (let ((fn (sockaddr:path sock)))
+                               (if (string-null? fn)
+                                   "localhost"
+                                   fn)))
+                            (else
+                             (object->string sock))))
                     method upath b))
       ;; return #t => keep going
       (not (eq? loop-break-bool res))))
@@ -272,14 +298,22 @@
       (set! method-handlers (assq-set! method-handlers 'GET GET-upath)))
 
   ;; rv
-  (lambda (inet-port)
+  (lambda (ear)
     (bdlcore
      queue-length
 
-     (if (port? inet-port)
-         inet-port
-         (named-socket PF_INET (list AF_INET INADDR_ANY inet-port)
-                       #:socket-setup socket-setup))
+     (if (port? ear)
+         ear
+         (let ((int? (integer? ear)))
+           (or int? (pair? ear)
+               (error "bad ear:" ear))
+           (named-socket (if int?
+                             PF_INET
+                             (car ear))
+                         (if int?
+                             (list AF_INET INADDR_ANY ear)
+                             (cdr ear))
+                         #:socket-setup socket-setup)))
 
      (lambda (conn req)
        (let ((p (car conn)))
