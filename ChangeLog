@@ -1,3 +1,9 @@
+2008-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Clean up `socket' calls.
+
+	* examples/you-are-here: Use `PF_INET'.
+
 2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www server-utils big-dishing-loop) proc: named-socket

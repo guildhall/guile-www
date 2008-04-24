@@ -62,7 +62,7 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 
  ;; dish takes a socket (re-usable)
  (else
-  (let ((sock (socket AF_INET SOCK_STREAM 0)))
+  (let ((sock (socket PF_INET SOCK_STREAM 0)))
     (bind sock AF_INET INADDR_ANY 9999)
     (dish sock)
     (set! blurb "you asked (again perhaps?) for: ")

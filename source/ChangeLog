@@ -1,3 +1,10 @@
+2008-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Clean up `socket' calls.
+
+	* http.scm (http:open): Use `protoent:proto',
+	`hostent:addr-list' and `PF_INET'.
+
 2008-04-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Fix bug introduced in 2.22, change:
