@@ -1,3 +1,12 @@
+2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (www http) proc: http:connect.
+
+	* http.scm (connection-table): Delete data structure.
+	(add-open-connection!, get-open-connection): Delete procs.
+	(http:connect): New proc, exported.
+	(http:open): Use `http:connect'.
+
 2008-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Clean up `socket' calls.

@@ -39,6 +39,7 @@
             http:head
             http:get
             http:post-form
+            http:connect
             http:open
             http:request))
 
@@ -143,29 +144,6 @@
               (subs statline (1+ second))
               ""))))
 
-
-;;; HTTP connection management functions.
-
-;; Open connections are cached on hostname in the connection-table.
-;; If an HTTP connection is already open to a particular host and TCP port,
-;; looking up the hostname and port number in connection-table will yield
-;; a Scheme port that may be used to communicate with that server.
-
-(define connection-table '())
-
-;; FIXME: you can only re-use a connection if the server sends the
-;; Keep-Alive header, I think.  With these definitions, we were trying to
-;; send more requests on connections the server assumed were dead.
-;; (define (add-open-connection! host tcp-port port)
-;;   (set! connection-table
-;;      (assoc-set! connection-table (cons host tcp-port) port)))
-;; (define (get-open-connection host tcp-port)
-;;   (assoc-ref connection-table (cons host tcp-port)))
-
-(define (add-open-connection! host tcp-port port)
-  #f)
-(define (get-open-connection host tcp-port)
-  #f)
 
 
 ;;; HTTP methods.
@@ -310,23 +288,41 @@
 
 ;; Connection-oriented functions:
 
-;; Return an HTTP connection to @var{host} on TCP port @var{port} (default 80
-;; if unspecified).  If an open connection already exists, use it; otherwise,
-;; create a new socket.
+;; Return a TCP stream socket connected to the location specified by
+;; protocol @var{proto}, @var{addrfam} and @var{address}.  @var{proto}
+;; is @code{PF_INET} or @code{PF_UNIX}, and the other args take
+;; corresponding forms:
+;;
+;; @table @code
+;; @item PF_INET
+;; @code{(AF_INET @var{ipaddr} @var{portno})}, where @var{ipaddr} is
+;; an integer.  Use @code{(car (hostent:addr-list (gethost @var{host})))}
+;; to compute the ipaddr of @var{host} (a string).
+;;
+;; @item PF_UNIX
+;; @code{(AF_UNIX @var{filename})}, made, for example, by@*
+;; @code{(list AF_UNIX "/tmp/foo-control")}.
+;; @end table
+;;
+;; Note that @code{PF_foo} and @code{AF_foo} are names of variables
+;; that have constant values, not symbols.
+;;
+(define (http:connect proto addrfam address . address-rest)
+  (let ((sock (socket proto SOCK_STREAM 0)))
+    (apply connect sock addrfam address address-rest)
+    sock))
+
+;; Return an HTTP connection (a socket) to @var{host} (a string) on TCP
+;; port @var{port} (default 80 if unspecified).
 ;;
 ;;-sig: (host [port])
 ;;
 (define (http:open host . args)
-  (let ((port (cond ((null? args) 80)
+  (let ((ipaddr (car (hostent:addr-list (gethost host))))
+        (port (cond ((null? args) 80)
                     ((not (car args)) 80)
                     (else (car args)))))
-    (or (get-open-connection host port)
-        (let* ((tcp (protoent:proto (getproto "tcp")))
-               (addr (car (hostent:addr-list (gethost host))))
-               (sock (socket PF_INET SOCK_STREAM tcp)))
-          (connect sock AF_INET addr port)
-          (add-open-connection! host port sock)
-          sock))))
+    (http:connect PF_INET AF_INET ipaddr port)))
 
 (define form-hack-regex
   ;; Normally `http:request' formats the lines it sends over the socket to

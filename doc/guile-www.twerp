@@ -129,6 +129,7 @@ operation, low-level HTTP message object access, and common messages.
 
 @section High-Level HTTP Operation
 
+@twerpdoc (http:connect)
 @twerpdoc (http:open)
 @twerpdoc (http:request)
 

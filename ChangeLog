@@ -1,3 +1,9 @@
+2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (www http) proc: http:connect.
+
+	* doc/guile-www.twerp (http): Add @twerpdoc for `http:connect'.
+
 2008-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Clean up `socket' calls.
