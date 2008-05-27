@@ -1,3 +1,10 @@
+2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Arrange to index `mouthpiece' and `big-dishing-loop' messages.
+
+	* answer.scm: Add @findex entries for `mouthpiece' messages.
+	* big-dishing-loop.scm: Likewise for `big-dishing-loop'.
+
 2008-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Handle unix-domain sockets in `make-big-dishing-loop' returned proc.

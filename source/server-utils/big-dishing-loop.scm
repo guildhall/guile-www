@@ -122,16 +122,19 @@
 ;; shown next to the keyword.
 ;;
 ;; @table @code
+;; @findex socket-setup
 ;; @item #:socket-setup #f
 ;; This may be a proc that takes a socket, or a list of opt/val pairs which
 ;; are passed to @code{setsockopt}.  Socket setup is done for newly created
 ;; sockets (when @var{dish} is passed a TCP port number), prior to the
 ;; @code{bind} call.
 ;;
+;; @findex queue-length
 ;; @item #:queue-length 0
 ;; The number of clients to queue, as set by the @code{listen} system call.
 ;; Setting the queue length is done for both new and pre-configured sockets.
 ;;
+;; @findex concurrency
 ;; @item #:concurrency #:new-process
 ;; The type of concurrency (or none if the value is not recognized).
 ;; Here are the recognized values:
@@ -147,12 +150,14 @@
 ;; Unrecognized values are treated the same as @code{#f}.
 ;; @end table
 ;;
+;; @findex bad-request-handler
 ;; @item #:bad-request-handler #f
 ;; If the first line of an HTTP message is not in the proper form, this
 ;; specifies a proc that takes a mouthpiece @var{m}.  Its return value should
 ;; be the opposite boston value of the @code{#:loop-break-bool} value, below.
 ;; @xref{answer}.
 ;;
+;; @findex method-handlers
 ;; @item #:method-handlers ()
 ;; This alist describes how to handle the (valid) HTTP methods.
 ;; Each element has the form @code{(@var{method} . @var{handler})}.
@@ -167,6 +172,7 @@
 ;; Interpretation of the proc's return value is configured by
 ;; @code{#:explicit-return} and @code{#:loop-break-bool}.  See below.
 ;;
+;; @findex GET-upath
 ;; @item #:GET-upath echo-upath
 ;; This proc handles GET method requests.  It is a shorthand way of
 ;; specifying a @code{GET} entry in @code{#:method-handlers} (above).
@@ -176,6 +182,7 @@
 ;; NOTE: @code{#:GET-upath} is obsoleted by @code{#:method-handlers}
 ;; and will be removed after 2009-12-31.  Do @emph{not} rely on it.
 ;;
+;; @findex need-headers
 ;; @item #:need-headers #f
 ;; @itemx #:need-input-port #f
 ;; If non-#f, these cause additional arguments to be supplied to the
@@ -189,6 +196,7 @@
 ;; @xref{Network Sockets and Communication,,,
 ;; guile, The Guile Reference Manual}.
 ;;
+;; @findex explicit-return
 ;; @item #:explicit-return #f
 ;; If non-#f, this arranges for a continuation to be passed (as the last
 ;; argument) to the @code{#:GET-upath} proc, and ignores that proc's normal
@@ -196,10 +204,12 @@
 ;; If the continuation is not used, the @dfn{effective return value} is
 ;; computed as @code{(not #:loop-break-bool)}.
 ;;
+;; @findex loop-break-bool
 ;; @item #:loop-break-bool #f
 ;; Looping stops if the effective return value of @code{#:GET-upath} is
 ;; @code{eq?} to this value.
 ;;
+;; @findex unknown-http-method-handler
 ;; @item #:unknown-http-method-handler #f
 ;; If #f, silently ignore unknown HTTP methods, i.e., those not
 ;; specified in @code{#:method-handlers} and/or @code{#:GET-upath}.
@@ -209,16 +219,19 @@
 ;; value of the @code{#:loop-break-bool} value, below.
 ;; @xref{answer}.
 ;;
+;; @findex parent-finish
 ;; @item #:parent-finish close-port
 ;; When operating concurrently (@code{#:concurrency} non-#f), the
 ;; ``parent'' applies this proc to the port after the split.
 ;;
+;; @findex log
 ;; @item #:log #f
 ;; This proc is called after the @code{#:GET-upath} proc returns.
 ;; Note that if @var{ear} is a unix-domain socket, the @var{client}
 ;; parameter will be simply "localhost".
 ;; @xref{log}.
 ;;
+;; @findex status-box-size
 ;; @item #:status-box-size #f
 ;; This may be a non-negative integer, typically 0, 1 or 2.  It is used by
 ;; @code{#:log} (has no meaning if @code{#:log} is #f).  @xref{log}.

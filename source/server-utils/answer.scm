@@ -93,41 +93,50 @@
 ;; @code{#:add-content}.  The commands and their args are:
 ;;
 ;; @table @code
+;; @findex reset-protocol!
 ;; @item #:reset-protocol!
 ;; Reset internal state, including reply status, headers and content.
 ;; This is called automatically by @code{#:send-reply}.
 ;;
+;; @findex set-reply-status
 ;; @item #:set-reply-status NUMBER MESSAGE
 ;; Set the reply status.  MESSAGE is a short string.
 ;;
+;; @findex set-reply-status:success
 ;; @item #:set-reply-status:success
 ;; This is equivalent to @code{#:set-reply-status 200 "OK"}.
 ;;
+;; @findex add-header
 ;; @item #:add-header NAME VALUE
 ;; NAME may be #f, #t, a string, symbol or keyword.  VALUE is a string.
 ;; If NAME is #f or #t, VALUE is taken to be a pre-formatted string,
 ;; "A: B" or "A: B\r\n", respectively.  If NAME is not a boolean, VALUE
 ;; may also be a tree of strings or a number.
 ;;
+;; @findex add-content
 ;; @item #:add-content [TREE ...]
 ;; TREE may be a string, a nested list of strings, or a series of such.
 ;; Subsequent calls to @code{#:add-content} append their trees to the
 ;; collected content tree thus far.
 ;;
+;; @findex add-formatted
 ;; @item #:add-formatted FORMAT-STRING [ARGS ...]
 ;; FORMAT-STRING may be #f to mean @code{~S}, #t to mean @code{~A}, or a
 ;; normal format string.  It is used to format ARGS, and the result passed
 ;; to @code{#:add-content}.
 ;;
+;; @findex add-direct-writer
 ;; @item #:add-direct-writer LEN WRITE
 ;; LEN is the number of bytes that procedure WRITE will output to its
 ;; arg, @var{out-port} (passed back), when called during
 ;; @code{#:send-reply}.  This is to allow sendfile(2) and related
 ;; hackery.
 ;;
+;; @findex content-length
 ;; @item #:content-length
 ;; Return the total number of bytes in the content added thus far.
 ;;
+;; @findex rechunk-content
 ;; @item #:rechunk-content CHUNK
 ;; CHUNK may be #f, in which case a list of the string lengths collected
 ;; thus far is returned; #t which means to use the content length as the
@@ -138,6 +147,7 @@
 ;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
 ;; CHUNK in the presence of a previous @code{#:add-direct-writer}.
 ;;
+;; @findex inhibit-content!
 ;; @item #:inhibit-content! BOOL
 ;; Non-#f BOOL arranges for @code{#:send-reply} (below) to compute
 ;; content length and add the appropriate header, as usual, but
@@ -145,6 +155,7 @@
 ;; a @code{HEAD} request.  If BOOL is #f, @code{#:send-reply} acts
 ;; normally (i.e., sends both headers and content).
 ;;
+;; @findex send-reply
 ;; @item #:send-reply [close]
 ;; Send the properly formatted response to @var{out-port}, and reset
 ;; all internal state (status reset, content discarded, etc).  It is
