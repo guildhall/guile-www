@@ -89,12 +89,8 @@ Guile-WWW is a set of Guile Scheme modules providing support for navigating
 HTTP connections, parsing URLs, handling CGI operations, and fetching WWW
 resources.  This document corresponds to Guile-WWW @value{VERSION}.
 
-The basic modules are named @code{(www FOO)}, server utilty modules
-are named @code{(www server-utils FOO)}, and data modules are named
-@code{(www data FOO)}.
-
 @menu
-Basic
+Basic -- (www *)
 * http::                Navigate HTTP connections.
 * url::                 Parse URLs, including decoding.
 * cgi::                 Write CGI scripts painlessly.
@@ -102,7 +98,7 @@ Basic
 * url-coding::          URL decode and encode, only.
 * utcsec::              Seconds after epoch, UTC.
 
-Server Utilities
+Server Utilities -- (www server-utils *)
 * big-dishing-loop::    Customizable listener and dispatch.
 * parse-request::       Read HTTP first line and headers.
 * filesystem::          Work with the local filesystem.
@@ -111,7 +107,7 @@ Server Utilities
 * answer::              HTTP connection handling and responses.
 * log::                 Love notes to other programs.
 
-Data
+Data -- (www data *)
 * http-status::         The dreaded 404 lives here.
 * content-type::        Content-Type clues from filenames.
 
@@ -573,8 +569,11 @@ describing the former with keys @code{#:source} and @code{#:layout}.
 @xref{filesystem}, procedure @code{filename->content-type}.
 
 @c ---------------------------------------------------------------------------
-@node    Procedure Index
+@node       Procedure Index
 @unnumbered Procedure Index
+
+This index references both procedures and messages for procedures (and/or
+closures) that take messages.
 
 @printindex fn
 

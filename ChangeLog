@@ -1,5 +1,13 @@
 2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Do some small doc tweaks.
+
+	* doc/guile-www.twerp (Top): Don't explain module names;
+	instead, move their prototype into @menu, after each heading.
+	(Procedure Index): Add blurb explaining what is in the index.
+
+2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www http) proc: http:connect.
 
 	* doc/guile-www.twerp (http): Add @twerpdoc for `http:connect'.
