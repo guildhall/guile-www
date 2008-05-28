@@ -1,5 +1,5 @@
-;; (www server-utils answer) --- HTTP connection handling and responses
-;;
+;;; (www server-utils answer) --- HTTP connection handling and responses
+
 ;; Copyright (C) 2008 Thien-Thi Nguyen
 ;; Copyright (C) 2004,2006,2007 Free Software Foundation, Inc.
 ;;

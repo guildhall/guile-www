@@ -3,7 +3,8 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 !#
 ;;; you-are-here
 
-;; 	Copyright (C) 2004 Free Software Foundation, Inc.
+;; Copyright (C) 2008 Thien-Thi Nguyen
+;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

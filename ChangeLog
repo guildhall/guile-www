@@ -1,3 +1,9 @@
+2008-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.23
+
+	* configure.in (AC_INIT): Bump version to "2.23" for release.
+
 2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Do some small doc tweaks.

@@ -1,5 +1,17 @@
 NEWS for Guile-WWW
 
+- 2.23 | 2008-05-28
+  - in (www data content-type), `xml' maps to "application/xml"
+  - changes to (www server-utils big-dishing-loop)
+    - MARKED FOR REMOVAL 2009-12-31: make-big-dishing-loop #:GET-upath
+    - `make-big-dishing-loop' options @findex'd in manual
+    - new `make-big-dishing-loop' option: #:method-handlers
+    - new proc: named-socket
+  - changes to (www server-utils answer)
+    - `mouthpiece' commands @findex'd in manual
+    - new `mouthpiece' command: #:inhibit-content!
+  - new (www http) proc: http:connect
+
 - 2.22 | 2008-04-20
   - bug-report address updated (see output of ./configure --help)
   - mouthpiece #:send-reply now also takes `shutdown' "how arg" CLOSE

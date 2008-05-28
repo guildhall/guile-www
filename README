@@ -8,14 +8,14 @@ Welcome!
 	  AUTHORS	-- who did what
 	  NEWS		-- list of user visible changes
 	  ChangeLog	-- detailed list of changes
-	  *.scm,*/*.scm	-- the Guile Scheme modules
+	  source/	-- the Guile Scheme modules
 	  doc/		-- guile-www.info and texinfo source
 	  contrib/	-- contributions
 	  examples/	-- using the modules
 
 
-How to Build and Install Guile-WWW
-==================================
+Installation
+============
 (See file INSTALL for generic installation instructions.)
 
 	Briefly, you need to issue these standard commands:
@@ -34,13 +34,11 @@ How to Build and Install Guile-WWW
 	(creating them first if necessary), renaming each FOO.scm to
 	simply FOO, and compressing them somewhat:
 
-	  *.scm               -- $(GUILE_SITE)/www
-	  server-utils/*.scm  -- $(GUILE_SITE)/www/server-utils
-	  data/*.scm          -- $(GUILE_SITE)/www/data
-	  doc/*.info          -- $(prefix)/info
+	  source/*            -- $(GUILE_SITE)/www (and subdirs)
+	  doc/guile-www.info  -- $(prefix)/info
 
-	Typically $(GUILE_SITE) is something like $(prefix)/share/guile/site
-	      and $(prefix)     is something like /usr/local
+	Normally $(GUILE_SITE) is $(prefix)/share/guile/site
+	     and $(prefix)     is /usr/local
 
 	For guile to resolve these module names as (www FOO), make sure
 	that $(GUILE_SITE) is in the `%load-path'.  To see the value of
