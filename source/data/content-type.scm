@@ -46,6 +46,7 @@
     (exe . "application/octet-stream")
     (mid . "audio/x-midi")
     (midi . "audio/x-midi")
+    (css . "text/css")
     (htm . "text/html")
     (html . "text/html")
     (txt . "text/plain")
