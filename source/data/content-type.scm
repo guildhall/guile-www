@@ -55,6 +55,7 @@
     (jpg . "image/jpeg")
     (jpeg . "image/jpeg")
     (png . "image/png")
+    (svg . "image/svg+xml")
     (ra . "audio/x-pn-realaudio")
     (ram . "audio/x-pn-realaudio")
     (sys . "application/octet-stream")
