@@ -1,23 +1,23 @@
-dnl Some -*-autoconf-*- macros for Guile-WWW.
+dnl acinclude.m4 --- Some -*-autoconf-*- macros for Guile-WWW
 dnl
-dnl	Copyright (C) 2004,2005,2006 Free Software Foundation, Inc.
+dnl Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 dnl
-dnl  This file is part of Guile-WWW
+dnl This file is part of Guile-WWW.
 dnl
-dnl  Guile-WWW is free software; you can redistribute it and/or modify it
-dnl  under the terms of the GNU General Public License as published by
-dnl  the Free Software Foundation; either version 3, or (at your
-dnl  option) any later version.
+dnl Guile-WWW is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU General Public License as
+dnl published by the Free Software Foundation; either version 3, or
+dnl (at your option) any later version.
 dnl
-dnl  Guile-WWW is distributed in the hope that it will be useful, but
-dnl  WITHOUT ANY WARRANTY; without even the implied warranty of
-dnl  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-dnl  General Public License for more details.
+dnl Guile-WWW is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
 dnl
-dnl  You should have received a copy of the GNU General Public License
-dnl  along with Guile-WWW; see the file COPYING.  If not, write to the
-dnl  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-dnl  Boston, MA  02110-1301  USA
+dnl You should have received a copy of the GNU General Public
+dnl License along with Guile-WWW; see the file COPYING.  If not,
+dnl write to the Free Software Foundation, Inc., 51 Franklin Street,
+dnl Fifth Floor, Boston, MA  02110-1301  USA
 
 dnl Determine if `make-shared-substring' is available; if not, set
 dnl shell var $1 to "no" and mark it for substitution, as by AC_SUBST.

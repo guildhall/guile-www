@@ -1,25 +1,25 @@
-dnl Process this file with autoconf to produce a configure script.
+dnl configure.in
 dnl
 dnl Copyright (C) 2008 Thien-Thi Nguyen
 dnl Copyright (C) 2001, 2002, 2003, 2004, 2005,
 dnl    2006, 2007 Free Software Foundation, Inc.
 dnl
-dnl  This file is part of Guile-WWW
+dnl This file is part of Guile-WWW.
 dnl
-dnl  Guile-WWW is free software; you can redistribute it and/or modify it
-dnl  under the terms of the GNU General Public License as published by
-dnl  the Free Software Foundation; either version 3, or (at your
-dnl  option) any later version.
+dnl Guile-WWW is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU General Public License as
+dnl published by the Free Software Foundation; either version 3, or
+dnl (at your option) any later version.
 dnl
-dnl  Guile-WWW is distributed in the hope that it will be useful, but
-dnl  WITHOUT ANY WARRANTY; without even the implied warranty of
-dnl  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-dnl  General Public License for more details.
+dnl Guile-WWW is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
 dnl
-dnl  You should have received a copy of the GNU General Public License
-dnl  along with Guile-WWW; see the file COPYING.  If not, write to the
-dnl  Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor
-dnl  Boston, MA  02110-1301  USA
+dnl You should have received a copy of the GNU General Public
+dnl License along with Guile-WWW; see the file COPYING.  If not,
+dnl write to the Free Software Foundation, Inc., 51 Franklin Street,
+dnl Fifth Floor, Boston, MA  02110-1301  USA
 
 AC_INIT([Guile-WWW],[2.23],[ttn@gnuvola.org])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -42,4 +42,4 @@ AC_CONFIG_FILES([examples/id.cgi],[chmod +x examples/id.cgi])
 AC_CONFIG_FILES([examples/wily-guile],[chmod +x examples/wily-guile])
 AC_OUTPUT
 
-dnl  configure.in ends here
+dnl configure.in ends here
