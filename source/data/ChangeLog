@@ -1,5 +1,11 @@
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www data http-status) proc: http-status-string
+
+	* http-status.scm (http-status-string): New proc, exported.
+
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New module: (www data mime-types)
 
 	* mime-types.scm: New file.

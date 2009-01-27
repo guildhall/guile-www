@@ -1,5 +1,12 @@
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www data http-status) proc: http-status-string
+
+	* doc/guile-www.twerp (http-status): Give advance notice of
+	data structures removal; add @twerpdoc for `http-status-string'.
+
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New module: (www data mime-types)
 
 	* doc/guile-www.twerp (Top): Add menu item `mime-types'.

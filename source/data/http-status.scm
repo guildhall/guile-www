@@ -19,7 +19,8 @@
 
 (define-module (www data http-status)
   #:export (*http-status*-META
-            *http-status*))
+            *http-status*
+            http-status-string))
 
 (define *http-status*-META
   '((#:source . "RFC 2616, Section 6.1.1, Status Code and Reason Phrase")
@@ -66,5 +67,10 @@
     (503 . "Service Unavailable")
     (504 . "Gateway Time-out")
     (505 . "HTTP Version not supported")))
+
+;; Return the string associated with HTTP status @var{number}.
+;;
+(define (http-status-string number)
+  (assq-ref *http-status* number))
 
 ;;; (www data http-status) ends here

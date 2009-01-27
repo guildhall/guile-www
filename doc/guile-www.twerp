@@ -544,15 +544,20 @@ The module @code{(www data http-status)} exports two data structures:
 @code{*http-status*} and @code{*http-status*-META}, the latter an alist
 describing the former with keys @code{#:source} and @code{#:layout}.
 
+@strong{NOTE}: These data structures @strong{will no longer be available}
+after 2009-12-31.  Use @code{http-status-string} instead.
+
+@twerpdoc (http-status-string)
+
 Here is a simple example using this module:
 
 @example
 (use-modules ((www data http-status)
-              #:select (*http-status*)))
+              #:select (http-status-string)))
 
 (define (h2 n)
   (format #f "<H2>~A ~A</H2>"
-          n (assq-ref *http-status* n)))
+          n (http-status-string n)))
 
 (h2 404) @result{} "<H2>404 Not Found</H2>"
 (h2 307) @result{} "<H2>307 Temporary Redirect</H2>"
