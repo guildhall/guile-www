@@ -1,44 +1,34 @@
-COPYING
-INSTALL
+# anywhere
 Makefile
 Makefile.in
-aclocal.m4
-autom4te.cache
-config.cache
-config.log
-config.status
-configure
 
-build-aux/install-sh
-build-aux/mdate-sh
-build-aux/missing
-build-aux/module-compile
-build-aux/texinfo.tex
+# specifically
+/COPYING
+/INSTALL
+/aclocal.m4
+/autom4te.cache
+/config.cache
+/config.log
+/config.status
+/configure
 
-doc/*.info
-doc/*.texi
-doc/.deps
-doc/Makefile
-doc/Makefile.in
-doc/guile-www.html
-doc/stamp-vti
+/build-aux/install-sh
+/build-aux/mdate-sh
+/build-aux/missing
+/build-aux/module-compile
+/build-aux/texinfo.tex
 
-examples/Makefile
-examples/Makefile.in
-examples/id.cgi
-examples/wily-guile
+/doc/*.info
+/doc/*.texi
+/doc/.deps
+/doc/guile-www.html
+/doc/stamp-vti
 
-source/*.doc
-source/.doc-index
-
-source/data/*.doc
-source/data/.doc-index
-
-source/server-utils/*.doc
-source/server-utils/.doc-index
+/examples/id.cgi
+/examples/wily-guile
 
 # here we try to express:
 # everything else under source except Makefile.am and *.scm
-source/*
-!source/*.am
-!source/*.scm
+/source/*
+!/source/*.am
+!/source/*.scm
