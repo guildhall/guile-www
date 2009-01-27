@@ -1,3 +1,13 @@
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Init `filename->content-type' internal table on first call.
+
+	* filesystem.scm: Autoload
+	module (www data mime-types) on trigger `put-mime-types!'.
+	(TABLE-OK?): New var.
+	(filename->content-type): Do one-shot init of mime-types
+	database from static table the first time called.
+
 2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Arrange to index `mouthpiece' and `big-dishing-loop' messages.
