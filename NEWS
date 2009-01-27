@@ -1,5 +1,17 @@
 NEWS for Guile-WWW
 
+- 2.24 | 2009-01-27
+  - new module: (www data mime-types)
+  - new (www data http-status) proc: http-status-string
+  - new entries for alist `*content-type-by-filename-extension*'
+    - svg => image/svg+xml
+    - css => text/css
+  - MARKED FOR REMOVAL 2009-12-31
+    - module (www data content-type)
+    - data structures in module (www data http-status)
+      - *http-status*
+      - *http-status*-META
+
 - 2.23 | 2008-05-28
   - in (www data content-type), `xml' maps to "application/xml"
   - changes to (www server-utils big-dishing-loop)

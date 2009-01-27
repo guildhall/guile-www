@@ -1,5 +1,11 @@
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.24
+
+	* configure.in (AC_INIT): Bump version to "2.24" for release.
+
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www data http-status) proc: http-status-string
 
 	* doc/guile-www.twerp (http-status): Give advance notice of
