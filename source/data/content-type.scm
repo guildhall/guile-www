@@ -1,6 +1,6 @@
 ;;; (www data content-type) --- Don't use this module!
 
-;; Copyright (C) 2008 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2009 Thien-Thi Nguyen
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;; Copyright (C) 2001 Martin Grabmueller
 ;;
