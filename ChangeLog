@@ -1,3 +1,10 @@
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New module: (www data mime-types)
+
+	* doc/guile-www.twerp (Top): Add menu item `mime-types'.
+	(mime-types): New node.
+
 2008-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.23

@@ -109,6 +109,7 @@ Server Utilities -- (www server-utils *)
 
 Data -- (www data *)
 * http-status::         The dreaded 404 lives here.
+* mime-types::          Map filename extension to MIME type(s).
 * content-type::        Content-Type clues from filenames.
 
 
@@ -556,6 +557,129 @@ Here is a simple example using this module:
 (h2 404) @result{} "<H2>404 Not Found</H2>"
 (h2 307) @result{} "<H2>307 Temporary Redirect</H2>"
 @end example
+
+@c ---------------------------------------------------------------------------
+@node    mime-types
+@chapter mime-types
+
+This module maintains an internal hash table mapping
+filename extensions to one or more @dfn{mime-types}.
+
+The exported procedures provide convenience abstractions over the
+underlying hash-table manipulation operations, including extension
+and mime-type validation, init from a file in a ``standard'' format
+(i.e., that of @file{/etc/mime.types} or @file{~/.mime.types}), and
+support for straightforward incremental init (aka @dfn{merging}).
+
+There are two predefined entries in the hash table:
+@example
+text => text/plain
+html => text/html
+@end example
+
+To support merging, the @code{put-FOO} procedures both take a
+symbol @var{resolve} as the first arg, which specifies how
+@dfn{conflicts} should be handled.  This happens when the hash
+table already contains an entry for @var{extension} and
+@var{new-mime-type} differs from @var{old-mime-type}.
+
+@table @code
+@item error
+Throw an error with key @code{mime-type-conflict},
+displaying a message describing the @var{extension},
+@var{old-mime-type} and @var{new-mime-type}.
+
+@item prefix
+Make the mime-type of @var{extension} a list (unless already one),
+with @var{new-mime-type} at the beginning.
+
+@item suffix
+Make the mime-type of @var{extension} a list (unless already one),
+with @var{new-mime-type} at the end.
+
+@item stomp
+Use @var{new-mime-type} directly, discarding @var{old-mime-type}.
+
+@item quail
+Discard @var{new-mime-type}, keeping @var{old-mime-type}.
+@end table
+
+For any other method, the operation throws an error, with key
+@code{invalid-resolve}.
+
+Validation happens on all ``put'' operations.  The extension must
+be a symbol, such as @code{txt}.  The mime-type must be a symbol
+with exactly one @samp{/} (slash) in its name, such as
+@code{text/plain}, or a proper list of such symbols.
+The mime-type may also be @code{#f}, which means to remove
+@var{extension} from the hash table.
+
+If an entry does not validate, the operation throws an error,
+with key @code{invalid-extension} or @code{invalid-mime-type}.
+
+@twerpdoc (reset-mime-types!)
+@twerpdoc (put-mime-types-from-file!)
+@twerpdoc (put-mime-types!)
+@twerpdoc (mime-types<-extension)
+@twerpdoc (select-extensions)
+
+The last procedure is intended to ease non-generalizable merging,
+without providing too much exposure to implementation internals.
+Suppose you want to maintain a local policy of having only one mime-type
+associated per extension (to keep things simple).  In that case, after
+populating the hash, you can fix up those entries, like so:
+
+@example
+(reset-mime-types! 491)
+(put-mime-types-from-file! 'prefix "/etc/mime.types")
+(define AMBIGUOUS (select-extensions 'multiple))
+
+(use-modules (ice-9 format))
+(define (display-ext ext)
+  (format #t "~7,@@A  ~A~%" ext (mime-types<-extension ext)))
+
+(for-each display-ext AMBIGUOUS)
+    ent  (chemical/x-ncbi-asn1-ascii chemical/x-pdb)
+    sdf  (application/vnd.stardivision.math chemical/x-mdl-sdfile)
+     sh  (application/x-sh text/x-sh)
+    csh  (application/x-csh text/x-csh)
+    cpt  (application/mac-compactpro image/x-corelphotopaint)
+    asn  (chemical/x-ncbi-asn1 chemical/x-ncbi-asn1-spec)
+    wrl  (model/vrml x-world/x-vrml)
+    tcl  (application/x-tcl text/x-tcl)
+     ra  (audio/x-pn-realaudio audio/x-realaudio)
+    spl  (application/futuresplash application/x-futuresplash)
+    m3u  (audio/mpegurl audio/x-mpegurl)
+
+;; Local policy: For foo.wrl, we want the last variant,
+;; but everything else we'll settle for the first.
+(define ((keep! yes) ext)
+  (put-mime-types!
+   'stomp ext
+   (yes (mime-types<-extension ext))))
+
+((keep! reverse) 'wrl)
+(for-each (keep! car) AMBIGUOUS)
+
+(for-each display-ext AMBIGUOUS)
+    asn  chemical/x-ncbi-asn1
+    wrl  x-world/x-vrml
+    tcl  application/x-tcl
+     ra  audio/x-pn-realaudio
+    spl  application/futuresplash
+    m3u  audio/mpegurl
+    ent  chemical/x-ncbi-asn1-ascii
+    sdf  application/vnd.stardivision.math
+     sh  application/x-sh
+    csh  application/x-csh
+    cpt  application/mac-compactpro
+@end example
+
+Seasoned schemers will note that the same result could have been
+achieved if @var{resolve} were allowed to be a general resolution
+procedure instead of simply a method specifier.  Perhaps that feature
+will be added in the future, and @code{select-extensions} replaced by
+@code{map-mime-types}.  We'll see@dots{}
 
 @c ---------------------------------------------------------------------------
 @node    content-type

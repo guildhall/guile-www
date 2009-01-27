@@ -23,6 +23,7 @@ AUTOMAKE_OPTIONS = gnu
 
 wwwdir = $(GUILE_SITE)/www/data
 www_DATA =					\
+ mime-types					\
  content-type					\
  http-status
 

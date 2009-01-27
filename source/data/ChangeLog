@@ -1,3 +1,10 @@
+2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New module: (www data mime-types)
+
+	* mime-types.scm: New file.
+	* Makefile.am (www_DATA): Add mime-types.
+
 2009-01-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Recognize extension .svg as image/svg+xml.
