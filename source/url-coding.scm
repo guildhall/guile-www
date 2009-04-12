@@ -26,9 +26,9 @@
 ;;; Code:
 
 (define-module (www url-coding)
-  #:use-module (ice-9 regex)
   #:export (url-coding:decode
-            url-coding:encode))
+            url-coding:encode)
+  #:use-module (ice-9 regex))
 
 ;; Return a new string made from url-decoding @var{str}.  Specifically,
 ;; turn @code{+} into space, and hex-encoded @code{%XX} strings into

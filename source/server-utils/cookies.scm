@@ -20,11 +20,11 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils cookies)
-  #:use-module (ice-9 optargs-kw)
   #:export (rfc2109-set-cookie-string
             rfc2965-set-cookie2-tree
             rfc2965-parse-cookie-header-value
-            reach))
+            reach)
+  #:use-module (ice-9 optargs-kw))
 
 (define subs make-shared-substring)
 

@@ -28,11 +28,6 @@
 ;;; Code:
 
 (define-module (www cgi)
-  #:use-module (www url-coding)
-  #:use-module (ice-9 regex)
-  #:use-module (srfi srfi-13)
-  #:use-module (srfi srfi-14)
-  #:use-module (ice-9 rw)
   #:export (cgi:init
             cgi:getenv
             cgi:nv-pairs
@@ -40,7 +35,12 @@
             cgi:names
             cgi:form-data?
             cgi:uploads cgi:upload
-            cgi:cookies cgi:cookie))
+            cgi:cookies cgi:cookie)
+  #:use-module (www url-coding)
+  #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-13)
+  #:use-module (srfi srfi-14)
+  #:use-module (ice-9 rw))
 
 (define subs make-shared-substring)
 

@@ -27,11 +27,11 @@
 ;;; Code:
 
 (define-module (www main)
-  #:use-module (www http)
-  #:use-module (www url)
   #:export (www:set-protocol-handler!
             www:get
-            www:http-head-get))
+            www:http-head-get)
+  #:use-module (www http)
+  #:use-module (www url))
 
 
 (define dispatch-table

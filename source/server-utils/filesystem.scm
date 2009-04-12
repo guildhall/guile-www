@@ -29,13 +29,13 @@
 ;;; Code:
 
 (define-module (www server-utils filesystem)
-  #:use-module (ice-9 regex)
-  #:autoload (www data content-type) (*content-type-by-filename-extension*)
-  #:autoload (www data mime-types) (put-mime-types!)
   #:export (access-forbidden?-proc
             cleanup-filename
             upath->filename-proc
-            filename->content-type))
+            filename->content-type)
+  #:use-module (ice-9 regex)
+  #:autoload (www data content-type) (*content-type-by-filename-extension*)
+  #:autoload (www data mime-types) (put-mime-types!))
 
 (define subs make-shared-substring)
 

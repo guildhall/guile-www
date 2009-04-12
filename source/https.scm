@@ -31,11 +31,11 @@
 ;;; Code:
 
 (define-module (www https)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 popen)
   #:export (https:version
             https:user-agent
-            https-via-lynx))
+            https-via-lynx)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 popen))
 
 (define https:version "HTTP/1.0")  ; bump up to 1.1 when ready
 (define https:user-agent "GuileHTTP 0.1")

@@ -36,13 +36,13 @@
 ;;     encoding methods (e.g. a url-scheme-reserved-char-alist)
 
 (define-module (www url)
-  #:use-module (www url-coding)
-  #:use-module (ice-9 regex)
   #:export (url:scheme url:address url:unknown
                        url:user url:host url:port url:path
                        url:make url:make-http url:make-ftp url:make-mailto
                        url:parse url:unparse
-                       url:decode url:encode))
+                       url:decode url:encode)
+  #:use-module (www url-coding)
+  #:use-module (ice-9 regex))
 
 ;; Extract and return the "scheme" portion of a @var{url} object.
 ;; @code{url:scheme} is an unfortunate term, but it is the technical

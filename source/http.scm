@@ -28,9 +28,6 @@
 ;;; Code:
 
 (define-module (www http)
-  #:use-module (www url)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 rw)
   #:export (http:message-version
             http:message-status-code
             http:message-status-text
@@ -44,7 +41,10 @@
             http:post-form
             http:connect
             http:open
-            http:request))
+            http:request)
+  #:use-module (www url)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 rw))
 
 
 ;;; Compatibility

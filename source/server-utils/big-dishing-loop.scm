@@ -28,12 +28,12 @@
 ;;; Code:
 
 (define-module (www server-utils big-dishing-loop)
-  #:use-module (ice-9 optargs-kw)
-  #:use-module (www server-utils parse-request)
-  #:use-module (www server-utils answer)
   #:export (named-socket
             echo-upath
-            make-big-dishing-loop))
+            make-big-dishing-loop)
+  #:use-module (ice-9 optargs-kw)
+  #:use-module (www server-utils parse-request)
+  #:use-module (www server-utils answer))
 
 ;; Return a new socket in protocol @var{family} with address @var{name}.
 ;; First, evaluate @code{(socket @var{family} SOCK_STREAM 0)} to create

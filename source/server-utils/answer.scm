@@ -21,9 +21,9 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils answer)
-  #:use-module ((ice-9 rw) #:select (write-string/partial))
   #:export (CRLF fs walk-tree string<-header-components
-                 mouthpiece))
+                 mouthpiece)
+  #:use-module ((ice-9 rw) #:select (write-string/partial)))
 
 (define-macro (+! v n)
   `(set! ,v (+ ,v ,n)))
