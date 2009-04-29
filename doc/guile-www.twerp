@@ -81,6 +81,8 @@ translation approved by the Free Software Foundation.
 
 @end titlepage
 
+@contents
+
 @c ---------------------------------------------------------------------------
 @node Top
 @top The (www *) Modules
@@ -705,9 +707,6 @@ This index references both procedures and messages for procedures (and/or
 closures) that take messages.
 
 @printindex fn
-
-@c ---------------------------------------------------------------------------
-@contents
 
 @c ---------------------------------------------------------------------------
 @bye

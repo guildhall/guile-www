@@ -1,3 +1,9 @@
+2009-04-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Move table of contents after the title page.
+
+	* doc/guile-www.twerp: Move @contents.
+
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.24
