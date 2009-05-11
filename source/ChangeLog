@@ -1,3 +1,10 @@
+2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use `zero?'.
+
+	* cgi.scm (make-ccc init!): Use `zero?'.
+	* http.scm (http:request): Likewise.
+
 2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www http) proc: http:connect.

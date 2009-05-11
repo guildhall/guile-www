@@ -281,7 +281,7 @@
             ((number? chunk)
              (let* ((extra (remainder content-length chunk))
                     (dreck (make-list (quotient content-length chunk) chunk))
-                    (frizz (if (= 0 extra)
+                    (frizz (if (zero? extra)
                                dreck
                                (reverse (cons extra dreck))))
                     (noise (map (lambda (n) (make-string n)) frizz))
@@ -299,7 +299,7 @@
                            (+! wpos move)
                            (let ((new-start (+ start move))
                                  (new-dpos (remainder wpos chunk)))
-                             (cond ((= 0 new-dpos)
+                             (cond ((zero? new-dpos)
                                     (set! nw (cdr nw))
                                     (cond ((not (null? nw))
                                            (set! dest (car nw))

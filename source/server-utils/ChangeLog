@@ -1,3 +1,10 @@
+2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use `zero?'.
+
+	* answer.scm (mouthpiece rechunk-content): Use `zero?'.
+	* big-dishing-loop.scm (make-big-dishing-loop): Likewise.
+
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Init `filename->content-type' internal table on first call.

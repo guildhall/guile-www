@@ -346,13 +346,13 @@
          (case concurrency
            ((#:new-process #:new-process/nowait)
             (let ((pid (primitive-fork)))
-              (cond ((= 0 pid)
+              (cond ((zero? pid)
                      (exit (child)))
                     (else
                      (parent-finish p)
                      (set! p #f)
                      (or (eq? #:new-process/nowait concurrency)
-                         (= 0 (status:exit-val (cdr (waitpid pid)))))))))
+                         (zero? (status:exit-val (cdr (waitpid pid)))))))))
            (else
             (child))))))))
 

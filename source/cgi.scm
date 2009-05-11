@@ -290,7 +290,7 @@
     (define (init!)
       (set! P '()) (set! V '()) (set! U '())
       (let ((len (env-look 'content-length)))
-        (cond ((= 0 len))
+        (cond ((zero? len))
               ((string-ci=? (env-look 'content-type)
                             "application/x-www-form-urlencoded")
                (let ((p/v (parse-form (read-n-bytes len))))

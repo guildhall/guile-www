@@ -415,7 +415,7 @@
                 (let make-header-list ((ln (sans-trailing-whitespace
                                             (read-line sock 'trim)))
                                        (hlist '()))
-                  (if (= 0 (string-length ln))
+                  (if (zero? (string-length ln))
                       hlist
                       (make-header-list (sans-trailing-whitespace
                                          (read-line sock 'trim))

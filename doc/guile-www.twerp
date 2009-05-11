@@ -381,7 +381,7 @@ afterwards.
 
 @example
 (let ((pid (primitive-fork)))
-  (if (= 0 pid)
+  (if (zero? pid)
       (execle CGI (M #:environ-list) (list CGI)) ; child
       (waitpid pid)))                            ; parent
 

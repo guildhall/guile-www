@@ -1,3 +1,10 @@
+2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use `zero?'.
+
+	* examples/id.cgi.in (File Uploads, Cookies): Use `zero?'.
+	* doc/guile-www.twerp (cgi-prep): Use `zero?' in example.
+
 2009-04-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Move table of contents after the title page.

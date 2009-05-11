@@ -114,7 +114,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
  "File Uploads (using `cgi:uploads')"
  (let* ((ls (append! (collect cgi:uploads (lambda (name u) u))))
         (tot (length ls)))
-   (cond ((= 0 tot)
+   (cond ((zero? tot)
           (fso "(none)\n"))
          (else
           (fso "(~A uploads)\n" tot)
@@ -133,7 +133,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
  "Cookies (using `cgi:cookies')"
  (let* ((ls (collect cgi:cookies cons))
         (tot (apply + (map length (map cdr ls)))))
-   (cond ((= 0 tot)
+   (cond ((zero? tot)
           (fso "(none)\n"))
          (else
           (fso "(~A cookies)\n" tot)
