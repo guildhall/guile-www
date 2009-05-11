@@ -1,5 +1,11 @@
 2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Use `string-null?'.
+
+	* http.scm (http:request): Use `string-null?'.
+
+2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Use `zero?'.
 
 	* cgi.scm (make-ccc init!): Use `zero?'.
