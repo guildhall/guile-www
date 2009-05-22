@@ -1,3 +1,9 @@
+2009-05-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug: Use correct pre-installed filenames in examples/id.cgi.
+
+	* examples/id.cgi.in: Update `load-from-path' filenames.
+
 2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use `zero?'.

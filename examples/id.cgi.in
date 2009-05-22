@@ -30,10 +30,10 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 ;;; Code:
 
 ;; Load the module.  Normally, these explicit loads can be omitted --
-;; we use it to help the perpetually confused Guile module system DTRT.
+;; they ensure that Guile uses the proper (pre-installed) modules.
 
-(load-from-path "@abs_top_builddir@/url-coding.scm")
-(load-from-path "@abs_top_builddir@/cgi.scm")
+(load-from-path "@abs_top_builddir@/source/url-coding.scm")
+(load-from-path "@abs_top_builddir@/source/cgi.scm")
 (use-modules (www cgi))
 
 ;; Abstractions: formatted string output, sectioned output, collection.
