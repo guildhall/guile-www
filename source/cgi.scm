@@ -38,6 +38,7 @@
             cgi:cookies cgi:cookie)
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 and-let-star)
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module (ice-9 rw))
@@ -68,21 +69,20 @@
   ;; ALIST grows at the head, so callers need to:
   ;;  - set! alist to the return value;
   ;;  - `reverse!' it when done accumuating if order is to be maintained.
-  (or (and=> (assoc-ref alist name)
-             (lambda (old)
-               (append! old (list value))
-               alist))
+  (or (and-let* ((old (assoc-ref alist name)))
+        (append! old (list value))
+        alist)
       (acons name (list value) alist)))
 
 ;;; CGI environment variables.
 
 (define (env-extraction-methods)        ; => (VAR METHOD ...)
   (define (server-sw-info)
-    (and=> (getenv "SERVER_SOFTWARE")
-           (lambda (sw) (list sw (string-index sw #\/)))))
+    (and-let* ((sw (getenv "SERVER_SOFTWARE")))
+      (list sw (string-index sw #\/))))
   (define (server-pr-info)
-    (and=> (getenv "SERVER_PROTOCOL")
-           (lambda (pr) (list pr (string-index pr #\/)))))
+    (and-let* ((pr (getenv "SERVER_PROTOCOL")))
+      (list pr (string-index pr #\/))))
   (define (extract make-args proc)
     (apply-to-args (make-args) proc))
   ;; rv -- methods may be a string to be passed to `getenv', or a thunk
@@ -228,39 +228,36 @@
                              (string-contains str boundary start))))
 
           (let get-pair ((start 0))
-            (and=> (and=> (find-bound start)
-                          (lambda (outer-seg-start)
-                            (let ((seg-start (+ outer-seg-start boundary-len)))
-                              (and=> (find-bound seg-start)
-                                     (lambda (seg-finish)
-                                       (cons (subs str seg-start (- seg-finish 2))
-                                             seg-finish))))))
-                   (lambda (segment-newstart)
-                     (let* ((segment (car segment-newstart))
-                            (try (lambda (rx extract)
-                                   (and=> (regexp-exec rx segment)
-                                          extract)))
-                            (name (or parent-name
-                                      (try name-exp  m1)))
-                            (value    (try value-exp match:suffix))
-                            (type     (try type-exp  m1)))
-                       (and name
-                            value
-                            (cond ((and type
-                                        (not parent-name) ; only recurse once
-                                        (string-match "multipart/mixed" type))
-                                   (level value
-                                          (determine-boundary type)
-                                          name))
-                                  ((and type (try filename-exp m1))
-                                   => (lambda (filename)
-                                        (stash-file-upload!
-                                         name filename type value
-                                         (subs (try value-exp match:prefix)
-                                               2))))
-                                  (else
-                                   (stash-form-variable! name value)))))
-                     (get-pair (cdr segment-newstart))))))))
+            (and-let* ((outer-seg-start (find-bound start))
+                       (seg-start (+ outer-seg-start boundary-len))
+                       (seg-finish (find-bound seg-start))
+                       (segment-newstart (cons (subs str seg-start (- seg-finish 2))
+                                               seg-finish)))
+              (let* ((segment (car segment-newstart))
+                     (try (lambda (rx extract)
+                            (and=> (regexp-exec rx segment)
+                                   extract)))
+                     (name (or parent-name
+                               (try name-exp  m1)))
+                     (value    (try value-exp match:suffix))
+                     (type     (try type-exp  m1)))
+                (and name
+                     value
+                     (cond ((and type
+                                 (not parent-name) ; only recurse once
+                                 (string-match "multipart/mixed" type))
+                            (level value
+                                   (determine-boundary type)
+                                   name))
+                           ((and type (try filename-exp m1))
+                            => (lambda (filename)
+                                 (stash-file-upload!
+                                  name filename type value
+                                  (subs (try value-exp match:prefix)
+                                        2))))
+                           (else
+                            (stash-form-variable! name value)))))
+              (get-pair (cdr segment-newstart)))))))
 
     (cons (reverse! v) (reverse! u))))
 
@@ -301,13 +298,11 @@
                (let ((v/u (parse-form-multipart (read-n-bytes len))))
                  (set! V (car v/u))
                  (set! U (cdr v/u))))))
-      (and=> (env-look 'query-string)
-             (lambda (qs)
-               (and=> (and (not (string-null? qs))
-                           (parse-form qs))
-                      (lambda (p/v)
-                        (set! P (car p/v))
-                        (set! V (cdr p/v))))))
+      (and-let* ((qs (env-look 'query-string))
+                 ((not (string-null? qs)))
+                 (p/v (parse-form qs)))
+        (set! P (car p/v))
+        (set! V (cdr p/v)))
       (set! C (or (and=> (env-look 'http-cookie) get-cookies) '())))
 
     (define (getenv-or-null-string key)
@@ -326,10 +321,9 @@
       (not (null? V)))
 
     (define (uploads name)
-      (and=> (assoc name U)
-             (lambda (cell)
-               (set! U (delq cell U))
-               (cdr cell))))
+      (and-let* ((pair (assoc name U)))
+        (set! U (delq pair U))
+        (cdr pair)))
 
     (define (upload name)
       (and=> (uploads name) car))

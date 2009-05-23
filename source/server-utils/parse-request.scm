@@ -20,7 +20,8 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils parse-request)
-  #:export (read-first-line read-headers skip-headers))
+  #:export (read-first-line read-headers skip-headers)
+  #:use-module (ice-9 and-let-star))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
 ;; return a list of the method, URL path and HTTP version indicator, or
@@ -65,18 +66,17 @@
       (string->symbol (list->string (map char-upcase ls))))
 
     ;; do it
-    (and (and=> (read-until-ws ls->upcased-symbol) char-not-eol?)
-         (skip-ws!)
-         (and=> (read-until-ws)
-                (lambda (2nd-ws)
-                  (and (char-not-eol? 2nd-ws)
-                       (set! 2nd-ws (and (skip-ws!) (read-until-ws))))
-                  (and 2nd-ws
-                       (char=? #\cr 2nd-ws)
-                       (let ((c (read-char port)))
-                         (and (not (eof-object? c))
-                              (char=? #\newline c)))
-                       rv))))))
+    (and-let* ((c1 (read-until-ws ls->upcased-symbol))
+               ((char-not-eol? c1))
+               (c2 (and (skip-ws!) (read-until-ws)))
+               (2nd-ws (if (char-not-eol? c2)
+                           (and (skip-ws!) (read-until-ws))
+                           c2))
+               ((char=? #\cr 2nd-ws))
+               (c3 (read-char port))
+               ((and (not (eof-object? c3))
+                     (char=? #\newline c3))))
+      rv)))
 
 ;; Parse the headers of the HTTP message from input @var{port} and return a
 ;; list of key/value pairs, or #f if the message ends prematurely or is

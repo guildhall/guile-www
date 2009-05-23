@@ -1,3 +1,15 @@
+2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use `(ice-9 and-let-star) and-let*'.
+
+	* cgi.scm: Use module (ice-9 and-let-star).
+	(updated-alist): Use `and-let*'.
+	(env-extraction-methods server-sw-info): Likewise.
+	(env-extraction-methods server-pr-info): Likewise.
+	(parse-form-multipart get-pair): Likewise.
+	(make-ccc init!): Likewise.
+	(make-ccc uploads): Likewise.
+
 2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use `string-null?'.

@@ -34,6 +34,7 @@
             upath->filename-proc
             filename->content-type)
   #:use-module (ice-9 regex)
+  #:use-module (ice-9 and-let-star)
   #:autoload (www data content-type) (*content-type-by-filename-extension*)
   #:autoload (www data mime-types) (put-mime-types!))
 
@@ -162,13 +163,11 @@
         (apply put-mime-types! 'stomp
                (apply append (map list exts mime-types)))
         (set! TABLE-OK? #t)))
-  (or (and=> (string-rindex filename #\.)
-             (lambda (cut)
-               (and=> (mime-types<-extension (subs filename (1+ cut)))
-                      (lambda (mime-types)
-                        (symbol->string (if (pair? mime-types)
-                                            (car mime-types)
-                                            mime-types))))))
+  (or (and-let* ((cut (string-rindex filename #\.))
+                 (mt (mime-types<-extension (subs filename (1+ cut)))))
+        (symbol->string (if (pair? mt)
+                            (car mt)
+                            mt)))
       ;; use `if' here to allow #f for `default'
       (if (not (null? default))
           (car default)

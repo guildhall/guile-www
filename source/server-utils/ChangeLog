@@ -1,3 +1,12 @@
+2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use `(ice-9 and-let-star) and-let*'.
+
+	* filesystem.scm: Use module (ice-9 and-let-star).
+	(filename->content-type): Use `and-let*'.
+	* parse-request.scm: Use module (ice-9 and-let-star).
+	(read-first-line): Use `and-let*'.
+
 2009-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use `zero?'.
