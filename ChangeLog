@@ -1,3 +1,13 @@
+2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug: Make examples/id.cgi display uploads correctly.
+
+	This regression was due to failure to track the 2005-04-17 change
+	to support fastcgi (introducing data structure `ONE' et al).
+
+	* examples/id.cgi.in (File Uploads): Process each named
+	upload as a list, not as an individual upload element.
+
 2009-05-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Fix bug: Use correct pre-installed filenames in examples/id.cgi.

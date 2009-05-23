@@ -127,7 +127,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
                              (m #:mime-type)
                              (string-length u)
                              (m #:raw-mime-headers))))
-                    ls)))))
+                    (apply append ls))))))
 
 (section
  "Cookies (using `cgi:cookies')"
