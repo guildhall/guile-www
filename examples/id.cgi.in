@@ -131,17 +131,16 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 
 (section
  "Cookies (using `cgi:cookies')"
- (let* ((ls (collect cgi:cookies cons))
-        (tot (apply + (map length (map cdr ls)))))
-   (cond ((zero? tot)
-          (fso "(none)\n"))
-         (else
-          (fso "(~A cookies)\n" tot)
-          (for-each (lambda (name/c)
-                      (fso "\n~A: ~A\n" (car name/c) (length (cdr name/c)))
-                      (for-each (lambda (c)
-                                  (fso " ~A\n" c))
-                                (cdr name/c)))
-                    ls)))))
+ (let ((k (cgi:cookie-names)))
+   (if (null? k)
+       (fso "(none)\n")
+       (let ((v (map cgi:cookies k)))
+         (fso "(~A names ~A values)\n" (length k) (apply + (map length v)))
+         (for-each (lambda (k v)
+                     (fso "\n~A: ~A\n" k (length v))
+                     (for-each (lambda (c)
+                                 (fso " ~A\n" c))
+                               v))
+                   k v)))))
 
 ;;; id.cgi ends here

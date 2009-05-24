@@ -35,6 +35,7 @@
             cgi:names
             cgi:form-data?
             cgi:uploads cgi:upload
+            cgi:cookie-names
             cgi:cookies cgi:cookie)
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
@@ -346,6 +347,7 @@
         ((#:form-data?) (form-data?))
         ((#:uploads) (uploads (car args)))
         ((#:upload) (upload (car args)))
+        ((#:cookie-names) (map car C))
         ((#:cookies) (cookies (car args)))
         ((#:cookie) (cookie (car args)))
         (else (error "bad command:" command))))))
@@ -469,6 +471,11 @@
 ;;
 (define (cgi:upload name)
   (ONE #:upload name))
+
+;; Return a list of cookie names.
+;;
+(define (cgi:cookie-names)
+  (ONE #:cookie-names))
 
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
 ;; values in the order they were found in the HTTP header, which should

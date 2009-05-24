@@ -215,6 +215,7 @@ discovery, data transfer in, data transfer out.
 @twerpdoc (cgi:init)
 @twerpdoc (cgi:form-data?)
 @twerpdoc (cgi:names)
+@twerpdoc (cgi:cookie-names)
 
 @section Data Transfer In
 

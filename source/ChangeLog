@@ -1,3 +1,9 @@
+2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (www cgi) proc: cgi:cookie-names
+
+	* cgi.scm (cgi:cookie-names): New proc, exported.
+
 2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use `(ice-9 and-let-star) and-let*'.

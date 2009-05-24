@@ -1,3 +1,10 @@
+2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (www cgi) proc: cgi:cookie-names
+
+	* doc/guile-www.twerp (cgi): Add @twerpdoc for `cgi:cookie-names'.
+	* examples/id.cgi.in (Cookies): Use `cgi:cookie-names'.
+
 2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Fix bug: Make examples/id.cgi display uploads correctly.
