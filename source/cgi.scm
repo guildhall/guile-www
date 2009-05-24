@@ -37,6 +37,7 @@
             cgi:uploads cgi:upload
             cgi:cookie-names
             cgi:cookies cgi:cookie)
+  #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:use-module (www url-coding)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 and-let-star)
@@ -262,21 +263,6 @@
 
     (cons (reverse! v) (reverse! u))))
 
-(define (get-cookies raw)
-  ;; Parse RAW (a string) for cookie-like frags.  Return an alist.
-  (let ((pair-exp (make-regexp "([^=; \t\n]+)=([^=; \t\n]+)"))
-        (c (list)))
-    (define (get-pair str)
-      (let ((pair-match (regexp-exec pair-exp str)))
-        (if (not pair-match) '()
-            (let ((name (match:substring pair-match 1))
-                  (value (match:substring pair-match 2)))
-              (if (and name value)
-                  (set! c (updated-alist c name value)))
-              (get-pair (match:suffix pair-match))))))
-    (get-pair raw)
-    (reverse! c)))
-
 ;;; CGI context closure.
 
 (define (make-ccc)
@@ -304,7 +290,14 @@
                  (p/v (parse-form qs)))
         (set! P (car p/v))
         (set! V (cdr p/v)))
-      (set! C (or (and=> (env-look 'http-cookie) get-cookies) '())))
+      (set! C (let ((alist (simple-parse-cookies
+                            (or (env-look 'http-cookie) "")))
+                    (rv '()))
+                (for-each (lambda (k v)
+                            (set! rv (updated-alist rv k v)))
+                          (map car alist)
+                          (map cdr alist))
+                (reverse! rv))))
 
     (define (getenv-or-null-string key)
       (or (env-look key) ""))

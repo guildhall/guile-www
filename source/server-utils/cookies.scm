@@ -21,9 +21,11 @@
 
 (define-module (www server-utils cookies)
   #:export (rfc2109-set-cookie-string
+            simple-parse-cookies
             rfc2965-set-cookie2-tree
             rfc2965-parse-cookie-header-value
             reach)
+  #:use-module (ice-9 regex)
   #:use-module (ice-9 optargs-kw))
 
 (define subs make-shared-substring)
@@ -50,6 +52,30 @@
       (if domain (fs "; domain=~A" domain) "")
       (if expires (fs "; expires=~A" expires) "")
       (if secure "; secure" "")))
+
+;;;---------------------------------------------------------------------------
+;;; simple parsing
+
+(define +pair-exp+ (make-regexp "(,[ \t]*)*([^=]+)=([^,]+)"))
+
+;; Parse @var{string} for cookie-like fragments using the simple regexp:
+;; @example
+;; (,[ \t]*)*([^=]+)=([^,]+)
+;; @end example
+;;
+;; Return a list of elements @code{(@var{name} . @var{value})},
+;; where both @var{name} and @var{value} are strings.  For example:
+;;
+;; @example
+;; (simple-parse-cookies "abc=def; z=z, ans=\"42\", abc=xyz")
+;; @result{} (("abc" . "def; z=z") ("ans" . "\"42\"") ("abc" . "xyz"))
+;; @end example
+;;
+(define (simple-parse-cookies string)
+  (define (kv<-m m)
+    (cons (match:substring m 2)
+          (match:substring m 3)))
+  (map kv<-m (list-matches +pair-exp+ string)))
 
 ;;;---------------------------------------------------------------------------
 ;;; RFC2965

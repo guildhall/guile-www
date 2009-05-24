@@ -1,3 +1,10 @@
+2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (www server-utils cookies) proc: simple-parse-cookies
+
+	* cookies.scm: Use module (ice-9 regex).
+	(simple-parse-cookies): New proc, exported.
+
 2009-05-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use `(ice-9 and-let-star) and-let*'.

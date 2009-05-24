@@ -33,6 +33,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 ;; they ensure that Guile uses the proper (pre-installed) modules.
 
 (load-from-path "@abs_top_builddir@/source/url-coding.scm")
+(load-from-path "@abs_top_builddir@/source/server-utils/cookies.scm")
 (load-from-path "@abs_top_builddir@/source/cgi.scm")
 (use-modules (www cgi))
 

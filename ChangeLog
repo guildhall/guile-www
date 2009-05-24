@@ -1,5 +1,12 @@
 2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www server-utils cookies) proc: simple-parse-cookies
+
+	* doc/guile-www.twerp (cookies): Add @twerpdoc for `simple-parse-cookies'.
+	* examples/id.cgi.in: Explicitly load cookies.scm.
+
+2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www cgi) proc: cgi:cookie-names
 
 	* doc/guile-www.twerp (cgi): Add @twerpdoc for `cgi:cookie-names'.

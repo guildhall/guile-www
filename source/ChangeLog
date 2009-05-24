@@ -1,5 +1,13 @@
 2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www server-utils cookies) proc: simple-parse-cookies
+
+	* cgi.scm: Autoload (www server-utils cookies).
+	(get-cookies): Delete proc.
+	(make-ccc init!): Use `simple-parse-cookies'.
+
+2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www cgi) proc: cgi:cookie-names
 
 	* cgi.scm (cgi:cookie-names): New proc, exported.

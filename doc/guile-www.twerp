@@ -396,7 +396,7 @@ Now we can re-use @code{M} for another connection.
 @chapter cookies
 
 Cookies are bits of client-side state the server can maintain through
-designated HTTP response headers.  At this time (early 2006), there are two
+designated HTTP response headers.  At this time (2009), there are two
 specifications,
 RFC2109@footnote{@uref{http://www.faqs.org/rfcs/rfc2109.html,RFC2109}}
 and
@@ -407,6 +407,7 @@ This chapter describes facilities for creating such headers, and parsing those
 sent by the client.  Procedures that return trees are meant to be used with
 the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
 
+@twerpdoc (simple-parse-cookies)
 @twerpdoc (rfc2109-set-cookie-string)
 @twerpdoc (rfc2965-set-cookie2-tree)
 
