@@ -20,7 +20,12 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils parse-request)
-  #:export (read-first-line read-headers skip-headers)
+  #:export (read-first-line
+            hqf<-upath alist<-query
+            read-headers skip-headers)
+  #:autoload (www url-coding) (url-coding:decode)
+  #:use-module (srfi srfi-13)
+  #:use-module (srfi srfi-14)
   #:use-module (ice-9 and-let-star))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
@@ -77,6 +82,53 @@
                ((and (not (eof-object? c3))
                      (char=? #\newline c3))))
       rv)))
+
+;; Parse @var{upath} and return three values representing
+;; its hierarchy, query and fragment components.
+;; If a component is missing, its value is @code{#f}.
+;;
+;; @example
+;; (hqf<-upath "/aa/bb/cc?def=xyz&hmm#frag")
+;; @result{} #<values "/aa/bb/cc" "def=xyz&hmm" "frag">
+;;
+;; (hqf<-upath "/aa/bb/cc#fr?ag")
+;; @result{} #<values "/aa/bb/cc" #f "fr?ag">
+;; @end example
+;;
+(define (hqf<-upath upath)
+  (define (bit . x)
+    (apply substring/shared upath x))
+  (or (and-let* ((one (string-index upath (char-set #\? #\#)))
+                 (h (bit 0 one))
+                 (more (1+ one)))
+        (and (string-null? h)
+             (set! h #f))
+        (cond ((char=? #\# (string-ref upath one))
+               (values h #f (bit more)))
+              ((string-index upath #\# more)
+               => (lambda (two)
+                    (values h (bit more two) (bit (1+ two)))))
+              (else
+               (values h (bit more) #f))))
+      (values upath #f #f)))
+
+(define amp-split
+  (let ((not-amp-cs (char-set-complement (char-set #\&))))
+    (lambda (s)
+      (string-tokenize s not-amp-cs))))
+
+;; Parse urlencoded @var{query-string} and return an alist.
+;; For each element @code{(@var{name} . @var{value})} of the alist,
+;; @var{name} is a string and @var{value} is either @code{#f} or a string.
+;;
+(define (alist<-query query-string)
+  (map (lambda (pair)
+         (define (decode . args)
+           (url-coding:decode (apply substring/shared pair args)))
+         (let ((mid (string-index pair #\=)))
+           (cons (if mid (decode 0 mid) (decode 0))
+                 (and mid (decode (1+ mid))))))
+       (amp-split query-string)))
 
 ;; Parse the headers of the HTTP message from input @var{port} and return a
 ;; list of key/value pairs, or #f if the message ends prematurely or is

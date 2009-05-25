@@ -318,6 +318,8 @@ The @code{(www server-utils parse-request)} module provides procedures to
 read the first line and the headers of an HTTP message on the input port.
 
 @twerpdoc (read-first-line)
+@twerpdoc (hqf<-upath)
+@twerpdoc (alist<-query)
 @twerpdoc (read-headers)
 
 Sometimes you are interested in the body of the message but not the headers.
