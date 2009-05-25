@@ -1,5 +1,11 @@
 2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www server-utils parse-request) proc: read-body
+
+	* doc/guile-www.twerp (parse-request): Add @twerpdoc for `read-body'.
+
+2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www server-utils parse-request) procs: hqf<-upath, alist<-query
 
 	* doc/guile-www.twerp (parse-request):

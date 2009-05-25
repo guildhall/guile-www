@@ -1,5 +1,11 @@
 2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (www server-utils parse-request) proc: read-body
+
+	* parse-request.scm (read-body): New proc, exported.
+
+2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (www server-utils parse-request) procs: hqf<-upath, alist<-query
 
 	* parse-request.scm (hqf<-upath): New proc, exported.

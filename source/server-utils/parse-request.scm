@@ -22,10 +22,11 @@
 (define-module (www server-utils parse-request)
   #:export (read-first-line
             hqf<-upath alist<-query
-            read-headers skip-headers)
+            read-headers skip-headers read-body)
   #:autoload (www url-coding) (url-coding:decode)
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
+  #:use-module (ice-9 rw)
   #:use-module (ice-9 and-let-star))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
@@ -256,5 +257,17 @@
                           (loop (next))))))))
     (set-cdr! ring '())
     rv))
+
+;; Return a new string of @var{len} bytes with contents
+;; read from input @var{port}.
+;;
+(define (read-body len port)
+  (let ((s (make-string len)))
+    (let loop ((start 0))
+      (or (= start len)
+          (let ((try (read-string!/partial s port start)))
+            (and (number? try)
+                 (loop (+ start try))))))
+    s))
 
 ;;; (www server-utils parse-request) ends here

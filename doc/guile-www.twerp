@@ -315,7 +315,8 @@ combinations (1 means non-#f and 0 means #f):
 @chapter parse-request
 
 The @code{(www server-utils parse-request)} module provides procedures to
-read the first line and the headers of an HTTP message on the input port.
+read the first line, the headers and the body, of an HTTP message on the
+input port.
 
 @twerpdoc (read-first-line)
 @twerpdoc (hqf<-upath)
@@ -326,6 +327,7 @@ Sometimes you are interested in the body of the message but not the headers.
 In this case, you can use @code{skip-headers} to quickly position the port.
 
 @twerpdoc (skip-headers)
+@twerpdoc (read-body)
 
 @c ---------------------------------------------------------------------------
 @node    filesystem
