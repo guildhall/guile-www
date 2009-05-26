@@ -1,5 +1,17 @@
 2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Make (www cgi) use (www server-utils parse-request).
+
+	* cgi.scm: Autoload module (www server-utils parse-request);
+	don't use modules (www url-coding), (ice-9 rw).
+	(collate, ws/comma-split): New procs.
+	(read-n-bytes, split): Delete procs.
+	(env-extraction-methods): Use `ws/comma-split'.
+	(parse-form): Delete proc.
+	(make-ccc init!): Use `read-body', `alist<-query', `collate'.
+
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Fix bug: For (www cgi), don't mix query string and form data.
 
 	This regression was introduced in Guile-WWW 2.1.

@@ -33,9 +33,10 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 ;; they ensure that Guile uses the proper (pre-installed) modules.
 
 (load-from-path "@abs_top_builddir@/source/url-coding.scm")
+(load-from-path "@abs_top_builddir@/source/server-utils/parse-request.scm")
 (load-from-path "@abs_top_builddir@/source/server-utils/cookies.scm")
 (load-from-path "@abs_top_builddir@/source/cgi.scm")
-(use-modules (www cgi))
+(use-modules (www cgi) (www server-utils parse-request))
 
 ;; Abstractions: formatted string output, sectioned output, collection.
 
@@ -100,6 +101,18 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
              server-protocol-name
              server-protocol-version
              http-accept-types)))
+
+(section
+ "Query String (using `(www server-utils parse-request) alist<-query')"
+ (let ((qs (cgi:getenv 'query-string)))
+   (if (string-null? qs)
+       (fso "(none)\n")
+       (let ((ls (alist<-query qs)))
+         (fso "(~A pairs)\n" (length ls))
+         (for-each (lambda (k v)
+                     (fso "~A: ~S\n" k v))
+                   (map car ls)
+                   (map cdr ls))))))
 
 (section
  "Form Data (using `cgi:form-data?', `cgi:names' and `cgi:values')"

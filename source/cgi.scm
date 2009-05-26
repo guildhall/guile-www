@@ -37,33 +37,35 @@
             cgi:uploads cgi:upload
             cgi:cookie-names
             cgi:cookies cgi:cookie)
+  #:autoload (www server-utils parse-request) (alist<-query read-body)
   #:autoload (www server-utils cookies) (simple-parse-cookies)
-  #:use-module (www url-coding)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 and-let-star)
   #:use-module (srfi srfi-13)
-  #:use-module (srfi srfi-14)
-  #:use-module (ice-9 rw))
+  #:use-module (srfi srfi-14))
 
 (define subs make-shared-substring)
+
+(define (collate alist)
+  (let ((rv '()))
+    (for-each (lambda (k v)
+                (set! rv (or (and-let* ((old (assoc-ref rv k)))
+                               (append! old (list v))
+                               rv)
+                             (acons k (list v) rv))))
+              (map car alist)
+              (map cdr alist))
+    (reverse! rv)))
+
+(define ws/comma-split
+  (let ((cs (char-set-complement (char-set-adjoin char-set:whitespace #\,))))
+    (lambda (string)
+      (string-tokenize string cs))))
 
 ;;; System I/O and low-level stuff.
 
 (define (fs s . args)
   (apply simple-format #f s args))
-
-(define (read-n-bytes num)
-  (let ((p (current-input-port))
-        (s (make-string num)))
-    (let loop ((start 0))
-      (or (= start num)
-          (let ((try (read-string!/partial s p start)))
-            (and (number? try)
-                 (loop (+ start try))))))
-    s))
-
-(define (split cs string)
-  (string-tokenize string (char-set-complement cs)))
 
 (define (updated-alist alist name value)
   ;; Update ALIST with NAME and VALUE.
@@ -143,9 +145,9 @@
                          (lambda (pr slash)
                            (subs pr (1+ slash)))))
     http-accept-types
-    ,(lambda () (split (char-set-adjoin char-set:whitespace #\,)
-                       ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
-                       (or (getenv "HTTP_ACCEPT") "")))))
+    ,(lambda () (or (and=> (getenv "HTTP_ACCEPT") ws/comma-split)
+                    ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
+                    '()))))
 
 (define *env-extraction*
   (let ((ht (make-hash-table 23)))
@@ -166,27 +168,6 @@
                 (error "unrecognized key:" key)))))
 
 ;;; Other internal procedures.
-
-(define (parse-form data)
-  ;; Parse form-response DATA, a x-www-form-urlencoded string.
-  ;; Return a pair of order-maintained lists, (NV-PAIRS . COLLATED).
-  ;; Elements of NV-PAIRS have the form (name . value), while
-  ;; elements of COLLATED have the form (name value1 value2...).
-  (let ((nv-pairs (list))
-        (collated (list)))
-    (for-each (lambda (pair)
-                (define (decode . args)
-                  (url-coding:decode (apply subs pair args)))
-                (or (string-null? pair)
-                    (let* ((p (string-index pair #\=))
-                           (name (if p (decode 0 p) (decode 0)))
-                           (value (and p (decode (1+ p)))))
-                      (set! nv-pairs (acons name value nv-pairs))
-                      (set! collated (updated-alist collated name value)))))
-              (split (char-set #\&) data))
-    (cons                               ; rv
-     (reverse! nv-pairs)
-     (reverse! collated))))
 
 (define (parse-form-multipart raw-data)
   ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
@@ -273,26 +254,19 @@
 
     (define (init!)
       (set! P '()) (set! V '()) (set! U '())
-      (let ((len (env-look 'content-length)))
-        (cond ((zero? len))
-              ((string-ci=? (env-look 'content-type)
-                            "application/x-www-form-urlencoded")
-               (let ((p/v (parse-form (read-n-bytes len))))
-                 (set! P (car p/v))
-                 (set! V (cdr p/v))))
-              ((string-ci=? (subs (env-look 'content-type) 0 19)
-                            "multipart/form-data")
-               (let ((v/u (parse-form-multipart (read-n-bytes len))))
+      (and-let* ((len (env-look 'content-length))
+                 ((not (zero? len)))
+                 (type (env-look 'content-type))
+                 (s (read-body len (current-input-port))))
+        (cond ((string-ci=? "application/x-www-form-urlencoded" type)
+               (set! P (alist<-query s)))
+              ((string-ci=? "multipart/form-data" (subs type 0 19))
+               (let ((v/u (parse-form-multipart s)))
                  (set! V (car v/u))
                  (set! U (cdr v/u))))))
-      (set! C (let ((alist (simple-parse-cookies
-                            (or (env-look 'http-cookie) "")))
-                    (rv '()))
-                (for-each (lambda (k v)
-                            (set! rv (updated-alist rv k v)))
-                          (map car alist)
-                          (map cdr alist))
-                (reverse! rv))))
+      (and (not (null? P)) (null? V) (set! V (collate P)))
+      (set! C (collate (simple-parse-cookies
+                        (or (env-look 'http-cookie) "")))))
 
     (define (uploads name)
       (and-let* ((pair (assoc name U)))
