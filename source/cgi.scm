@@ -299,50 +299,28 @@
                           (map cdr alist))
                 (reverse! rv))))
 
-    (define (getenv-or-null-string key)
-      (or (env-look key) ""))
-
-    (define (values name)
-      (assoc-ref V name))
-
-    (define (value name)
-      (and=> (values name) car))
-
-    (define (names)
-      (map car V))
-
-    (define (form-data?)
-      (not (null? V)))
-
     (define (uploads name)
       (and-let* ((pair (assoc name U)))
         (set! U (delq pair U))
         (cdr pair)))
 
-    (define (upload name)
-      (and=> (uploads name) car))
-
-    (define (cookies name)
-      (assoc-ref C name))
-
-    (define (cookie name)
-      (and=> (cookies name) car))
-
     ;; rv
     (lambda (command . args)
+      (define (one)
+        (car args))
       (case command
         ((#:init!) (init!))
-        ((#:getenv) (getenv-or-null-string (car args)))
+        ((#:getenv) (or (env-look (one)) ""))
         ((#:nv-pairs) P)
-        ((#:values) (values (car args)))
-        ((#:value) (value (car args)))
-        ((#:names) (names))
-        ((#:form-data?) (form-data?))
-        ((#:uploads) (uploads (car args)))
-        ((#:upload) (upload (car args)))
+        ((#:values) (assoc-ref V (one)))
+        ((#:value) (and=> (assoc-ref V (one)) car))
+        ((#:names) (map car V))
+        ((#:form-data?) (not (null? P)))
+        ((#:uploads) (uploads (one)))
+        ((#:upload) (and=> (uploads (one)) car))
         ((#:cookie-names) (map car C))
-        ((#:cookies) (cookies (car args)))
-        ((#:cookie) (cookie (car args)))
+        ((#:cookies) (assoc-ref C (one)))
+        ((#:cookie) (and=> (assoc-ref C (one)) car))
         (else (error "bad command:" command))))))
 
 (define ONE #f)
