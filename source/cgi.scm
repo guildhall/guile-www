@@ -39,7 +39,7 @@
             cgi:cookies cgi:cookie)
   #:autoload (www server-utils parse-request) (alist<-query read-body)
   #:autoload (www server-utils cookies) (simple-parse-cookies)
-  #:use-module (ice-9 regex)
+  #:autoload (www server-utils form-2-form) (parse-form)
   #:use-module (ice-9 and-let-star)
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14))
@@ -61,22 +61,6 @@
   (let ((cs (char-set-complement (char-set-adjoin char-set:whitespace #\,))))
     (lambda (string)
       (string-tokenize string cs))))
-
-;;; System I/O and low-level stuff.
-
-(define (fs s . args)
-  (apply simple-format #f s args))
-
-(define (updated-alist alist name value)
-  ;; Update ALIST with NAME and VALUE.
-  ;; If NAME already exists, append VALUE to the list of old values.
-  ;; ALIST grows at the head, so callers need to:
-  ;;  - set! alist to the return value;
-  ;;  - `reverse!' it when done accumuating if order is to be maintained.
-  (or (and-let* ((old (assoc-ref alist name)))
-        (append! old (list value))
-        alist)
-      (acons name (list value) alist)))
 
 ;;; CGI environment variables.
 
@@ -167,93 +151,17 @@
               (lambda ()
                 (error "unrecognized key:" key)))))
 
-;;; Other internal procedures.
-
-(define (parse-form-multipart raw-data)
-  ;; Parse RAW-DATA as raw form response data of enctype multipart/form-data.
-  ;; Return a cons (VARS . UPLOADS), where VARS is a list of elements each of
-  ;; the form (name value1 value2...), and UPLOADS is a list of strings, each
-  ;; w/ the object property #:guile-www-cgi set.
-
-  (let ((v (list)) (u (list)))
-
-    (define (determine-boundary s)
-      (fs "--~A" (match:substring
-                  (string-match "boundary=\"*(.[^\"\r\n]*)\"*" s)
-                  1)))
-
-    (define (m1 m)
-      (match:substring m 1))
-
-    (define (stash-form-variable! name value)
-      (set! v (updated-alist v name value)))
-
-    (define (stash-file-upload! name filename type value raw-headers)
-      (stash-form-variable! name filename)
-      (set-object-property! value #:guile-www-cgi
-                            `((#:name . ,name)
-                              (#:filename . ,filename)
-                              (#:mime-type . ,type)
-                              (#:raw-mime-headers . ,raw-headers)))
-      (set! u (updated-alist u name value)))
-
-    (let ((name-exp     (make-regexp "name=\"([^\"]*)\""))
-          (filename-exp (make-regexp "filename=\"*([^\"\r]*)\"*"))
-          (type-exp     (make-regexp "Content-Type: ([^\r]*)\r\n" regexp/icase))
-          (value-exp    (make-regexp "\r\n\r\n")))
-
-      (let level ((str raw-data)
-                  (boundary (determine-boundary (env-look 'content-type)))
-                  (parent-name #f))
-
-        (let* ((boundary-len (string-length boundary))
-               (find-bound (lambda (start)
-                             (string-contains str boundary start))))
-
-          (let get-pair ((start 0))
-            (and-let* ((outer-seg-start (find-bound start))
-                       (seg-start (+ outer-seg-start boundary-len))
-                       (seg-finish (find-bound seg-start))
-                       (segment-newstart (cons (subs str seg-start (- seg-finish 2))
-                                               seg-finish)))
-              (let* ((segment (car segment-newstart))
-                     (try (lambda (rx extract)
-                            (and=> (regexp-exec rx segment)
-                                   extract)))
-                     (name (or parent-name
-                               (try name-exp  m1)))
-                     (value    (try value-exp match:suffix))
-                     (type     (try type-exp  m1)))
-                (and name
-                     value
-                     (cond ((and type
-                                 (not parent-name) ; only recurse once
-                                 (string-match "multipart/mixed" type))
-                            (level value
-                                   (determine-boundary type)
-                                   name))
-                           ((and type (try filename-exp m1))
-                            => (lambda (filename)
-                                 (stash-file-upload!
-                                  name filename type value
-                                  (subs (try value-exp match:prefix)
-                                        2))))
-                           (else
-                            (stash-form-variable! name value)))))
-              (get-pair (cdr segment-newstart)))))))
-
-    (cons (reverse! v) (reverse! u))))
-
 ;;; CGI context closure.
 
 (define (make-ccc)
   (let ((P '())                         ; form variables as pairs
         (V '())                         ; form variables collated
-        (U '())                         ; file uploads
+        (U '()) (pre-squeezed? #t)      ; file uploads
         (C '()))                        ; cookies
 
-    (define (init!)
+    (define (init! opts)
       (set! P '()) (set! V '()) (set! U '())
+      (set! pre-squeezed? (not (memq 'uploads-lazy opts)))
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
                  (type (env-look 'content-type))
@@ -261,10 +169,29 @@
         (cond ((string-ci=? "application/x-www-form-urlencoded" type)
                (set! P (alist<-query s)))
               ((string-ci=? "multipart/form-data" (subs type 0 19))
-               (let ((v/u (parse-form-multipart s)))
-                 (set! V (car v/u))
-                 (set! U (cdr v/u))))))
-      (and (not (null? P)) (null? V) (set! V (collate P)))
+               (let ((alist (parse-form (subs type 19) s)))
+                 (define (mogrify m)
+                   (or (cdr m) (error "badness from parse-form:" m))
+                   (if (string? (cdr m))
+                       (set! P (cons m P))
+                       (call-with-values (lambda () (cdr m))
+                         (lambda (filename type headers squeeze)
+                           (set! P (acons (car m) filename P))
+                           (and pre-squeezed?
+                                (let ((value (squeeze substring)))
+                                  (set-object-property!
+                                   value #:guile-www-cgi
+                                   `((#:name . ,(car m))
+                                     (#:filename . ,filename)
+                                     (#:mime-type . ,type)
+                                     (#:raw-mime-headers . ,headers)))
+                                  (set-cdr! m value)))
+                           (set! U (cons m U))))))
+                 (for-each mogrify alist))
+               (set! P (reverse! P))
+               (set! U (reverse! U)))))
+      (set! V (collate P))
+      (set! U (collate U))
       (set! C (collate (simple-parse-cookies
                         (or (env-look 'http-cookie) "")))))
 
@@ -278,7 +205,7 @@
       (define (one)
         (car args))
       (case command
-        ((#:init!) (init!))
+        ((#:init!) (init! args))
         ((#:getenv) (or (env-look (one)) ""))
         ((#:nv-pairs) P)
         ((#:values) (assoc-ref V (one)))
@@ -301,9 +228,19 @@
 ;; calling any other @samp{cgi:foo} procedure.  For FastCGI, call this
 ;; ``inside the loop'' (that is, for each CGI invocation).
 ;;
-(define (cgi:init)
+;; @var{opts} are zero or more symbols that configure the module.
+;;
+;; @table @code
+;; @item uploads-lazy
+;; This controls how uploaded files, as per @code{cgi:uploads}
+;; and @code{cgi:upload}, are represented.
+;; @end table
+;;
+;; Unrecognized options are ignored.
+;;
+(define (cgi:init . opts)
   (or ONE (set! ONE (make-ccc)))
-  (ONE #:init!))
+  (apply ONE #:init! opts))
 
 ;; Return the value of the environment variable associated with @var{key}, a
 ;; symbol.  Unless otherwise specified below, the return value is a (possibly
@@ -375,8 +312,13 @@
 (define (cgi:form-data?)
   (ONE #:form-data?))
 
-;; Return a list of strings, the contents of files associated with @var{name},
-;; or #f if no files are available.  Each string has an object property
+;; Return a list of file contents associated with @var{name},
+;; or #f if no files are available.
+;;
+;; Uploaded files are parsed by @code{parse-form} (@pxref{form-2-form}).
+;; If the @code{uploads-lazy} option is specified to @code{cgi:init}, then
+;; the file contents are those directly returned by @code{form-2-form}.
+;; If unspecified, the file contents are strings with the object property
 ;; @code{#:guile-www-cgi} whose value is an alist with the following keys:
 ;;
 ;; @table @code
@@ -396,6 +338,7 @@
 ;; Note that the string's object property and the keys are all keywords.
 ;; The associated values are strings.
 ;;
+;; Unless @code{uploads-lazy} is specified (to @code{cgi:init}),
 ;; @code{cgi:uploads} can only be called once per particular @var{name}.
 ;; Subsequent calls return #f.  Caller had better hang onto the information,
 ;; lest the garbage man whisk it away for good.  This is done to minimize the

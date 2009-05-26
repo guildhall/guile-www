@@ -1,5 +1,15 @@
 2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Make `cgi:init' handle optional arg for specifying `uploads-lazy'.
+
+	* examples/id.cgi.in: Explicitly load form-2-form.scm.
+	(+init-opt+): New var; call `cgi:init' w/ it.
+	(File Uploads): Display contents for text/* uploads;
+	handle both cases of `+init-opt+' value; include description
+	of case (values vs strings w/ object property) in output.
+
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Make (www cgi) use (www server-utils parse-request).
 
 	* examples/id.cgi.in: Explicitly load parse-request.scm;

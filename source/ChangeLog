@@ -1,5 +1,19 @@
 2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Make `cgi:init' handle optional arg for specifying `uploads-lazy'.
+
+	* cgi.scm: Don't use module (ice-9 regex);
+	autoload module (www server-utils form-2-form).
+	(fs, updated-alist, parse-form-multipart): Delete procs.
+	(make-ccc init!): Keep track of "pre-squeezed" upload file contents
+	option; if pre-squeezed, construct backward compatible string w/
+	object properties for the uploads collation.
+	(make-ccc): For #:init pass args to `init!'.
+	(cgi:init): Accept rest-arg `opt'; pass it to `ONE #:init!'.
+	(cgi:uploads): Update pre-form doc comment; nfc.
+
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Make (www cgi) use (www server-utils parse-request).
 
 	* cgi.scm: Autoload module (www server-utils parse-request);

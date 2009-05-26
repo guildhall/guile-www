@@ -34,6 +34,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 
 (load-from-path "@abs_top_builddir@/source/url-coding.scm")
 (load-from-path "@abs_top_builddir@/source/server-utils/parse-request.scm")
+(load-from-path "@abs_top_builddir@/source/server-utils/form-2-form.scm")
 (load-from-path "@abs_top_builddir@/source/server-utils/cookies.scm")
 (load-from-path "@abs_top_builddir@/source/cgi.scm")
 (use-modules (www cgi) (www server-utils parse-request))
@@ -62,7 +63,10 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 ;; called each time to reinitialize the context, and the rest of the
 ;; file converted from multiple top-level forms into a thunk.
 
-(cgi:init)
+(define +init-opt+ (and (even? (cdr (gettimeofday)))
+                        'uploads-lazy))
+
+(cgi:init +init-opt+)
 
 ;; Output the headers.  Each header is followed by a CRLF pair, and the
 ;; headers are separated from the body by another CRLF.  In this case,
@@ -128,23 +132,45 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
  "File Uploads (using `cgi:uploads')"
  (let* ((ls (append! (collect cgi:uploads (lambda (name u) u))))
         (tot (length ls)))
-   (cond ((zero? tot)
-          (fso "(none)\n"))
-         (else
-          (fso "(~A uploads)\n" tot)
-          (for-each (lambda (u)
-                      (let* ((minfo (object-property u #:guile-www-cgi))
-                             (m (lambda (part) (assq-ref minfo part))))
-                        (fso "\n~A: ~A (~A, ~A bytes)\n~A\n"
-                             (m #:name)
-                             (m #:filename)
-                             (m #:mime-type)
-                             (string-length u)
-                             (m #:raw-mime-headers))))
-                    (apply append ls))))))
+   (if (zero? tot)
+       (fso "(none)\n")
+       (let ((v? (eq? 'uploads-lazy +init-opt+)))
+
+         (define (v<-u u)
+           (let ((minfo (object-property u #:guile-www-cgi))
+                 (eov (string-length u)))
+             (define (m part)
+               (assq-ref minfo part))
+             (values (m #:filename) (m #:mime-type)
+                     (m #:raw-mime-headers)
+                     (lambda (abr)
+                       (and abr (abr u 0 eov))))))
+
+         (define (show u)
+           (call-with-values (lambda () (if v? u (v<-u u)))
+             (lambda (filename type headers squeeze)
+
+               (define (content-length)
+                 (squeeze (lambda (s b e)
+                            (- e b))))
+
+               (define (content)
+                 (if (string=? "text" (substring type 0 (string-index type #\/)))
+                     (squeeze substring)
+                     "[contents omitted -- not text]"))
+
+               (fso "\n~S (~A, ~A bytes)\n~A\n~A\n"
+                    filename type (content-length)
+                    headers (content)))))
+
+         (fso "(~A uploads (~A))\n" tot
+              (if v?
+                  "values"
+                  "strings with the object property #:guile-www-cgi"))
+         (for-each show (apply append ls))))))
 
 (section
- "Cookies (using `cgi:cookies')"
+ "Cookies (using `cgi:cookie-names' and `cgi:cookies')"
  (let ((k (cgi:cookie-names)))
    (if (null? k)
        (fso "(none)\n")
