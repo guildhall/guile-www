@@ -41,8 +41,8 @@
 (define https:user-agent "GuileHTTP 0.1")
 
 ;; BUG -- I don't really want this function to be public; I want
-;; people to use `www:get' instead.  But if I use `define' here,
-;; instead of `define-public', then when main.scm calls
+;; people to use ‘www:get’ instead.  But if I use ‘define’ here,
+;; instead of ‘define-public’, then when main.scm calls
 ;; www:set-protocol-handler!, https-via-lynx isn't defined.  This
 ;; means that I don't understand Guile's module system.
 

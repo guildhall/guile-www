@@ -3,7 +3,7 @@ NEWS for Guile-WWW
 - 2.24 | 2009-01-27
   - new module: (www data mime-types)
   - new (www data http-status) proc: http-status-string
-  - new entries for alist `*content-type-by-filename-extension*'
+  - new entries for alist ‘*content-type-by-filename-extension*’
     - svg => image/svg+xml
     - css => text/css
   - MARKED FOR REMOVAL 2009-12-31
@@ -13,20 +13,20 @@ NEWS for Guile-WWW
       - *http-status*-META
 
 - 2.23 | 2008-05-28
-  - in (www data content-type), `xml' maps to "application/xml"
+  - in (www data content-type), ‘xml’ maps to "application/xml"
   - changes to (www server-utils big-dishing-loop)
     - MARKED FOR REMOVAL 2009-12-31: make-big-dishing-loop #:GET-upath
-    - `make-big-dishing-loop' options @findex'd in manual
-    - new `make-big-dishing-loop' option: #:method-handlers
+    - ‘make-big-dishing-loop’ options @findex'd in manual
+    - new ‘make-big-dishing-loop’ option: #:method-handlers
     - new proc: named-socket
   - changes to (www server-utils answer)
-    - `mouthpiece' commands @findex'd in manual
-    - new `mouthpiece' command: #:inhibit-content!
+    - ‘mouthpiece’ commands @findex'd in manual
+    - new ‘mouthpiece’ command: #:inhibit-content!
   - new (www http) proc: http:connect
 
 - 2.22 | 2008-04-20
   - bug-report address updated (see output of ./configure --help)
-  - mouthpiece #:send-reply now also takes `shutdown' "how arg" CLOSE
+  - mouthpiece #:send-reply now also takes ‘shutdown’ "how arg" CLOSE
   - maintenance uses GNU Autoconf 2.62, GNU Automake 1.10.1
   - public repo: http://www.gnuovla.org/wip/  (guile-www)
 
@@ -46,7 +46,7 @@ NEWS for Guile-WWW
     - new convenience wrapper program: examples/wily-guile
 
 - 2.18 | 2007-02-16
-  - new `(www server-utils answer) mouthpiece' command: #:add-direct-writer
+  - new ‘(www server-utils answer) mouthpiece’ command: #:add-direct-writer
   - new module: (www utcsec)
 
 - 2.17 | 2007-02-01
@@ -56,7 +56,7 @@ NEWS for Guile-WWW
     - bugfix: #:socket-setup works (crippling typo corrected)
     - for #:concurrency #f, no longer close port when done
     - for #:concurrency non-#f, "parent" calls #:parent-finish proc
-    - unless #:need-input-port, "child" does `shutdown 2' on the socket
+    - unless #:need-input-port, "child" does ‘shutdown 2’ on the socket
   - maintenance uses Autoconf 2.60
 
 - 2.16 | 2006-07-14
@@ -73,11 +73,11 @@ NEWS for Guile-WWW
     - procedure: fs
     - procedure: walk-tree
     - procedure: string<-header-components
-    - `mouthpiece' #:add-header now also takes boolean NAME
+    - ‘mouthpiece’ #:add-header now also takes boolean NAME
   - new module: (www server-utils cookies)
 
 - 2.13 | 2005-08-17
-  - for speed, use `read-string!/partial' in (www cgi) and (www http)
+  - for speed, use ‘read-string!/partial’ in (www cgi) and (www http)
 
 - 2.12 | 2005-06-09
   - new proc in (www cgi): cgi:nv-pairs
@@ -104,16 +104,16 @@ NEWS for Guile-WWW
   - new proc in (www http): http:head
 
 - 2.6 | 2004-07-15
-  - cgi:make-cookie now accepts keywords for `name' and `value' args
+  - cgi:make-cookie now accepts keywords for ‘name’ and ‘value’ args
   - bugfix: http:request handles missing response status-line TEXT as ""
 
 - 2.5 | 2004-03-11
   - new proc in (www server-utils parse-request): skip-headers
-  - new `(www server-utils answer) mouthpiece' command: #:add-formatted
+  - new ‘(www server-utils answer) mouthpiece’ command: #:add-formatted
   - new module: (www server-utils big-dishing-loop)
 
 - 2.4 | 2004-03-01
-  - changes to (www server-utils answer) proc `mouthpiece'
+  - changes to (www server-utils answer) proc ‘mouthpiece’
     - bugfix in #:rechunk-content (fencepost error)
     - #:send-reply sets 2nd position in status-box to content-length
   - new module: (www server-utils log)
@@ -126,22 +126,22 @@ NEWS for Guile-WWW
   - new module: (www data content-type)
 
 - 2.2 | 2004-01-24
-  - bug fix: `cgi:uploads' now handles "multipart/mixed" content properly
-  - bug fix: `cgi:uploads' now deletes cell as documented
-  - doc fix: `cgi:getenv' w/ key `http-accept-types' => list of strings
-  - new feature: proc `http:post-form' now also handles "file uploads"
+  - bug fix: ‘cgi:uploads’ now handles "multipart/mixed" content properly
+  - bug fix: ‘cgi:uploads’ now deletes cell as documented
+  - doc fix: ‘cgi:getenv’ w/ key ‘http-accept-types’ => list of strings
+  - new feature: proc ‘http:post-form’ now also handles "file uploads"
   - installation change: .scm files are punified (whitespace/comments removed)
 
 - 2.1 | 2004-01-15
-  - doc fix: `cgi:getenv' doc was missing
+  - doc fix: ‘cgi:getenv’ doc was missing
   - new module: (www url-coding)
-  - proc `cgi:init' performance improvement (env var lazy init)
+  - proc ‘cgi:init’ performance improvement (env var lazy init)
 
 - 2.0 | 2004-01-13
   - incompatible API changes
     - cgi:make-cookie no longer accepts #&-style keywords (#:-style ok)
     - non-procedures no longer exported
-      - for cgi-FOO (22 vars), read access now through proc `cgi:getenv'
+      - for cgi-FOO (22 vars), read access now through proc ‘cgi:getenv’
       - no longer provided: http:version, http:user-agent
   - installation dir change
     - configure script determines $(GUILE_SITE)
@@ -153,8 +153,8 @@ NEWS for Guile-WWW
   - bug fix: http:request now extracts content-length info properly
 
 - 1.1.1ttn4 | 2003-02-12
-  - bug fix: http:get now uses `Host' header in the http request
-  - bug fix: examples/wwwcat handles non-#f `program-arguments' values
+  - bug fix: http:get now uses ‘Host’ header in the http request
+  - bug fix: examples/wwwcat handles non-#f ‘program-arguments’ values
 
 - 1.1.1ttn3 | 2002-12-03
   - new proc in (www http): http:post-form

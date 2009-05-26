@@ -256,7 +256,7 @@
                             (cdr simple))))))
          (let ((boundary-line (string-append "--" boundary)))
            (define (aam proc ls)
-             ;; note: PROC must cons else `append!' will corrupt LS
+             ;; note: PROC must cons else ‘append!’ will corrupt LS
              (apply append! (map proc ls)))
            `(,@(aam (lambda (pair)
                       (list
@@ -328,9 +328,9 @@
     (http:connect PF_INET AF_INET ipaddr port)))
 
 (define form-hack-regex
-  ;; Normally `http:request' formats the lines it sends over the socket to
+  ;; Normally ‘http:request’ formats the lines it sends over the socket to
   ;; end with CRLF, and correspondingly adjusts Content-Length upward by 2
-  ;; for each line.  For `application/x-www-form-urlencoded' messages with
+  ;; for each line.  For ‘application/x-www-form-urlencoded’ messages with
   ;; only one one line in the body, however, this is inappropriate; often
   ;; the cgi at the other end of the socket misinterprets the CRLF as part
   ;; of the last value.  We help those programs avoid confusion by not

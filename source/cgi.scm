@@ -73,7 +73,7 @@
       (list pr (string-index pr #\/))))
   (define (extract make-args proc)
     (apply-to-args (make-args) proc))
-  ;; rv -- methods may be a string to be passed to `getenv', or a thunk
+  ;; rv -- methods may be a string to be passed to ‘getenv’, or a thunk
   `(server-hostname
     "SERVER_NAME"
     gateway-interface

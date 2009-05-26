@@ -24,11 +24,11 @@ Installation
 	  make
 	  make install
 
-	You can use the configure script option `--disable-shsub' to
-	explicitly build a version where `make-shared-substring' is
-	replaced w/ simply `substring'.  By default, configure arranges
+	You can use the configure script option ‘--disable-shsub’ to
+	explicitly build a version where ‘make-shared-substring’ is
+	replaced w/ simply ‘substring’.  By default, configure arranges
 	for the replacement only if it can't detect that your Guile has
-	`make-shared-substring'.
+	‘make-shared-substring’.
 
 	On "make install", these files are copied to these directories
 	(creating them first if necessary), renaming each FOO.scm to
@@ -41,7 +41,7 @@ Installation
 	     and $(prefix)     is /usr/local
 
 	For guile to resolve these module names as (www FOO), make sure
-	that $(GUILE_SITE) is in the `%load-path'.  To see the value of
+	that $(GUILE_SITE) is in the ‘%load-path’.  To see the value of
 	this variable use the command:
 
 	  guile -c '(display %load-path)'

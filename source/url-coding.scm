@@ -73,9 +73,9 @@
                             (string->list ";/?:@&=")))
 
 (define (safe-char? ch)
-  ;; ``Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
+  ;; “Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
   ;; reserved characters used for their reserved purposes may be used
-  ;; unencoded within a URL.'' RFC 1738, #2.2.
+  ;; unencoded within a URL.” RFC 1738, #2.2.
   (or (char-alphabetic? ch)
       (char-numeric? ch)
       (memv ch safe-chars)))

@@ -1,6 +1,6 @@
 #!/usr/local/bin/guile -s
 !#
-;;; wwwcat --- a trivial `cat' program for WWW resources
+;;; wwwcat --- a trivial ‘cat’ program for WWW resources
 
 ;; Copyright (C) 1997, 2001, 2003 Free Software Foundation, Inc.
 ;;

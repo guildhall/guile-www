@@ -80,7 +80,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
      (command-line))
 
 (section
- "Environment Variables (using `cgi:getenv')"
+ "Environment Variables (using ‘cgi:getenv’)"
  (for-each (lambda (var)
              (fso "\n~A:\n~S\n" var (cgi:getenv var)))
            '(server-hostname
@@ -107,7 +107,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
              http-accept-types)))
 
 (section
- "Query String (using `(www server-utils parse-request) alist<-query')"
+ "Query String (using ‘(www server-utils parse-request) alist<-query’)"
  (let ((qs (cgi:getenv 'query-string)))
    (if (string-null? qs)
        (fso "(none)\n")
@@ -119,7 +119,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
                    (map cdr ls))))))
 
 (section
- "Form Data (using `cgi:form-data?', `cgi:names' and `cgi:values')"
+ "Form Data (using ‘cgi:form-data?’, ‘cgi:names’ and ‘cgi:values’)"
  (if (cgi:form-data?)
      (let ((ls (cgi:names)))
        (fso "(~A names)\n" (length ls))
@@ -129,7 +129,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
      (fso "(none)\n")))
 
 (section
- "File Uploads (using `cgi:uploads')"
+ "File Uploads (using ‘cgi:uploads’)"
  (let* ((ls (append! (collect cgi:uploads (lambda (name u) u))))
         (tot (length ls)))
    (if (zero? tot)
@@ -170,7 +170,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
          (for-each show (apply append ls))))))
 
 (section
- "Cookies (using `cgi:cookie-names' and `cgi:cookies')"
+ "Cookies (using ‘cgi:cookie-names’ and ‘cgi:cookies’)"
  (let ((k (cgi:cookie-names)))
    (if (null? k)
        (fso "(none)\n")

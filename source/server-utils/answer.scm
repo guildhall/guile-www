@@ -321,7 +321,7 @@
 
     (define (send-reply . close)
       (define (out! s stop)
-        ;; todo: use `write-string/partial/never-fewer' from Guile 1.4.1.108
+        ;; todo: use ‘write-string/partial/never-fewer’ from Guile 1.4.1.108
         (let loop ((start 0))
           (set! start (+ start (write-string/partial s out-port start stop)))
           (or (= start stop)

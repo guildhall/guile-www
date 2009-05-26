@@ -168,7 +168,7 @@
         (symbol->string (if (pair? mt)
                             (car mt)
                             mt)))
-      ;; use `if' here to allow #f for `default'
+      ;; use ‘if’ here to allow #f for ‘default’
       (if (not (null? default))
           (car default)
           "application/octet-stream")))

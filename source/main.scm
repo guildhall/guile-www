@@ -78,7 +78,7 @@
 (define (www:http-head-get url-string . alist?)
   (let ((url (url:parse url-string)))
     (or (eq? 'http (url:scheme url))
-        (error "URL scheme not `http'" url-string))
+        (error "URL scheme not ‘http’" url-string))
     ((if (or (null? alist?) (not (car alist?)))
          identity
          http:message-headers)
