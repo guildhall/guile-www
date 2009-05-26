@@ -1,3 +1,10 @@
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New module: (www server-utils form-2-form)
+
+	* doc/guile-www.twerp (Top): Add `form-2-form' to menu.
+	(form-2-form): New node/chapter.
+
 2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www server-utils parse-request) proc: read-body

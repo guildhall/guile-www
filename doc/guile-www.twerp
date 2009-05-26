@@ -103,6 +103,7 @@ Basic -- (www *)
 Server Utilities -- (www server-utils *)
 * big-dishing-loop::    Customizable listener and dispatch.
 * parse-request::       Read HTTP first line and headers.
+* form-2-form::         Unflatten POSTed form data.
 * filesystem::          Work with the local filesystem.
 * cgi-prep::            Prepare environment for CGI handoff.
 * cookies::             Handling bits of client-side state.
@@ -328,6 +329,31 @@ In this case, you can use @code{skip-headers} to quickly position the port.
 
 @twerpdoc (skip-headers)
 @twerpdoc (read-body)
+
+@c ---------------------------------------------------------------------------
+@node    form-2-form
+@chapter form-2-form
+
+The @code{(www server-utils form-2-form)} module provides a procedure to
+parse a string in @samp{multipart/form-data} format.
+
+@twerpdoc (parse-form)
+
+The @var{squeeze} interface can help reduce data motion.  Consider a common
+upload scenario: client uploads file(s) for local (server-side) storage.
+
+@example
+classic  squeeze
+   *        *       0. (current-input-port)
+   *        *       1. Guile-WWW string (for parsing purposes)
+   *                2. your substring (image/jpeg)
+   *        *       3. filesystem
+@end example
+
+You can achieve the same effect as the ``classic'' approach by specifying
+@code{substring} (or something like it) as the access-byte-range proc, but
+@strong{you don't have to}.  You could, instead, call @var{squeeze} with a
+procedure that writes the byte range directly to the filesystem.
 
 @c ---------------------------------------------------------------------------
 @node    filesystem

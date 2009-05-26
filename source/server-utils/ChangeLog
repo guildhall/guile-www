@@ -1,3 +1,10 @@
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New module: (www server-utils form-2-form)
+
+	* form-2-form.scm: New file.
+	* Makefile.am (www_DATA): Add form-2-form.
+
 2009-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www server-utils parse-request) proc: read-body

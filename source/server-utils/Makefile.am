@@ -28,6 +28,7 @@ www_DATA =					\
  cgi-prep					\
  cookies					\
  filesystem					\
+ form-2-form					\
  log						\
  parse-request
 
