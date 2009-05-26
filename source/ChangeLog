@@ -1,3 +1,11 @@
+2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug: For (www cgi), don't mix query string and form data.
+
+	This regression was introduced in Guile-WWW 2.1.
+
+	* cgi.scm (make-ccc init!): Ignore query-string.
+
 2009-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www server-utils cookies) proc: simple-parse-cookies

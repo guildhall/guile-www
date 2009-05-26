@@ -285,11 +285,6 @@
                (let ((v/u (parse-form-multipart (read-n-bytes len))))
                  (set! V (car v/u))
                  (set! U (cdr v/u))))))
-      (and-let* ((qs (env-look 'query-string))
-                 ((not (string-null? qs)))
-                 (p/v (parse-form qs)))
-        (set! P (car p/v))
-        (set! V (cdr p/v)))
       (set! C (let ((alist (simple-parse-cookies
                             (or (env-look 'http-cookie) "")))
                     (rv '()))
