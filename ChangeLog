@@ -1,3 +1,9 @@
+2009-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Update wily-guile symlink target.
+
+	* examples/wily-guile.in: Symlink to ../source.
+
 2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Make `cgi:init' handle optional arg for specifying `uploads-lazy'.
