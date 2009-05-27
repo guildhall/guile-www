@@ -102,7 +102,7 @@
 ;; @item Blank lines and lines beginning with @samp{#} are ignored.
 ;; @item Lines of the format @var{mime-type} (only one symbol) are ignored.
 ;; @item Otherwise, the line is expected to be in the format
-;; @code{@var{mime-type} @var{extension} @var{extension}...},
+;; @code{@var{mime-type} @var{extension} @var{extension}@dots{}},
 ;; that is, at least one @var{extension} must be present.  Each
 ;; @var{extension} results in an entry in the hash table.
 ;; @end itemize
@@ -129,7 +129,7 @@
             (loop (read-line p)))))
     (close-port p)))
 
-;; Put @var{extension1}/@var{mime-type1}... into the hash table,
+;; Put @var{extension1}/@var{mime-type1}@dots{} into the hash table,
 ;; validating both extension and mime-type first.
 ;; @var{resolve} specifies how to resolve extension conflicts.
 ;;

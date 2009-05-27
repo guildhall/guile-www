@@ -79,11 +79,12 @@
 (define (http:message-status-code msg) (vector-ref msg 1))
 ;; Return the text of the status line from HTTP message @var{msg}.
 (define (http:message-status-text msg) (vector-ref msg 2))
-;; Return #t iff status code of @var{msg} indicates a successful request.
+;; Return @code{#t} iff status code of @var{msg}
+;; indicates a successful request.
 (define (http:message-status-ok? msg)
   (http:status-ok? (http:message-status-code msg)))
 
-;; Return #t iff @var{status} (a string) begins with "2".
+;; Return @code{#t} iff @var{status} (a string) begins with "2".
 (define (http:status-ok? status)
   (char=? #\2 (string-ref status 0)))
 
@@ -117,7 +118,7 @@
 (define (http:message-headers msg) (vector-ref msg 3))
 
 ;; Return the header field named @var{header} from HTTP message @var{msg},
-;; or #f if no such header is present in the message.
+;; or @code{#f} if no such header is present in the message.
 ;;
 (define (http:message-header header msg)
   (http:fetch-header header (http:message-headers msg)))
@@ -168,24 +169,30 @@
   (http:request "GET" url))
 
 ;; Submit an http request using the @code{POST} method on the @var{url}.
-;; @var{extra-headers} is a list of extra headers, each a string of
-;; form "NAME: VALUE ...".  The "Content-Type" and "Host" headers are
-;; sent automatically and do not need to be specified.  @var{fields}
-;; is a list of elements of the form @code{(FKEY . FVALUE)}, where
-;; @var{fkey} is a symbol and @var{fvalue} is normally a string.
+;; @var{extra-headers} is a list of extra headers, each a string of form
+;; "@var{name}: @var{value} @dots{}".
 ;;
-;; FVALUE can also be a list of file-upload specifications, each of
-;; which has the form @code{(SOURCE NAME MIME-TYPE TRANSFER-ENCODING)}.
-;; @var{source} can be a string or a thunk that returns a string.  The
-;; rest of the elements are strings or symbols: @var{name} is the
+;; The "Content-Type" and "Host" headers are sent automatically and do
+;; not need to be specified.  @var{fields} is a list of elements of the
+;; form @code{(@var{fkey} . @var{fvalue})}, where @var{fkey} is a symbol
+;; and @var{fvalue} is normally a string.
+;;
+;; @var{fvalue} can also be a list of file-upload specifications, each
+;; of which has the form @code{(@var{source} @var{name} @var{mime-type}
+;; @var{transfer-encoding})}.  @var{source} can be a string or a thunk
+;; that returns a string.
+;;
+;; The rest of the elements are strings or symbols: @var{name} is the
 ;; filename (only the non-directory part is used); @var{mime-type} is a
-;; type/subtype pair such as "image/jpeg", or #f to mean "text/plain".
-;; @var{transfer-encoding} is one of the tokens specified by RFC 1521,
-;; or #f to mean "binary".  File-upload spec elements with invalid types
-;; result in a "bad upload spec" error prior to the http request.  Note
-;; that @var{source} is used directly without further processing; it is
-;; the caller's responsibility to ensure that the MIME type and transfer
-;; encoding specified describe @var{source} accurately.
+;; type/subtype pair such as "image/jpeg", or @code{#f} to mean
+;; "text/plain".  @var{transfer-encoding} is one of the tokens specified
+;; by RFC 1521, or @code{#f} to mean "binary".  File-upload spec
+;; elements with invalid types result in a "bad upload spec" error prior
+;; to the http request.
+;;
+;; Note that @var{source} is used directly without further processing;
+;; it is the caller's responsibility to ensure that the MIME type and
+;; transfer encoding specified describe @var{source} accurately.
 ;;
 (define (http:post-form url extra-headers fields)
 
@@ -343,11 +350,11 @@
 ;; for a response, and return the response as an HTTP message object.
 ;;
 ;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
-;; @var{url} is a url object returned by @code{url:parse}.
-;; Optional args @var{headers} and @var{body} are lists of strings
-;; that comprise the lines of an HTTP message.  The strings should
-;; not end with CR or LF or CRLF; @code{http:request} handles that.
-;; Also, the Content-Length header and Host header are calculated
+;; @var{url} is a url object returned by @code{url:parse}.  Optional
+;; args @var{headers} and @var{body} are lists of strings that comprise
+;; the lines of an HTTP message.  The strings should not end with
+;; @samp{CR} or @samp{LF} or @samp{CRLF}; @code{http:request} handles
+;; that.  Also, the Content-Length header and Host header are calculated
 ;; automatically and should not be supplied.  Here are two examples:
 ;;
 ;; @example
@@ -363,10 +370,10 @@
 ;;                        "&max_hits=50")))
 ;; @end example
 ;;
-;; As a special case (demonstrated in the second example above),
-;; when Content-Type is @code{application/x-www-form-urlencoded}
-;; and there is only one line in the body, the final CRLF is omitted
-;; and the Content-Length is adjusted accordingly.
+;; As a special case (demonstrated in the second example above), when
+;; Content-Type is @code{application/x-www-form-urlencoded} and there is
+;; only one line in the body, the final @samp{CRLF} is omitted and the
+;; Content-Length is adjusted accordingly.
 ;;
 ;;-sig: (method url [headers [body]])
 ;;

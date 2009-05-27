@@ -70,8 +70,8 @@
 
 ;; Parse @var{url-string} into portions; issue an "HTTP HEAD" request.
 ;; Signal error if the scheme for @var{url-string} is not @code{http}.
-;; Optional second arg @code{alist?} non-#f means return only the alist
-;; portion of the HTTP response object.
+;; Optional second arg @code{alist?} non-@code{#f} means return only the
+;; alist portion of the HTTP response object.
 ;;
 ;;-sig: (url-string [alist?])
 ;;

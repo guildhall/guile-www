@@ -40,10 +40,10 @@
 
 (define subs make-shared-substring)
 
-;; Create and return a filesystem-access procedure based on @var{docroot}
-;; and @var{forbid-rx}.  The returned procedure @var{p} takes a @var{filename}
-;; and returns #t if access to that file should be denied for any of the
-;; following reasons:
+;; Create and return a filesystem-access procedure based on
+;; @var{docroot} and @var{forbid-rx}.  The returned procedure @var{p}
+;; takes a @var{filename} and returns @code{#t} if access to that file
+;; should be denied for any of the following reasons:
 ;;
 ;; @itemize
 ;; @item @var{filename} is the null string
@@ -53,8 +53,8 @@
 ;; @item @var{filename} matches regular expression @var{forbid-rx}
 ;; @end itemize
 ;;
-;; If @var{forbid-rx} is #f, the regular expression check is skipped.
-;; @var{p} returns #f if access should be granted.
+;; If @var{forbid-rx} is @code{#f}, the regular expression check is
+;; skipped.  @var{p} returns @code{#f} if access should be granted.
 ;;
 (define (access-forbidden?-proc docroot forbid-rx)
   (let ((docroot-length (string-length docroot))
@@ -72,7 +72,8 @@
 (define clean-double-slash-rx (make-regexp "//"))
 
 ;; Return a new filename made from cleaning up filename @var{name}.
-;; Cleaning removes "FOO/../", and collapses both "/./" and "//" into "/".
+;; Cleaning removes "@var{foo}/../", and collapses both "/./"
+;; and "//" into "/".
 ;;
 (define (cleanup-filename name)
   (cond ((regexp-exec clean-parent-rx name)
@@ -90,16 +91,18 @@
         (else name)))
 
 ;; Create and return a url-path-to-filename mapping procedure based on
-;; @var{docroot}.  The returned procedure @var{p} takes a (string) @var{upath}
-;; and returns a valid local filename path for the requested resource, or #f
-;; if that file cannot be found.  Optional arg @var{dir-indexes} specifies an
-;; ordered list of filenames to try if the resolved filename path turns out
-;; to be a directory.  If no such files exist, return the directory name.
-;; As a special case, when @var{p} encounters a value of #f during iteration
-;; over @var{dir-indexes}, it returns #f immediately.
+;; @var{docroot}.  The returned procedure @var{p} takes a (string)
+;; @var{upath} and returns a valid local filename path for the requested
+;; resource, or @code{#f} if that file cannot be found.  Optional arg
+;; @var{dir-indexes} specifies an ordered list of filenames to try if
+;; the resolved filename path turns out to be a directory.
 ;;
-;; For example, presuming files @file{/a/b/c.txt} and @file{/a/b/index.html}
-;; both exist and are readable:
+;; If no such files exist, return the directory name.  As a special
+;; case, when @var{p} encounters a value of @code{#f} during iteration
+;; over @var{dir-indexes}, it returns @code{#f} immediately.
+;;
+;; For example, presuming files @file{/a/b/c.txt} and
+;; @file{/a/b/index.html} both exist and are readable:
 ;;
 ;; @example
 ;; (define resolve (upath->filename-proc

@@ -66,9 +66,10 @@
                 lhs ": " rhs CRLF
                 (cdr rest))))))
 
-;; Return a string made from formatting header name @var{n} and value @var{v}.
-;; Additional headers can be specified as alternating name and value args.
-;; Each header is formatted like so: ``NAME: VALUE\r\n''.
+;; Return a string made from formatting header name @var{n} and value
+;; @var{v}.  Additional headers can be specified as alternating name and
+;; value args.  Each header is formatted like so: ``@var{name}:
+;; @var{value}\r\n''.
 ;;
 ;; Each @var{n} may be a string, symbol or keyword.  Each @var{v} may be a
 ;; string, number, or a tree of strings.
@@ -91,7 +92,7 @@
 ;; list whose @sc{car} is set to the numeric status code given to a
 ;; @code{#:set-reply-status} command.  If @var{status-box} has length of two
 ;; or more, its @sc{cadr} is set to the content-length on @code{#:send-reply}.
-;; A content-length value of #f means there have been no calls to
+;; A content-length value of @code{#f} means there have been no calls to
 ;; @code{#:add-content}.  The commands and their args are:
 ;;
 ;; @table @code
@@ -101,36 +102,37 @@
 ;; This is called automatically by @code{#:send-reply}.
 ;;
 ;; @findex set-reply-status
-;; @item #:set-reply-status NUMBER MESSAGE
-;; Set the reply status.  MESSAGE is a short string.
+;; @item #:set-reply-status @var{number} @var{message}
+;; Set the reply status.  @var{message} is a short string.
 ;;
 ;; @findex set-reply-status:success
 ;; @item #:set-reply-status:success
 ;; This is equivalent to @code{#:set-reply-status 200 "OK"}.
 ;;
 ;; @findex add-header
-;; @item #:add-header NAME VALUE
-;; NAME may be #f, #t, a string, symbol or keyword.  VALUE is a string.
-;; If NAME is #f or #t, VALUE is taken to be a pre-formatted string,
-;; "A: B" or "A: B\r\n", respectively.  If NAME is not a boolean, VALUE
+;; @item #:add-header @var{name} @var{value}
+;; @var{name} may be @code{#f}, @code{#t}, a string, symbol or keyword.
+;; @var{value} is a string.  If @var{name} is @code{#f} or @code{#t},
+;; @var{value} is taken to be a pre-formatted string, "A: B" or "A:
+;; B\r\n", respectively.  If @var{name} is not a boolean, @var{value}
 ;; may also be a tree of strings or a number.
 ;;
 ;; @findex add-content
-;; @item #:add-content [TREE ...]
-;; TREE may be a string, a nested list of strings, or a series of such.
+;; @item #:add-content [@var{tree} @dots{}]
+;; @var{tree} may be a string, a nested list of strings, or a series of such.
 ;; Subsequent calls to @code{#:add-content} append their trees to the
 ;; collected content tree thus far.
 ;;
 ;; @findex add-formatted
-;; @item #:add-formatted FORMAT-STRING [ARGS ...]
-;; FORMAT-STRING may be #f to mean @code{~S}, #t to mean @code{~A}, or a
-;; normal format string.  It is used to format ARGS, and the result passed
-;; to @code{#:add-content}.
+;; @item #:add-formatted @var{format-string} [@var{args} @dots{}]
+;; @var{format-string} may be @code{#f} to mean @code{~S}, @code{#t} to
+;; mean @code{~A}, or a normal format string.  It is used to format
+;; @var{args}, and the result passed to @code{#:add-content}.
 ;;
 ;; @findex add-direct-writer
-;; @item #:add-direct-writer LEN WRITE
-;; LEN is the number of bytes that procedure WRITE will output to its
-;; arg, @var{out-port} (passed back), when called during
+;; @item #:add-direct-writer @var{len} @var{write}
+;; @var{len} is the number of bytes that procedure @var{write} will
+;; output to its arg, @var{out-port} (passed back), when called during
 ;; @code{#:send-reply}.  This is to allow sendfile(2) and related
 ;; hackery.
 ;;
@@ -139,23 +141,23 @@
 ;; Return the total number of bytes in the content added thus far.
 ;;
 ;; @findex rechunk-content
-;; @item #:rechunk-content CHUNK
-;; CHUNK may be #f, in which case a list of the string lengths collected
-;; thus far is returned; #t which means to use the content length as the
-;; chunk size (effectively producing one chunk); or a number specifying
-;; the maximum size of a chunk.  The return value is a list of the chunk
-;; sizes.
+;; @item #:rechunk-content @var{chunk}
+;; @var{chunk} may be @code{#f}, in which case a list of the string
+;; lengths collected thus far is returned; @code{#t} which means to use
+;; the content length as the chunk size (effectively producing one
+;; chunk); or a number specifying the maximum size of a chunk.  The
+;; return value is a list of the chunk sizes.
 ;;
 ;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
-;; CHUNK in the presence of a previous @code{#:add-direct-writer}.
+;; @var{chunk} in the presence of a previous @code{#:add-direct-writer}.
 ;;
 ;; @findex inhibit-content!
-;; @item #:inhibit-content! BOOL
-;; Non-#f BOOL arranges for @code{#:send-reply} (below) to compute
-;; content length and add the appropriate header, as usual, but
-;; no content is actually sent.  This is useful, e.g., when answering
-;; a @code{HEAD} request.  If BOOL is #f, @code{#:send-reply} acts
-;; normally (i.e., sends both headers and content).
+;; @item #:inhibit-content! @var{bool}
+;; Non-@code{#f} @var{bool} arranges for @code{#:send-reply} (below) to
+;; compute content length and add the appropriate header, as usual, but
+;; no content is actually sent.  This is useful, e.g., when answering a
+;; @code{HEAD} request.  If @var{bool} is @code{#f}, @code{#:send-reply}
+;; acts normally (i.e., sends both headers and content).
 ;;
 ;; @findex send-reply
 ;; @item #:send-reply [close]

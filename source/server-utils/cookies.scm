@@ -39,7 +39,7 @@
 ;; optional keyword parameters @code{#:path}, @code{#:domain},
 ;; @code{#:expires} (strings); and @code{#:secure} (boolean).
 ;;
-;;-sig: (name value [#:path P] [#:domain D] [#:expires E] [#:secure S])
+;;-sig: (name value [keyword arg...])
 ;;
 (define* (rfc2109-set-cookie-string name value #:key (path #f)
                                     (domain #f) (expires #f) (secure #f))
@@ -96,10 +96,11 @@
          )))
 
 ;; Compute a list suitable for inclusion in an HTTP response header,
-;; composed by formatting @var{cookie-specs}, each a list of the
-;; form @code{(NAME VALUE A1 V1...)}.  Each @var{name} may be a string,
-;; symbol or keyword.  Each @var{value} may be a string or symbol.
-;; Each @var{a} must be a keyword, precisely one of:
+;; composed by formatting @var{cookie-specs}, each a list of the form
+;; @code{(@var{name} @var{value} @var{a1} @var{v1@dots{}})}.  Each
+;; @var{name} may be a string, symbol or keyword.  Each @var{value} may
+;; be a string or symbol.  Each @var{a} must be a keyword, precisely one
+;; of:
 ;;
 ;; @example
 ;; #:Comment  #:CommentURL  #:Discard  #:Domain
@@ -116,10 +117,11 @@
 ;; omitted entirely.  If @var{a} is @code{#:Max-Age}, then @var{v} must
 ;; be a number.  For all other @var{a}, @var{v} can be a string or symbol.
 ;;
-;; If @var{M} is #f, return a list.  The @sc{car} of the list is the keyword
-;; @code{#:Set-Cookie2}, and the @sc{cdr} is a tree of strings.  Otherwise
-;; @var{M} should be a @code{mouthpiece} (@pxref{answer}) in which case it is
-;; applied with the @code{#:add-header} command to the list.
+;; If @var{M} is @code{#f}, return a list.  The @sc{car} of the list is
+;; the keyword @code{#:Set-Cookie2}, and the @sc{cdr} is a tree of
+;; strings.  Otherwise @var{M} should be a @code{mouthpiece}
+;; (@pxref{answer}) in which case it is applied with the
+;; @code{#:add-header} command to the list.
 ;;
 (define (rfc2965-set-cookie2-tree M . cookie-specs)
 
@@ -195,12 +197,14 @@
         (cons hname hval))))
 
 ;; Parse the @code{Cookie} HTTP response header string @var{s}.
-;; Return a list of the form @code{(VERS N [COOKIE-SPEC...])}, where
-;; @var{vers} is the version number of the cookie specification,
-;; 0 (zero) for RFC2109 compliance and 1 (one) for RFC2965 compliance;
-;; and @var{n} is the number of cookie-specs the @sc{cdr} of the form.
+;; Return a list of the form @code{(@var{vers} @var{n}
+;; [@var{cookie-spec}@dots{}])}, where @var{vers} is the version number
+;; of the cookie specification, 0 (zero) for RFC2109 compliance and 1
+;; (one) for RFC2965 compliance; and @var{n} is the number of
+;; cookie-specs the @sc{cdr} of the form.
 ;;
-;; Each @var{cookie-spec} has the form: @code{(NAME VALUE A1 V1...)}.
+;; Each @var{cookie-spec} has the form: @code{(@var{name} @var{value} @var{a1}
+;; @var{v1}@dots{})}.
 ;; @var{name}, @var{value} are strings.  Each @var{a} is a keyword,
 ;; one of @code{#:Path}, @code{#:Domain} or @code{#:Port}.  Each @var{v}
 ;; is a string, except for that associated with @code{#:Port}, which
@@ -225,7 +229,7 @@
 ;; @end table
 ;;
 ;; Parsing may signal an error and display an error message in the form:
-;; ``SITUATION while CONTEXT'', where @var{situation} is one of
+;; ``@var{situation} while @var{context}'', where @var{situation} is one of
 ;; ``unexpected end'', ``missing equal-sign'', ``bad attribute'', or
 ;; ``missing semicolon''; and @var{context} is one of: ``reading string'',
 ;; ``reading token'', ``reading pair'', ``reading one cookie'' or

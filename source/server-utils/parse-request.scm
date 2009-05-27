@@ -31,12 +31,12 @@
 
 ;; Parse the first line of the HTTP message from input @var{port} and
 ;; return a list of the method, URL path and HTTP version indicator, or
-;; #f if the line ends prematurely or is otherwise malformed.  A
-;; successful parse consumes the trailing CRLF of the line as well.  The
-;; method is a symbol with its constituent characters upcased, such as
-;; @code{GET}; the other elements are strings.  If the first line is
-;; missing the HTTP version, @code{parse-first-line} returns the default
-;; "HTTP/1.0".
+;; @code{#f} if the line ends prematurely or is otherwise malformed.  A
+;; successful parse consumes the trailing @samp{CRLF} of the line as
+;; well.  The method is a symbol with its constituent characters
+;; upcased, such as @code{GET}; the other elements are strings.  If the
+;; first line is missing the HTTP version, @code{parse-first-line}
+;; returns the default "HTTP/1.0".
 ;;
 (define (read-first-line port)
   (let* ((rv (list #f #f "HTTP/1.0"))
@@ -131,12 +131,13 @@
                  (and mid (decode (1+ mid))))))
        (amp-split query-string)))
 
-;; Parse the headers of the HTTP message from input @var{port} and return a
-;; list of key/value pairs, or #f if the message ends prematurely or is
-;; otherwise malformed.  Both keys and values are strings.  Values are trimmed
-;; of leading and trailing whitespace and may be empty.  Values that span more
-;; than one line have their "continuation whitespace" reduced to a single space.
-;; A successful parse consumes the trailing CRLF of the header block as well.
+;; Parse the headers of the HTTP message from input @var{port} and
+;; return a list of key/value pairs, or @code{#f} if the message ends
+;; prematurely or is otherwise malformed.  Both keys and values are
+;; strings.  Values are trimmed of leading and trailing whitespace and
+;; may be empty.  Values that span more than one line have their
+;; "continuation whitespace" reduced to a single space.  A successful
+;; parse consumes the trailing @samp{CRLF} of the header block as well.
 ;;
 (define (read-headers port)
 
@@ -228,9 +229,10 @@
                          acc)
                        (cons header acc)))))))
 
-;; Scan without parsing the headers of the HTTP message from input @var{port},
-;; and return the empty list, or #f if the message ends prematurely.  A
-;; successful scan consumes the trailing CRLF of the header block as well.
+;; Scan without parsing the headers of the HTTP message from input
+;; @var{port}, and return the empty list, or @code{#f} if the message
+;; ends prematurely.  A successful scan consumes the trailing
+;; @samp{CRLF} of the header block as well.
 ;;
 (define (skip-headers port)
 

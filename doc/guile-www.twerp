@@ -2,10 +2,11 @@
 @c %**start of header
 @setfilename guile-www.info
 @settitle @code{Guile-WWW} Modules Reference
+@ifinfo
 @paragraphindent 0
+@end ifinfo
 @c %**end of header
-@code{}
-@setchapternewpage odd
+@c @setchapternewpage odd
 
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
@@ -154,6 +155,7 @@ the header text.  E.g.:
   (content-length . "8097"))
 @end example
 
+@noindent
 Note: these symbols are all lowercase, although the original headers may be
 mixed-case.  Clients using this library should keep this in mind, since Guile
 symbols are case-sensitive.
@@ -247,6 +249,7 @@ retriving data named by any URL.  The URL scheme @code{http} is pre-registered.
 @twerpdoc (www:set-protocol-handler!)
 @twerpdoc (www:get)
 
+@noindent
 There is also the convenience proc @code{www:http-head-get}.
 
 @twerpdoc (www:http-head-get)
@@ -292,7 +295,7 @@ that facilitate generation of a customized listener/dispatch proc.
 The combination of @code{#:need-headers}, @code{#:need-input-port} and
 @code{#:explicit-return} mean that the @code{#:GET-upath} proc can receive
 anywhere from two to five arguments.  Here is a table of all the possible
-combinations (1 means non-#f and 0 means #f):
+combinations (1 means non-@code{#f} and 0 means @code{#f}):
 
 @example
 +----- #:explicit-return
@@ -324,6 +327,7 @@ input port.
 @twerpdoc (alist<-query)
 @twerpdoc (read-headers)
 
+@noindent
 Sometimes you are interested in the body of the message but not the headers.
 In this case, you can use @code{skip-headers} to quickly position the port.
 
@@ -339,6 +343,7 @@ parse a string in @samp{multipart/form-data} format.
 
 @twerpdoc (parse-form)
 
+@heading why @code{squeeze}?
 The @var{squeeze} interface can help reduce data motion.  Consider a common
 upload scenario: client uploads file(s) for local (server-side) storage.
 
@@ -350,6 +355,7 @@ classic  squeeze
    *        *       3. filesystem
 @end example
 
+@noindent
 You can achieve the same effect as the ``classic'' approach by specifying
 @code{substring} (or something like it) as the access-byte-range proc, but
 @strong{you don't have to}.  You could, instead, call @var{squeeze} with a
@@ -381,6 +387,7 @@ such an environment.  Actually invoking the CGI script is not covered.
 
 @twerpdoc (cgi-environment-manager)
 
+@heading example
 Following is a simple example of how to use @code{cgi-environment-manager}.
 A more realistic example would include port and connection management,
 input validation, error handling, logging, etc.  First, we set up the
@@ -393,6 +400,7 @@ manager with more-or-less constant bindings.
               (server-port . 80))))
 @end example
 
+@noindent
 Later, we add connection-specific bindings.  We use @code{read-first-line}
 from the @ref{parse-request} module.
 
@@ -406,6 +414,7 @@ from the @ref{parse-request} module.
 (M 'query-string (substring UPATH (1+ QMARK)))
 @end example
 
+@noindent
 Lastly, we spawn the child process, passing the constructed environment as
 the second arg to @code{execle}, and drop the connection-specific bindings
 afterwards.
@@ -419,6 +428,7 @@ afterwards.
 (M #:clear!)
 @end example
 
+@noindent
 Now we can re-use @code{M} for another connection.
 
 @c ---------------------------------------------------------------------------
@@ -441,6 +451,7 @@ the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
 @twerpdoc (rfc2109-set-cookie-string)
 @twerpdoc (rfc2965-set-cookie2-tree)
 
+@heading example
 Here is an example that demonstates both RFC2109 and RFC2965 formatting.
 Notable differences: the keyword to specify the path is now capitalized; the
 representation of the cookie's value is now double-quoted.
@@ -463,11 +474,13 @@ representation of the cookie's value is now double-quoted.
 @print{} war="lose";Path="/ignorance/suffering";Discard;Version=1
 @end example
 
+@noindent
 To generate a cookie spec from the @code{Cookie} http response header sent by
 a client, you can use @code{rfc2965-parse-cookie-header-value}.
 
 @twerpdoc (rfc2965-parse-cookie-header-value)
 
+@noindent
 RFC2965 also specifies some other small algorithms, some of which are codified
 as procedures available in this module.
 
@@ -485,6 +498,7 @@ better throughput with certain chunk sizes than with others.
 
 @twerpdoc (mouthpiece)
 
+@heading example
 Here is an example that uses most of the @code{mouthpiece} commands:
 
 @example
@@ -516,6 +530,7 @@ STATUS
 @result{} (200 17989)
 @end example
 
+@noindent
 For higher performance, you can preformat parts of the response, using
 @code{CRLF}, and some lower-level convenience procedures.
 
@@ -527,6 +542,7 @@ The string ``\r\n''.
 @twerpdoc (walk-tree)
 @twerpdoc (string<-header-components)
 
+@heading example
 Here is @code{transmit-file} from the above example, slightly modified to use
 preformatted headers and @code{fs}:
 
@@ -546,6 +562,7 @@ preformatted headers and @code{fs}:
   (M #:send-reply))
 @end example
 
+@noindent
 Note that @code{mouthpiece} accepts trees for both @code{#:add-header} and
 @code{#:add-content} commands.  Thus, the following two fragments give the
 same result, although the latter is both more elegant and more efficient:
@@ -578,11 +595,13 @@ The module @code{(www data http-status)} exports two data structures:
 @code{*http-status*} and @code{*http-status*-META}, the latter an alist
 describing the former with keys @code{#:source} and @code{#:layout}.
 
+@noindent
 @strong{NOTE}: These data structures @strong{will no longer be available}
 after 2009-12-31.  Use @code{http-status-string} instead.
 
 @twerpdoc (http-status-string)
 
+@heading example
 Here is a simple example using this module:
 
 @example
@@ -609,13 +628,14 @@ underlying hash-table manipulation operations, including extension
 and mime-type validation, init from a file in a ``standard'' format
 (i.e., that of @file{/etc/mime.types} or @file{~/.mime.types}), and
 support for straightforward incremental init (aka @dfn{merging}).
-
 There are two predefined entries in the hash table:
+
 @example
 text => text/plain
 html => text/html
 @end example
 
+@noindent
 To support merging, the @code{put-FOO} procedures both take a
 symbol @var{resolve} as the first arg, which specifies how
 @dfn{conflicts} should be handled.  This happens when the hash
@@ -643,6 +663,7 @@ Use @var{new-mime-type} directly, discarding @var{old-mime-type}.
 Discard @var{new-mime-type}, keeping @var{old-mime-type}.
 @end table
 
+@noindent
 For any other method, the operation throws an error, with key
 @code{invalid-resolve}.
 
@@ -662,6 +683,7 @@ with key @code{invalid-extension} or @code{invalid-mime-type}.
 @twerpdoc (mime-types<-extension)
 @twerpdoc (select-extensions)
 
+@heading why @code{select-extensions}?
 The last procedure is intended to ease non-generalizable merging,
 without providing too much exposure to implementation internals.
 Suppose you want to maintain a local policy of having only one mime-type
@@ -714,6 +736,7 @@ populating the hash, you can fix up those entries, like so:
     cpt  application/mac-compactpro
 @end example
 
+@noindent
 Seasoned schemers will note that the same result could have been
 achieved if @var{resolve} were allowed to be a general resolution
 procedure instead of simply a method specifier.  Perhaps that feature
@@ -729,12 +752,14 @@ The module @code{(www data content-type)} exports two data structures:
 @code{*content-type-by-filename-extension*-META}, the latter an alist
 describing the former with keys @code{#:source} and @code{#:layout}.
 
+@noindent
 @xref{filesystem}, procedure @code{filename->content-type}.
 
 @c ---------------------------------------------------------------------------
 @node       Procedure Index
 @unnumbered Procedure Index
 
+@noindent
 This index references both procedures and messages for procedures (and/or
 closures) that take messages.
 

@@ -21,7 +21,19 @@ Makefile.in
 /doc/*.info
 /doc/*.texi
 /doc/.deps
+/doc/guile-www.aux
+/doc/guile-www.cp
+/doc/guile-www.fn
+/doc/guile-www.fns
 /doc/guile-www.html
+/doc/guile-www.ky
+/doc/guile-www.log
+/doc/guile-www.pdf
+/doc/guile-www.pg
+/doc/guile-www.toc
+/doc/guile-www.tp
+/doc/guile-www.vr
+/doc/guile-www.vrs
 /doc/stamp-vti
 
 /examples/id.cgi

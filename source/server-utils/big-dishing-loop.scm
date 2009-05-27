@@ -47,7 +47,7 @@
 ;; @item @var{procedure}
 ;; Call @var{procedure} on @var{sock}.
 ;;
-;; @item ((@var{opt} . @var{val}) ...)
+;; @item ((@var{opt} . @var{val}) @dots{})
 ;; For each pair in this alist, call @code{setsockopt}
 ;; on @var{sock} with the pair's @var{opt} and @var{val}.
 ;; @end table
@@ -110,7 +110,7 @@
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg @var{ear}, which may be a pre-configured socket,
 ;; a TCP port number, or a list of the form:
-;; @code{(@var{family} @var{address}...)}.
+;; @code{(@var{family} @var{address} @dots{})}.
 ;; When @var{ear} is a TCP port number, it is taken
 ;; to be the list @code{(PF_INET AF_INET INADDR_ANY @var{ear})}.
 ;;
@@ -169,7 +169,9 @@
 ;;
 ;; @var{handler} normally takes two arguments, the mouthpiece @var{m}
 ;; and the @var{upath} (string), composes and sends a response, and
-;; returns non-#f to indicate that the big dishing loop should continue.
+;; returns non-@code{#f} to indicate that the big dishing loop should
+;; continue.
+;;
 ;; The proc's argument list is configured by @code{#:need-headers},
 ;; @code{#:need-input-port} and @code{#:explicit-return}.
 ;; Interpretation of the proc's return value is configured by
@@ -182,13 +184,13 @@
 ;; Note, however, that this proc is ignored if there is a @code{GET}
 ;; entry specified in @code{#:method-handlers}.
 ;;
-;; NOTE: @code{#:GET-upath} is obsoleted by @code{#:method-handlers}
+;; @strong{NOTE}: @code{#:GET-upath} is obsoleted by @code{#:method-handlers}
 ;; and will be removed after 2009-12-31.  Do @emph{not} rely on it.
 ;;
 ;; @findex need-headers
 ;; @item #:need-headers #f
 ;; @itemx #:need-input-port #f
-;; If non-#f, these cause additional arguments to be supplied to the
+;; If non-@code{#f}, these cause additional arguments to be supplied to the
 ;; @code{#:GET-upath} proc.  If present, the headers arg precedes the input
 ;; port arg.  @xref{parse-request}.  The input port is always positioned at
 ;; the beginning of the HTTP message body.
@@ -201,11 +203,12 @@
 ;;
 ;; @findex explicit-return
 ;; @item #:explicit-return #f
-;; If non-#f, this arranges for a continuation to be passed (as the last
-;; argument) to the @code{#:GET-upath} proc, and ignores that proc's normal
-;; return value in favor of one explicitly passed through the continuation.
-;; If the continuation is not used, the @dfn{effective return value} is
-;; computed as @code{(not #:loop-break-bool)}.
+;; If non-@code{#f}, this arranges for a continuation to be passed (as
+;; the last argument) to the @code{#:GET-upath} proc, and ignores that
+;; proc's normal return value in favor of one explicitly passed through
+;; the continuation.  If the continuation is not used, the
+;; @dfn{effective return value} is computed as @code{(not
+;; #:loop-break-bool)}.
 ;;
 ;; @findex loop-break-bool
 ;; @item #:loop-break-bool #f
@@ -214,7 +217,7 @@
 ;;
 ;; @findex unknown-http-method-handler
 ;; @item #:unknown-http-method-handler #f
-;; If #f, silently ignore unknown HTTP methods, i.e., those not
+;; If @code{#f}, silently ignore unknown HTTP methods, i.e., those not
 ;; specified in @code{#:method-handlers} and/or @code{#:GET-upath}.
 ;; The value may also be a procedure that takes three
 ;; arguments: a mouthpiece @var{m}, the @var{method} (symbol) and the
@@ -224,7 +227,7 @@
 ;;
 ;; @findex parent-finish
 ;; @item #:parent-finish close-port
-;; When operating concurrently (@code{#:concurrency} non-#f), the
+;; When operating concurrently (@code{#:concurrency} non-@code{#f}), the
 ;; ``parent'' applies this proc to the port after the split.
 ;;
 ;; @findex log
@@ -236,8 +239,9 @@
 ;;
 ;; @findex status-box-size
 ;; @item #:status-box-size #f
-;; This may be a non-negative integer, typically 0, 1 or 2.  It is used by
-;; @code{#:log} (has no meaning if @code{#:log} is #f).  @xref{log}.
+;; This may be a non-negative integer, typically 0, 1 or 2.  It is used
+;; by @code{#:log} (has no meaning if @code{#:log} is @code{#f}).
+;; @xref{log}.
 ;; @end table
 ;;
 ;;-sig: ([keyword value ...])

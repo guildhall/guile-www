@@ -42,7 +42,7 @@
 ;; @samp{multipart/form-data} and return an alist.
 ;;
 ;; @var{content-type-more} is a string that should include the
-;; @code{boundary="..."} information.  (This parameter name reflects the
+;; @code{boundary="@dots{}"} information.  (This parameter name reflects the
 ;; typical source of such a string, the Content-Type header value, after the
 ;; @samp{multipart/form-data}.)
 ;;

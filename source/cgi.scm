@@ -278,22 +278,22 @@
 
 ;; Fetch the list of @code{(name . value)}, in the same order as found
 ;; in the form data.  A name may appear more than once.  A value is
-;; either a string, or #f.
+;; either a string, or @code{#f}.
 ;;
 (define (cgi:nv-pairs)
   (ONE #:nv-pairs))
 
 ;; Fetch any values associated with @var{name} found in the form data.
 ;; Return a list, even if it contains only one element.  A value is
-;; either a string, or #f.  When there are multiple values, the order
-;; is the same as that found in the form.
+;; either a string, or @code{#f}.  When there are multiple values, the
+;; order is the same as that found in the form.
 ;;
 (define (cgi:values name)
   (ONE #:values name))
 
-;; Fetch only the @sc{car} from @code{(cgi:values NAME)}.  Convenient
-;; for when you are certain that @var{name} is associated with only one
-;; value.
+;; Fetch only the @sc{car} from @code{(cgi:values @var{name})}.
+;; Convenient for when you are certain that @var{name} is associated
+;; with only one value.
 ;;
 (define (cgi:value name)
   (ONE #:value name))
@@ -307,13 +307,13 @@
 (define (cgi:names)
   (ONE #:names))
 
-;; Return #t iff there is form data available.
+;; Return @code{#t} iff there is form data available.
 ;;
 (define (cgi:form-data?)
   (ONE #:form-data?))
 
 ;; Return a list of file contents associated with @var{name},
-;; or #f if no files are available.
+;; or @code{#f} if no files are available.
 ;;
 ;; Uploaded files are parsed by @code{parse-form} (@pxref{form-2-form}).
 ;; If the @code{uploads-lazy} option is specified to @code{cgi:init}, then
@@ -340,9 +340,9 @@
 ;;
 ;; Unless @code{uploads-lazy} is specified (to @code{cgi:init}),
 ;; @code{cgi:uploads} can only be called once per particular @var{name}.
-;; Subsequent calls return #f.  Caller had better hang onto the information,
-;; lest the garbage man whisk it away for good.  This is done to minimize the
-;; amount of time the file is resident in memory.
+;; Subsequent calls return @code{#f}.  Caller had better hang onto the
+;; information, lest the garbage man whisk it away for good.  This is
+;; done to minimize the amount of time the file is resident in memory.
 ;;
 (define (cgi:uploads name)
   (ONE #:uploads name))
@@ -363,7 +363,8 @@
 ;; Fetch any cookie values associated with @var{name}.  Return a list of
 ;; values in the order they were found in the HTTP header, which should
 ;; be the order of most specific to least specific path associated with
-;; the cookie.  If no cookies are associated with @var{name}, return #f.
+;; the cookie.  If no cookies are associated with @var{name}, return
+;; @code{#f}.
 ;;
 (define (cgi:cookies name)
   (ONE #:cookies name))

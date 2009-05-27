@@ -83,10 +83,10 @@
             (loop (cddr ls)))))
     ht))
 
-;; Return a closure encapsulating @var{initial-bindings},
-;; a list of pairs @code{(NAME . VALUE)}, where @var{name} is
-;; a symbol listed in the following table, and @var{value} is
-;; a string unless otherwise noted.
+;; Return a closure encapsulating @var{initial-bindings}, a list of
+;; pairs @code{(@var{name} . @var{value})}, where @var{name} is a symbol
+;; listed in the following table, and @var{value} is a string unless
+;; otherwise noted.
 ;;
 ;; @itemize
 ;; @item @code{server-hostname}
@@ -103,7 +103,7 @@
 ;; @item @code{remote-user}
 ;; @item @code{remote-ident}
 ;; @item @code{content-type}
-;; @item @code{content-length} (integer, or #f)
+;; @item @code{content-length} (integer, or @code{#f})
 ;; @item @code{http-user-agent}
 ;; @item @code{http-cookie}
 ;; @item @code{server-software}
@@ -112,7 +112,7 @@
 ;; @end itemize
 ;;
 ;; If @var{name} is not recognized, signal "unrecognized key" error.
-;; Encapsulation includes @code{NAME=VALUE} formatting.
+;; Encapsulation includes @code{@var{name}=@var{value}} formatting.
 ;;
 ;; The closure accepts these commands:
 ;;
