@@ -38,6 +38,7 @@ Makefile.in
 
 /examples/id.cgi
 /examples/wily-guile
+/examples/www
 
 # here we try to express:
 # everything else under source except Makefile.am and *.scm
