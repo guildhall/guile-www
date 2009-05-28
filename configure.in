@@ -35,7 +35,6 @@ AC_CONFIG_FILES([
   source/data/Makefile
   source/Makefile
   doc/Makefile
-  examples/Makefile
 ])
 AC_CONFIG_FILES([build-aux/module-compile],[chmod +x build-aux/module-compile])
 AC_CONFIG_FILES([examples/id.cgi],[chmod +x examples/id.cgi])

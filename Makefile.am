@@ -23,7 +23,7 @@
 
 AUTOMAKE_OPTIONS = gnu
 
-SUBDIRS = source doc examples
+SUBDIRS = source doc
 
 install-data-hook:
 	rm -f "$(DESTDIR)$(GUILE_SITE)/www/METAINFO"
@@ -31,8 +31,11 @@ install-data-hook:
 	   $(GUILE_TOOLS) make-module-catalog \
 	      -t "$(DESTDIR)" "$(GUILE_SITE)" ; fi
 
-asisdirs = contrib
-
-EXTRA_DIST = $(asisdirs)
+EXTRA_DIST = \
+ examples/README \
+ examples/cookie.cgi \
+ examples/wwwcat \
+ examples/you-are-here \
+ contrib
 
 ## Makefile.am ends here

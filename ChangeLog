@@ -1,5 +1,16 @@
 2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Consolidate examples/Makefile.am into top-level.
+
+	* Makefile.am (SUBDIRS): Delete examples.
+	(asisdirs): Delete var.
+	(EXTRA_DIST): Specify contrib directly; add examples/README,
+	examples/cookie.cgi, examples/wwwcat, examples/you-are-here.
+	* configure.in (AC_CONFIG_FILES): Delete examples/Makefile.
+	* examples/Makefile.am: Delete file.
+
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[doc] Distribute PDF doc, as well.
 
 	* doc/Makefile.am (EXTRA_DIST): Add guile-www.pdf.
