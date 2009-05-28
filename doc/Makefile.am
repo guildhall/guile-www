@@ -28,9 +28,9 @@ doc-index-prep:
 if MAINTAINER_MODE
 	for d in . server-utils data ; do		\
 	  ( cd ../source/$$d ; $(MAKE) .doc-index ) ; done
-endif
 
 guile-www.texi: guile-www.twerp
+endif
 
 twerp2texi = guile-tools twerp2texi
 
