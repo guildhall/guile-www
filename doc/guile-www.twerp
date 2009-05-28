@@ -122,8 +122,8 @@ Data -- (www data *)
 
 @c ---------------------------------------------------------------------------
 @c ---------------------------------------------------------------------------
-@node    http
-@chapter http
+@node         http
+@chapter (www http)
 
 The @code{(www http)} module includes procedures for high-level HTTP
 operation, low-level HTTP message object access, and common messages.
@@ -170,8 +170,8 @@ symbols are case-sensitive.
 @twerpdoc (http:post-form)
 
 @c ---------------------------------------------------------------------------
-@node    url
-@chapter url
+@node         url
+@chapter (www url)
 
 The @code{(www url)} module provides procedures for high-level url
 object conversion, low-level url object construction and access,
@@ -205,8 +205,8 @@ and character decoding/encoding.
 @twerpdoc (url:encode)
 
 @c ---------------------------------------------------------------------------
-@node    cgi
-@chapter cgi
+@node         cgi
+@chapter (www cgi)
 
 The @code{(www cgi)} module provides procedures to support painlessly
 writing Common Gateway Interface scripts to process interactive forms.
@@ -240,8 +240,8 @@ to access the uncollated (albeit ordered) form data.
 @twerpdoc (cgi:nv-pairs)
 
 @c ---------------------------------------------------------------------------
-@node    main
-@chapter main
+@node         main
+@chapter (www main)
 
 The @code{(www main)} module provides a generic interface useful for
 retriving data named by any URL.  The URL scheme @code{http} is pre-registered.
@@ -255,8 +255,8 @@ There is also the convenience proc @code{www:http-head-get}.
 @twerpdoc (www:http-head-get)
 
 @c ---------------------------------------------------------------------------
-@node    url-coding
-@chapter url-coding
+@node         url-coding
+@chapter (www url-coding)
 
 The @code{(www url-coding)} module provides two procedures for decoding
 and encoding URL strings for safe transmission according to RFC 1738.
@@ -265,8 +265,8 @@ and encoding URL strings for safe transmission according to RFC 1738.
 @twerpdoc (url-coding:encode)
 
 @c ---------------------------------------------------------------------------
-@node    utcsec
-@chapter utcsec
+@node         utcsec
+@chapter (www utcsec)
 
 The @code{(www utcsec)} module provides procedures to work with the
 @dfn{utc-seconds} of an object, that is, the number of seconds after
@@ -280,8 +280,8 @@ epoch, in the GMT time zone (also known as UTC).
 @twerpdoc (rfc1123-now)
 
 @c ---------------------------------------------------------------------------
-@node    big-dishing-loop
-@chapter big-dishing-loop
+@node                      big-dishing-loop
+@chapter (www server-utils big-dishing-loop)
 
 The @code{(www server-utils big-dishing-loop)} module provides procedures
 that facilitate generation of a customized listener/dispatch proc.
@@ -315,8 +315,8 @@ combinations (1 means non-@code{#f} and 0 means @code{#f}):
 @end example
 
 @c ---------------------------------------------------------------------------
-@node    parse-request
-@chapter parse-request
+@node                      parse-request
+@chapter (www server-utils parse-request)
 
 The @code{(www server-utils parse-request)} module provides procedures to
 read the first line, the headers and the body, of an HTTP message on the
@@ -335,8 +335,8 @@ In this case, you can use @code{skip-headers} to quickly position the port.
 @twerpdoc (read-body)
 
 @c ---------------------------------------------------------------------------
-@node    form-2-form
-@chapter form-2-form
+@node                      form-2-form
+@chapter (www server-utils form-2-form)
 
 The @code{(www server-utils form-2-form)} module provides a procedure to
 parse a string in @samp{multipart/form-data} format.
@@ -362,8 +362,8 @@ You can achieve the same effect as the ``classic'' approach by specifying
 procedure that writes the byte range directly to the filesystem.
 
 @c ---------------------------------------------------------------------------
-@node    filesystem
-@chapter filesystem
+@node                      filesystem
+@chapter (www server-utils filesystem)
 
 The @code{(www server-utils filesystem)} module provides procedures for
 cleaning filenames, checking filesystem access, and mapping from a URL path to
@@ -375,8 +375,8 @@ a filename.
 @twerpdoc (filename->content-type)
 
 @c ---------------------------------------------------------------------------
-@node    cgi-prep
-@chapter cgi-prep
+@node                      cgi-prep
+@chapter (www server-utils cgi-prep)
 
 Often the server cannot do everything by itself, and makes use of
 external programs invoked in a @dfn{common gateway interface} environment.
@@ -432,8 +432,8 @@ afterwards.
 Now we can re-use @code{M} for another connection.
 
 @c ---------------------------------------------------------------------------
-@node    cookies
-@chapter cookies
+@node                      cookies
+@chapter (www server-utils cookies)
 
 Cookies are bits of client-side state the server can maintain through
 designated HTTP response headers.  At this time (2009), there are two
@@ -443,7 +443,8 @@ and
 RFC2965@footnote{@uref{http://www.faqs.org/rfcs/rfc2965.html,RFC2965}},
 the latter obsoleting the former.
 
-This chapter describes facilities for creating such headers, and parsing those
+This chapter describes the @code{(www server-utils cookies)} module,
+which provides facilities for creating such headers, and parsing those
 sent by the client.  Procedures that return trees are meant to be used with
 the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
 
@@ -487,8 +488,8 @@ as procedures available in this module.
 @twerpdoc (reach)
 
 @c ---------------------------------------------------------------------------
-@node    answer
-@chapter answer
+@node                      answer
+@chapter (www server-utils answer)
 
 The @code{(www server-utils answer)} module provides a simple wrapper
 around the formatting/accounting requirements of a standard HTTP
@@ -578,8 +579,8 @@ same result, although the latter is both more elegant and more efficient:
 @end example
 
 @c ---------------------------------------------------------------------------
-@node    log
-@chapter log
+@node                      log
+@chapter (www server-utils log)
 
 The @code{(www server-utils log)} module provides procedure generators for
 writing log information to an output port.  Each generator is conventionally
@@ -588,10 +589,10 @@ named @code{log-SOMETHING-proc}.
 @twerpdoc (log-http-response-proc)
 
 @c ---------------------------------------------------------------------------
-@node    http-status
-@chapter http-status
+@node              http-status
+@chapter (www data http-status)
 
-The module @code{(www data http-status)} exports two data structures:
+The @code{(www data http-status)} module exports two data structures:
 @code{*http-status*} and @code{*http-status*-META}, the latter an alist
 describing the former with keys @code{#:source} and @code{#:layout}.
 
@@ -617,11 +618,11 @@ Here is a simple example using this module:
 @end example
 
 @c ---------------------------------------------------------------------------
-@node    mime-types
-@chapter mime-types
+@node              mime-types
+@chapter (www data mime-types)
 
-This module maintains an internal hash table mapping
-filename extensions to one or more @dfn{mime-types}.
+The @code{(www data mime-types)} module maintains an internal hash table
+mapping filename extensions to one or more @dfn{mime-types}.
 
 The exported procedures provide convenience abstractions over the
 underlying hash-table manipulation operations, including extension
@@ -744,10 +745,10 @@ will be added in the future, and @code{select-extensions} replaced by
 @code{map-mime-types}.  We'll see@dots{}
 
 @c ---------------------------------------------------------------------------
-@node    content-type
-@chapter content-type
+@node              content-type
+@chapter (www data content-type)
 
-The module @code{(www data content-type)} exports two data structures:
+The @code{(www data content-type)} module exports two data structures:
 @code{*content-type-by-filename-extension*} and
 @code{*content-type-by-filename-extension*-META}, the latter an alist
 describing the former with keys @code{#:source} and @code{#:layout}.

@@ -1,5 +1,12 @@
 2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc] Use module names as chapter titles.
+
+	* doc/guile-www.twerp: Throughout, use module name for
+	chapter title, instead of last component of module name.
+
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Consolidate examples/Makefile.am into top-level.
 
 	* Makefile.am (SUBDIRS): Delete examples.
