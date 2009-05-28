@@ -34,7 +34,7 @@ SUFFIXES = .scm .doc
 
 DOT_DOC_FILES = $(www_DATA:%=%.doc)
 
-CLEANFILES += $(DOT_DOC_FILES)
+CLEANFILES += $(DOT_DOC_FILES) .doc-index
 
 .doc-index: $(DOT_DOC_FILES)
 	$(GUILE_TOOLS) make-twerp2texi-index -o $@ $(DOT_DOC_FILES)
