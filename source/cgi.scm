@@ -44,8 +44,6 @@
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14))
 
-(define subs make-shared-substring)
-
 (define (collate alist)
   (let ((rv '()))
     (for-each (lambda (k v)
@@ -114,20 +112,20 @@
     ,(lambda () (extract server-sw-info
                          (lambda (sw slash)
                            (if slash
-                               (subs sw 0 slash)
+                               (substring/shared sw 0 slash)
                                sw))))
     server-software-version
     ,(lambda () (extract server-sw-info
                          (lambda (sw slash)
-                           (and slash (subs sw (1+ slash))))))
+                           (and slash (substring/shared sw (1+ slash))))))
     server-protocol-name
     ,(lambda () (extract server-pr-info
                          (lambda (pr slash)
-                           (subs pr 0 slash))))
+                           (substring/shared pr 0 slash))))
     server-protocol-version
     ,(lambda () (extract server-pr-info
                          (lambda (pr slash)
-                           (subs pr (1+ slash)))))
+                           (substring/shared pr (1+ slash)))))
     http-accept-types
     ,(lambda () (or (and=> (getenv "HTTP_ACCEPT") ws/comma-split)
                     ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
@@ -166,10 +164,10 @@
                  ((not (zero? len)))
                  (type (env-look 'content-type))
                  (s (read-body len (current-input-port))))
-        (cond ((string-ci=? "application/x-www-form-urlencoded" type)
+        (cond ((string-ci= type "application/x-www-form-urlencoded")
                (set! P (alist<-query s)))
-              ((string-ci=? "multipart/form-data" (subs type 0 19))
-               (let ((alist (parse-form (subs type 19) s)))
+              ((string-ci= type "multipart/form-data" 0 19)
+               (let ((alist (parse-form (substring/shared type 19) s)))
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))
                    (if (string? (cdr m))
