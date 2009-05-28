@@ -218,7 +218,7 @@
 ;;
 ;; @item #:strict-comma-separator
 ;; Disable support for older clients that use a semicolon to separate
-;; cookies instead of a comma.  Normally, parsing to copes (heuristically)
+;; cookies instead of a comma.  Normally, parsing copes (heuristically)
 ;; with this by reparsing an unrecognized attribute as the beginning of a
 ;; new cookie.  With this flag, an unrecognized attribute signals an error.
 ;;
