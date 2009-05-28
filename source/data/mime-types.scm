@@ -96,7 +96,7 @@
   (set! MT (make-hash-table size)))
 
 ;; Open @var{filename} and parse its contents as ``mime-types'' format.
-;; This line-oriented file format is breifly described as follows:
+;; This line-oriented file format is briefly described as follows:
 ;;
 ;; @itemize
 ;; @item Blank lines and lines beginning with @samp{#} are ignored.
