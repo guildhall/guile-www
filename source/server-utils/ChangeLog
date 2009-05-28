@@ -1,3 +1,11 @@
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Re-implement some (www server-utils parse-request) procs.
+
+	* parse-request.scm: Use module (ice-9 rdelim).
+	(read-line/CRLF): New proc.
+	(read-first-line, read-headers, skip-headers): Rewrite.
+
 2009-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New module: (www server-utils form-2-form)

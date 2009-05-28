@@ -26,8 +26,18 @@
   #:autoload (www url-coding) (url-coding:decode)
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
+  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 rw)
   #:use-module (ice-9 and-let-star))
+
+(define (read-line/CRLF port)
+  (and-let* ((pair (read-line port 'split))
+             ((eq? #\newline (cdr pair)))
+             (raw (car pair))
+             (lc-pos (1- (string-length raw)))
+             ((not (negative? lc-pos)))
+             ((eq? #\cr (string-ref raw lc-pos))))
+    (substring/shared raw 0 lc-pos)))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
 ;; return a list of the method, URL path and HTTP version indicator, or
@@ -39,50 +49,17 @@
 ;; returns the default "HTTP/1.0".
 ;;
 (define (read-first-line port)
-  (let* ((rv (list #f #f "HTTP/1.0"))
-         (box rv)
-         (acc '()))
-
-    (define (char-not-eol? c)
-      (not (or (char=? c #\newline)
-               (char=? c #\cr))))
-
-    (define (read-until-ws . munge)
-      (let loop ((c (read-char port)))
-        (cond ((eof-object? c)
-               #f)
-              ((char-whitespace? c)
-               (set-car! box ((if (null? munge) list->string (car munge))
-                              (reverse acc)))
-               (set! acc '())
-               c)
-              (else
-               (set! acc (cons c acc))
-               (loop (read-char port))))))
-
-    (define (skip-ws!)
-      (set! box (cdr box))
-      (let loop ((c (read-char port)))
-        (if (char-whitespace? c)
-            (loop (read-char port))
-            (unread-char c port)))
-      #t)
-
-    (define (ls->upcased-symbol ls)
-      (string->symbol (list->string (map char-upcase ls))))
-
-    ;; do it
-    (and-let* ((c1 (read-until-ws ls->upcased-symbol))
-               ((char-not-eol? c1))
-               (c2 (and (skip-ws!) (read-until-ws)))
-               (2nd-ws (if (char-not-eol? c2)
-                           (and (skip-ws!) (read-until-ws))
-                           c2))
-               ((char=? #\cr 2nd-ws))
-               (c3 (read-char port))
-               ((and (not (eof-object? c3))
-                     (char=? #\newline c3))))
-      rv)))
+  (and-let* ((line (read-line/CRLF port))
+             (len (string-length line))
+             (eom (string-index line char-set:whitespace))
+             (bou (string-skip  line char-set:whitespace eom))
+             (eou (or (string-index line char-set:whitespace bou) len))
+             (sub (lambda x (apply substring/shared line x))))
+    (list (string->symbol (sub 0 eom))
+          (sub bou eou)
+          (if (= len eou)
+              "HTTP/1.0"
+              (sub (string-skip line char-set:whitespace eou))))))
 
 ;; Parse @var{upath} and return three values representing
 ;; its hierarchy, query and fragment components.
@@ -140,94 +117,31 @@
 ;; parse consumes the trailing @samp{CRLF} of the header block as well.
 ;;
 (define (read-headers port)
-
-  (define (next)
-    (read-char port))
-
-  (define (neof? c)
-    (not (eof-object? c)))
-
-  (define (pre-ws-trim nc)
-    (if (memq nc '(#\space #\ht))
-        (pre-ws-trim (next))
-        (unread-char nc port)))
-
-  (define (post-ws-trim ls)
-    (if (and (pair? ls) (char-whitespace? (car ls)))
-        (post-ws-trim (cdr ls))
-        (list->string (reverse ls))))
-
-  (define (read-one-header first?)      ; bad parse => #f
-    (let ((k #f)
-          (c1 (next)))
-      (and (neof? c1)
-           (cond
-
-            ;; end of header block => #t
-            ((char=? #\cr c1)
-             (let ((c2 (next)))
-               ;; rv
-               (and (neof? c2) (char=? #\newline c2))))
-
-            ;; continuation line => (#t . CONTINUED-VALUE)
-            ((or (char=? #\space c1) (char=? #\ht c1))
-             (and (not first?)
-                  (let ((acc '(#\space)))
-                    (pre-ws-trim (next))
-                    (let loop ((c (next)))
-                      (and (neof? c)
-                           (case c
-                             ((#\cr)
-                              (let ((nc (next)))
-                                (and (neof? nc)
-                                     (char=? #\newline nc)
-                                     ;; rv
-                                     (cons #t (post-ws-trim acc)))))
-                             (else
-                              (set! acc (cons c acc))
-                              (loop (next)))))))))
-
-            ;; normal header => (KEY . VALUE)
+  (let loop ((acc '()))
+    (and-let* ((line (read-line/CRLF port)))
+      (cond ((string-null? line)
+             (map (lambda (pair)
+                    (let ((v (cdr pair)))
+                      (if (string? v)
+                          pair
+                          (cons (car pair) (string-join (reverse! v) " ")))))
+                  (reverse! acc)))
+            ((char-set-contains? char-set:whitespace (string-ref line 0))
+             (and-let* (((not (null? acc)))
+                        (more (string-trim-both line)))
+               (or (string-null? more)
+                   (let* ((prev (car acc))
+                          (pls (cdr prev)))
+                     (set-cdr! prev (cons more (if (string? pls)
+                                                   (list pls)
+                                                   pls)))))
+               (loop acc)))
             (else
-             (let ((acc (list c1)))
-               (and (let loop ((c (next)))
-                      (and (neof? c)
-                           (case c
-                             ((#\cr) #f)
-                             ((#\:)
-                              (set! k (list->string (reverse acc)))
-                              (set! acc '())
-                              (pre-ws-trim (next))
-                              #t)
-                             (else
-                              (set! acc (cons c acc))
-                              (loop (next))))))
-                    (let loop ((c (next)))
-                      (and (neof? c)
-                           (case c
-                             ((#\cr)
-                              (let ((c2 (next)))
-                                (and (neof? c2)
-                                     (char=? #\newline c2)
-                                     ;; rv
-                                     (cons k (post-ws-trim acc)))))
-                             (else
-                              (set! acc (cons c acc))
-                              (loop (next)))))))))))))
-
-  ;; do it
-  (let loop ((header (read-one-header #t)) (acc '()))
-    (and header
-         (if (eq? #t header)
-             (reverse acc)                      ;;; rv
-             (loop (read-one-header #f)
-                   (if (eq? #t (car header))
-                       (let ((parent (car acc)))
-                         (set-cdr! parent (string-append
-                                           (cdr parent)
-                                           (cdr header)))
-                         acc)
-                       (cons header acc)))))))
+             (and-let* ((colon (string-index line #\:)))
+               (loop (acons
+                      (string-trim-right line char-set:whitespace 0 colon)
+                      (string-trim-both line char-set:whitespace (1+ colon))
+                      acc))))))))
 
 ;; Scan without parsing the headers of the HTTP message from input
 ;; @var{port}, and return the empty list, or @code{#f} if the message
@@ -235,30 +149,11 @@
 ;; @samp{CRLF} of the header block as well.
 ;;
 (define (skip-headers port)
-
-  (define (next)
-    (read-char port))
-
-  (let* ((ring (let ((ring (list #\nul #\nul #\nul #\nul)))
-                 (set-cdr! (last-pair ring) ring)
-                 ring))
-         (rv (let loop ((c (next)))
-               (cond ((eof-object? c)
-                      #f)
-                     (else
-                      (set-car! ring c)
-                      (set! ring (cdr ring))
-                      (if (and (char=? #\newline c)
-                               (let ((r ring))
-                                 (and (char=? #\cr (car r))
-                                      (begin (set! r (cdr r))
-                                             (char=? #\newline (car r)))
-                                      (begin (set! r (cdr r))
-                                             (char=? #\cr (car r))))))
-                          '()           ; done
-                          (loop (next))))))))
-    (set-cdr! ring '())
-    rv))
+  (let loop ()
+    (and-let* ((line (read-line/CRLF port)))
+      (if (string-null? line)
+          '()
+          (loop)))))
 
 ;; Return a new string of @var{len} bytes with contents
 ;; read from input @var{port}.
