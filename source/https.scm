@@ -1,5 +1,6 @@
 ;;; (www https) --- HTTPS client library
 
+;; Copyright (C) 2009 Thien-Thi Nguyen
 ;; Copyright (C) 2003, 2004, 2005 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

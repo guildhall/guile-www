@@ -1,5 +1,6 @@
 ;;; (www main) --- General WWW navigation aids
 
+;; Copyright (C) 2009 Thien-Thi Nguyen
 ;; Copyright (C) 1997, 2001, 2002, 2003,
 ;;   2004, 2005 Free Software Foundation, Inc.
 ;;

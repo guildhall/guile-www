@@ -1,6 +1,6 @@
 ;;; (www cgi) --- Common Gateway Interface support
 
-;; Copyright (C) 2007, 2008 Thien-Thi Nguyen
+;; Copyright (C) 2007, 2008, 2009 Thien-Thi Nguyen
 ;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005,
 ;;   2006 Free Software Foundation, Inc.
 ;;

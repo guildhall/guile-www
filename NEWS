@@ -1,5 +1,21 @@
 NEWS for Guile-WWW
 
+- 2.25 | 2009-05-28
+  - changes to (www cgi)
+    - bugfix: parse cookies using comma as inter-cookie delim
+    - bugfix: query-string no longer masks form-data
+    - new proc: cgi:cookie-names
+    - new support for ‘uploads-lazy’ (file contents management) style
+  - new module: (www server-utils form-2-form)
+  - new (www server-utils cookies) proc: simple-parse-cookies
+  - new (www server-utils parse-request) procs
+    - hqf<-upath
+    - alist<-query
+    - read-body
+  - documentation spiffed
+  - distribution includes guile-www.pdf
+  - maintenance uses GNU Autoconf 2.63, GNU Automake 1.11
+
 - 2.24 | 2009-01-27
   - new module: (www data mime-types)
   - new (www data http-status) proc: http-status-string

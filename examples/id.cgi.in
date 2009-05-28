@@ -3,6 +3,7 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 !#
 ;;; id.cgi --- the "hello world" of CGI scripts
 
+;; Copyright (C) 2009 Thien-Thi Nguyen
 ;; Copyright (C) 2005 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

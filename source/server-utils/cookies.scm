@@ -1,5 +1,6 @@
 ;;; (www server-utils cookies) --- Handling bits of client-side state
 
+;; Copyright (C) 2009 Thien-Thi Nguyen
 ;; Copyright (C) 2006 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.
