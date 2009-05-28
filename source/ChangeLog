@@ -1,5 +1,9 @@
 2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.25
+
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use (srfi srf-13) more.
 
 	* cgi.scm (subs): Delete proc alias.

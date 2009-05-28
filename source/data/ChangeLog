@@ -1,3 +1,7 @@
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.25
+
 2009-01-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (www data http-status) proc: http-status-string

@@ -1,5 +1,11 @@
 2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.25
+
+	* configure.in (AC_INIT): Bump version to "2.25" for release.
+
+2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[doc] Use module names as chapter titles.
 
 	* doc/guile-www.twerp: Throughout, use module name for
