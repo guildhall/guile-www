@@ -36,18 +36,20 @@
   #:use-module (www server-utils answer))
 
 ;; Return a new socket in protocol @var{family} with address @var{name}.
+;; Keywords are: @code{#:socket-setup}.
+;;
 ;; First, evaluate @code{(socket @var{family} SOCK_STREAM 0)} to create
 ;; a new socket @var{sock}.  Next, handle @code{#:socket-setup}, with
 ;; value @var{setup}, like so:
 ;;
-;; @table @code
-;; @item #f
-;; Do nothing.
+;; @table @asis
+;; @item @code{#f}
+;; Do nothing.  This is the default.
 ;;
 ;; @item @var{procedure}
 ;; Call @var{procedure} on @var{sock}.
 ;;
-;; @item ((@var{opt} . @var{val}) @dots{})
+;; @item @code{((@var{opt} . @var{val}) @dots{})}
 ;; For each pair in this alist, call @code{setsockopt}
 ;; on @var{sock} with the pair's @var{opt} and @var{val}.
 ;; @end table
