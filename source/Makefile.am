@@ -34,4 +34,6 @@ www_DATA =					\
 
 include $(top_srcdir)/build-aux/common.mk
 
+EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
+
 ## Makefile.am ends here

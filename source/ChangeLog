@@ -1,3 +1,11 @@
+2009-06-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Consolidate some ChangeLog files.
+
+	* ChangeLog-data: Rename from data/ChangeLog.
+	* ChangeLog-server-utils: Rename from server-utils/ChangeLog.
+	* Makefile.am (EXTRA_DIST): Also distribute the ChangeLog-foo files.
+
 2009-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.25
