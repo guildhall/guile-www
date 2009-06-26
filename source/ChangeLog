@@ -1,3 +1,11 @@
+2009-06-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug: Make `access-forbidden?-proc' allow "filename is docroot".
+
+	* server-utils/filesystem.scm: Use module (srfi srfi-13).
+	(access-forbidden?-proc): Fix OBOE: Don't fail
+	if the filename is exactly the same as the docroot.
+
 2009-06-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Consolidate some ChangeLog files.

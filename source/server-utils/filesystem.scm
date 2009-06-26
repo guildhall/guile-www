@@ -33,6 +33,7 @@
             cleanup-filename
             upath->filename-proc
             filename->content-type)
+  #:use-module ((srfi srfi-13) #:select (string-prefix?))
   #:use-module (ice-9 regex)
   #:use-module (ice-9 and-let-star)
   #:autoload (www data content-type) (*content-type-by-filename-extension*)
@@ -46,9 +47,6 @@
 ;; should be denied for any of the following reasons:
 ;;
 ;; @itemize
-;; @item @var{filename} is the null string
-;; @item @var{filename} does not begin with slash
-;; @item @var{filename} is not longer than @var{docroot}
 ;; @item @var{filename} does not begin with @var{docroot}
 ;; @item @var{filename} matches regular expression @var{forbid-rx}
 ;; @end itemize
@@ -57,14 +55,10 @@
 ;; skipped.  @var{p} returns @code{#f} if access should be granted.
 ;;
 (define (access-forbidden?-proc docroot forbid-rx)
-  (let ((docroot-length (string-length docroot))
-        (rx (and forbid-rx (make-regexp forbid-rx))))
+  (let ((rx (and forbid-rx (make-regexp forbid-rx))))
     ;; rv
     (lambda (filename)
-      (or (string-null? filename)
-          (not (char=? (string-ref filename 0) #\/))
-          (<= (string-length filename) docroot-length)
-          (not (string=? docroot (substring filename 0 docroot-length)))
+      (or (not (string-prefix? docroot filename))
           (and rx (regexp-exec rx filename))))))
 
 (define clean-parent-rx       (make-regexp "[^/]*/\\.\\./"))
