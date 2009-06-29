@@ -1,5 +1,6 @@
 dnl guile-www.m4 --- Some -*-autoconf-*- macros for Guile-WWW
 dnl
+dnl Copyright (C) 2009 Thien-Thi Nguyen
 dnl Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 dnl
 dnl This file is part of Guile-WWW.
