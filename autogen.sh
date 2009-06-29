@@ -12,7 +12,8 @@
   exit 1
 }
 
-aclocal -I `guile-config info datadir`/aclocal -I build-aux
+ln -sf $(guile-config info datadir)/aclocal/guile.m4 build-aux/guile.m4
+aclocal -I build-aux
 autoconf
 
 # automake is not so smooth handling generated .texi

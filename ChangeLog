@@ -1,5 +1,12 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build int] Distribute guile.m4.
+
+	* autogen.sh: Symlink installed guile.m4 into build-aux.
+	Update aclocal call to omit "-I `guile-config info datadir`/aclocal".
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] New abstraction: AC_GUILE_WWW_CONFIG_SCRIPT
 
 	* build-aux/guile-www.m4 (AC_GUILE_WWW_CONFIG_SCRIPT): New AC_DEFUN.

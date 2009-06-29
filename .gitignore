@@ -12,6 +12,7 @@ Makefile.in
 /config.status
 /configure
 
+/build-aux/guile.m4
 /build-aux/install-sh
 /build-aux/mdate-sh
 /build-aux/missing
