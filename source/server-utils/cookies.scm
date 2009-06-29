@@ -26,10 +26,9 @@
             rfc2965-set-cookie2-tree
             rfc2965-parse-cookie-header-value
             reach)
+  #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)))
   #:use-module (ice-9 regex)
   #:use-module (ice-9 optargs-kw))
-
-(define subs make-shared-substring)
 
 ;;;---------------------------------------------------------------------------
 ;;; RFC2109

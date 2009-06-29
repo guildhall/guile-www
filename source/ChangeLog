@@ -1,5 +1,16 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Use SRFI-13 `substring/shared', not `make-shared-substring'.
+
+	* http.scm: Use module (srfi srfi-13).
+	(subs): Delete proc alias.
+	* server-utils/cookies.scm: Likewise.
+	* server-utils/filesystem.scm: From module (srfi srfi-13),
+	select also `substring/shared', renaming to `subs'.
+	(subs): Delete proc alias.
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make `cleanup-filename' handle edge cases more consistently.
 
 	* server-utils/filesystem.scm: Don't use module (ice-9 regex);

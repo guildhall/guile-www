@@ -42,6 +42,7 @@
             http:connect
             http:open
             http:request)
+  #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)))
   #:use-module (www url)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 rw))
@@ -51,8 +52,6 @@
 
 (or (defined? 'read-line)
     (use-modules (ice-9 rdelim)))
-
-(define subs make-shared-substring)
 
 (define (fs s . args)
   (apply simple-format #f s args))

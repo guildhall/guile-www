@@ -1,5 +1,15 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Use SRFI-13 `substring/shared', not `make-shared-substring'.
+
+	* acinclude.m4 (AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING)
+	(AC_GUILE_WWW_DISABLE_SHARED_SUBSTRING): Delete AC_DEFUNs.
+	(AC_GUILE_WWW_CORE_AOK): Update.
+	* build-aux/module-compile.in (two): Delete var; no longer
+	construct sed script frag to neuter `make-shared-substring'.
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make `cleanup-filename' handle edge cases more consistently.
 
 	* doc/guile-www.twerp (filesystem):

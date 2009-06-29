@@ -53,12 +53,10 @@ test x"$1" = x-o || usage 1
 test x"$3" = x && usage 1
 
 one="@need_optargs_kludge@"
-two="@use_shsub@"
 PUNIFY="@PUNIFY@"
 
 cust="/^$$/d"
 test "$one" = yes && cust="$cust;s/optargs-kw/optargs/"
-test "$two" = no  && cust="$cust;s/make-shared-substring/substring/"
 
 set -e
 $PUNIFY "$3" | sed "$cust" > "$2"

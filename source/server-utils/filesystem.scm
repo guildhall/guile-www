@@ -34,6 +34,7 @@
             upath->filename-proc
             filename->content-type)
   #:use-module ((srfi srfi-13) #:select (string=
+                                         (substring/shared . subs)
                                          string-prefix?
                                          string-suffix?
                                          string-tokenize
@@ -43,8 +44,6 @@
   #:use-module (ice-9 and-let-star)
   #:autoload (www data content-type) (*content-type-by-filename-extension*)
   #:autoload (www data mime-types) (put-mime-types!))
-
-(define subs make-shared-substring)
 
 ;; Create and return a filesystem-access procedure based on
 ;; @var{docroot} and @var{forbid-rx}.  The returned procedure @var{p}
