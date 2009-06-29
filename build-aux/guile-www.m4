@@ -73,4 +73,9 @@ AC_DEFUN([AC_GUILE_WWW_INST_METH_AOK],[
   AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 ])
 
+dnl Idiomatic syntactic sugar
+AC_DEFUN([AC_GUILE_WWW_CONFIG_SCRIPT],[
+  AC_CONFIG_FILES([$1],[chmod +x $1])
+])
+
 dnl guile-www.m4 ends here

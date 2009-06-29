@@ -1,5 +1,12 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build int] New abstraction: AC_GUILE_WWW_CONFIG_SCRIPT
+
+	* build-aux/guile-www.m4 (AC_GUILE_WWW_CONFIG_SCRIPT): New AC_DEFUN.
+	* configure.in: Use `AC_GUILE_WWW_CONFIG_SCRIPT'.
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Move Guile-WWW m4 macros into build-aux.
 
 	* build-aux/guile-www.m4: Rename from ../acinclude.m4.
