@@ -1,5 +1,13 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build int] Move Guile-WWW m4 macros into build-aux.
+
+	* build-aux/guile-www.m4: Rename from ../acinclude.m4.
+	* autogen.sh: Specify "-I build-aux" to aclocal.
+	* Makefile.am (ACLOCAL_AMFLAGS): New var.
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Specify Automake options in configure.in, not Makefile.am.
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Delete var.

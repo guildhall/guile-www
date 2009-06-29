@@ -1,4 +1,4 @@
-dnl acinclude.m4 --- Some -*-autoconf-*- macros for Guile-WWW
+dnl guile-www.m4 --- Some -*-autoconf-*- macros for Guile-WWW
 dnl
 dnl Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
 dnl
@@ -73,4 +73,4 @@ AC_DEFUN([AC_GUILE_WWW_INST_METH_AOK],[
   AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 ])
 
-dnl acinclude.m4 ends here
+dnl guile-www.m4 ends here

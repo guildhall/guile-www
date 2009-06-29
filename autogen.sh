@@ -12,7 +12,7 @@
   exit 1
 }
 
-aclocal -I `guile-config info datadir`/aclocal
+aclocal -I `guile-config info datadir`/aclocal -I build-aux
 autoconf
 
 # automake is not so smooth handling generated .texi

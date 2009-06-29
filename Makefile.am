@@ -23,6 +23,8 @@
 
 SUBDIRS = source doc
 
+ACLOCAL_AMFLAGS = -I build-aux
+
 install-data-hook:
 	rm -f "$(DESTDIR)$(GUILE_SITE)/www/METAINFO"
 	if $(GUILE_TOOLS) | grep -q make-module-catalog ; then	\
