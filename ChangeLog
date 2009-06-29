@@ -1,5 +1,12 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build int] Specify Automake options in configure.in, not Makefile.am.
+
+	* Makefile.am (AUTOMAKE_OPTIONS): Delete var.
+	* configure.in (AM_INIT_AUTOMAKE): Bump version to 1.11, add "gnu".
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[config] Update list of required modules.
 
 	* acinclude.m4 (AC_GUILE_WWW_MODULES_AOK):

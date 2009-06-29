@@ -19,8 +19,6 @@
 ## write to the Free Software Foundation, Inc., 51 Franklin Street,
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
-AUTOMAKE_OPTIONS = gnu
-
 wwwdir = $(GUILE_SITE)/www/server-utils
 www_DATA =					\
  answer						\
