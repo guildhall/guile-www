@@ -33,8 +33,13 @@
             cleanup-filename
             upath->filename-proc
             filename->content-type)
-  #:use-module ((srfi srfi-13) #:select (string-prefix?))
-  #:use-module (ice-9 regex)
+  #:use-module ((srfi srfi-13) #:select (string=
+                                         string-prefix?
+                                         string-suffix?
+                                         string-tokenize
+                                         string-join))
+  #:use-module ((srfi srfi-14) #:select (char-set-complement
+                                         char-set))
   #:use-module (ice-9 and-let-star)
   #:autoload (www data content-type) (*content-type-by-filename-extension*)
   #:autoload (www data mime-types) (put-mime-types!))
@@ -61,28 +66,63 @@
       (or (not (string-prefix? docroot filename))
           (and rx (regexp-exec rx filename))))))
 
-(define clean-parent-rx       (make-regexp "[^/]*/\\.\\./"))
-(define clean-dot-rx          (make-regexp "/\\./"))
-(define clean-double-slash-rx (make-regexp "//"))
+(define +not-slash+ (char-set-complement (char-set #\/)))
 
 ;; Return a new filename made from cleaning up filename @var{name}.
-;; Cleaning removes "@var{foo}/../", and collapses both "/./"
-;; and "//" into "/".
+;; Cleaning up is a transform that collapses each of these, in order:
+;;
+;; @itemize
+;; @item @samp{//}
+;; @item @samp{/./}
+;; @item @samp{/@var{foo}/../}
+;; @end itemize
+;;
+;; into a single slash (@samp{/}), everywhere in @var{name}, plus some
+;; fixups.  The transform normally preserves the trailing slash (if any)
+;; in @var{name}, and does not change any leading @samp{..} components
+;; if @var{name} is relative, i.e., does not begin with slash.  Due to
+;; proper @samp{/@var{foo}/../} cancellation for relative @var{name},
+;; however, the result may be the empty string.  (Here, @dfn{proper}
+;; means that @var{foo} is not @samp{..}, but a normal filename
+;; component.)
 ;;
 (define (cleanup-filename name)
-  (cond ((regexp-exec clean-parent-rx name)
-         => (lambda (m)
-              (cleanup-filename
-               (string-append (match:prefix m)
-                              (match:suffix m)))))
-        ((or (regexp-exec clean-dot-rx name)
-             (regexp-exec clean-double-slash-rx name))
-         => (lambda (m)
-              (cleanup-filename
-               (string-append (match:prefix m)
-                              "/"
-                              (match:suffix m)))))
-        (else name)))
+  ;; TODO: Write test to guard against regression; reimplement.
+  ;;       See (info "(guile-www) filesystem") for test cases.
+  (define (not-dot-dot ls)
+    (not (string= ".." (car ls))))
+  (let* ((abs? (string-prefix? "/" name))
+         (comps (string-tokenize name +not-slash+))
+         (end-slash? (string-suffix? "/" name))
+         (dir? (or end-slash? (and (not (null? comps))
+                                   (member (car (last-pair comps))
+                                           '("." "..")))))
+         (head-dd (let loop ((n 0))
+                    (cond ((or (null? comps) (not-dot-dot comps))
+                           (set! comps (delete "." comps))
+                           n)
+                          (else
+                           (set! comps (cdr comps))
+                           (loop (1+ n)))))))
+    (let loop ((rev (if abs? '() (make-list head-dd ".."))))
+      (if (null? comps)
+          (string-join (reverse! (if (and dir? (or end-slash?
+                                                   (not (pair? rev))
+                                                   (not-dot-dot rev)))
+                                     (cons "" rev)
+                                     rev))
+                       "/"
+                       (if abs? 'prefix 'infix))
+          (let ((one (car comps)))
+            (set! comps (cdr comps))
+            (loop (cond ((not (string= ".." one))
+                         (cons one rev))
+                        ((pair? rev)
+                         (cdr rev))
+                        (abs?
+                         rev)
+                        (else
+                         (cons one rev)))))))))
 
 ;; Create and return a url-path-to-filename mapping procedure based on
 ;; @var{docroot}.  The returned procedure @var{p} takes a (string)

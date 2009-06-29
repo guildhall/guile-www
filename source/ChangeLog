@@ -1,3 +1,15 @@
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make `cleanup-filename' handle edge cases more consistently.
+
+	* server-utils/filesystem.scm: Don't use module (ice-9 regex);
+	from module (srifi srfi-13), also select `string=', `string-suffix?',
+	`string-tokenize', `string-join'; use module (srfi srfi-14).
+	(clean-parent-rx): Delete regexp.
+	(clean-dot-rx, clean-double-slash-rx): Likewise.
+	(+not-slash+): New data structure (charset).
+	(cleanup-filename): Rewrite.
+
 2009-06-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Fix bug: Make `access-forbidden?-proc' allow "filename is docroot".
