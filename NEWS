@@ -1,5 +1,11 @@
 NEWS for Guile-WWW
 
+- 2.26 | 2009-06-29
+  - bugfixes to (www server-utils filesystem) procs
+    - access-forbidden?-proc: allow "filename is "docroot" for
+    - cleanup-filename: handle edge cases more consistently
+  - configure option dropped: --disable-shsub
+
 - 2.25 | 2009-05-28
   - changes to (www cgi)
     - bugfix: parse cookies using comma as inter-cookie delim

@@ -1,5 +1,9 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.26
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Specify Automake options in configure.in, not Makefile.am.
 
 	* Makefile.am (AUTOMAKE_OPTIONS): Delete var.

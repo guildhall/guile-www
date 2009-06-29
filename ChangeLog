@@ -1,5 +1,12 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.26
+
+	* configure.in (AC_INIT): Bump version to "2.26" for release.
+	* build-aux/module-compile.in (version): Bump to "1.1" for release.
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Distribute guile.m4.
 
 	* autogen.sh: Symlink installed guile.m4 into build-aux.
