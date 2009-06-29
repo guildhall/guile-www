@@ -25,8 +25,12 @@ AC_DEFUN([AC_GUILE_WWW_CORE_AOK],[
 
 dnl This is an adaptation of "guile-tools autofrisk" output.
 AC_DEFUN([AC_GUILE_WWW_MODULES_AOK],[
+  GUILE_MODULE_REQUIRED(ice-9 and-let-star)
+  GUILE_MODULE_REQUIRED(ice-9 rdelim)
   GUILE_MODULE_REQUIRED(ice-9 regex)
+  GUILE_MODULE_REQUIRED(ice-9 rw)
   GUILE_MODULE_REQUIRED(srfi srfi-13)
+  GUILE_MODULE_REQUIRED(srfi srfi-14)
   GUILE_CHECK_ICE9_OPTARGS(need_optargs_kludge)
 ])
 

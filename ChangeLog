@@ -1,5 +1,12 @@
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[config] Update list of required modules.
+
+	* acinclude.m4 (AC_GUILE_WWW_MODULES_AOK):
+	Add (ice-9 and-let-star), (ice-9 rdelim), (ice-9 rw), (srfi srfi-14).
+
+2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Use SRFI-13 `substring/shared', not `make-shared-substring'.
 
 	* acinclude.m4 (AC_GUILE_WWW_HAVE_MAKE_SHARED_SUBSTRING)
