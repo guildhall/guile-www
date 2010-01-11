@@ -1,5 +1,12 @@
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop `make-big-dishing-loop' keyword arg `#:GET-upath'.
+
+	* server-utils/big-dishing-loop.scm
+	(make-big-dishing-loop): No longer take #:GET-upath.
+
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop (www data http-status) exports `*http-status*', `*http-status*-META'.
 
 	* data/http-status.scm (*http-status*-META): Delete.

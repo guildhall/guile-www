@@ -179,25 +179,15 @@
 ;; Interpretation of the proc's return value is configured by
 ;; @code{#:explicit-return} and @code{#:loop-break-bool}.  See below.
 ;;
-;; @findex GET-upath
-;; @item #:GET-upath echo-upath
-;; This proc handles GET method requests.  It is a shorthand way of
-;; specifying a @code{GET} entry in @code{#:method-handlers} (above).
-;; Note, however, that this proc is ignored if there is a @code{GET}
-;; entry specified in @code{#:method-handlers}.
-;;
-;; @strong{NOTE}: @code{#:GET-upath} is obsoleted by @code{#:method-handlers}
-;; and will be removed after 2009-12-31.  Do @emph{not} rely on it.
-;;
 ;; @findex need-headers
 ;; @item #:need-headers #f
 ;; @itemx #:need-input-port #f
 ;; If non-@code{#f}, these cause additional arguments to be supplied to the
-;; @code{#:GET-upath} proc.  If present, the headers arg precedes the input
+;; handler proc.  If present, the headers arg precedes the input
 ;; port arg.  @xref{parse-request}.  The input port is always positioned at
 ;; the beginning of the HTTP message body.
 ;;
-;; If @code{#:need-input-port} is @code{#f}, after the @code{#:GET-upath}
+;; If @code{#:need-input-port} is @code{#f}, after the handler
 ;; proc returns, the port is @code{shutdown} in both (r/w) directions.  When
 ;; operating concurrently, this is done on the child side of the split.
 ;; @xref{Network Sockets and Communication,,,
@@ -206,7 +196,7 @@
 ;; @findex explicit-return
 ;; @item #:explicit-return #f
 ;; If non-@code{#f}, this arranges for a continuation to be passed (as
-;; the last argument) to the @code{#:GET-upath} proc, and ignores that
+;; the last argument) to the handler proc, and ignores that
 ;; proc's normal return value in favor of one explicitly passed through
 ;; the continuation.  If the continuation is not used, the
 ;; @dfn{effective return value} is computed as @code{(not
@@ -214,13 +204,13 @@
 ;;
 ;; @findex loop-break-bool
 ;; @item #:loop-break-bool #f
-;; Looping stops if the effective return value of @code{#:GET-upath} is
+;; Looping stops if the effective return value of the handler is
 ;; @code{eq?} to this value.
 ;;
 ;; @findex unknown-http-method-handler
 ;; @item #:unknown-http-method-handler #f
 ;; If @code{#f}, silently ignore unknown HTTP methods, i.e., those not
-;; specified in @code{#:method-handlers} and/or @code{#:GET-upath}.
+;; specified in @code{#:method-handlers}.
 ;; The value may also be a procedure that takes three
 ;; arguments: a mouthpiece @var{m}, the @var{method} (symbol) and the
 ;; @var{upath} (string).  Its return value should be the opposite boolean
@@ -234,7 +224,7 @@
 ;;
 ;; @findex log
 ;; @item #:log #f
-;; This proc is called after the @code{#:GET-upath} proc returns.
+;; This proc is called after the handler proc returns.
 ;; Note that if @var{ear} is a unix-domain socket, the @var{client}
 ;; parameter will be simply "localhost".
 ;; @xref{log}.
@@ -255,7 +245,6 @@
           (need-input-port #f)
           (explicit-return #f)
           (method-handlers '())
-          (GET-upath echo-upath)
           (unknown-http-method-handler #f)
           (status-box-size #f)
           (loop-break-bool #f)
@@ -314,10 +303,6 @@
                     method upath b))
       ;; return #t => keep going
       (not (eq? loop-break-bool res))))
-
-  ;; backward compatibility
-  (or (assq 'GET method-handlers)
-      (set! method-handlers (assq-set! method-handlers 'GET GET-upath)))
 
   ;; rv
   (lambda (ear)
