@@ -114,7 +114,6 @@ Server Utilities -- (www server-utils *)
 Data -- (www data *)
 * http-status::         The dreaded 404 lives here.
 * mime-types::          Map filename extension to MIME type(s).
-* content-type::        Content-Type clues from filenames.
 
 
 * Procedure Index::
@@ -649,7 +648,7 @@ better throughput with certain chunk sizes than with others.
 Here is an example that uses most of the @code{mouthpiece} commands:
 
 @example
-(use-modules (www server-utils content-type) (scripts slurp))
+(use-modules (www server-utils filesystem) (scripts slurp))
 
 (define SERVER-NAME "Guile-WWW-example-server")
 (define SERVER-VERSION "1.0")
@@ -889,18 +888,6 @@ achieved if @var{resolve} were allowed to be a general resolution
 procedure instead of simply a method specifier.  Perhaps that feature
 will be added in the future, and @code{select-extensions} replaced by
 @code{map-mime-types}.  We'll see@dots{}
-
-@c ---------------------------------------------------------------------------
-@node              content-type
-@chapter (www data content-type)
-
-The @code{(www data content-type)} module exports two data structures:
-@code{*content-type-by-filename-extension*} and
-@code{*content-type-by-filename-extension*-META}, the latter an alist
-describing the former with keys @code{#:source} and @code{#:layout}.
-
-@noindent
-@xref{filesystem}, procedure @code{filename->content-type}.
 
 @c ---------------------------------------------------------------------------
 @node       Procedure Index

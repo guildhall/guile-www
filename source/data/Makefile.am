@@ -22,9 +22,12 @@
 wwwdir = $(GUILE_SITE)/www/data
 www_DATA =					\
  mime-types					\
- content-type					\
  http-status
 
 include $(top_srcdir)/build-aux/common.mk
+
+# Module (www data content-type) retired as of Guile-WWW 2.27.
+install-data-hook:
+	@rm -f '$(DESTDIR)$(wwwdir)/content-type'
 
 ## Makefile.am ends here

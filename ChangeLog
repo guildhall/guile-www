@@ -1,3 +1,11 @@
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Drop module (www data content-type).
+
+	* doc/guile-www.twerp (Top): Delete menu item "content-type".
+	(answer): Fix bug: Use proper module in example.
+	(content-type): Delete node/chapter.
+
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.26

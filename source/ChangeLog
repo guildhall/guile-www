@@ -1,5 +1,17 @@
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop module (www data content-type).
+
+	* server-utils/filesystem.scm: Update autoload trigger
+	for module (www data mime-types) to be `mime-types<-extension'.
+	(filename->content-type): No longer seed table on first call.
+	(TABLE-OK?): Delete boolean.
+	* data/Makefile.am (www_DATA): Remove content-type.
+	(install-data-hook): New target.
+	* data/content-type.scm: Delete file.
+
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Don't use `return-it'.
 
 	* server-utils/big-dishing-loop.scm

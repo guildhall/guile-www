@@ -43,7 +43,7 @@
                                          char-set))
   #:use-module (ice-9 and-let-star)
   #:autoload (www data content-type) (*content-type-by-filename-extension*)
-  #:autoload (www data mime-types) (put-mime-types!))
+  #:autoload (www data mime-types) (mime-types<-extension))
 
 ;; Create and return a filesystem-access procedure based on
 ;; @var{docroot} and @var{forbid-rx}.  The returned procedure @var{p}
@@ -180,25 +180,14 @@
 ;; "application/octet-stream".  Optional arg @var{default} specifies another
 ;; value to use instead of "application/octet-stream".
 ;;
-;; @strong{NOTE}@* As of Guile-WWW 2.24, the internal table is populated from
-;; @code{*content-type-by-filename-extension*} (@pxref{content-type}) the
-;; first time @code{filename->content-type} is called.  This initialization
-;; will be dropped after 2009-12-31; you will need to populate it yourself
-;; after that (@pxref{mime-types}).
-;;
 ;; If there are multiple MIME types associated with the extension,
 ;; return the first one.
+;;
+;; @xref{mime-types}, proc @code{put-mime-types!}, for more info.
 ;;
 ;;-sig: (filename [default])
 ;;
 (define (filename->content-type filename . default)
-  (or TABLE-OK? ;; TODO: ZONK after 2009-12-31.
-      (let* ((alist *content-type-by-filename-extension*)
-             (exts (map car alist))
-             (mime-types (map string->symbol (map cdr alist))))
-        (apply put-mime-types! 'stomp
-               (apply append (map list exts mime-types)))
-        (set! TABLE-OK? #t)))
   (or (and-let* ((cut (string-rindex filename #\.))
                  (mt (mime-types<-extension (subs filename (1+ cut)))))
         (symbol->string (if (pair? mt)
@@ -208,7 +197,5 @@
       (if (not (null? default))
           (car default)
           "application/octet-stream")))
-
-(define TABLE-OK? #f) ;; TODO: ZONK after 2009-12-31.
 
 ;;; (www server-utils filesystem) ends here
