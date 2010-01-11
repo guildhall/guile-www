@@ -1,3 +1,10 @@
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Don't use `return-it'.
+
+	* server-utils/big-dishing-loop.scm
+	(make-big-dishing-loop child): Don't use `return-it'.
+
 2009-06-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.26

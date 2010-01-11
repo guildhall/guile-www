@@ -341,13 +341,14 @@
        (let ((p (car conn)))
 
          (define (child)
-           (return-it (cond (req
-                             (apply handle-request conn (cdr (reverse! req))))
-                            (bad-request-handler
-                             (bad-request-handler (mouthpiece p)))
-                            (else
-                             (not loop-break-bool)))
-             (or need-input-port (shutdown p 2))))
+           (let ((rv (cond (req
+                            (apply handle-request conn (cdr (reverse! req))))
+                           (bad-request-handler
+                            (bad-request-handler (mouthpiece p)))
+                           (else
+                            (not loop-break-bool)))))
+             (or need-input-port (shutdown p 2))
+             rv))
 
          (case concurrency
            ((#:new-process #:new-process/nowait)
