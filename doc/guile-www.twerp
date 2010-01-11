@@ -737,13 +737,7 @@ named @code{log-SOMETHING-proc}.
 @node              http-status
 @chapter (www data http-status)
 
-The @code{(www data http-status)} module exports two data structures:
-@code{*http-status*} and @code{*http-status*-META}, the latter an alist
-describing the former with keys @code{#:source} and @code{#:layout}.
-
-@noindent
-@strong{NOTE}: These data structures @strong{will no longer be available}
-after 2009-12-31.  Use @code{http-status-string} instead.
+The @code{(www data http-status)} module exports a single procedure:
 
 @twerpdoc (http-status-string)
 

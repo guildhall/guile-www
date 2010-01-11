@@ -1,5 +1,12 @@
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop (www data http-status) exports `*http-status*', `*http-status*-META'.
+
+	* data/http-status.scm (*http-status*-META): Delete.
+	(*http-status*): No longer export.
+
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop module (www data content-type).
 
 	* server-utils/filesystem.scm: Update autoload trigger

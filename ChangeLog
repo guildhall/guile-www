@@ -1,5 +1,11 @@
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop (www data http-status) exports `*http-status*', `*http-status*-META'.
+
+	* doc/guile-www.twerp (http-status): Update.
+
+2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop module (www data content-type).
 
 	* doc/guile-www.twerp (Top): Delete menu item "content-type".

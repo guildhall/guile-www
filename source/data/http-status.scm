@@ -21,13 +21,7 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www data http-status)
-  #:export (*http-status*-META
-            *http-status*
-            http-status-string))
-
-(define *http-status*-META
-  '((#:source . "RFC 2616, Section 6.1.1, Status Code and Reason Phrase")
-    (#:layout . "list of pairs (NUMBER . STRING)")))
+  #:export (http-status-string))
 
 (define *http-status*
   '((100 . "Continue")
