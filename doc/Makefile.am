@@ -30,7 +30,6 @@ if MAINTAINER_MODE
 	  ( cd ../source/$$d ; $(MAKE) .doc-index ) ; done
 
 guile-www.texi: guile-www.twerp
-endif
 
 twerp2texi = guile-tools twerp2texi
 
@@ -41,6 +40,7 @@ twerp2texi = guile-tools twerp2texi
 	  -I ../source/data/.doc-index		\
 	  -d .deps/$*.Ptexi			\
 	  -o $@ $<
+endif ## MAINTAINER_MODE
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
 

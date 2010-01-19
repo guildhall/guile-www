@@ -1,3 +1,10 @@
+2010-01-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Move Guile-1.4.x doc-support inside "if MAINTAINER_MODE".
+
+	* doc/Makefile.am (twerp2texi, .twerp.texi): Move var and
+	pattern-rule, respectively, inside "if MAINTAINER_MODE" block.
+
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Drop (www data http-status) exports `*http-status*', `*http-status*-META'.
