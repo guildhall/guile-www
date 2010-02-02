@@ -21,7 +21,7 @@ dnl License along with Guile-WWW; see the file COPYING.  If not,
 dnl write to the Free Software Foundation, Inc., 51 Franklin Street,
 dnl Fifth Floor, Boston, MA  02110-1301  USA
 
-AC_INIT([Guile-WWW],[2.26],[ttn@gnuvola.org])
+AC_INIT([Guile-WWW],[2.27],[ttn@gnuvola.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 gnu])
 AM_MAINTAINER_MODE

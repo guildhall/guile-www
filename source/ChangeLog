@@ -1,3 +1,7 @@
+2010-02-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.27
+
 2010-01-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Drop `make-big-dishing-loop' keyword arg `#:GET-upath'.

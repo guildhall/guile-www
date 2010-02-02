@@ -1,5 +1,14 @@
 NEWS for Guile-WWW
 
+- 2.27 | 2010-02-02
+  - improve portability: don't use `return-it'
+  - dropped (see entries for NEWS 2.24, 2.23)
+    - module: (www data content-type)
+    - (www data http-status) data structure: *http-status*-META
+    - (www data http-status) data structure: *http-status*
+    - `make-big-dishing-loop' keyword arg: #:GET-upath
+  - maintenance uses GNU Autoconf 2.65
+
 - 2.26 | 2009-06-29
   - bugfixes to (www server-utils filesystem) procs
     - access-forbidden?-proc: allow "filename is "docroot" for
