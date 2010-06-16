@@ -208,3 +208,9 @@
 	* url-coding.scm: Rename from $(prev)/url-coding.scm.
 	* url.scm: Rename from $(prev)/url.scm.
 	* utcsec.scm: Rename from $(prev)/utcsec.scm.
+
+
+Copyright (C) 2010 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

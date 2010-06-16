@@ -1444,3 +1444,8 @@ Mon Jun  9 23:42:32 1997  Tim Pierce  <twp@twp.tezcat.com>
 	* url.scm: New file.
 	* wwwcat: New file.
 
+
+Copyright (C) 2010 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.
