@@ -1,0 +1,45 @@
+HACKING Guile-WWW                                               -*- org -*-
+
+This file is both a guide for newcomers and a todo list for oldstayers.
+It lives in the repo but is not included in the distribution.
+
+* 2.28
+*** modlisp support
+*** manual chapter "Server Utilities"
+***** more on (www server-utils answer) facilities
+***** templating strategies
+***** sample servers
+
+* ongoing (some of which may go into the next release)
+*** comment code (audience: intermediate scheme programmer)
+*** transition maintenance support from ttn-fu to Guile-fu
+***** doc extraction / mogrification
+***** "compilation"
+*** obsolete "maintainer mode"
+
+* coding standards
+*** indent with emacs (don't like the result? fix emacs!)
+*** (setq indent-tabs-mode nil)
+*** (add-hook 'before-save-hook 'delete-trailing-whitespace)
+*** everything UTF-8
+*** ChangeLog
+***** ttn-style: TITLE LF LF {BLURB LF LF}* BODY
+***** exclude titles suffixed "; nfc." (no functional change)
+
+* copyright update policy
+*** individual files only on change
+*** individual years
+*** 2008+ to ttn
+
+* repository branches
+*** no ‘master’ -- do not panic!
+*** a -- "anchor", "asis", "already", "argh-just-leave-me-alone"
+    This branch is for what was already released.  It will never be rebased.
+    Its tip will always have a commit title starting with "Release".
+*** p -- "perhaps", "probably"
+    This branch is where largely-stable changes intended for the next release
+    live.  It's very unlikely to undergo rebase, but not entirely impossible.
+    Guile-WWW hackers probably want to start here.
+*** q/TOPIC -- "questionably", "querulously"
+    These are experimental, exploring the particular TOPIC.  They are intended
+    to be ephemeral, undergoing rebase, amendment, and ultimately removal.
