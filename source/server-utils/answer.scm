@@ -221,9 +221,7 @@
         (set-car! pre-tree s)))
 
     (define (set-reply-status:success)
-      (+! pre-len 17)
-      (status-number! 200)
-      (set-car! pre-tree "HTTP/1.0 200 OK\r\n"))
+      (set-reply-status 200 "OK"))
 
     (define (preamble-append! len new)
       (+! pre-len len)

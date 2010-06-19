@@ -1,3 +1,10 @@
+2010-06-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use internal abstraction more.
+
+	* server-utils/answer.scm (mouthpiece set-reply-status:success):
+	Use internal proc ‘set-reply-status!’ directly.
+
 2010-02-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.27
