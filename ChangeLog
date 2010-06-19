@@ -1,3 +1,10 @@
+2010-06-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Rename configure.in to configure.ac.
+
+	* configure.ac: Rename from configure.in.
+	* autogen.sh: Update refs.
+
 2010-02-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.27

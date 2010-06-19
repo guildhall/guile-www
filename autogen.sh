@@ -7,7 +7,7 @@
 # - automake (GNU automake) 1.11
 # - Guile 1.4.1.118
 
-[ -f configure.in ] || {
+[ -f configure.ac ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
   exit 1
 }
@@ -21,7 +21,7 @@ texi='doc/guile-www.texi'
 if [ ! -f $texi ] ; then
     echo '@setfilename guile-www.info' > $texi
     echo '@include version.texi' >> $texi
-    touch -r configure.in $texi
+    touch -r configure.ac $texi
 fi
 
 automake --add-missing

@@ -1,4 +1,4 @@
-dnl configure.in
+dnl configure.ac
 dnl
 dnl Copyright (C) 2008, 2009, 2010 Thien-Thi Nguyen
 dnl Copyright (C) 2001, 2002, 2003, 2004, 2005,
@@ -41,4 +41,4 @@ AC_GUILE_WWW_CONFIG_SCRIPT([examples/id.cgi])
 AC_GUILE_WWW_CONFIG_SCRIPT([examples/wily-guile])
 AC_OUTPUT
 
-dnl configure.in ends here
+dnl configure.ac ends here
