@@ -1,3 +1,16 @@
+2010-06-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (... answer) procs: flat-length, tree-flat-length!
+
+	* server-utils/answer.scm: Use module (ice-9 q).
+	(flat-length): New object property, exported.
+	(tree-flat-length!): New proc, exported.
+	(length/tree<-header-components): Delete proc.
+	(tree<-header-components): New proc.
+	(string<-header-components): Use ‘tree<-header-components’.
+	(mouthpiece add-header): Likewise; use ‘tree-flat-length!’.
+	(mouthpiece add-content): Use ‘tree-flat-length!’.
+
 2010-06-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use internal abstraction more.

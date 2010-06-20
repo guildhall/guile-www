@@ -1,3 +1,10 @@
+2010-06-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (... answer) procs: flat-length, tree-flat-length!
+
+	* doc/guile-www.twerp (answer): Expand blurb on low-level procs;
+	add @deffn for ‘flat-length’; add @twerpdoc for ‘tree-flat-length!’.
+
 2010-06-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[maint] Rename configure.in to configure.ac.

@@ -21,14 +21,18 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils answer)
-  #:export (CRLF fs walk-tree string<-header-components
+  #:export (CRLF flat-length fs walk-tree tree-flat-length!
+                 string<-header-components
                  mouthpiece)
+  #:use-module ((ice-9 q) #:select (make-q enq!))
   #:use-module ((ice-9 rw) #:select (write-string/partial)))
 
 (define-macro (+! v n)
   `(set! ,v (+ ,v ,n)))
 
 (define CRLF "\r\n")
+
+(define flat-length (make-object-property))
 
 ;; Return a new string made by using format string @var{s} on @var{args}.
 ;; As in @code{simple-format} (which this procedure uses), @code{~A} expands
@@ -45,26 +49,41 @@
         ((pair? tree) (for-each (lambda (sub) (walk-tree proc sub)) tree))
         (else (proc tree))))
 
-(define (length/tree<-header-components name value . etc)
-  (let ((len 4)                         ; colon space CR LF
-        (lhs (if (string? name)
-                 name
-                 (fs "~A" (if (keyword? name)
-                              (keyword->symbol name)
-                              name))))
-        (rhs (if (or (pair? value) (null? value))
-                 value
-                 (fs "~A" value))))
-    (define (more s)
-      (+! len (string-length s)))
-    (walk-tree more lhs)
-    (walk-tree more rhs)
-    (if (null? etc)
-        (list len lhs ": " rhs CRLF)
-        (let ((rest (apply length/tree<-header-components etc)))
-          (list (+ len (car rest))
-                lhs ": " rhs CRLF
-                (cdr rest))))))
+;; If @var{tree} is a string, return its @code{string-length}.
+;; If @var{tree} already has a @code{flat-length}, return that.
+;; Otherwise, recursively compute, set, and return the
+;; @code{flat-length} of @var{tree}.
+;;
+(define (tree-flat-length! tree)
+  (cond ((string? tree) (string-length tree))
+        ((null? tree) 0)
+        ((flat-length tree))
+        (else (set! (flat-length tree)
+                    (+ (tree-flat-length! (car tree))
+                       (tree-flat-length! (cdr tree)))))))
+
+(define (tree<-header-components . ls)
+  (define (k x)
+    (if (string? x)
+        x
+        (fs "~A" (if (keyword? x)
+                     (keyword->symbol x)
+                     x))))
+  (define (v x)
+    (if (or (pair? x) (null? x))
+        x
+        (fs "~A" x)))
+  (let ((q (make-q)))
+    (let loop ((ls ls))
+      (or (null? ls)
+          (begin
+            (enq! q (k (car ls)))
+            (enq! q ": ")
+            (set! ls (cdr ls))
+            (enq! q (v (car ls)))
+            (enq! q CRLF)
+            (loop (cdr ls)))))
+    (car q)))
 
 ;; Return a string made from formatting header name @var{n} and value
 ;; @var{v}.  Additional headers can be specified as alternating name and
@@ -77,14 +96,14 @@
 ;;-sig: (n v [n1 v1...])
 ;;
 (define (string<-header-components name value . etc)
-  (let* ((l/t (apply length/tree<-header-components name value etc))
-         (wp 0)
-         (rv (make-string (car l/t))))
+  (let* ((wp 0)
+         (tail (apply tree<-header-components name value etc))
+         (rv (make-string (tree-flat-length! tail))))
     (walk-tree (lambda (s)
                  (let ((len (string-length s)))
                    (substring-move! s 0 len rv wp)
                    (+! wp len)))
-               (cdr l/t))
+               tail)
     rv))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
@@ -228,22 +247,19 @@
       (set-cdr! pre-tp (list new)))
 
     (define (add-header name value)
-      (define (up! len new)
-        (preamble-append! len new)
+      (define (up! new)
+        (preamble-append! (tree-flat-length! new) new)
         (set! pre-tp (cdr pre-tp)))
       (cond ((eq? #f name)
-             (up! (+ 2 (string-length value)) (list value CRLF)))
+             (up! (list value CRLF)))
             ((eq? #t name)
-             (up! (string-length value) value))
+             (up! value))
             (else
-             (let ((l/t (length/tree<-header-components name value)))
-               (up! (car l/t) (cdr l/t))))))
+             (up! (tree<-header-components name value)))))
 
     (define (add-content . tree)
       (or content-length (set! content-length 0))
-      (walk-tree (lambda (s)
-                   (+! content-length (string-length s)))
-                 tree)
+      (+! content-length (tree-flat-length! tree))
       (set! content (append! content tree)))
 
     (define (add-formatted fstr . args)

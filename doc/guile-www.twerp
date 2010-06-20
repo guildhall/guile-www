@@ -679,13 +679,23 @@ STATUS
 @noindent
 For higher performance, you can preformat parts of the response, using
 @code{CRLF}, and some lower-level convenience procedures.
+If preformatting is not possible (or desirable), you can still
+declare a nested list of strings (aka @dfn{tree}) to have a
+@dfn{flat length}, i.e., the size in bytes a tree would occupy
+once flattened, thus enabling internal optimizations.
+(The flat length of a string is its @code{string-length}.)
 
 @defvr {Scheme String} CRLF
 The string ``\r\n''.
 @end defvr
 
+@deffn {Object Property} flat-length
+The value is a non-negative integer, or @code{#f} if not yet computed.
+@end deffn
+
 @twerpdoc (fs)
 @twerpdoc (walk-tree)
+@twerpdoc (tree-flat-length!)
 @twerpdoc (string<-header-components)
 
 @heading example
