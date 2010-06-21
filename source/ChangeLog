@@ -1,5 +1,12 @@
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Mark ‘(... answer) string<-header-components’ for removal.
+
+	* server-utils/answer.scm (string<-header-components):
+	Add "will be removed" notice to pre-form doc-comment.
+
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (... answer) procs: string<-tree, string<-headers
 
 	* server-utils/answer.scm (string<-tree): New proc, exported.

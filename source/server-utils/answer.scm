@@ -123,6 +123,9 @@
 ;; Each @var{n} may be a string, symbol or keyword.  Each @var{v} may be a
 ;; string, number, symbol, or a tree.
 ;;
+;; @strong{NOTE}: This proc @strong{will be removed} after 2011-12-31.
+;; Use @code{string<-headers} instead.
+;;
 ;;-sig: (n v [n1 v1...])
 ;;
 (define (string<-header-components name value . etc)
