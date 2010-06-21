@@ -52,10 +52,8 @@ checkhv $1
 test x"$1" = x-o || usage 1
 test x"$3" = x && usage 1
 
-one="@need_optargs_kludge@"
-
 cust="/^$$/d"
-test "$one" = yes && cust="$cust;s/optargs-kw/optargs/"
+test @optargs_kw@ = yes && cust="$cust;s/ice-9.optargs/&-kw/"
 
 set -e
 sed "$cust" "$3" | @GUILE@ -s "@abs_top_srcdir@/build-aux/simple-punify" > "$2"

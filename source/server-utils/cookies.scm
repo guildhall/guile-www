@@ -28,7 +28,7 @@
             reach)
   #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)))
   #:use-module (ice-9 regex)
-  #:use-module (ice-9 optargs-kw))
+  #:use-module (ice-9 optargs))
 
 ;;;---------------------------------------------------------------------------
 ;;; RFC2109

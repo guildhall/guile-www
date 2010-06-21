@@ -31,7 +31,7 @@
   #:export (named-socket
             echo-upath
             make-big-dishing-loop)
-  #:use-module (ice-9 optargs-kw)
+  #:use-module (ice-9 optargs)
   #:use-module (www server-utils parse-request)
   #:use-module (www server-utils answer))
 

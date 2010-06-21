@@ -1,5 +1,16 @@
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build] Use (ice-9 optargs); invert sense of ‘optargs-kw’ kludge.
+
+	* configure.ac: Check if the system has (ice-9 optargs-kw).
+	(optargs_kw): New AC_SUBST var.
+	* build-aux/module-compile.in: If the system guile
+	has (ice-9 optargs-kw), textually replace (ice-9 optargs) with it.
+	* build-aux/guile-www.m4 (AC_GUILE_WWW_MODULES_AOK):
+	Don't call ‘GUILE_CHECK_ICE9_OPTARGS’.
+
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Replace external punify with simplified local variant.
 
 	* build-aux/simple-punify: New file.
