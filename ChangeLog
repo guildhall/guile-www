@@ -1,5 +1,12 @@
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build] Inline build-aux/guile-www.m4; delete it.
+
+	* configure.ac: Incorporate build-aux/guile-www.m4.
+	* build-aux/guile-www.m4: Delete file.
+
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Use (ice-9 optargs); invert sense of ‘optargs-kw’ kludge.
 
 	* configure.ac: Check if the system has (ice-9 optargs-kw).
