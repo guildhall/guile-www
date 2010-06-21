@@ -50,28 +50,9 @@ AC_DEFUN([AC_GUILE_WWW_TWERP_PREP],[
   ])
 ])
 
-dnl Find a command to reduce footprint of an installed scheme module.
-dnl The command must take a single arg, the filename to process, and
-dnl write its output to stdout.  Set shell var $1 to that command (which
-dnl may contain spaces) and mark it for substitution, as by AC_SUBST.
-AC_DEFUN([AC_GUILE_WWW_PROG_PUNIFY],[
-  AC_MSG_CHECKING([punify command])
-  if guile-tools | grep -q punify ; then
-    if guile-tools punify --newline-after-top-level-form /dev/null 2>/dev/null
-    then $1='guile-tools punify --newline-after-top-level-form'
-    else $1='guile-tools punify'
-    fi
-  else
-    $1='sed -e s/^;.*//g;/./,/^$/!d'
-  fi
-  AC_MSG_RESULT([$$1])
-  AC_SUBST([$1])
-])
-
 dnl Encapsulate installation methodology
 AC_DEFUN([AC_GUILE_WWW_INST_METH_AOK],[
   GUILE_SITE_DIR
-  AC_GUILE_WWW_PROG_PUNIFY(PUNIFY)
 ])
 
 dnl Idiomatic syntactic sugar

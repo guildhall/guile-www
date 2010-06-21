@@ -53,12 +53,11 @@ test x"$1" = x-o || usage 1
 test x"$3" = x && usage 1
 
 one="@need_optargs_kludge@"
-PUNIFY="@PUNIFY@"
 
 cust="/^$$/d"
 test "$one" = yes && cust="$cust;s/optargs-kw/optargs/"
 
 set -e
-$PUNIFY "$3" | sed "$cust" > "$2"
+sed "$cust" "$3" | @GUILE@ -s "@abs_top_srcdir@/build-aux/simple-punify" > "$2"
 
 # module-compile ends here

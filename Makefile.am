@@ -32,6 +32,7 @@ install-data-hook:
 	      -t "$(DESTDIR)" "$(GUILE_SITE)" ; fi
 
 EXTRA_DIST = \
+ build-aux/simple-punify \
  examples/README \
  examples/cookie.cgi \
  examples/wwwcat \

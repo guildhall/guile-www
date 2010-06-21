@@ -1,3 +1,14 @@
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Replace external punify with simplified local variant.
+
+	* build-aux/simple-punify: New file.
+	* build-aux/module-compile.in (PUNIFY): Delete var.
+	Use ‘@GUILE@’ and ‘@abs_top_srcdir@/build-aux/simple-punify’ directly.
+	* build-aux/guile-www.m4 (AC_GUILE_WWW_PROG_PUNIFY): Delete AC_DEFUN.
+	(AC_GUILE_WWW_INST_METH_AOK): Don't call ‘AC_GUILE_WWW_PROG_PUNIFY’.
+	* Makefile.am (EXTRA_DIST): Add build-aux/simple-punify.
+
 2010-06-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (... answer) procs: flat-length, tree-flat-length!
