@@ -1,5 +1,13 @@
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (... answer) procs: string<-tree, string<-headers
+
+	* server-utils/answer.scm (string<-tree): New proc, exported.
+	(string<-headers): Likewise.
+	(string<-header-components): Use ‘string<-tree’.
+
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Use (ice-9 optargs); invert sense of ‘optargs-kw’ kludge.
 
 	* server-utils/big-dishing-loop.scm:

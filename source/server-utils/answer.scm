@@ -21,7 +21,8 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils answer)
-  #:export (CRLF flat-length fs walk-tree tree-flat-length!
+  #:export (CRLF flat-length fs walk-tree tree-flat-length! string<-tree
+                 string<-headers
                  string<-header-components
                  mouthpiece)
   #:use-module ((ice-9 q) #:select (make-q enq!))
@@ -62,6 +63,20 @@
                     (+ (tree-flat-length! (car tree))
                        (tree-flat-length! (cdr tree)))))))
 
+;; Return a new string made from flattening @var{tree}.
+;; Set the @code{flat-length} (using @code{tree-flat-length!})
+;; of @var{tree} by side effect.
+;;
+(define (string<-tree tree)
+  (let ((wp 0)
+        (rv (make-string (tree-flat-length! tree))))
+    (walk-tree (lambda (s)
+                 (let ((len (string-length s)))
+                   (substring-move! s 0 len rv wp)
+                   (+! wp len)))
+               tree)
+    rv))
+
 (define (tree<-header-components . ls)
   (define (k x)
     (if (string? x)
@@ -85,26 +100,33 @@
             (loop (cdr ls)))))
     (car q)))
 
+;; Return a string made from formatting name/value pairs in @var{alist}
+;; like so:
+;;
+;; @example
+;; NAME #\: #\space VALUE #\cr #\lf
+;; @end example
+;;
+;; Each name may be a string, symbol or keyword.  Each value may be a
+;; string, number, symbol, or a tree.
+;;
+(define (string<-headers alist)
+  (string<-tree (map (lambda (pair)
+                       (tree<-header-components (car pair) (cdr pair)))
+                     alist)))
+
 ;; Return a string made from formatting header name @var{n} and value
 ;; @var{v}.  Additional headers can be specified as alternating name and
 ;; value args.  Each header is formatted like so: ``@var{name}:
 ;; @var{value}\r\n''.
 ;;
 ;; Each @var{n} may be a string, symbol or keyword.  Each @var{v} may be a
-;; string, number, or a tree of strings.
+;; string, number, symbol, or a tree.
 ;;
 ;;-sig: (n v [n1 v1...])
 ;;
 (define (string<-header-components name value . etc)
-  (let* ((wp 0)
-         (tail (apply tree<-header-components name value etc))
-         (rv (make-string (tree-flat-length! tail))))
-    (walk-tree (lambda (s)
-                 (let ((len (string-length s)))
-                   (substring-move! s 0 len rv wp)
-                   (+! wp len)))
-               tail)
-    rv))
+  (string<-tree (apply tree<-header-components name value etc)))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a

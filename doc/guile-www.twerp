@@ -696,6 +696,8 @@ The value is a non-negative integer, or @code{#f} if not yet computed.
 @twerpdoc (fs)
 @twerpdoc (walk-tree)
 @twerpdoc (tree-flat-length!)
+@twerpdoc (string<-tree)
+@twerpdoc (string<-headers)
 @twerpdoc (string<-header-components)
 
 @heading example
@@ -704,9 +706,9 @@ preformatted headers and @code{fs}:
 
 @example
 (define CONSTANT-HEADERS
-  (string<-header-components
-   #:Server (fs "~A ~A" SERVER-NAME SERVER-VERSION)
-   #:Connection "close"))
+  (string<-headers
+   `((#:Server     . ,(fs "~A ~A" SERVER-NAME SERVER-VERSION))
+     (#:Connection . "close"))))
 
 (define (transmit-file filename)
   (M #:set-reply-status:success)

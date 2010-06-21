@@ -1,5 +1,12 @@
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (... answer) procs: string<-tree, string<-headers
+
+	* doc/guile-www.twerp (answer): Add @twerpdoc for ‘string<-tree’,
+	‘string<-headers’; update example to use ‘string<-headers’.
+
+2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Inline build-aux/guile-www.m4; delete it.
 
 	* configure.ac: Incorporate build-aux/guile-www.m4.
