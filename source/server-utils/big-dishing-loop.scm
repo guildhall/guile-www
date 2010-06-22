@@ -109,6 +109,10 @@
   (M #:send-reply 2)
   #t)
 
+(define http-hgrok (vector read-first-line
+                           read-headers
+                           skip-headers))
+
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg @var{ear}, which may be a pre-configured socket,
 ;; a TCP port number, or a list of the form:
@@ -234,6 +238,11 @@
 ;; This may be a non-negative integer, typically 0, 1 or 2.  It is used
 ;; by @code{#:log} (has no meaning if @code{#:log} is @code{#f}).
 ;; @xref{log}.
+;;
+;; @findex style
+;; @item #:style #f
+;; An object specifying the syntax of the first-line and headers.
+;; The default specifies a normal HTTP message (@pxref{http}).
 ;; @end table
 ;;
 ;;-sig: ([keyword value ...])
@@ -241,6 +250,7 @@
 (define* (make-big-dishing-loop
           #:key
           (socket-setup #f)
+          (style #f)
           (need-headers #f)
           (need-input-port #f)
           (explicit-return #f)
@@ -254,98 +264,103 @@
           (parent-finish close-port)
           (log #f))
 
-  (define (bdlcore queue-length sock handle-request)
-    (listen sock queue-length)
-    (let loop ((conn (accept sock)))
-      (and (handle-request conn (read-first-line (car conn)))
-           (loop (accept sock)))))
+  (or style (set! style http-hgrok))
+  (let* ((hgrok-first-line (vector-ref style 0))
+         (hgrok (cond ((and (not need-headers) (not need-input-port))
+                       (lambda (port) #t))
+                      (need-input-port (vector-ref style 1))
+                      (else            (vector-ref style 2)))))
 
-  (define (handle-request conn upath method)
-    (let* ((p (car conn))
-           ;; headers
-           (h (cond ((and (not need-headers) (not need-input-port)))
-                    (need-input-port (read-headers p))
-                    (else (skip-headers p))))
-           ;; status box
-           (b (and (number? status-box-size)
-                   (make-list status-box-size #f)))
-           (M (mouthpiece p b))
-           (res (cond ((assq-ref method-handlers method)
-                       => (lambda (mh)
-                            (call-with-current-continuation
-                             (lambda (k)
-                               (apply mh M upath
-                                      (append
-                                       (if need-headers    (list h) '())
-                                       (if need-input-port (list p) '())
-                                       (if explicit-return (list k) '())))
-                               (not loop-break-bool)))))
-                      (unknown-http-method-handler
-                       => (lambda (umh)
-                            (umh M method upath)))
+    (define (bdlcore queue-length sock handle-request)
+      (listen sock queue-length)
+      (let loop ((conn (accept sock)))
+        (and (handle-request conn (hgrok-first-line (car conn)))
+             (loop (accept sock)))))
+
+    (define (handle-request conn upath method)
+      (let* ((p (car conn))
+             ;; headers
+             (h (hgrok p))
+             ;; status box
+             (b (and (number? status-box-size)
+                     (make-list status-box-size #f)))
+             (M (mouthpiece p b))
+             (res (cond ((assq-ref method-handlers method)
+                         => (lambda (mh)
+                              (call-with-current-continuation
+                               (lambda (k)
+                                 (apply mh M upath
+                                        (append
+                                         (if need-headers    (list h) '())
+                                         (if need-input-port (list p) '())
+                                         (if explicit-return (list k) '())))
+                                 (not loop-break-bool)))))
+                        (unknown-http-method-handler
+                         => (lambda (umh)
+                              (umh M method upath)))
+                        (else
+                         (not loop-break-bool)))))
+        (and log (log (let* ((sock (cdr conn))
+                             (fam (sockaddr:fam sock)))
+                        (cond ((= PF_INET fam)
+                               (let ((addr (sockaddr:addr sock))
+                                     (port (sockaddr:port sock)))
+                                 (simple-format #f "~A:~A"
+                                                (inet-ntoa addr)
+                                                port)))
+                              ((= PF_UNIX fam)
+                               (let ((fn (sockaddr:path sock)))
+                                 (if (string-null? fn)
+                                     "localhost"
+                                     fn)))
+                              (else
+                               (object->string sock))))
+                      method upath b))
+        ;; return #t => keep going
+        (not (eq? loop-break-bool res))))
+
+    ;; rv
+    (lambda (ear)
+      (bdlcore
+       queue-length
+
+       (if (port? ear)
+           ear
+           (let ((int? (integer? ear)))
+             (or int? (pair? ear)
+                 (error "bad ear:" ear))
+             (named-socket (if int?
+                               PF_INET
+                               (car ear))
+                           (if int?
+                               (list AF_INET INADDR_ANY ear)
+                               (cdr ear))
+                           #:socket-setup socket-setup)))
+
+       (lambda (conn req)
+         (let ((p (car conn)))
+
+           (define (child)
+             (let ((rv (cond (req
+                              (apply handle-request conn (cdr (reverse! req))))
+                             (bad-request-handler
+                              (bad-request-handler (mouthpiece p)))
+                             (else
+                              (not loop-break-bool)))))
+               (or need-input-port (shutdown p 2))
+               rv))
+
+           (case concurrency
+             ((#:new-process #:new-process/nowait)
+              (let ((pid (primitive-fork)))
+                (cond ((zero? pid)
+                       (exit (child)))
                       (else
-                       (not loop-break-bool)))))
-      (and log (log (let* ((sock (cdr conn))
-                           (fam (sockaddr:fam sock)))
-                      (cond ((= PF_INET fam)
-                             (let ((addr (sockaddr:addr sock))
-                                   (port (sockaddr:port sock)))
-                               (simple-format #f "~A:~A"
-                                              (inet-ntoa addr)
-                                              port)))
-                            ((= PF_UNIX fam)
-                             (let ((fn (sockaddr:path sock)))
-                               (if (string-null? fn)
-                                   "localhost"
-                                   fn)))
-                            (else
-                             (object->string sock))))
-                    method upath b))
-      ;; return #t => keep going
-      (not (eq? loop-break-bool res))))
-
-  ;; rv
-  (lambda (ear)
-    (bdlcore
-     queue-length
-
-     (if (port? ear)
-         ear
-         (let ((int? (integer? ear)))
-           (or int? (pair? ear)
-               (error "bad ear:" ear))
-           (named-socket (if int?
-                             PF_INET
-                             (car ear))
-                         (if int?
-                             (list AF_INET INADDR_ANY ear)
-                             (cdr ear))
-                         #:socket-setup socket-setup)))
-
-     (lambda (conn req)
-       (let ((p (car conn)))
-
-         (define (child)
-           (let ((rv (cond (req
-                            (apply handle-request conn (cdr (reverse! req))))
-                           (bad-request-handler
-                            (bad-request-handler (mouthpiece p)))
-                           (else
-                            (not loop-break-bool)))))
-             (or need-input-port (shutdown p 2))
-             rv))
-
-         (case concurrency
-           ((#:new-process #:new-process/nowait)
-            (let ((pid (primitive-fork)))
-              (cond ((zero? pid)
-                     (exit (child)))
-                    (else
-                     (parent-finish p)
-                     (set! p #f)
-                     (or (eq? #:new-process/nowait concurrency)
-                         (zero? (status:exit-val (cdr (waitpid pid)))))))))
-           (else
-            (child))))))))
+                       (parent-finish p)
+                       (set! p #f)
+                       (or (eq? #:new-process/nowait concurrency)
+                           (zero? (status:exit-val (cdr (waitpid pid)))))))))
+             (else
+              (child)))))))))
 
 ;;; (www server-utils big-dishing-loop) ends here

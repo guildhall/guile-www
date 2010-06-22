@@ -113,6 +113,8 @@ Server Utilities -- (www server-utils *)
 * answer::              HTTP connection handling and responses.
 * log::                 Love notes to other programs.
 
+* modlisp::             Hiding behind Apache.
+
 Data -- (www data *)
 * http-status::         The dreaded 404 lives here.
 * mime-types::          Map filename extension to MIME type(s).
@@ -644,6 +646,26 @@ response.  Additionally, the @code{#:rechunk-content} facility allows
 some degree of performance tuning; a server may be able to achieve
 better throughput with certain chunk sizes than with others.
 
+The output from @code{mouthpiece} and @code{string<-headers}
+is formatted according to their optional @code{style} argument.
+By default, headers have the form:
+
+@example
+NAME #\: #\space VALUE #\cr #\lf
+@end example
+
+@noindent
+Additionally, for @code{mouthpiece}, the first line, preceding all the
+headers, has the form:
+
+@example
+HTTP/1.0 @var{nnn} @var{msg}
+@end example
+
+@noindent
+and a single @code{#\cr #\lf} pair separates the headers from the body.
+The @code{style} support is @strong{experimental} (@pxref{modlisp}).
+
 @twerpdoc (mouthpiece)
 
 @heading example
@@ -746,6 +768,51 @@ writing log information to an output port.  Each generator is conventionally
 named @code{log-SOMETHING-proc}.
 
 @twerpdoc (log-http-response-proc)
+
+@c ---------------------------------------------------------------------------
+@node                      modlisp
+@chapter (www server-utils modlisp)
+
+The @code{(www server-utils modlisp)} module provides @strong{experimental}
+support for the implementing the Lisp side of the Apache mod_lisp protocol,
+in the form of a header-grokking protocol object for the big dishing loop,
+and a style elements object for the mouthpiece.  When these objects are
+specified, the headers are read from (written to) the Apache front end in
+the form:
+
+@example
+@var{name} #\lf @var{value} #\lf
+@end example
+
+@noindent
+with a lone @samp{end\n} to separate the headers from the body.
+Furthermore, on input, the headers must include @code{method},
+@code{url} and @code{server-protocol}.  On output, the status
+information (always output first) has the form:
+
+@example
+"Status" #\lf @var{nnn} #\space @var{msg} #\lf
+@end example
+
+@noindent
+Note that this is in essense the same format as used for the headers,
+with @var{name} being @samp{Status}
+and @var{value} being @samp{@var{nnn} @var{msg}}.
+
+@defvr {Object} modlisp-hgrok
+An object suitable for the value of @code{make-big-dishing-loop}
+keyword argument @code{#:style}.
+@xref{big-dishing-loop}.
+@end defvr
+
+@defvr {Object} modlisp-ish
+An object suitable as the optional @code{style} argument for both
+@code{string<-headers} and @code{mouthpiece}.
+@xref{answer}.
+@end defvr
+
+Although these are separate objects, you should probably use or not use them
+in conjunction, lest the front-end (Apache) server become confused.
 
 @c ---------------------------------------------------------------------------
 @node              http-status

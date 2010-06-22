@@ -1,3 +1,29 @@
+2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Add EXPERIMENTAL modlisp support.
+
+	* server-utils/answer.scm: Use module (ice-9 optargs);
+	don't use module (ice-9 q).
+	(ish-ref, ish-status, ish-h-k-end, ish-h-v-end, ish-neck): New procs.
+	(http-ish): New vector.
+	(tree<-header-proc): New proc.
+	(tree<-header-components): Delete proc.
+	(string<-headers): Take optional arg ‘style’; use ‘tree<-header-proc’.
+	(string<-header-components): Use ‘string<-headers’.
+	(mouthpiece): Take optional arg ‘style’; coerce #f ‘status-box’ to '();
+	use ‘tree<-header-proc’ to compute local ‘tree<-header’ proc.
+	(mouthpiece set-reply-status): Use ‘ish-status’.
+	(mouthpiece add-header): Use ‘tree<-header’.
+	(mouthpiece send-reply): Use ‘ish-neck’.
+	* server-utils/big-dishing-loop.scm (http-hgrok): New vector.
+	(make-big-dishing-loop): Take keyword arg #:style;
+	use it to compute local procs ‘hgrok-first-line’, ‘hgrok’.
+	(make-big-dishing-loop bdlcore): Use ‘hgrok-first-line’.
+	(make-big-dishing-loop handle-request): Use ‘hgrok’.
+	* server-utils/modlisp.scm: New file.
+	* server-utils/Makefile.am (www_DATA): Add modlisp.
+	Suggested by Neil Jerram.
+
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Mark ‘(... answer) string<-header-components’ for removal.

@@ -25,7 +25,7 @@
                  string<-headers
                  string<-header-components
                  mouthpiece)
-  #:use-module ((ice-9 q) #:select (make-q enq!))
+  #:use-module (ice-9 optargs)
   #:use-module ((ice-9 rw) #:select (write-string/partial)))
 
 (define-macro (+! v n)
@@ -77,7 +77,18 @@
                tree)
     rv))
 
-(define (tree<-header-components . ls)
+(define ((ish-ref idx) ish) (vector-ref ish idx))
+
+(define ish-status   (ish-ref 0))
+(define ish-h-k-end  (ish-ref 1))
+(define ish-h-v-end  (ish-ref 2))
+(define ish-neck     (ish-ref 3))
+
+(define http-ish (vector "HTTP/1.0 ~A ~A\r\n"
+                         ": " CRLF
+                         CRLF))
+
+(define (tree<-header-proc style)       ; => (lambda (key val) ...)
   (define (k x)
     (if (string? x)
         x
@@ -85,23 +96,27 @@
                      (keyword->symbol x)
                      x))))
   (define (v x)
-    (if (or (pair? x) (null? x))
+    (if (or (string? x) (pair? x) (null? x))
         x
         (fs "~A" x)))
-  (let ((q (make-q)))
-    (let loop ((ls ls))
-      (or (null? ls)
-          (begin
-            (enq! q (k (car ls)))
-            (enq! q ": ")
-            (set! ls (cdr ls))
-            (enq! q (v (car ls)))
-            (enq! q CRLF)
-            (loop (cdr ls)))))
-    (car q)))
+  (let* ((one (ish-h-k-end style))
+         (two (ish-h-v-end style))
+         (k-len (+ (string-length one)
+                   (string-length two))))
+    ;; rv
+    (lambda (key val)
+      (set! key (k key))
+      (set! val (v val))
+      (let ((tree (list key one
+                        val two)))
+        (set! (flat-length tree) (+ (string-length key)
+                                    (tree-flat-length! val)
+                                    k-len))
+        tree))))
 
-;; Return a string made from formatting name/value pairs in @var{alist}
-;; like so:
+;; Return a string made from formatting name/value pairs in @var{alist},
+;; according to the optional @code{style} argument.  If unspecified or
+;; specified as @code{#f}, the default is to format headers like so:
 ;;
 ;; @example
 ;; NAME #\: #\space VALUE #\cr #\lf
@@ -110,10 +125,12 @@
 ;; Each name may be a string, symbol or keyword.  Each value may be a
 ;; string, number, symbol, or a tree.
 ;;
-(define (string<-headers alist)
-  (string<-tree (map (lambda (pair)
-                       (tree<-header-components (car pair) (cdr pair)))
-                     alist)))
+;;-sig: (alist [style])
+;;
+(define* (string<-headers alist #:optional (style #f))
+  (string<-tree (map (tree<-header-proc (or style http-ish))
+                     (map car alist)
+                     (map cdr alist))))
 
 ;; Return a string made from formatting header name @var{n} and value
 ;; @var{v}.  Additional headers can be specified as alternating name and
@@ -128,8 +145,13 @@
 ;;
 ;;-sig: (n v [n1 v1...])
 ;;
-(define (string<-header-components name value . etc)
-  (string<-tree (apply tree<-header-components name value etc)))
+(define (string<-header-components . ls)
+  (string<-headers
+   (let loop ((acc '()) (ls ls))
+     (if (null? ls)
+         (reverse! acc)
+         (loop (acons (car ls) (cadr ls) acc)
+               (cddr ls))))))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a
@@ -221,18 +243,21 @@
 ;; subsequently.
 ;; @end table
 ;;
-;;-sig: (out-port [status-box])
+;;-sig: (out-port [status-box [style]])
 ;;
-(define (mouthpiece out-port . status-box)
+(define* (mouthpiece out-port #:optional (status-box '()) (style #f))
 
-  (and (not (null? status-box))         ; normalize
-       (not (list? (car status-box)))
+  (and (or (not status-box)
+           (and (not (null? status-box))         ; normalize
+                (not (list? (car status-box)))))
        (set! status-box '()))
+  (or style (set! style http-ish))
 
   (let* ((pre-tree (list #f))
          (pre-tp pre-tree)
          (pre-len 0)
          (preamble (make-string (- 1024 16)))
+         (tree<-header (tree<-header-proc style))
          (status-number! (if (null? status-box)
                              identity
                              (let ((place (car status-box)))
@@ -260,7 +285,7 @@
 
     (define (set-reply-status number msg)
       (status-number! number)
-      (let ((s (fs "HTTP/1.0 ~A ~A\r\n" number msg)))
+      (let ((s (fs (ish-status style) number msg)))
         (+! pre-len (string-length s))
         (set-car! pre-tree s)))
 
@@ -280,7 +305,7 @@
             ((eq? #t name)
              (up! value))
             (else
-             (up! (tree<-header-components name value)))))
+             (up! (tree<-header name value)))))
 
     (define (add-content . tree)
       (or content-length (set! content-length 0))
@@ -368,7 +393,8 @@
               (loop start))))
       (or (car pre-tree) (error "reply status not set"))
       (and content-length (add-header #:Content-Length content-length))
-      (preamble-append! 2 CRLF)
+      (let ((neck (ish-neck style)))
+        (preamble-append! (string-length neck) neck))
       (and (< (string-length preamble) pre-len)
            (set! preamble (make-string (+ pre-len 64))))
       (let ((wp 0))

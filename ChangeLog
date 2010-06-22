@@ -1,5 +1,13 @@
 2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Add EXPERIMENTAL modlisp support.
+
+	* doc/guile-www.twerp (Top): Add menu item "modlisp".
+	(answer): Describe default output style.
+	(modlisp): New node/chapter.
+
+2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[doc] Fix bug: Include variables in manual index.
 
 	* doc/guile-www.twerp: Add ‘@syncodeindex vr fn’.

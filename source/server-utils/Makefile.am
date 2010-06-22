@@ -28,6 +28,7 @@ www_DATA =					\
  filesystem					\
  form-2-form					\
  log						\
+ modlisp					\
  parse-request
 
 include $(top_srcdir)/build-aux/common.mk
