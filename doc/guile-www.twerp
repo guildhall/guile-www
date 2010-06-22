@@ -8,6 +8,8 @@
 @c %**end of header
 @c @setchapternewpage odd
 
+@syncodeindex vr fn
+
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
 @direntry

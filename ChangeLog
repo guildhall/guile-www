@@ -1,3 +1,9 @@
+2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Fix bug: Include variables in manual index.
+
+	* doc/guile-www.twerp: Add ‘@syncodeindex vr fn’.
+
 2010-06-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (... answer) procs: string<-tree, string<-headers
