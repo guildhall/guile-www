@@ -4,17 +4,17 @@ This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
 * 2.28
-*** modlisp support
+*** DONE modlisp support
+
+* ongoing (some of which may go into the next release)
 *** manual chapter "Server Utilities"
 ***** more on (www server-utils answer) facilities
 ***** templating strategies
 ***** sample servers
-
-* ongoing (some of which may go into the next release)
 *** comment code (audience: intermediate scheme programmer)
 *** transition maintenance support from ttn-fu to Guile-fu
 ***** doc extraction / mogrification
-***** "compilation"
+***** DONE "compilation"
 *** obsolete "maintainer mode"
 
 * coding standards

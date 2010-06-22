@@ -4,7 +4,7 @@
 #
 # tested with:
 # - autoconf (GNU Autoconf) 2.65
-# - automake (GNU automake) 1.11
+# - automake (GNU automake) 1.11.1
 # - Guile 1.4.1.118
 
 [ -f configure.ac ] || {
