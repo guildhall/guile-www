@@ -1,6 +1,6 @@
 ## Makefile.am
 ##
-## Copyright (C) 2008, 2009 Thien-Thi Nguyen
+## Copyright (C) 2008, 2009, 2010 Thien-Thi Nguyen
 ## Copyright (C) 2001, 2003, 2004, 2005, 2006,
 ##    2007 Free Software Foundation, Inc.
 ##
