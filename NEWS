@@ -1,5 +1,20 @@
 NEWS for Guile-WWW
 
+- 2.28 | 2010-06-22
+  - new home page: http://www.nongnu.org/guile-www/
+  - doc fix: variables now included in index (e.g., ‘CRLF’)
+  - new EXPERIMENTAL modlisp support
+    - ‘make-big-dishing-loop’ takes keyword arg #:style
+    - ‘mouthpiece’ takes optional arg ‘style’
+    - new module: (www server-utils modlisp)
+  - new (www server-utils answer) procs
+    - flat-length
+    - tree-flat-length!
+    - string<-tree
+    - string<-headers
+  - MARKED FOR REMOVAL 2011-12-31
+    - proc ‘(www server-utils answer) string<-header-components’
+
 - 2.27 | 2010-02-02
   - improve portability: don't use `return-it'
   - dropped (see entries for NEWS 2.24, 2.23)
