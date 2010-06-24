@@ -26,6 +26,7 @@ Thien-Thi Nguyen wrote:
 	source/server-utils/cookies.scm
 	source/server-utils/form-2-form.scm
 	source/server-utils/log.scm
+	source/server-utils/modlisp.scm
 	source/server-utils/parse-request.scm
 	source/utcsec.scm
 
