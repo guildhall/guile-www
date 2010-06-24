@@ -3,8 +3,7 @@ HACKING Guile-WWW                                               -*- org -*-
 This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
-* 2.28
-*** DONE modlisp support
+* 2.29
 
 * ongoing (some of which may go into the next release)
 *** manual chapter "Server Utilities"
