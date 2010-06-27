@@ -1,3 +1,11 @@
+2010-06-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Use autoreconf(1); make bootstrap script non-executable.
+
+	* autogen.sh: Remove executable perm bits (chmod -x);
+	don't symlink guile.m4 and don't run aclocal(1),
+	autoconf(1), automake(1); instead, run autoreconf(1).
+
 2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.28
