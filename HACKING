@@ -11,10 +11,10 @@ It lives in the repo but is not included in the distribution.
 ***** templating strategies
 ***** sample servers
 *** comment code (audience: intermediate scheme programmer)
-*** transition maintenance support from ttn-fu to Guile-fu
-***** doc extraction / mogrification
+*** DONE transition maintenance support from ttn-fu to Guile-fu
+***** DONE doc extraction / mogrification
 ***** DONE "compilation"
-*** obsolete "maintainer mode"
+*** DONE obsolete "maintainer mode"
 
 * portability
   | guile version | bootstrap | build | run |
