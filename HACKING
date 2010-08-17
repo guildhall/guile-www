@@ -4,6 +4,10 @@ This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
 * 2.29
+*** DONE transition maintenance support from ttn-fu to Guile-BAUX
+***** DONE doc extraction / mogrification
+***** DONE "compilation"
+*** DONE obsolete "maintainer mode"
 
 * ongoing (some of which may go into the next release)
 *** manual chapter "Server Utilities"
@@ -11,10 +15,6 @@ It lives in the repo but is not included in the distribution.
 ***** templating strategies
 ***** sample servers
 *** comment code (audience: intermediate scheme programmer)
-*** DONE transition maintenance support from ttn-fu to Guile-fu
-***** DONE doc extraction / mogrification
-***** DONE "compilation"
-*** DONE obsolete "maintainer mode"
 
 * portability
   | guile version | bootstrap | build | run |
@@ -22,6 +22,8 @@ It lives in the repo but is not included in the distribution.
   |     1.4.1.119 | yes       | yes   | yes |
   |     1.4.1.120 | yes       | yes   | yes |
   |     1.4.1.121 | yes       | yes   | yes |
+
+* bootstrap: see autogen.sh for required tools
 
 * coding standards
 *** indent with emacs (don't like the result? fix emacs!)
