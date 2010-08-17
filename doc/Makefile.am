@@ -23,27 +23,24 @@
 info_TEXINFOS = guile-www.texi
 guile_www_TEXINFOS = version.texi
 
-BUILT_SOURCES = doc-index-prep
-doc-index-prep:
-if MAINTAINER_MODE
-	for d in . server-utils data ; do		\
-	  ( cd ../source/$$d ; $(MAKE) .doc-index ) ; done
+include $(top_srcdir)/build-aux/common.mk
 
-guile-www.texi: guile-www.twerp
+allstems =			\
+ $(top_leaves)			\
+ $(data_leaves:%=data/%)	\
+ $(su_leaves:%=server-utils/%)
 
-twerp2texi = guile-tools twerp2texi
+snippets: $(allstems:%=$(top_srcdir)/source/%.scm)
+	$(gx) tsar -f $@ -c utf-8 update $?
 
-.twerp.texi:
-	$(twerp2texi) --scheme-implied		\
-	  -I ../source/.doc-index		\
-	  -I ../source/server-utils/.doc-index	\
-	  -I ../source/data/.doc-index		\
-	  -d .deps/$*.Ptexi			\
-	  -o $@ $<
-endif ## MAINTAINER_MODE
+$(info_TEXINFOS): snippets
+
+.texh.texi:
+	$(gx) tsin -f snippets -c utf-8 $<
+	if [ '.' = '$(srcdir)' ] ; then : ; else mv $@ $(srcdir)/$@ ; fi
 
 CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
 
-EXTRA_DIST = guile-www.twerp guile-www.html guile-www.pdf
+EXTRA_DIST = guile-www.texh guile-www.html guile-www.pdf snippets
 
 ## Makefile.am ends here

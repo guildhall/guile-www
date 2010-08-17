@@ -20,17 +20,8 @@
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
 wwwdir = $(GUILE_SITE)/www/server-utils
-www_DATA =					\
- answer						\
- big-dishing-loop				\
- cgi-prep					\
- cookies					\
- filesystem					\
- form-2-form					\
- log						\
- modlisp					\
- parse-request
+www_DATA = $(su_leaves)
 
-include $(top_srcdir)/build-aux/common.mk
+include $(top_srcdir)/build-aux/comp.mk
 
 ## Makefile.am ends here

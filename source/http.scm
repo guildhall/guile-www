@@ -324,7 +324,7 @@
 ;; Return an HTTP connection (a socket) to @var{host} (a string) on TCP
 ;; port @var{port} (default 80 if unspecified).
 ;;
-;;-sig: (host [port])
+;;-args: (- 1 0 port)
 ;;
 (define (http:open host . args)
   (let ((ipaddr (car (hostent:addr-list (gethost host))))
@@ -374,7 +374,7 @@
 ;; only one line in the body, the final @samp{CRLF} is omitted and the
 ;; Content-Length is adjusted accordingly.
 ;;
-;;-sig: (method url [headers [body]])
+;;-args: (- 2 0 headers body)
 ;;
 (define (http:request method url . args)
   (let ((host     (url:host url))

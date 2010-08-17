@@ -1,0 +1,107 @@
+#!/bin/sh
+exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
+!#
+;;; mm --- module munge
+
+;; Copyright (C) 2010 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+;;; Commentary:
+
+;; Usage: mm -o OUTFILE -f FLAGS INFILE
+;;
+;; "Compile" (har har) INFILE (a .scm source file) to OUTFILE.
+;; In the process, do various target-system-specific customziations.
+;; For version 1.x, OUTFILE is also source code (text).
+;;
+;; FLAGS is a comma-separated list of symbols, zero or more of:
+;;
+;;  optargs-kw   -- Replace `(ice-9 optargs)' with `(ice-9 optargs-kw)'
+;;                  in the `define-module' form.
+
+;;; Code:
+
+(define-module (guile-baux mm)
+  #:use-module ((guile-baux common) #:select (fse check-hv qop<-args))
+  #:use-module ((guile-baux punify) #:select (write-line-punily))
+  #:use-module ((srfi srfi-13) #:select (string-tokenize))
+  #:use-module ((srfi srfi-14) #:select (char-set-complement
+                                         char-set)))
+
+(define (process form)
+  (and (pair? form)
+       (eq? 'define-module (car form))
+       (let ((old (call-with-current-continuation
+                   (lambda (ok)
+                     (let search ((form form))
+                       (cond ((equal? form '(ice-9 optargs))
+                              (ok form))
+                             ((pair? form)
+                              (search (car form))
+                              (search (cdr form)))))
+                     #f))))
+         (and old (set-car! (cdr old) 'optargs-kw))))
+  (write-line-punily form))
+
+(define (list<-csep s)
+  (map string->symbol (string-tokenize s (char-set-complement (char-set #\,)))))
+
+(define (main/qop qop)
+  (let ((munge (if (memq 'optargs-kw (or (qop 'flags list<-csep) '()))
+                   process
+                   write-line-punily))
+        (p (open-input-file (car (qop '()))))
+        (out-name (qop 'output)))
+
+    (define (done-output!)
+      (close-port (current-output-port)))
+
+    (and out-name (set-current-output-port (open-output-file out-name)))
+    ;; TODO: Use ‘(guile-baux scheme-scanner)’; preserve
+    ;; shell-script header and Commentary for programs.
+    (catch #t (lambda ()
+                (let loop ()
+                  (let ((form (read p)))
+                    (if (eof-object? form)
+                        (done-output!)
+                        (begin
+                          (munge form)
+                          (loop))))))
+           (lambda (key . args)
+             (define (hmm s . args)
+               (fse "mm: ")
+               (apply fse s args)
+               (fse "~%"))
+             (done-output!)
+             ;; TODO: Make this pretty.
+             (hmm "~A: ~S" key args)
+             (cond (out-name (hmm "removing ~A" out-name)
+                             (and (file-exists? out-name)
+                                  (delete-file out-name))))
+             (exit #f)))))
+
+(define (main args)
+  (check-hv args '((package . "Guile-WWW")
+                   (version . "1.0")
+                   (help . commentary)))
+  (main/qop (qop<-args
+             args '((output (single-char #\o) (value #t))
+                    (flags  (single-char #\f) (value #t))))))
+
+;;; mm ends here

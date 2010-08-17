@@ -1,3 +1,34 @@
+2010-08-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Use Guile-BAUX for doc maintenance, module munging.
+
+	CC means: "Don't include $(top_srcdir)/build-aux/common.mk;
+	instead, include $(top_srcdir)/build-aux/comp.mk";
+	SA means: "Replace ‘sig’ option in doc comment ‘args’ option";
+	NS means: "Delete ‘sig’ option from doc comment".
+	* Makefile.am: CC.
+	(www_DATA): Use $(top_leaves).
+	* http.scm (http:open, http:request): SA.
+	* main.scm (www:http-head-get): SA.
+
+	* data/Makefile.am: CC.
+	(www_DATA): Use $(data_leaves).
+
+	* server-utils/Makefile.am: CC.
+	* server-utils/answer.scm (CRLF, flat-length): Add doc comment.
+	(string<-headers, mouthpiece): NS.
+	* server-utils/big-dishing-loop.scm (named-socket):
+	Don't list keywords in doc comment; also, NS.
+	(make-big-dishing-loop): Use @t for keyword
+	args table; add @findex for ‘need-input-port’; NS.
+	* server-utils/cookies.scm (rfc2109-set-cookie-string): NS.
+	* server-utils/filesystem.scm (upath->filename-proc): SA.
+	(filename->content-type): SA.
+	* server-utils/log.scm (log-http-response-proc):
+	Use more succint meta-variable names; SA.
+	* server-utils/modlisp.scm (modlisp-hgrok, modlisp-ish):
+	Add doc comment.
+
 2010-06-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.28

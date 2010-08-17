@@ -39,8 +39,6 @@
 ;; optional keyword parameters @code{#:path}, @code{#:domain},
 ;; @code{#:expires} (strings); and @code{#:secure} (boolean).
 ;;
-;;-sig: (name value [keyword arg...])
-;;
 (define* (rfc2109-set-cookie-string name value #:key (path #f)
                                     (domain #f) (expires #f) (secure #f))
   (define (fs s . args)

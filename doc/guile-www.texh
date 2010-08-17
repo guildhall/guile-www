@@ -8,7 +8,8 @@
 @c %**end of header
 @c @setchapternewpage odd
 
-@syncodeindex vr fn
+@syncodeindex vr cp
+@syncodeindex fn cp
 
 @c ---------------------------------------------------------------------------
 @dircategory Guile modules
@@ -120,7 +121,7 @@ Data -- (www data *)
 * mime-types::          Map filename extension to MIME type(s).
 
 
-* Procedure Index::
+* Index::
 @end menu
 
 @c ---------------------------------------------------------------------------
@@ -133,18 +134,18 @@ operation, low-level HTTP message object access, and common messages.
 
 @section High-Level HTTP Operation
 
-@twerpdoc (http:connect)
-@twerpdoc (http:open)
-@twerpdoc (http:request)
+@tsin i http:connect
+@tsin i http:open
+@tsin i http:request
 
 @section Low-Level HTTP Message Object Access
 
-@twerpdoc (http:message-version)
-@twerpdoc (http:message-status-code)
-@twerpdoc (http:message-status-text)
-@twerpdoc (http:message-status-ok?)
-@twerpdoc (http:status-ok?)
-@twerpdoc (http:message-body)
+@tsin i http:message-version
+@tsin i http:message-status-code
+@tsin i http:message-status-text
+@tsin i http:message-status-ok?
+@tsin i http:status-ok?
+@tsin i http:message-body
 
 An HTTP message header is represented by a pair.  The @sc{car} is a
 symbol representing the header name, and the @sc{cdr} is a string containing
@@ -163,14 +164,14 @@ Note: these symbols are all lowercase, although the original headers may be
 mixed-case.  Clients using this library should keep this in mind, since Guile
 symbols are case-sensitive.
 
-@twerpdoc (http:message-headers)
-@twerpdoc (http:message-header)
+@tsin i http:message-headers
+@tsin i http:message-header
 
 @section Common Messages
 
-@twerpdoc (http:head)
-@twerpdoc (http:get)
-@twerpdoc (http:post-form)
+@tsin i http:head
+@tsin i http:get
+@tsin i http:post-form
 
 @c ---------------------------------------------------------------------------
 @node         url
@@ -182,30 +183,30 @@ and character decoding/encoding.
 
 @section High-Level URL Object Conversion
 
-@twerpdoc (url:parse)
-@twerpdoc (url:unparse)
+@tsin i url:parse
+@tsin i url:unparse
 
 @section Low-Level URL Object Construction
 
-@twerpdoc (url:make)
-@twerpdoc (url:make-http)
-@twerpdoc (url:make-ftp)
-@twerpdoc (url:make-mailto)
+@tsin i url:make
+@tsin i url:make-http
+@tsin i url:make-ftp
+@tsin i url:make-mailto
 
 @section Low-Level URL Object Access
 
-@twerpdoc (url:scheme)
-@twerpdoc (url:address)
-@twerpdoc (url:unknown)
-@twerpdoc (url:user)
-@twerpdoc (url:host)
-@twerpdoc (url:port)
-@twerpdoc (url:path)
+@tsin i url:scheme
+@tsin i url:address
+@tsin i url:unknown
+@tsin i url:user
+@tsin i url:host
+@tsin i url:port
+@tsin i url:path
 
 @section Character Decoding/Encoding
 
-@twerpdoc (url:decode)
-@twerpdoc (url:encode)
+@tsin i url:decode
+@tsin i url:encode
 
 @c ---------------------------------------------------------------------------
 @node         cgi
@@ -218,20 +219,20 @@ discovery, data transfer in, data transfer out.
 
 @section Initialization and Discovery
 
-@twerpdoc (cgi:init)
-@twerpdoc (cgi:form-data?)
-@twerpdoc (cgi:names)
-@twerpdoc (cgi:cookie-names)
+@tsin i cgi:init
+@tsin i cgi:form-data?
+@tsin i cgi:names
+@tsin i cgi:cookie-names
 
 @section Data Transfer In
 
-@twerpdoc (cgi:getenv)
-@twerpdoc (cgi:values)
-@twerpdoc (cgi:value)
-@twerpdoc (cgi:uploads)
-@twerpdoc (cgi:upload)
-@twerpdoc (cgi:cookies)
-@twerpdoc (cgi:cookie)
+@tsin i cgi:getenv
+@tsin i cgi:values
+@tsin i cgi:value
+@tsin i cgi:uploads
+@tsin i cgi:upload
+@tsin i cgi:cookies
+@tsin i cgi:cookie
 
 @section Uncollated Form Data
 
@@ -240,7 +241,7 @@ values are collated, thus losing information about the relative order of
 different and intermingled names.  For this, you can use @code{cgi:nv-pairs}
 to access the uncollated (albeit ordered) form data.
 
-@twerpdoc (cgi:nv-pairs)
+@tsin i cgi:nv-pairs
 
 @c ---------------------------------------------------------------------------
 @node         main
@@ -249,13 +250,13 @@ to access the uncollated (albeit ordered) form data.
 The @code{(www main)} module provides a generic interface useful for
 retriving data named by any URL.  The URL scheme @code{http} is pre-registered.
 
-@twerpdoc (www:set-protocol-handler!)
-@twerpdoc (www:get)
+@tsin i www:set-protocol-handler!
+@tsin i www:get
 
 @noindent
 There is also the convenience proc @code{www:http-head-get}.
 
-@twerpdoc (www:http-head-get)
+@tsin i www:http-head-get
 
 @c ---------------------------------------------------------------------------
 @node         url-coding
@@ -264,8 +265,8 @@ There is also the convenience proc @code{www:http-head-get}.
 The @code{(www url-coding)} module provides two procedures for decoding
 and encoding URL strings for safe transmission according to RFC 1738.
 
-@twerpdoc (url-coding:decode)
-@twerpdoc (url-coding:encode)
+@tsin i url-coding:decode
+@tsin i url-coding:encode
 
 @c ---------------------------------------------------------------------------
 @node         utcsec
@@ -275,12 +276,12 @@ The @code{(www utcsec)} module provides procedures to work with the
 @dfn{utc-seconds} of an object, that is, the number of seconds after
 epoch, in the GMT time zone (also known as UTC).
 
-@twerpdoc (format-utcsec)
-@twerpdoc (rfc1123-date<-)
-@twerpdoc (<-rfc1123-date)
-@twerpdoc (<-mtime)
-@twerpdoc (<-ctime)
-@twerpdoc (rfc1123-now)
+@tsin i format-utcsec
+@tsin i rfc1123-date<-
+@tsin i <-rfc1123-date
+@tsin i <-mtime
+@tsin i <-ctime
+@tsin i rfc1123-now
 
 @c ---------------------------------------------------------------------------
 @node                      big-dishing-loop
@@ -289,11 +290,9 @@ epoch, in the GMT time zone (also known as UTC).
 The @code{(www server-utils big-dishing-loop)} module provides procedures
 that facilitate generation of a customized listener/dispatch proc.
 
-@twerpdoc (named-socket)
-
-@twerpdoc (echo-upath)
-
-@twerpdoc (make-big-dishing-loop)
+@tsin i named-socket
+@tsin i echo-upath
+@tsin i make-big-dishing-loop - no-kw-list
 
 The combination of @code{#:need-headers}, @code{#:need-input-port} and
 @code{#:explicit-return} mean that the @code{#:GET-upath} proc can receive
@@ -325,17 +324,17 @@ The @code{(www server-utils parse-request)} module provides procedures to
 read the first line, the headers and the body, of an HTTP message on the
 input port.
 
-@twerpdoc (read-first-line)
-@twerpdoc (hqf<-upath)
-@twerpdoc (alist<-query)
-@twerpdoc (read-headers)
+@tsin i read-first-line
+@tsin i hqf<-upath
+@tsin i alist<-query
+@tsin i read-headers
 
 @noindent
 Sometimes you are interested in the body of the message but not the headers.
 In this case, you can use @code{skip-headers} to quickly position the port.
 
-@twerpdoc (skip-headers)
-@twerpdoc (read-body)
+@tsin i skip-headers
+@tsin i read-body
 
 @c ---------------------------------------------------------------------------
 @node                      form-2-form
@@ -344,7 +343,7 @@ In this case, you can use @code{skip-headers} to quickly position the port.
 The @code{(www server-utils form-2-form)} module provides a procedure to
 parse a string in @samp{multipart/form-data} format.
 
-@twerpdoc (parse-form)
+@tsin i parse-form
 
 @heading why @code{squeeze}?
 The @var{squeeze} interface can help reduce data motion.  Consider a common
@@ -372,7 +371,7 @@ The @code{(www server-utils filesystem)} module provides procedures for
 cleaning filenames, checking filesystem access, and mapping from a URL path to
 a filename.
 
-@twerpdoc (cleanup-filename)
+@tsin i cleanup-filename
 
 @noindent
 Following is a fairly comprehensive list of the @code{cleanup-filename}
@@ -519,9 +518,9 @@ string lengths.
   9  /abc/def/
 @end example
 
-@twerpdoc (access-forbidden?-proc)
-@twerpdoc (upath->filename-proc)
-@twerpdoc (filename->content-type)
+@tsin i access-forbidden?-proc
+@tsin i upath->filename-proc
+@tsin i filename->content-type
 
 @c ---------------------------------------------------------------------------
 @node                      cgi-prep
@@ -534,7 +533,7 @@ These programs are also known as @dfn{CGI scripts}.
 The @code{(www server-utils cgi-prep)} module provide a procedure to set up
 such an environment.  Actually invoking the CGI script is not covered.
 
-@twerpdoc (cgi-environment-manager)
+@tsin i cgi-environment-manager
 
 @heading example
 Following is a simple example of how to use @code{cgi-environment-manager}.
@@ -597,9 +596,9 @@ which provides facilities for creating such headers, and parsing those
 sent by the client.  Procedures that return trees are meant to be used with
 the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
 
-@twerpdoc (simple-parse-cookies)
-@twerpdoc (rfc2109-set-cookie-string)
-@twerpdoc (rfc2965-set-cookie2-tree)
+@tsin i simple-parse-cookies
+@tsin i rfc2109-set-cookie-string
+@tsin i rfc2965-set-cookie2-tree
 
 @heading example
 Here is an example that demonstates both RFC2109 and RFC2965 formatting.
@@ -628,13 +627,13 @@ representation of the cookie's value is now double-quoted.
 To generate a cookie spec from the @code{Cookie} http response header sent by
 a client, you can use @code{rfc2965-parse-cookie-header-value}.
 
-@twerpdoc (rfc2965-parse-cookie-header-value)
+@tsin i rfc2965-parse-cookie-header-value
 
 @noindent
 RFC2965 also specifies some other small algorithms, some of which are codified
 as procedures available in this module.
 
-@twerpdoc (reach)
+@tsin i reach
 
 @c ---------------------------------------------------------------------------
 @node                      answer
@@ -666,7 +665,7 @@ HTTP/1.0 @var{nnn} @var{msg}
 and a single @code{#\cr #\lf} pair separates the headers from the body.
 The @code{style} support is @strong{experimental} (@pxref{modlisp}).
 
-@twerpdoc (mouthpiece)
+@tsin i mouthpiece
 
 @heading example
 Here is an example that uses most of the @code{mouthpiece} commands:
@@ -709,20 +708,14 @@ declare a nested list of strings (aka @dfn{tree}) to have a
 once flattened, thus enabling internal optimizations.
 (The flat length of a string is its @code{string-length}.)
 
-@defvr {Scheme String} CRLF
-The string ``\r\n''.
-@end defvr
-
-@deffn {Object Property} flat-length
-The value is a non-negative integer, or @code{#f} if not yet computed.
-@end deffn
-
-@twerpdoc (fs)
-@twerpdoc (walk-tree)
-@twerpdoc (tree-flat-length!)
-@twerpdoc (string<-tree)
-@twerpdoc (string<-headers)
-@twerpdoc (string<-header-components)
+@tsin i CRLF
+@tsin i flat-length
+@tsin i fs
+@tsin i walk-tree
+@tsin i tree-flat-length!
+@tsin i string<-tree
+@tsin i string<-headers
+@tsin i string<-header-components
 
 @heading example
 Here is @code{transmit-file} from the above example, slightly modified to use
@@ -767,7 +760,7 @@ The @code{(www server-utils log)} module provides procedure generators for
 writing log information to an output port.  Each generator is conventionally
 named @code{log-SOMETHING-proc}.
 
-@twerpdoc (log-http-response-proc)
+@tsin i log-http-response-proc
 
 @c ---------------------------------------------------------------------------
 @node                      modlisp
@@ -799,17 +792,8 @@ Note that this is in essense the same format as used for the headers,
 with @var{name} being @samp{Status}
 and @var{value} being @samp{@var{nnn} @var{msg}}.
 
-@defvr {Object} modlisp-hgrok
-An object suitable for the value of @code{make-big-dishing-loop}
-keyword argument @code{#:style}.
-@xref{big-dishing-loop}.
-@end defvr
-
-@defvr {Object} modlisp-ish
-An object suitable as the optional @code{style} argument for both
-@code{string<-headers} and @code{mouthpiece}.
-@xref{answer}.
-@end defvr
+@tsin i modlisp-hgrok
+@tsin i modlisp-ish
 
 Although these are separate objects, you should probably use or not use them
 in conjunction, lest the front-end (Apache) server become confused.
@@ -820,7 +804,7 @@ in conjunction, lest the front-end (Apache) server become confused.
 
 The @code{(www data http-status)} module exports a single procedure:
 
-@twerpdoc (http-status-string)
+@tsin i http-status-string
 
 @heading example
 Here is a simple example using this module:
@@ -898,11 +882,11 @@ The mime-type may also be @code{#f}, which means to remove
 If an entry does not validate, the operation throws an error,
 with key @code{invalid-extension} or @code{invalid-mime-type}.
 
-@twerpdoc (reset-mime-types!)
-@twerpdoc (put-mime-types-from-file!)
-@twerpdoc (put-mime-types!)
-@twerpdoc (mime-types<-extension)
-@twerpdoc (select-extensions)
+@tsin i reset-mime-types!
+@tsin i put-mime-types-from-file!
+@tsin i put-mime-types!
+@tsin i mime-types<-extension
+@tsin i select-extensions
 
 @heading why @code{select-extensions}?
 The last procedure is intended to ease non-generalizable merging,
@@ -965,14 +949,10 @@ will be added in the future, and @code{select-extensions} replaced by
 @code{map-mime-types}.  We'll see@dots{}
 
 @c ---------------------------------------------------------------------------
-@node       Procedure Index
-@unnumbered Procedure Index
+@node       Index
+@unnumbered Index
 
-@noindent
-This index references both procedures and messages for procedures (and/or
-closures) that take messages.
-
-@printindex fn
+@printindex cp
 
 @c ---------------------------------------------------------------------------
 @bye

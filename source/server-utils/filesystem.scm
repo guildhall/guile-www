@@ -149,7 +149,7 @@
 ;;
 ;; Directory names are always returned with a trailing slash.
 ;;
-;;-sig: (docroot [dir-indexes])
+;;-args: (- 1 0 dir-indexes)
 ;;
 (define (upath->filename-proc docroot . idx)
   (or (null? idx) (set! idx (car idx)))
@@ -185,7 +185,7 @@
 ;;
 ;; @xref{mime-types}, proc @code{put-mime-types!}, for more info.
 ;;
-;;-sig: (filename [default])
+;;-args: (- 1 0)
 ;;
 (define (filename->content-type filename . default)
   (or (and-let* ((cut (string-rindex filename #\.))

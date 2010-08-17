@@ -74,7 +74,7 @@
 ;; Optional second arg @code{alist?} non-@code{#f} means return only the
 ;; alist portion of the HTTP response object.
 ;;
-;;-sig: (url-string [alist?])
+;;-args: (- 1 0)
 ;;
 (define (www:http-head-get url-string . alist?)
   (let ((url (url:parse url-string)))

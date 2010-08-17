@@ -52,12 +52,24 @@
     (set-car! rv (string->symbol (car rv)))
     rv))
 
+;; An object suitable for the value of @code{make-big-dishing-loop}
+;; keyword argument @code{#:style}.
+;; @xref{big-dishing-loop}.
+;;
+;;-category: object
+;;
 (define modlisp-hgrok (vector read-first-line
                               read-headers
                               read-headers))
 
 (define LF "\n")
 
+;; An object suitable as the optional @code{style} argument for both
+;; @code{string<-headers} and @code{mouthpiece}.
+;; @xref{answer}.
+;;
+;;-category: object
+;;
 (define modlisp-ish (vector "Status\n~A ~A\n"
                             LF LF
                             "end\n"))

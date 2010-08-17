@@ -1,6 +1,6 @@
-## common.mk
+## comp.mk
 ##
-## Copyright (C) 2007, 2008, 2009 Thien-Thi Nguyen
+## Copyright (C) 2010 Thien-Thi Nguyen
 ##
 ## This file is part of Guile-WWW.
 ##
@@ -19,36 +19,17 @@
 ## write to the Free Software Foundation, Inc., 51 Franklin Street,
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
-# Guile-BAUX support.
+include $(top_srcdir)/build-aux/common.mk
 
-gx = $(top_srcdir)/build-aux/guile-baux/gbaux-do
+scheme = $(www_DATA:%=%.scm)
 
-# Automake doesn't do wildcards (info "(automake) Wildcards"),
-# so we list all the filename stems here, separated by directory.
-# This way, each source/**/Makefile.am can work "locally", while
-# doc/Makefile.am can assemble filenames prefixing parent-dir.
+.scm:
+	$(gx) mm -o $@ $(MMFLAGS) $<
 
-top_leaves =		\
- cgi			\
- http			\
- main			\
- url			\
- url-coding		\
- utcsec
+EXTRA_DIST = $(scheme)
 
-data_leaves =		\
- mime-types		\
- http-status
+CLEANFILES = $(www_DATA)
 
-su_leaves =		\
- answer			\
- big-dishing-loop	\
- cgi-prep		\
- cookies		\
- filesystem		\
- form-2-form		\
- log			\
- modlisp		\
- parse-request
+SUFFIXES = .scm
 
-## common.mk ends here
+## comp.mk ends here

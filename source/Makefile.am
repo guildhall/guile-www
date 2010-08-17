@@ -22,15 +22,9 @@
 SUBDIRS = server-utils data
 
 wwwdir = $(GUILE_SITE)/www
-www_DATA =					\
- cgi						\
- http						\
- main						\
- url						\
- url-coding					\
- utcsec
+www_DATA = $(top_leaves)
 
-include $(top_srcdir)/build-aux/common.mk
+include $(top_srcdir)/build-aux/comp.mk
 
 EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
 

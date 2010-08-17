@@ -24,7 +24,6 @@ dnl Fifth Floor, Boston, MA  02110-1301  USA
 AC_INIT([Guile-WWW],[2.28],[ttn@gnuvola.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 gnu])
-AM_MAINTAINER_MODE
 
 GUILE_PROGS
 
@@ -36,20 +35,9 @@ GUILE_MODULE_REQUIRED([srfi srfi-13])
 GUILE_MODULE_REQUIRED([srfi srfi-14])
 
 GUILE_MODULE_AVAILABLE([optargs_kw], (ice-9 optargs-kw))
-AC_SUBST([optargs_kw])
-
-dnl This enables dependency tracking machinery so that "make" automatically
-dnl updates doc/guile-www.info whenever any *.scm file changes.
-AC_CONFIG_COMMANDS([twerp-prep],[
-  if echo "$ac_cs_version" | grep options.*--enable-maintainer-mode >/dev/null ; then
-    if guile-tools list | grep twerp2texi >/dev/null ; then
-      guile-tools prep-Ptexi doc/Makefile guile-www
-    else
-      AC_MSG_WARN([[automatic doc rebuild not supported; you need to]])
-      AC_MSG_WARN([[edit doc/guile-www.texi manually if source changes]])
-    fi
-  fi
-])
+AS_VAR_IF([optargs_kw],[yes],[AS_VAR_APPEND([mmflags],[',optargs-kw'])])
+AS_VAR_SET_IF([mmflags],[AS_VAR_SET([MMFLAGS],["-f$mmflags"])])
+AC_SUBST([MMFLAGS])
 
 GUILE_SITE_DIR
 
@@ -62,7 +50,6 @@ AC_CONFIG_FILES([
 ])
 
 AC_DEFUN([CONFIG_SCRIPT],[AC_CONFIG_FILES([$1],[chmod +x $1])])
-CONFIG_SCRIPT([build-aux/module-compile])
 CONFIG_SCRIPT([examples/id.cgi])
 CONFIG_SCRIPT([examples/wily-guile])
 

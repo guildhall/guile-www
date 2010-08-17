@@ -36,7 +36,6 @@
   #:use-module (www server-utils answer))
 
 ;; Return a new socket in protocol @var{family} with address @var{name}.
-;; Keywords are: @code{#:socket-setup}.
 ;;
 ;; First, evaluate @code{(socket @var{family} SOCK_STREAM 0)} to create
 ;; a new socket @var{sock}.  Next, handle @code{#:socket-setup}, with
@@ -69,8 +68,6 @@
 ;;
 ;; Note that @code{PF_foo}, @code{AF_foo}, and @code{INADDR_foo} are
 ;; names of variables that have constant values, not symbols.
-;;
-;;-sig: (family name [[keyword value] ...])
 ;;
 (define* (named-socket family name #:key
                        (socket-setup #f))
@@ -130,7 +127,7 @@
 ;; in order of the steps involved in processing a request, with default values
 ;; shown next to the keyword.
 ;;
-;; @table @code
+;; @table @t
 ;; @findex socket-setup
 ;; @item #:socket-setup #f
 ;; This may be a proc that takes a socket, or a list of opt/val pairs which
@@ -185,6 +182,7 @@
 ;;
 ;; @findex need-headers
 ;; @item #:need-headers #f
+;; @findex need-input-port
 ;; @itemx #:need-input-port #f
 ;; If non-@code{#f}, these cause additional arguments to be supplied to the
 ;; handler proc.  If present, the headers arg precedes the input
@@ -244,8 +242,6 @@
 ;; An object specifying the syntax of the first-line and headers.
 ;; The default specifies a normal HTTP message (@pxref{http}).
 ;; @end table
-;;
-;;-sig: ([keyword value ...])
 ;;
 (define* (make-big-dishing-loop
           #:key

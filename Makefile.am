@@ -32,7 +32,7 @@ install-data-hook:
 	      -t "$(DESTDIR)" "$(GUILE_SITE)" ; fi
 
 EXTRA_DIST = \
- build-aux/simple-punify \
+ build-aux/guile-baux \
  examples/README \
  examples/cookie.cgi \
  examples/wwwcat \

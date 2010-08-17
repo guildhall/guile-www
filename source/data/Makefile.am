@@ -20,11 +20,9 @@
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
 wwwdir = $(GUILE_SITE)/www/data
-www_DATA =					\
- mime-types					\
- http-status
+www_DATA = $(data_leaves)
 
-include $(top_srcdir)/build-aux/common.mk
+include $(top_srcdir)/build-aux/comp.mk
 
 # Module (www data content-type) retired as of Guile-WWW 2.27.
 install-data-hook:

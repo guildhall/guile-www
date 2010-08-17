@@ -31,8 +31,18 @@
 (define-macro (+! v n)
   `(set! ,v (+ ,v ,n)))
 
+;; The string ``\r\n''.
+;;
+;;-category: constant string
+;;
 (define CRLF "\r\n")
 
+;; Return the flat length of @var{object},
+;; or @code{#f} if not yet computed.
+;;
+;;-category: object property
+;;-args: (1 0 0 object)
+;;
 (define flat-length (make-object-property))
 
 ;; Return a new string made by using format string @var{s} on @var{args}.
@@ -124,8 +134,6 @@
 ;;
 ;; Each name may be a string, symbol or keyword.  Each value may be a
 ;; string, number, symbol, or a tree.
-;;
-;;-sig: (alist [style])
 ;;
 (define* (string<-headers alist #:optional (style #f))
   (string<-tree (map (tree<-header-proc (or style http-ish))
@@ -242,8 +250,6 @@
 ;; internally; it is an error to call other mouthpiece commands,
 ;; subsequently.
 ;; @end table
-;;
-;;-sig: (out-port [status-box [style]])
 ;;
 (define* (mouthpiece out-port #:optional (status-box '()) (style #f))
 

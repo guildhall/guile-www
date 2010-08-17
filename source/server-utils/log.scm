@@ -30,19 +30,19 @@
 ;; writes a one-line entry of the form:
 ;;
 ;; @example
-;; CLIENT - - [YYYY-MM-DD:HH:MM:SS TZ] "METHOD UPATH" STATUS1 STATUS2...
+;; CLIENT - - [YYYY-MM-DD:HH:MM:SS TZ] "METHOD UPATH" ST1 ST2...
 ;; @end example
 ;;
 ;; where the @samp{YYYY..TZ} are the year, month, day, hour, minute,
 ;; second and timezone components, respectively, of the @code{localtime}
-;; representation of the current time; and @samp{STATUSn} are the
+;; representation of the current time; and @samp{STn} are the
 ;; space-separated elements of @var{status}.
 ;;
 ;; Optional second arg @var{gmtime?} non-@code{#f} means use
 ;; @code{gmtime} instead of @code{localtime}.  Optional third arg
 ;; @var{stamp-format} specifies a format string passed to
-;; @code{strftime} to use for the timestamp portion that appears between
-;; the square braces (default: "%Y-%m-%d:%H:%M:%S %Z").
+;; @code{strftime} to use for the timestamp portion that appears
+;; between the square braces (default: @t{"%Y-%m-%d:%H:%M:%S %Z"}).
 ;;
 ;; Optional fourth arg @var{method-pair?} non-@code{#f} means that
 ;; @var{method} is expected to be a pair @code{(@var{meth}
@@ -54,7 +54,7 @@
 ;;
 ;; The buffering mode for @var{port} is set to line-buffered.
 ;;
-;;-sig: (port [gmtime? [stamp-format [method-pair?]]])
+;;-args: (- 3 0 gmtime? stamp-format method-pair?)
 ;;
 (define (log-http-response-proc port . opts)
   (setvbuf port _IOLBF)

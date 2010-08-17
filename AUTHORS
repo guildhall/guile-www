@@ -18,7 +18,7 @@ Martin Grabmueller wrote:
 	source/server-utils/filesystem.scm
 
 Thien-Thi Nguyen wrote:
-	doc/guile-www.twerp
+	doc/guile-www.texh
 	source/data/http-status.scm
 	source/data/mime-types.scm
 	source/server-utils/big-dishing-loop.scm

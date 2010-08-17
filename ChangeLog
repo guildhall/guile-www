@@ -1,3 +1,35 @@
+2010-08-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Use Guile-BAUX for doc maintenance, module munging.
+
+	* autogen.sh: Add command to import Guile-BAUX modules.
+	* configure.ac (AM_MAINTAINER_MODE): Delete.
+	(optargs_kw): Delete AC_SUBST.
+	(twerp-prep): Delete AC_CONFIG_COMMANDS.
+	(MMFLAGS): New AC_SUBST var, derived from ‘optargs_kw’.
+	(CONFIG_SCRIPT): Delete build-aux/module-compile.
+	* Makefile.am (EXTRA_DIST): Remove build-aux/simple-punify;
+	add build-aux/guile-baux.
+
+	* doc/guile-www.texh: New file.
+	* doc/Makefile.am (BUILT_SOURCES): Delete var.
+	(doc-index-prep): Delete target.
+	(guile-www.texi): Remove guile-www.twerp from prereq list;
+	add snippets to prereq list (via $(info_TEXINFOS)).
+	(allstems): New var.
+	(twerp2texi): Delete var.
+	(snippets): New target.
+	(.twerp.texi): Delete suffix rule.
+	(EXTRA_DIST): Remove guile-www.twerp; add guile-www.texh, snippets.
+	* doc/guile-www.twerp: Delete file.
+
+	* build-aux/common.mk (gx, top_leaves, data_leaves, su_leaves):
+	New vars; move rest of contents to...
+	* build-aux/comp.mk: ...here (new file).
+	* build-aux/guile-baux/mm: New file.
+	* build-aux/module-compile.in: Delete file.
+	* build-aux/simple-punify: Delete file.
+
 2010-06-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[maint] Use autoreconf(1); make bootstrap script non-executable.
