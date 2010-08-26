@@ -1,3 +1,13 @@
+2010-08-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Add "make check" support.
+
+	* alive.test: New file.
+	* Makefile.am (BUILT_SOURCES): New var.
+	(all-modules.list): New target.
+	(TESTS): New var.
+	(EXTRA_DIST): Add $(TESTS).
+
 2010-08-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[build] Use Guile-BAUX for doc maintenance, module munging.

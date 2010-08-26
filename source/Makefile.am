@@ -28,4 +28,17 @@ include $(top_srcdir)/build-aux/comp.mk
 
 EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
 
+BUILT_SOURCES = all-modules.list
+
+all-modules.list:
+	@echo Creating $@ ...
+	{ for m in $(top_leaves) ; do echo "(www $$m)" ; done ;			\
+	  for m in $(su_leaves) ; do echo "(www server-utils $$m)" ; done ;	\
+	  for m in $(data_leaves) ; do echo "(www data $$m)" ; done ;		\
+	} > $@
+
+TESTS = alive.test
+
+EXTRA_DIST += $(TESTS)
+
 ## Makefile.am ends here
