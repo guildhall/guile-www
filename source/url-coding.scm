@@ -1,4 +1,4 @@
-;;; (www url-coding) --- URL character coding: decode/encode
+;;; (www url-coding) --- URL character coding (decode/encode)
 
 ;; Copyright (C) 2009 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2005, 2007 Free Software Foundation, Inc.
