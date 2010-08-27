@@ -22,7 +22,17 @@ Installation
 
 	  ./configure [options]
 	  make
+	  make check [var=val ...]   # optional, but recommended
 	  make install
+
+	Doing "make check" tests the ‘load’ability of the modules, first
+	individually, then all together (sumo).  Influential variables:
+
+	  GUILE           -- the interpreter to use [guile]
+	  DEBUG           -- if "1", display progress information,
+			     and invoke guile with option ‘--debug’
+
+	If "make check" fails, please report the problem (see below).
 
 	On "make install", these files are copied to these directories
 	(creating them first if necessary), renaming each FOO.scm to
