@@ -25,7 +25,7 @@ set -e
 if [ "x$DEBUG" = x1 ] ; then debug=true ; else debug=false ; fi
 if [ -L www ] ; then : ; else ln -s . www ; fi
 
-guile='guile -L .'
+guile="${GUILE-guile} -L ."
 $debug && guile="$guile --debug"
 
 all='all-modules.list'
