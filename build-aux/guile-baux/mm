@@ -34,6 +34,8 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 ;;
 ;;  optargs-kw   -- Replace `(ice-9 optargs)' with `(ice-9 optargs-kw)'
 ;;                  in the `define-module' form.
+;;  no-currdef   -- Remove `#:use-module (ice-9 curried-definitions)'
+;;                  from `define-module' form.
 
 ;;; Code:
 
@@ -44,28 +46,58 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
   #:use-module ((srfi srfi-14) #:select (char-set-complement
                                          char-set)))
 
-(define (process form)
-  (and (pair? form)
-       (eq? 'define-module (car form))
-       (let ((old (call-with-current-continuation
-                   (lambda (ok)
-                     (let search ((form form))
-                       (cond ((equal? form '(ice-9 optargs))
-                              (ok form))
-                             ((pair? form)
-                              (search (car form))
-                              (search (cdr form)))))
-                     #f))))
-         (and old (set-car! (cdr old) 'optargs-kw))))
-  (write-line-punily form))
+(define (process flags)
+
+  (define (optargs-kw! form)
+    (let ((old (call-with-current-continuation
+                (lambda (ok)
+                  (let search ((form form))
+                    (cond ((equal? form '(ice-9 optargs))
+                           (ok form))
+                          ((pair? form)
+                           (search (car form))
+                           (search (cdr form)))))
+                  #f))))
+      (and old (set-car! (cdr old) 'optargs-kw))))
+
+  (define (currdef! form)
+    (let ((old (call-with-current-continuation
+                (lambda (ok)
+                  (let search ((form form))
+                    (cond ((null? form))
+                          ((and (pair? (cdr form))
+                                (eq? #:use-module (cadr form))
+                                (pair? (cddr form))
+                                (equal? '(ice-9 curried-definitions)
+                                        (caddr form)))
+                           (ok form))
+                          (else
+                           (search (cdr form)))))
+                  #f))))
+      (and old (set-cdr! old (cdddr old)))))
+
+  (let* ((sel (+ (if (memq 'optargs-kw flags) 1 0)
+                 (if (memq 'no-currdef flags) 2 0)))
+         (munge-define-module! (case sel
+                                 ((0) identity)
+                                 ((1) optargs-kw!)
+                                 ((2) currdef!)
+                                 ((3) (lambda (form)
+                                        (optargs-kw! form)
+                                        (currdef! form))))))
+    ;; rv
+    (lambda (form)
+      (or (zero? sel)
+          (and (pair? form)
+               (eq? 'define-module (car form))
+               (munge-define-module! form)))
+      (write-line-punily form))))
 
 (define (list<-csep s)
   (map string->symbol (string-tokenize s (char-set-complement (char-set #\,)))))
 
 (define (main/qop qop)
-  (let ((munge (if (memq 'optargs-kw (or (qop 'flags list<-csep) '()))
-                   process
-                   write-line-punily))
+  (let ((munge (process (or (qop 'flags list<-csep) '())))
         (p (open-input-file (car (qop '()))))
         (out-name (qop 'output)))
 

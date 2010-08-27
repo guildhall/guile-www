@@ -1,5 +1,12 @@
 2010-08-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Use module (ice-9 curried-definitions), but conditionally.
+
+	* server-utils/answer.scm: Use (ice-9 curried-definitions).
+	* server-utils/form-2-form.scm: Likewise.
+
+2010-08-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make alive.test sensitive to env var ‘GUILE’.
 
 	* alive.test (guile): Init var using env var ‘GUILE’ if set.

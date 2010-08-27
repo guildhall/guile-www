@@ -36,6 +36,10 @@ GUILE_MODULE_REQUIRED([srfi srfi-14])
 
 GUILE_MODULE_AVAILABLE([optargs_kw], (ice-9 optargs-kw))
 AS_VAR_IF([optargs_kw],[yes],[AS_VAR_APPEND([mmflags],[',optargs-kw'])])
+
+GUILE_MODULE_AVAILABLE([currdef], (ice-9 curried-definitions))
+AS_VAR_IF([currdef],[no],[AS_VAR_APPEND([mmflags],[',no-currdef'])])
+
 AS_VAR_SET_IF([mmflags],[AS_VAR_SET([MMFLAGS],["-f$mmflags"])])
 AC_SUBST([MMFLAGS])
 

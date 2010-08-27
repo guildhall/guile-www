@@ -25,6 +25,7 @@
                  string<-headers
                  string<-header-components
                  mouthpiece)
+  #:use-module (ice-9 curried-definitions)
   #:use-module (ice-9 optargs)
   #:use-module ((ice-9 rw) #:select (write-string/partial)))
 
