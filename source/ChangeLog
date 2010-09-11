@@ -1,3 +1,10 @@
+2010-09-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Decruft: Remove obsoleted autoload.
+
+	* server-utils/filesystem.scm: Remove unused
+	autoload of module (www data content-type).
+
 2010-08-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use module (ice-9 curried-definitions), but conditionally.

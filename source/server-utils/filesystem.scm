@@ -42,7 +42,6 @@
   #:use-module ((srfi srfi-14) #:select (char-set-complement
                                          char-set))
   #:use-module (ice-9 and-let-star)
-  #:autoload (www data content-type) (*content-type-by-filename-extension*)
   #:autoload (www data mime-types) (mime-types<-extension))
 
 ;; Create and return a filesystem-access procedure based on
