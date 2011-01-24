@@ -108,7 +108,8 @@
 
 (define http-hgrok (vector read-first-line
                            read-headers
-                           skip-headers))
+                           skip-headers
+                           #f))
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
 ;; @var{dish} takes one arg @var{ear}, which may be a pre-configured socket,
@@ -280,7 +281,7 @@
              ;; status box
              (b (and (number? status-box-size)
                      (make-list status-box-size #f)))
-             (M (mouthpiece p b))
+             (M (mouthpiece p b (vector-ref style 3)))
              (res (cond ((assq-ref method-handlers method)
                          => (lambda (mh)
                               (call-with-current-continuation

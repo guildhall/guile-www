@@ -1,3 +1,14 @@
+2011-01-24  Neil Jerram  <neil@ossau.uklinux.net>
+
+	Allow big-dishing-loop to set modlisp-ish reply style.
+
+	* server-utils/modlisp.scm (modlisp-hgrok):
+	Move definition after ‘modlisp-ish’; include ‘modlisp-ish’.
+	* server-utils/big-dishing-loop.scm (http-hgrok):
+	Add fourth vector element for congruence with ‘modlisp-hgrok’.
+	(make-big-dishing-loop handle-request):
+	Specify status-box STYLE in ‘mouthpiece’ construction.
+
 2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[portability] Fix bug: Don't assume ‘(set! (P OBJ) VAL)’ returns VAL.
