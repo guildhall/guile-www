@@ -1,3 +1,11 @@
+2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Drop "experimental" label from modlisp documentation.
+
+	* doc/guile-www.texh (answer): Use @var for ‘style’;
+	reword to not say "experimental".
+	(modlisp): Reword to not say "experimental".
+
 2010-08-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Use module (ice-9 curried-definitions), but conditionally.

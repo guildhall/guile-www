@@ -646,7 +646,7 @@ some degree of performance tuning; a server may be able to achieve
 better throughput with certain chunk sizes than with others.
 
 The output from @code{mouthpiece} and @code{string<-headers}
-is formatted according to their optional @code{style} argument.
+is formatted according to their optional @var{style} argument.
 By default, headers have the form:
 
 @example
@@ -663,7 +663,7 @@ HTTP/1.0 @var{nnn} @var{msg}
 
 @noindent
 and a single @code{#\cr #\lf} pair separates the headers from the body.
-The @code{style} support is @strong{experimental} (@pxref{modlisp}).
+@xref{modlisp}, for another way to format this information.
 
 @tsin i mouthpiece
 
@@ -766,7 +766,7 @@ named @code{log-SOMETHING-proc}.
 @node                      modlisp
 @chapter (www server-utils modlisp)
 
-The @code{(www server-utils modlisp)} module provides @strong{experimental}
+The @code{(www server-utils modlisp)} module provides
 support for the implementing the Lisp side of the Apache mod_lisp protocol,
 in the form of a header-grokking protocol object for the big dishing loop,
 and a style elements object for the mouthpiece.  When these objects are
