@@ -31,3 +31,7 @@ Thien-Thi Nguyen wrote:
 	source/utcsec.scm
 
 Thien-Thi Nguyen modified: everything else, as well.
+
+Neil Jerram modified:
+	source/server-utils/big-dishing-loop.scm
+	source/server-utils/modlisp.scm
