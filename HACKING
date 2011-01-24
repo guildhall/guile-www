@@ -9,7 +9,8 @@ It lives in the repo but is not included in the distribution.
 ***** DONE "compilation"
 *** DONE obsolete "maintainer mode"
 
-* ongoing (some of which may go into the next release)
+* ongoing (some of which may go into a future release)
+*** incorporate selected functionality from Guile 2 (web ...) modules
 *** manual chapter "Server Utilities"
 ***** more on (www server-utils answer) facilities
 ***** templating strategies
