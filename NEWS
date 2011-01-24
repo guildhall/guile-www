@@ -1,5 +1,12 @@
 NEWS for Guile-WWW
 
+- 2.29 | 2011-01-24
+  - portability fix: don't assume ‘(set! (P OBJ) V)’ returns ‘V’
+  - allow ‘big-dishing-loop’ to set ‘modlisp-ish’ reply style
+  - drop "experimental" from modlisp documentation
+  - add "make check" support
+  - use Guile-BAUX for doc maintenance, module munging
+
 - 2.28 | 2010-06-22
   - new home page: http://www.nongnu.org/guile-www/
   - doc fix: variables now included in index (e.g., ‘CRLF’)
@@ -225,6 +232,12 @@ NEWS for Guile-WWW
 
 
 
+Copyright (C) 2010, 2011 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.
+
+
 	Local Variables:
 	mode: outline
 	outline-regexp: "\\([ ][ ]\\)*- "

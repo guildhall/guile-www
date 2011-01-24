@@ -1,5 +1,11 @@
 2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.29
+
+	* configure.ac (AC_INIT): Bump version to "2.29" for release.
+
+2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[doc] Drop "experimental" label from modlisp documentation.
 
 	* doc/guile-www.texh (answer): Use @var for ‘style’;
@@ -1573,7 +1579,7 @@ Mon Jun  9 23:42:32 1997  Tim Pierce  <twp@twp.tezcat.com>
 	* wwwcat: New file.
 
 
-Copyright (C) 2010 Thien-Thi Nguyen
+Copyright (C) 2010, 2011 Thien-Thi Nguyen
 
 Copying and distribution of this file, with or without modification,
 are permitted provided the copyright notice and this notice are preserved.
