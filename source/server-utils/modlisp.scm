@@ -38,9 +38,9 @@
       (let loop ((acc '()))
         (let ((k (read-line port)))
           (if (string=? "end" k)
-              (set! (stashed port)
-                    ;; rv
-                    (reverse! acc))
+              (let ((rv (reverse! acc)))
+                (set! (stashed port) rv)
+                rv)
               (loop (acons k (read-line port) acc)))))))
 
 (define (read-first-line port)

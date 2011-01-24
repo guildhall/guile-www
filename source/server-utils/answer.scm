@@ -70,9 +70,10 @@
   (cond ((string? tree) (string-length tree))
         ((null? tree) 0)
         ((flat-length tree))
-        (else (set! (flat-length tree)
-                    (+ (tree-flat-length! (car tree))
-                       (tree-flat-length! (cdr tree)))))))
+        (else (let ((len (+ (tree-flat-length! (car tree))
+                            (tree-flat-length! (cdr tree)))))
+                (set! (flat-length tree) len)
+                len))))
 
 ;; Return a new string made from flattening @var{tree}.
 ;; Set the @code{flat-length} (using @code{tree-flat-length!})
