@@ -1,6 +1,6 @@
 ;;; (www server-utils answer) --- HTTP connection handling and responses
 
-;; Copyright (C) 2008, 2009, 2010 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2009, 2010, 2011 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2006, 2007 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

@@ -1,6 +1,6 @@
 ## Makefile.am
 ##
-## Copyright (C) 2007, 2008, 2009 Thien-Thi Nguyen
+## Copyright (C) 2007, 2008, 2009, 2011 Thien-Thi Nguyen
 ##
 ## This file is part of Guile-WWW.
 ##
