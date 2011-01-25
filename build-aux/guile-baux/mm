@@ -40,6 +40,7 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 ;;; Code:
 
 (define-module (guile-baux mm)
+  #:export (main)
   #:use-module ((guile-baux common) #:select (fse check-hv qop<-args))
   #:use-module ((guile-baux punify) #:select (write-line-punily))
   #:use-module ((srfi srfi-13) #:select (string-tokenize))

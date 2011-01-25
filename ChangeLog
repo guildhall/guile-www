@@ -1,3 +1,11 @@
+2011-01-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Fix bug: Make ‘mm’ invocation more portable.
+
+	Reported by Mike Gran.
+
+	* build-aux/guile-baux/mm: Export ‘main’.
+
 2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.29
