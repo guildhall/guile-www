@@ -3,12 +3,6 @@ HACKING Guile-WWW                                               -*- org -*-
 This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
-* 2.29
-*** DONE transition maintenance support from ttn-fu to Guile-BAUX
-***** DONE doc extraction / mogrification
-***** DONE "compilation"
-*** DONE obsolete "maintainer mode"
-
 * ongoing (some of which may go into a future release)
 *** incorporate selected functionality from Guile 2 (web ...) modules
 *** manual chapter "Server Utilities"
@@ -23,6 +17,7 @@ It lives in the repo but is not included in the distribution.
   |     1.4.1.119 | yes       | yes   | yes |
   |     1.4.1.120 | yes       | yes   | yes |
   |     1.4.1.121 | yes       | yes   | yes |
+  |        1.9.14 | ?         | yes   | yes |
 
 * bootstrap: see autogen.sh for required tools
 
