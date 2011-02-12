@@ -1,3 +1,9 @@
+2011-02-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.30
+
+	* configure.ac (AC_INIT): Bump version to "2.30" for release.
+
 2011-01-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[build] Fix bug: Make ‘mm’ invocation more portable.

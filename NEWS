@@ -1,5 +1,8 @@
 NEWS for Guile-WWW
 
+- 2.30 | 2011-02-12
+  - portability fix for Guile 1.9.14 (among others, probably)
+
 - 2.29 | 2011-01-24
   - portability fix: don't assume ‘(set! (P OBJ) V)’ returns ‘V’
   - allow ‘big-dishing-loop’ to set ‘modlisp-ish’ reply style
