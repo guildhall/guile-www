@@ -29,7 +29,9 @@ Makefile.in
 /build-aux/guile-baux/read-string.scm
 /build-aux/guile-baux/scheme-scanner.scm
 /build-aux/guile-baux/stemname.scm
+/build-aux/guile-baux/temporary-file.scm
 /build-aux/guile-baux/ts-base.scm
+/build-aux/guile-baux/ts-output.scm
 /build-aux/guile-baux/tsar
 /build-aux/guile-baux/tsin
 /build-aux/guile-baux/write-string.scm
