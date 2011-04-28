@@ -1,3 +1,15 @@
+2011-04-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Make alive.test avoid (mis-)loading the .scm files, if possible.
+
+	Reported by Bernardo Ezequiel Contreras:
+	<https://savannah.nongnu.org/bugs/?33175>
+
+	* alive.test: If guile has ‘%load-extensions’, create a
+	preload file that removes ".scm" from it; use that file for
+	all invocations; and delete it when done.  If in debug mode,
+	display ponderings, as well as ‘guile --version’ output.
+
 2011-01-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.29
