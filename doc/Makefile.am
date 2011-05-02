@@ -39,7 +39,7 @@ $(info_TEXINFOS): snippets
 	$(gx) tsin -f snippets -c utf-8 $<
 	if [ '.' = '$(srcdir)' ] ; then : ; else mv $@ $(srcdir)/$@ ; fi
 
-CLEANFILES = guile-www.info guile-www.dvi guile-www_toc.html guile-www.html
+CLEANFILES = guile-www.dvi guile-www_toc.html guile-www.html
 
 EXTRA_DIST = guile-www.texh guile-www.html guile-www.pdf snippets
 

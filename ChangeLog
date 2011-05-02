@@ -1,5 +1,11 @@
 2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build doc] Reduce unorthodoxy: Build .info in srcdir.
+
+	* doc/Makefile.am (CLEANFILES): Remove guile-www.info.
+
+2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Decruft: Don't bother removing old ‘METAINFO’ file.
 
 	This is more properly a job for "make uninstall".
