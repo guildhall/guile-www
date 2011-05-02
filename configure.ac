@@ -27,6 +27,14 @@ AM_INIT_AUTOMAKE([1.11 gnu])
 
 GUILE_PROGS
 
+AC_CACHE_CHECK([if you have "guile-tools mkpimmc"],[gwww_cv_mkpimmc],
+[if $GUILE_TOOLS | grep mkpimmc >/dev/null 2>&1
+then gwww_cv_mkpimmc=yes
+else gwww_cv_mkpimmc=no
+fi])
+
+AM_CONDITIONAL([HAVE_MKPIMMC],[test yes = $gwww_cv_mkpimmc])
+
 GUILE_MODULE_REQUIRED([ice-9 and-let-star])
 GUILE_MODULE_REQUIRED([ice-9 rdelim])
 GUILE_MODULE_REQUIRED([ice-9 regex])

@@ -1,5 +1,11 @@
 2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build] Move module-catalog facilities check to configure time.
+
+	* Makefile.am [HAVE_MKPIMMC] (install-data-hook): New target.
+
+2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Refine preload: Prioritize "" instead of deleting ".scm".
 
 	The 2011-04-28 change goes too far; it impedes

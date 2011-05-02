@@ -41,4 +41,9 @@ TESTS = alive.test
 
 EXTRA_DIST += $(TESTS)
 
+if HAVE_MKPIMMC
+install-data-hook:
+	$(GUILE_TOOLS) make-module-catalog -t '$(DESTDIR)' '$(GUILE_SITE)'
+endif # HAVE_MKPIMMC
+
 ## Makefile.am ends here

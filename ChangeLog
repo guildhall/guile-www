@@ -1,3 +1,13 @@
+2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Move module-catalog facilities check to configure time.
+
+	* configure.ac (gwww_cv_mkpimmc): New cache-var, set
+	to "yes" if you have "guile-tools mkpimmc", "no" otherwise.
+	(HAVE_MKPIMMC): New ‘AM_CONDITIONAL’.
+	* Makefile.am (install-data-hook): Don't check
+	for and invoke "guile-tools make-module-catalog".
+
 2011-02-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.30
