@@ -1,5 +1,13 @@
 2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build] Decruft: Don't bother removing old ‘METAINFO’ file.
+
+	This is more properly a job for "make uninstall".
+
+	* Makefile.am (install-data-hook): Delete target.
+
+2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Move module-catalog facilities check to configure time.
 
 	* configure.ac (gwww_cv_mkpimmc): New cache-var, set

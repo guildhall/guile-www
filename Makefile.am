@@ -25,9 +25,6 @@ SUBDIRS = source doc
 
 ACLOCAL_AMFLAGS = -I build-aux
 
-install-data-hook:
-	rm -f "$(DESTDIR)$(GUILE_SITE)/www/METAINFO"
-
 EXTRA_DIST = \
  build-aux/guile-baux \
  examples/README \
