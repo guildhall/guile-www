@@ -39,8 +39,10 @@ decho 'guile:'
 if $debug ; then ${GUILE-guile} --version ; fi
 
 if $guile -c '%load-extensions' >/dev/null 2>&1 ; then
+    # Make sure "" is at head of list.
     preload=alive.preload
-    echo '(set! %load-extensions (delete ".scm" %load-extensions))' > $preload
+    echo '(set! %load-extensions (delete "" %load-extensions))' > $preload
+    echo '(set! %load-extensions (cons "" %load-extensions))' >> $preload
     if $debug ; then
         decho 'preload:'
         cat $preload

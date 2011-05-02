@@ -1,3 +1,15 @@
+2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Refine preload: Prioritize "" instead of deleting ".scm".
+
+	The 2011-04-28 change goes too far; it impedes
+	loading system modules used by Guile-WWW modules.
+	Reported by (Savannah user) vonbecmann:
+	<https://savannah.nongnu.org/bugs/?33175>.
+
+	* alive.test: Don't delete ".scm" from ‘%load-extensions’;
+	instead, ensure only that "" is at the beginning of the list.
+
 2011-04-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Make alive.test avoid (mis-)loading the .scm files, if possible.
