@@ -1,3 +1,12 @@
+2011-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[uninstall] Fix bug: Do complete "make uninstall".
+
+	* Makefile.am (update-site-module-catalog): New target.
+	(install-data-hook): Remove surrounding ‘HAVE_MKPIMMC’;
+	do "make update-site-module-catalog" instead.
+	(uninstall-hook): New target.
+
 2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[build] Move module-catalog facilities check to configure time.

@@ -41,9 +41,17 @@ TESTS = alive.test
 
 EXTRA_DIST += $(TESTS)
 
+update-site-module-catalog:
 if HAVE_MKPIMMC
+	$(GUILE_TOOLS) make-module-catalog \
+	  -t '$(DESTDIR)' '$(DESTDIR)$(GUILE_SITE)'
+endif
+
 install-data-hook:
-	$(GUILE_TOOLS) make-module-catalog -t '$(DESTDIR)' '$(GUILE_SITE)'
-endif # HAVE_MKPIMMC
+	$(MAKE) $(AM_MAKEFLAGS) update-site-module-catalog
+
+uninstall-hook:
+	rm -rf '$(DESTDIR)$(wwwdir)'
+	$(MAKE) $(AM_MAKEFLAGS) update-site-module-catalog
 
 ## Makefile.am ends here
