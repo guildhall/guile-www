@@ -37,6 +37,18 @@ all-modules.list:
 	  for m in $(data_leaves) ; do echo "(www data $$m)" ; done ;		\
 	} > $@
 
+check_DATA = .fake
+
+.fake: $(www_DATA)
+	top=`pwd`/.fake ;			\
+	rm -rf $$top ;				\
+	$(MAKE) $(AM_MAKEFLAGS) install		\
+	  FOR_MAKE_CHECK=1			\
+	  prefix="$$top"
+
+clean-local:
+	-rm -rf .fake
+
 TESTS = alive.test
 
 EXTRA_DIST += $(TESTS)

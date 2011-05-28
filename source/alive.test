@@ -23,9 +23,19 @@
 
 set -e
 if [ "x$DEBUG" = x1 ] ; then debug=true ; else debug=false ; fi
-if [ -L www ] ; then : ; else ln -s . www ; fi
 
-guile="${GUILE-guile} -L ."
+prefix=`pwd`/.fake
+if ! test -d "$prefix" ; then
+    echo "ERROR: missing partial installation dir: $prefix"
+    exit 1
+fi
+if ! test -f Makefile ; then
+    echo 'ERROR: missing Makefile'
+    exit 1
+fi
+eval `sed '/^GUILE_SITE *= */!d;s/ *= */=/' Makefile`
+
+guile="${GUILE-guile} -L ${GUILE_SITE}"
 $debug && guile="$guile --debug"
 
 all='all-modules.list'
@@ -34,6 +44,8 @@ decho ()
 {
     if $debug ; then echo "$1" ; fi
 }
+
+decho "GUILE_SITE: $GUILE_SITE"
 
 decho 'guile:'
 if $debug ; then ${GUILE-guile} --version ; fi

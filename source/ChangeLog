@@ -1,3 +1,13 @@
+2011-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Do partial install; point %load-path there.
+
+	* Makefile.am (check_DATA): New var.
+	(.fake, clean-local): New targets.
+	* alive.test: Don't create symlink; don't use ‘-L .’;
+	instead, mine ‘GUILE_SITE’ out of ./Makefile and use
+	‘-L ${GUILE_SITE}’; also, report its value if ‘$debug’.
+
 2011-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[uninstall] Fix bug: Do complete "make uninstall".
