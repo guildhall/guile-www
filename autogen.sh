@@ -5,8 +5,8 @@
 # tested with:
 # autoconf (GNU Autoconf) 2.68
 # automake (GNU automake) 1.11.1
-# guile (Unofficial Guile) 1.4.1.121
-# guile-baux-tool (Guile-BAUX) 20101114.1433.288f8da
+# guile (Unofficial Guile) 1.4.1.122
+# guile-baux-tool (Guile-BAUX) 20110527.1157.3b3268a
 
 [ -f configure.ac ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
