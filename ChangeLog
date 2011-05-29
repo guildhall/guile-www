@@ -1,5 +1,11 @@
 2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.31
+
+	* configure.ac (AC_INIT): Bump version to "2.31" for release.
+
+2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[misc] Use partial install from "make check" for examples/wily-guile.
 
 	* examples/wily-guile.in: Rewrite: Allow env var ‘GUILE’

@@ -1,3 +1,7 @@
+2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.31
+
 2011-05-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Do partial install; point %load-path there.

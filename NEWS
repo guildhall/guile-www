@@ -1,5 +1,12 @@
 NEWS for Guile-WWW
 
+- 2.31 | 2011-05-29
+  - bugfix: "make uninstall" now does a complete job
+  - improvements to "make check"
+    - do in-tree partial install; use that for ‘%load-path’
+    - bugfix: re-order ‘%load-extensions’ to prioritize "" over ".scm"
+  - examples/wily-guile also uses in-tree partial install
+
 - 2.30 | 2011-02-12
   - portability fix for Guile 1.9.14 (among others, probably)
 
