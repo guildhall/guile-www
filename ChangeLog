@@ -1,3 +1,12 @@
+2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[misc] Use partial install from "make check" for examples/wily-guile.
+
+	* examples/wily-guile.in: Rewrite: Allow env var ‘GUILE’
+	override; check for partial install under ../source/;
+	don't set env var ‘GUILE_LOAD_PATH’; instead, mine
+	‘GUILE_SITE’ from ../source/Makefile and use it for ‘-L’ arg.
+
 2011-05-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[build doc] Reduce unorthodoxy: Build .info in srcdir.
