@@ -188,6 +188,11 @@
                  (for-each mogrify alist))
                (set! P (reverse! P))
                (set! U (reverse! U)))))
+      ;; Include ‘query-string’ pairs, if any.
+      (and-let* ((s (cgi:getenv 'query-string))
+                 ((not (string-null? s))))
+        ;; FIXME: We prefix, but perhaps we should suffix?
+        (set! P (append! (alist<-query s) P)))
       (set! V (collate P))
       (set! U (collate U))
       (set! C (collate (simple-parse-cookies

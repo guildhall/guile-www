@@ -1,3 +1,19 @@
+2011-07-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Fix bug: Handle query-string (e.g., for GET request method).
+
+	Regression introduced 2009-05-26, "Fix bug:
+	For (www cgi), don't mix query string and form data".
+	Reported by gregory benison.
+
+	This is a regression because we DO want to mix query-string
+	and form-data.  Previous to the 2009-05-26, the query-string
+	clobbered the form-data.  Still to figure out is whether or
+	not it is better to prefix or suffix the query-string pairs.
+
+	* cgi.scm (make-ccc): If ‘QUERY_STRING’ is non-empty,
+	parse it and prefix the resulting form variables to the others.
+
 2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.31
