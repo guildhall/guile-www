@@ -36,8 +36,7 @@ snippets: $(allstems:%=$(top_srcdir)/source/%.scm)
 $(info_TEXINFOS): snippets
 
 .texh.texi:
-	$(gx) tsin -f snippets -c utf-8 $<
-	if [ '.' = '$(srcdir)' ] ; then : ; else mv $@ $(srcdir)/$@ ; fi
+	$(gx) tsin -f snippets -c utf-8 --same-dir $<
 
 CLEANFILES = guile-www.dvi guile-www_toc.html guile-www.html
 

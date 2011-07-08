@@ -1,3 +1,10 @@
+2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Use "$(gx) tsin --same-dir".
+
+	* doc/Makefile.am (.texh.texi): Don't mv "manually";
+	instead, pass option ‘--same-dir’ to ‘$(gx) tsin’.
+
 2011-05-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.31
