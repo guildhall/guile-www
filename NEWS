@@ -1,5 +1,8 @@
 NEWS for Guile-WWW
 
+- 2.32 | 2011-07-08
+  - bugfix: make (www cgi) work (again) with GET request method
+
 - 2.31 | 2011-05-29
   - bugfix: "make uninstall" now does a complete job
   - improvements to "make check"

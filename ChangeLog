@@ -1,5 +1,11 @@
 2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.32
+
+	* configure.ac (AC_INIT): Bump version to "2.32" for release.
+
+2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Use "$(gx) tsin --same-dir".
 
 	* doc/Makefile.am (.texh.texi): Don't mv "manually";

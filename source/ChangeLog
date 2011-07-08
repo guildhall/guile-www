@@ -1,3 +1,7 @@
+2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.32
+
 2011-07-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Fix bug: Handle query-string (e.g., for GET request method).
