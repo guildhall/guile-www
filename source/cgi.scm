@@ -164,9 +164,11 @@
                  ((not (zero? len)))
                  (type (env-look 'content-type))
                  (s (read-body len (current-input-port))))
-        (cond ((string-ci= type "application/x-www-form-urlencoded")
+        ;; We check for prefix instead of equality because sometimes
+        ;; the server appends other information (e.g., "; charset=UTF-8").
+        (cond ((string-prefix-ci? "application/x-www-form-urlencoded" type)
                (set! P (alist<-query s)))
-              ((string-ci= type "multipart/form-data" 0 19)
+              ((string-prefix-ci? "multipart/form-data" type)
                (let ((alist (parse-form (substring/shared type 19) s)))
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))

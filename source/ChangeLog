@@ -1,3 +1,14 @@
+2011-09-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Relax ‘application/x-www-form-urlencoded’ recognition.
+
+	Apparently, under HTTP 1.1 the server can include more than
+	a simple MIME type in the ‘Content-Type’ header.  Good slack!
+	Reported by Simon Haines.
+
+	* cgi.scm (make-ccc init!): Use ‘string-prefix-ci?’
+	for ‘application/x-www-form-urlencoded’, ‘multipart/form-data’.
+
 2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.32
