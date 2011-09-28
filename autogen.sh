@@ -26,4 +26,15 @@ fi
 
 autoreconf --verbose --install --symlink -Wall
 
+# These override what ‘autoreconf --install’ creates.
+# Another way is to use gnulib's config/srclist-update.
+actually ()
+{
+    gnulib-tool --verbose --copy-file $1 $2
+}
+actually doc/INSTALL.UTF-8 INSTALL
+
+# We aren't really interested in the backup files.
+rm -f INSTALL~
+
 # autogen.sh ends here
