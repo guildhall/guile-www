@@ -35,13 +35,6 @@ fi])
 
 AM_CONDITIONAL([HAVE_MKPIMMC],[test yes = $gwww_cv_mkpimmc])
 
-GUILE_MODULE_REQUIRED([ice-9 and-let-star])
-GUILE_MODULE_REQUIRED([ice-9 rdelim])
-GUILE_MODULE_REQUIRED([ice-9 regex])
-GUILE_MODULE_REQUIRED([ice-9 rw])
-GUILE_MODULE_REQUIRED([srfi srfi-13])
-GUILE_MODULE_REQUIRED([srfi srfi-14])
-
 GUILE_MODULE_AVAILABLE([optargs_kw], (ice-9 optargs-kw))
 AS_VAR_IF([optargs_kw],[yes],[AS_VAR_APPEND([mmflags],[',optargs-kw'])])
 

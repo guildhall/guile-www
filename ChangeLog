@@ -1,5 +1,14 @@
 2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build] Decruft: Don't bother to check for widely-available modules.
+
+	These have been around for many years now, even in Guile 1.4.x.
+
+	* configure.ac (ice-9 and-let-star, ice-9 rdelim, ice-9 regex)
+	(ice-9 rw, srfi srfi-13, srfi srfi-14): Delete GUILE_MODULE_REQUIRED:s.
+
+2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Bump prereq version for Automake to 1.11.1.
 
 	* configure.ac (AM_INIT_AUTOMAKE): Bump prereq version to 1.11.1.
