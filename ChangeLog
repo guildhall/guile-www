@@ -1,3 +1,9 @@
+2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Bump prereq version for Automake to 1.11.1.
+
+	* configure.ac (AM_INIT_AUTOMAKE): Bump prereq version to 1.11.1.
+
 2011-07-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.32
