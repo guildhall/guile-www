@@ -19,7 +19,7 @@
 ## write to the Free Software Foundation, Inc., 51 Franklin Street,
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
-wwwdir = $(GUILE_SITE)/www/server-utils
+wwwdir = $(GUILE_LIBSITE)/www/server-utils
 www_DATA = $(su_leaves)
 
 include $(top_srcdir)/build-aux/comp.mk

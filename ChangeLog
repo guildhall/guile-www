@@ -1,5 +1,20 @@
 2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[inst] Install under $(GUILE_LIBSITE).
+
+	* build-aux/snuggle.m4: New file.
+	* autogen.sh: Import Guile-BAUX module ‘re-prefixed-site-dirs’.
+	* configure.ac (GUILE_PROGS): Delete macro call.
+	(SNUGGLE_PROGS): New macro call.
+	(gwww_cv_mkpimmc): Use ‘SNUGGLE_GUILE_TOOLS_EXISTSP’.
+	(ice-9 optargs-kw): Use ‘SNUGGLE_MODULE_AVAILABLE’.
+	(ice-9 curried-definitions): Likewise.
+	(GUILE_SITE_DIR): Delete macro call.
+	(SNUGGLE_GUILE_LIBSITE_DIR): New macro call.
+	* examples/wily-guile.in: Do ‘s/GUILE_SITE/GUILE_LIBSITE/g’.
+
+2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build] Decruft: Don't bother to check for widely-available modules.
 
 	These have been around for many years now, even in Guile 1.4.x.

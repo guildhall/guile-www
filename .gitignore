@@ -27,6 +27,7 @@ Makefile.in
 /build-aux/guile-baux/module-compile
 /build-aux/guile-baux/punify
 /build-aux/guile-baux/read-string.scm
+/build-aux/guile-baux/re-prefixed-site-dirs
 /build-aux/guile-baux/scheme-scanner.scm
 /build-aux/guile-baux/stemname.scm
 /build-aux/guile-baux/temporary-file.scm

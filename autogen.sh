@@ -13,7 +13,8 @@
   exit 1
 }
 
-guile-baux-tool import common punify tsar tsin gbaux-do
+guile-baux-tool import re-prefixed-site-dirs \
+    common punify tsar tsin gbaux-do
 
 # automake is not so smooth handling generated .texi
 texi='doc/guile-www.texi'

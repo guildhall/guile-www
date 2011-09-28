@@ -33,9 +33,9 @@ if ! test -f Makefile ; then
     echo 'ERROR: missing Makefile'
     exit 1
 fi
-eval `sed '/^GUILE_SITE *= */!d;s/ *= */=/' Makefile`
+eval `sed '/^GUILE_LIBSITE *= */!d;s/ *= */=/' Makefile`
 
-guile="${GUILE-guile} -L ${GUILE_SITE}"
+guile="${GUILE-guile} -L ${GUILE_LIBSITE}"
 $debug && guile="$guile --debug"
 
 all='all-modules.list'
@@ -45,7 +45,7 @@ decho ()
     if $debug ; then echo "$1" ; fi
 }
 
-decho "GUILE_SITE: $GUILE_SITE"
+decho "GUILE_LIBSITE: $GUILE_LIBSITE"
 
 decho 'guile:'
 if $debug ; then ${GUILE-guile} --version ; fi

@@ -21,7 +21,7 @@
 
 SUBDIRS = server-utils data
 
-wwwdir = $(GUILE_SITE)/www
+wwwdir = $(GUILE_LIBSITE)/www
 www_DATA = $(top_leaves)
 
 include $(top_srcdir)/build-aux/comp.mk
@@ -56,7 +56,7 @@ EXTRA_DIST += $(TESTS)
 update-site-module-catalog:
 if HAVE_MKPIMMC
 	$(GUILE_TOOLS) make-module-catalog \
-	  -t '$(DESTDIR)' '$(DESTDIR)$(GUILE_SITE)'
+	  -t '$(DESTDIR)' '$(DESTDIR)$(GUILE_LIBSITE)'
 endif
 
 install-data-hook:

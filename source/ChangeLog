@@ -1,3 +1,13 @@
+2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[inst] Install under $(GUILE_LIBSITE).
+
+	* Makefile.am (wwwdir): Use $(GUILE_LIBSITE).
+	(update-site-module-catalog): Likewise.
+	* alive.test: Do ‘s/GUILE_SITE/GUILE_LIBSITE/g’.
+	* data/Makefile.am (wwwdir): Use $(GUILE_LIBSITE).
+	* server-utils/Makefile.am (wwwdir): Likewise.
+
 2011-09-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Relax ‘application/x-www-form-urlencoded’ recognition.

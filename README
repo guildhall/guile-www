@@ -38,21 +38,22 @@ Installation
 	(creating them first if necessary), renaming each FOO.scm to
 	simply FOO, and compressing them somewhat:
 
-	  source/*            -- $(GUILE_SITE)/www (and subdirs)
+	  source/*            -- $(GUILE_LIBSITE)/www (and subdirs)
 	  doc/guile-www.info  -- $(prefix)/info
 
-	Normally $(GUILE_SITE) is $(prefix)/share/guile/site
-	     and $(prefix)     is /usr/local
+	Normally $(GUILE_LIBSITE) is $(prefix)/lib/guile/site (Guile 1.4.x)
+                                  or $(prefix)/share/guile/site (other Guile)
+	     and $(prefix)        is /usr/local
 
 	For guile to resolve these module names as (www FOO), make sure
-	that $(GUILE_SITE) is in the ‘%load-path’.  To see the value of
+	that $(GUILE_LIBSITE) is in the ‘%load-path’.  To see the value of
 	this variable use the command:
 
 	  guile -c '(display %load-path)'
 
 	For systems which have the "guile-tools make-module-catalog"
 	program, "make install" also updates the module catalog in
-	$(GUILE_SITE).
+	$(GUILE_LIBSITE).
 
 
 Maintenance

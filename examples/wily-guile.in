@@ -9,5 +9,5 @@ if ! test -d "$prefix" ; then
     echo 'Do "make check" from top build dir, first.'
     exit 1
 fi
-eval `sed '/^GUILE_SITE *= */!d;s/ *= */=/' $source/Makefile`
-exec $guile -L "$GUILE_SITE" "$@"
+eval `sed '/^GUILE_LIBSITE *= */!d;s/ *= */=/' $source/Makefile`
+exec $guile -L "$GUILE_LIBSITE" "$@"

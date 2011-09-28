@@ -25,26 +25,23 @@ AC_INIT([Guile-WWW],[2.32],[ttn@gnuvola.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11.1 gnu])
 
-GUILE_PROGS
+SNUGGLE_PROGS
 
-AC_CACHE_CHECK([if you have "guile-tools mkpimmc"],[gwww_cv_mkpimmc],
-[if $GUILE_TOOLS | grep mkpimmc >/dev/null 2>&1
-then gwww_cv_mkpimmc=yes
-else gwww_cv_mkpimmc=no
-fi])
-
+SNUGGLE_GUILE_TOOLS_EXISTSP([gwww_cv_mkpimmc],[mkpimmc])
 AM_CONDITIONAL([HAVE_MKPIMMC],[test yes = $gwww_cv_mkpimmc])
 
-GUILE_MODULE_AVAILABLE([optargs_kw], (ice-9 optargs-kw))
-AS_VAR_IF([optargs_kw],[yes],[AS_VAR_APPEND([mmflags],[',optargs-kw'])])
+SNUGGLE_MODULE_AVAILABLE([ice-9 optargs-kw])
+AS_VAR_IF([have_mod_ice_9_optargs_kw],[yes],
+[AS_VAR_APPEND([mmflags],[',optargs-kw'])])
 
-GUILE_MODULE_AVAILABLE([currdef], (ice-9 curried-definitions))
-AS_VAR_IF([currdef],[no],[AS_VAR_APPEND([mmflags],[',no-currdef'])])
+SNUGGLE_MODULE_AVAILABLE([ice-9 curried-definitions])
+AS_VAR_IF([have_mod_ice_9_curried_definitions],[no],
+[AS_VAR_APPEND([mmflags],[',no-currdef'])])
 
 AS_VAR_SET_IF([mmflags],[AS_VAR_SET([MMFLAGS],["-f$mmflags"])])
 AC_SUBST([MMFLAGS])
 
-GUILE_SITE_DIR
+SNUGGLE_GUILE_LIBSITE_DIR([gwww])
 
 AC_CONFIG_FILES([
   Makefile
