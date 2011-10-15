@@ -44,6 +44,6 @@ It lives in the repo but is not included in the distribution.
     This branch is where largely-stable changes intended for the next release
     live.  It's very unlikely to undergo rebase, but not entirely impossible.
     Guile-WWW hackers probably want to start here.
-*** q/TOPIC -- "questionably", "querulously"
+*** q-TOPIC -- "questionably", "querulously"
     These are experimental, exploring the particular TOPIC.  They are intended
     to be ephemeral, undergoing rebase, amendment, and ultimately removal.
