@@ -33,6 +33,7 @@ if ! test -f Makefile ; then
     echo 'ERROR: missing Makefile'
     exit 1
 fi
+eval `sed '/^exec_prefix *= */!d;s/ *= */=/' Makefile`
 eval `sed '/^GUILE_LIBSITE *= */!d;s/ *= */=/' Makefile`
 
 guile="${GUILE-guile} -L ${GUILE_LIBSITE}"
