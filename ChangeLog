@@ -1,3 +1,9 @@
+2011-12-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Explicitly declare UTF-8.
+
+	* doc/guile-www.texh <header>: Add ‘@documentencoding’.
+
 2011-09-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[boot] Use INSTALL.UTF-8 from gnulib for INSTALL.

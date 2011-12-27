@@ -1,6 +1,7 @@
 \input texinfo  @c -*-texinfo-*-
 @c %**start of header
 @setfilename guile-www.info
+@documentencoding UTF-8
 @settitle @code{Guile-WWW} Modules Reference
 @ifinfo
 @paragraphindent 0
