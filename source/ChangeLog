@@ -1,5 +1,12 @@
 2012-02-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Add abstraction: through/discarding-CRLF
+
+	* http.scm (http:request through/discarding-CRLF): New proc.
+	(http:request): Use ‘through/discarding-CRLF’.
+
+2012-02-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Import ‘(ice-9 rdelim) read-line’ explicitly.
 
 	* http.scm: Import ‘(ice-9 rdelim) read-line’;

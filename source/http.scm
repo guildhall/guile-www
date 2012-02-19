@@ -385,6 +385,8 @@
           (body    (if (and (pair? args) (pair? (cdr args)))
                        (cadr args)
                        '())))
+      (define (through/discarding-CRLF)
+        (sans-trailing-whitespace (read-line sock 'trim)))
       (let* ((form-hack? (let loop ((ls headers))
                            (cond ((null? ls) #f)
                                  ((regexp-exec form-hack-regex (car ls))
@@ -413,16 +415,13 @@
 
         ;; parse and add status line
         ;; also cons up a list of response headers
-        (let* ((response-status-line (sans-trailing-whitespace
-                                      (read-line sock 'trim)))
+        (let* ((response-status-line (through/discarding-CRLF))
                (response-headers
-                (let make-header-list ((ln (sans-trailing-whitespace
-                                            (read-line sock 'trim)))
+                (let make-header-list ((ln (through/discarding-CRLF))
                                        (hlist '()))
                   (if (string-null? ln)
                       hlist
-                      (make-header-list (sans-trailing-whitespace
-                                         (read-line sock 'trim))
+                      (make-header-list (through/discarding-CRLF)
                                         (cons (http:header-parse ln)
                                               hlist)))))
                (response-status-fields
