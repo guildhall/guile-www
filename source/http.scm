@@ -383,14 +383,16 @@
                                 headers)
                           headers)))
 
-        (with-output-to-port sock
-          (lambda ()
-            (display-with-crlf request)
-            (for-each display-with-crlf headers)
-            (display "\r\n")
-            (if form-hack?
-                (display (car body))
-                (for-each display-with-crlf body))))
+        (define (display/crlf line)
+          (display line sock)
+          (display "\r\n" sock))
+
+        (display/crlf request)
+        (for-each display/crlf headers)
+        (display/crlf "")
+        (if form-hack?
+            (display (car body) sock)
+            (for-each display/crlf body))
 
         ;; parse and add status line
         ;; also cons up a list of response headers
@@ -437,9 +439,5 @@
             (and (number? try)
                  (loop (+ start try))))))
     s))
-
-(define (display-with-crlf line)
-  (display line)
-  (display "\r\n"))
 
 ;;; (www http) ends here

@@ -1,5 +1,13 @@
 2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http int] Incorporate ‘display-with-crlf’ into unique caller.
+
+	* http.scm (http:request display/crlf): New proc.
+	(http:request): Use ‘display/crlf’.
+	(display-with-crlf): Delete proc.
+
+2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www crlf)
 
 	* crlf.scm: New file.
