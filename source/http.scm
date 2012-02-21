@@ -430,10 +430,6 @@
                (response-code    (cadr response-status-fields))
                (response-text    (caddr response-status-fields)))
 
-          ;; signal error if HTTP status is invalid
-          ;; (or (http:status-ok? response-code)
-          ;; (error 'http-status "HTTP server returned bad status"
-          ;;        response-status-line))
           ;; Get message body: if Content-Length header was supplied, read
           ;; that many chars.  Otherwise, read until EOF
 
