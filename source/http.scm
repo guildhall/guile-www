@@ -42,10 +42,11 @@
             http:connect
             http:open
             http:request)
-  #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)))
+  #:use-module ((www crlf) #:select (read-through-CRLF
+                                     read-three-part-line
+                                     read-headers))
+  #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
-  #:use-module ((ice-9 rdelim) #:select (read-line))
-  #:use-module (ice-9 regex)
   #:use-module (ice-9 rw))
 
 
@@ -122,28 +123,6 @@
 
 (define (http:fetch-header header header-alist)
   (assq-ref header-alist header))
-
-(define header-regex (make-regexp ": *"))
-
-(define (http:header-parse hd)
-  (let ((match (regexp-exec header-regex hd)))
-    (cons (string->symbol
-           (apply string
-                  (map char-downcase
-                       (string->list (match:prefix match)))))
-          (match:suffix match))))
-
-(define (parse-status-line statline)
-  ;; Handle:     VERSION CODE
-  ;; as well as: VERSION CODE TEXT
-  ;; For the former, use the null string for TEXT.
-  (let* ((first (string-index statline #\space))
-         (second (string-index statline #\space (1+ first))))
-    (list (subs statline 0 first)
-          (subs statline (1+ first) (or second (string-length statline)))
-          (if second
-              (subs statline (1+ second))
-              ""))))
 
 
 
@@ -386,7 +365,7 @@
                        (cadr args)
                        '())))
       (define (through/discarding-CRLF)
-        (sans-trailing-whitespace (read-line sock 'trim)))
+        (read-through-CRLF sock))
       (let* ((form-hack? (let loop ((ls headers))
                            (cond ((null? ls) #f)
                                  ((regexp-exec form-hack-regex (car ls))
@@ -415,27 +394,18 @@
 
         ;; parse and add status line
         ;; also cons up a list of response headers
-        (let* ((response-status-line (through/discarding-CRLF))
-               (response-headers
-                (let make-header-list ((ln (through/discarding-CRLF))
-                                       (hlist '()))
-                  (if (string-null? ln)
-                      hlist
-                      (make-header-list (through/discarding-CRLF)
-                                        (cons (http:header-parse ln)
-                                              hlist)))))
-               (response-status-fields
-                (parse-status-line response-status-line))
-               (response-version (car response-status-fields))
-               (response-code    (cadr response-status-fields))
-               (response-text    (caddr response-status-fields)))
-
-          ;; Get message body: if Content-Length header was supplied, read
-          ;; that many chars.  Otherwise, read until EOF
-
-          (let ((content-length (http:fetch-header
-                                 'content-length
-                                 response-headers)))
+        (let-values (((rvers rcode rtext) (read-three-part-line sock)))
+          (let* ((response-headers (map (lambda (pair)
+                                          (cons (string->symbol
+                                                 (string-downcase
+                                                  (car pair)))
+                                                (cdr pair)))
+                                        (read-headers sock)))
+                 (content-length (http:fetch-header
+                                  'content-length
+                                  response-headers)))
+            ;; Get message body: if Content-Length header was supplied, read
+            ;; that many chars.  Otherwise, read until EOF
             (let ((response-body
                    (if (and content-length
                             (not (string-ci=? method "HEAD")))
@@ -448,9 +418,7 @@
               ;; FIXME: what about keepalives?
               (close-port sock)
 
-              (http:make-message response-version
-                                 response-code
-                                 response-text
+              (http:make-message rvers rcode rtext
                                  response-headers
                                  response-body))))))))
 
@@ -473,20 +441,5 @@
 (define (display-with-crlf line)
   (display line)
   (display "\r\n"))
-
-;; (sans-trailing-whitespace STR)
-;;      These are defined in module (ice-9 string-fun), so this code
-;;      will probably be discarded when the module system and boot-9
-;;      settle down.
-
-(define (sans-trailing-whitespace s)
-  (let ((st 0)
-        (end (string-length s)))
-    (while (and (< 0 end)
-                (char-whitespace? (string-ref s (1- end))))
-      (set! end (1- end)))
-    (if (< end st)
-        ""
-        (subs s st end))))
 
 ;;; (www http) ends here

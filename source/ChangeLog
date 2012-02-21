@@ -1,3 +1,23 @@
+2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] New internal module: (www crlf)
+
+	* crlf.scm: New file.
+	* http.scm: Don't use modules ‘(srfi srfi-13)’, ‘(ice-9 rdelim)’,
+	‘(ice-9 regex)’; use modules ‘(www crlf)’ and ‘(srfi srfi-11)’.
+	(header-regex): Delete regexp.
+	(http:header-parse, parse-status-line): Delete procs.
+	(http:request through/discarding-CRLF): Use ‘read-through-CRLF’.
+	(http:request): Use ‘read-three-part-line’, ‘read-headers’.
+	(sans-trailing-whitespace): Delete proc.
+	* server-utils/parse-request.scm: Don't use module
+	‘(ice-9 rdelim)’; use modules ‘(www crlf)’ and ‘(srfi srfi-11)’.
+	(read-line/CRLF): Delete proc.
+	(false-if-eof): New macro.
+	(read-first-line): Use ‘false-if-eof’, ‘read-three-part-line’.
+	(read-headers): Use ‘crlf:read-headers’.
+	(skip-headers): Use ‘false-if-eof’, ‘read-through-CRLF’.
+
 2012-02-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add abstraction: through/discarding-CRLF

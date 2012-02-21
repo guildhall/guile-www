@@ -1,3 +1,9 @@
+2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] New internal module: (www crlf)
+
+	* build-aux/common.mk (top_leaves): Add crlf.
+
 2011-12-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Explicitly declare UTF-8.

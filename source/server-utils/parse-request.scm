@@ -24,21 +24,22 @@
   #:export (read-first-line
             hqf<-upath alist<-query
             read-headers skip-headers read-body)
+  #:use-module ((www crlf) #:select (read-through-CRLF
+                                     read-three-part-line
+                                     (read-headers . crlf:read-headers)))
   #:autoload (www url-coding) (url-coding:decode)
+  #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
-  #:use-module (ice-9 rdelim)
   #:use-module (ice-9 rw)
   #:use-module (ice-9 and-let-star))
 
-(define (read-line/CRLF port)
-  (and-let* ((pair (read-line port 'split))
-             ((eq? #\newline (cdr pair)))
-             (raw (car pair))
-             (lc-pos (1- (string-length raw)))
-             ((not (negative? lc-pos)))
-             ((eq? #\cr (string-ref raw lc-pos))))
-    (substring/shared raw 0 lc-pos)))
+(define-macro (false-if-eof . body)
+  `(catch 'unexpected-eof
+          (lambda ()
+            ,@body)
+          (lambda ignored
+            #f)))
 
 ;; Parse the first line of the HTTP message from input @var{port} and
 ;; return a list of the method, URL path and HTTP version indicator, or
@@ -50,17 +51,13 @@
 ;; returns the default "HTTP/1.0".
 ;;
 (define (read-first-line port)
-  (and-let* ((line (read-line/CRLF port))
-             (len (string-length line))
-             (eom (string-index line char-set:whitespace))
-             (bou (string-skip  line char-set:whitespace eom))
-             (eou (or (string-index line char-set:whitespace bou) len))
-             (sub (lambda x (apply substring/shared line x))))
-    (list (string->symbol (sub 0 eom))
-          (sub bou eou)
-          (if (= len eou)
-              "HTTP/1.0"
-              (sub (string-skip line char-set:whitespace eou))))))
+  (false-if-eof
+   (let-values (((method url vers) (read-three-part-line port)))
+     (list (string->symbol (string-upcase method))
+           url
+           (if (string-null? vers)
+               "HTTP/1.0"
+               vers)))))
 
 ;; Parse @var{upath} and return three values representing
 ;; its hierarchy, query and fragment components.
@@ -118,31 +115,10 @@
 ;; parse consumes the trailing @samp{CRLF} of the header block as well.
 ;;
 (define (read-headers port)
-  (let loop ((acc '()))
-    (and-let* ((line (read-line/CRLF port)))
-      (cond ((string-null? line)
-             (map (lambda (pair)
-                    (let ((v (cdr pair)))
-                      (if (string? v)
-                          pair
-                          (cons (car pair) (string-join (reverse! v) " ")))))
-                  (reverse! acc)))
-            ((char-set-contains? char-set:whitespace (string-ref line 0))
-             (and-let* (((not (null? acc)))
-                        (more (string-trim-both line)))
-               (or (string-null? more)
-                   (let* ((prev (car acc))
-                          (pls (cdr prev)))
-                     (set-cdr! prev (cons more (if (string? pls)
-                                                   (list pls)
-                                                   pls)))))
-               (loop acc)))
-            (else
-             (and-let* ((colon (string-index line #\:)))
-               (loop (acons
-                      (string-trim-right line char-set:whitespace 0 colon)
-                      (string-trim-both line char-set:whitespace (1+ colon))
-                      acc))))))))
+  (catch 'parse-error (lambda ()
+                        (crlf:read-headers port))
+         (lambda ignored
+           #f)))
 
 ;; Scan without parsing the headers of the HTTP message from input
 ;; @var{port}, and return the empty list, or @code{#f} if the message
@@ -150,11 +126,12 @@
 ;; @samp{CRLF} of the header block as well.
 ;;
 (define (skip-headers port)
-  (let loop ()
-    (and-let* ((line (read-line/CRLF port)))
-      (if (string-null? line)
-          '()
-          (loop)))))
+  (false-if-eof
+   (let loop ()
+     (let ((line (read-through-CRLF port)))
+       (if (string-null? line)
+           '()
+           (loop))))))
 
 ;; Return a new string of @var{len} bytes with contents
 ;; read from input @var{port}.

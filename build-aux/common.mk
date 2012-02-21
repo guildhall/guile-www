@@ -29,6 +29,7 @@ gx = $(top_srcdir)/build-aux/guile-baux/gbaux-do
 # doc/Makefile.am can assemble filenames prefixing parent-dir.
 
 top_leaves =		\
+ crlf			\
  cgi			\
  http			\
  main			\
