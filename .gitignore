@@ -39,6 +39,7 @@ Makefile.in
 
 /doc/guile-www.aux
 /doc/guile-www.cp
+/doc/guile-www.cps
 /doc/guile-www.fn
 /doc/guile-www.fns
 /doc/guile-www.html
