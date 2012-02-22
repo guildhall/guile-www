@@ -1,5 +1,11 @@
 2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[dist] Create .xz tarball instead of .gz on "make dist".
+
+	* configure.ac (AM_INIT_AUTOMAKE): Add options ‘no-dist-gzip’, ‘dist-xz’.
+
+2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Zonk ‘(www server-utils answer) string<-header-components’.
 
 	* doc/guile-www.texh (answer): Delete @tsin for ‘string<-header-components’.
