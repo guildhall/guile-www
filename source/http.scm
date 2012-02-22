@@ -310,46 +310,32 @@
                     (else (car args)))))
     (http:connect PF_INET AF_INET ipaddr port)))
 
-(define form-hack-regex
-  ;; Normally ‘http:request’ formats the lines it sends over the socket to
-  ;; end with CRLF, and correspondingly adjusts Content-Length upward by 2
-  ;; for each line.  For ‘application/x-www-form-urlencoded’ messages with
-  ;; only one one line in the body, however, this is inappropriate; often
-  ;; the cgi at the other end of the socket misinterprets the CRLF as part
-  ;; of the last value.  We help those programs avoid confusion by not
-  ;; sending the CRLF (and munging Content-Length appropriately) for this
-  ;; special case.
-  (make-regexp "content-type: *application/x-www-form-urlencoded"
-               regexp/icase))
-
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.
 ;;
 ;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
 ;; @var{url} is a url object returned by @code{url:parse}.  Optional
 ;; args @var{headers} and @var{body} are lists of strings that comprise
-;; the lines of an HTTP message.  The strings should not end with
+;; the lines of an HTTP message.  The header strings should not end with
 ;; @samp{CR} or @samp{LF} or @samp{CRLF}; @code{http:request} handles
 ;; that.  Also, the Content-Length header and Host header are calculated
 ;; automatically and should not be supplied.  Here are two examples:
 ;;
 ;; @example
-;; (http:request "get" parsed-url
+;; (http:request "GET" parsed-url
 ;;   (list "User-Agent: Anonymous/0.1"
 ;;         "Content-Type: text/plain"))
 ;;
-;; (http:request "post" parsed-url
+;; (http:request "POST" parsed-url
 ;;   (list "User-Agent: Fred/0.1"
 ;;         "Content-Type: application/x-www-form-urlencoded")
-;;   (list (string-append "search=Gosper"
-;;                        "&case=no"
-;;                        "&max_hits=50")))
+;;   (list "search=Gosper"
+;;         "&case=no"
+;;         "&max_hits=50"))
 ;; @end example
 ;;
-;; As a special case (demonstrated in the second example above), when
-;; Content-Type is @code{application/x-www-form-urlencoded} and there is
-;; only one line in the body, the final @samp{CRLF} is omitted and the
-;; Content-Length is adjusted accordingly.
+;; In the second example, the @code{Content-Length} header is
+;; computed to have value 33 (the sum of 13, 8 and 12).
 ;;
 ;;-args: (- 2 0 headers body)
 ;;
@@ -366,18 +352,7 @@
                        '())))
       (define (through/discarding-CRLF)
         (read-through-CRLF sock))
-      (let* ((form-hack? (let loop ((ls headers))
-                           (cond ((null? ls) #f)
-                                 ((regexp-exec form-hack-regex (car ls))
-                                  (and (pair? body)
-                                       (not (pair? (cdr body)))))
-                                 (else (loop (cdr ls))))))
-             (content-length
-              (apply +
-                     (if form-hack? -2 0)
-                     (map (lambda (line)
-                            (+ 2 (string-length line))) ; + 2 for CRLF
-                          body)))
+      (let* ((content-length (apply + (map string-length body)))
              (headers (if (positive? content-length)
                           (cons (fs "Content-Length: ~A" content-length)
                                 headers)
@@ -390,9 +365,9 @@
         (display/crlf request)
         (for-each display/crlf headers)
         (display/crlf "")
-        (if form-hack?
-            (display (car body) sock)
-            (for-each display/crlf body))
+        (for-each (lambda (s)
+                    (display s sock))
+                  body)
 
         ;; parse and add status line
         ;; also cons up a list of response headers

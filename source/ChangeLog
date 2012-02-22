@@ -1,3 +1,14 @@
+2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[http] Fix bug: Don't send CRLF for message body.
+
+	Regression introduced in 2.x series and clumsily backstepped by
+	2004-01-22 "(form-hack-regex): New var".  See top-level ChangeLog.
+
+	* http.scm (form-hack-regex): Delete var.
+	(http:request): Output body body strings w/o trailing CRLF;
+	update ‘Content-Length’ computation accordingly.
+
 2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[http int] Incorporate ‘display-with-crlf’ into unique caller.
