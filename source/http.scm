@@ -44,7 +44,8 @@
             http:request)
   #:use-module ((www crlf) #:select (read-through-CRLF
                                      read-three-part-line
-                                     read-headers))
+                                     read-headers
+                                     read-characters))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
   #:use-module (ice-9 rw))
@@ -386,7 +387,7 @@
             (let ((response-body
                    (if (and content-length
                             (not (string-ci=? method "HEAD")))
-                       (read-n-chars (string->number content-length) sock)
+                       (read-characters (string->number content-length) sock)
                        (with-output-to-string
                          (lambda ()
                            (while (not (eof-object? (peek-char sock)))
@@ -398,21 +399,5 @@
               (http:make-message rvers rcode rtext
                                  response-headers
                                  response-body))))))))
-
-
-
-;;; System interface cruft & string funcs
-
-(define (read-n-chars num . port-arg)
-  (let ((p (if (null? port-arg)
-               (current-input-port)
-               (car port-arg)))
-        (s (make-string num)))
-    (let loop ((start 0))
-      (or (= start num)
-          (let ((try (read-string!/partial s p start)))
-            (and (number? try)
-                 (loop (+ start try))))))
-    s))
 
 ;;; (www http) ends here

@@ -26,7 +26,8 @@
             read-headers skip-headers read-body)
   #:use-module ((www crlf) #:select (read-through-CRLF
                                      read-three-part-line
-                                     (read-headers . crlf:read-headers)))
+                                     (read-headers . crlf:read-headers)
+                                     read-characters))
   #:autoload (www url-coding) (url-coding:decode)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (srfi srfi-13)
@@ -137,12 +138,6 @@
 ;; read from input @var{port}.
 ;;
 (define (read-body len port)
-  (let ((s (make-string len)))
-    (let loop ((start 0))
-      (or (= start len)
-          (let ((try (read-string!/partial s port start)))
-            (and (number? try)
-                 (loop (+ start try))))))
-    s))
+  (read-characters len port))
 
 ;;; (www server-utils parse-request) ends here

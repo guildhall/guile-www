@@ -32,8 +32,11 @@
 (define-module (www crlf)
   #:export (read-through-CRLF
             read-three-part-line
-            read-headers)
+            read-headers
+            read-characters)
+  #:use-module ((ice-9 rw) #:select (read-string!/partial))
   #:use-module ((ice-9 rdelim) #:select (read-delimited))
+  #:use-module ((srfi srfi-4) #:select (make-u8vector))
   #:use-module ((srfi srfi-13) #:select (string-concatenate-reverse
                                          string-index
                                          string-join
@@ -156,5 +159,16 @@
                       (string-trim-right line char-set:whitespace 0 colon)
                       (string-trim-both line char-set:whitespace (1+ colon))
                       acc))))))))
+
+;; Return a string made from reading @var{n} characters from @var{port}.
+;;
+(define (read-characters n port)
+  (let ((s (make-string n)))
+    (let loop ((start 0))
+      (or (= start n)
+          (and=> (read-string!/partial s port start)
+                 (lambda (got)
+                   (loop (+ start got))))))
+    s))
 
 ;;; (www crlf) ends here

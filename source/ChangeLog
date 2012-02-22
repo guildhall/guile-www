@@ -1,5 +1,16 @@
 2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] New (www crlf) proc: read-characters
+
+	* crlf.scm (read-characters): New proc, exported.
+	* http.scm: Import ‘(www crlf) read-characters’.
+	(http:request): Use ‘read-characters’.
+	(read-n-chars): Delete proc.
+	* server-utils/parse-request.scm: Import ‘(www crlf) read-characters’.
+	(read-body): Use ‘read-characters’.
+
+2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Zonk ‘(www server-utils answer) string<-header-components’.
 
 	Announced in Guile-WWW 2.28 (2010-06-22).
