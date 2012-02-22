@@ -1,5 +1,13 @@
 2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Zonk ‘(www server-utils answer) string<-header-components’.
+
+	Announced in Guile-WWW 2.28 (2010-06-22).
+
+	* server-utils/answer.scm (string<-header-components): Delete proc.
+
+2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[http] Fix bug: Don't send CRLF for message body.
 
 	Regression introduced in 2.x series and clumsily backstepped by

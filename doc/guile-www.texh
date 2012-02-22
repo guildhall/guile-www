@@ -716,7 +716,6 @@ once flattened, thus enabling internal optimizations.
 @tsin i tree-flat-length!
 @tsin i string<-tree
 @tsin i string<-headers
-@tsin i string<-header-components
 
 @heading example
 Here is @code{transmit-file} from the above example, slightly modified to use

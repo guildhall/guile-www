@@ -23,7 +23,6 @@
 (define-module (www server-utils answer)
   #:export (CRLF flat-length fs walk-tree tree-flat-length! string<-tree
                  string<-headers
-                 string<-header-components
                  mouthpiece)
   #:use-module (ice-9 curried-definitions)
   #:use-module (ice-9 optargs)
@@ -141,27 +140,6 @@
   (string<-tree (map (tree<-header-proc (or style http-ish))
                      (map car alist)
                      (map cdr alist))))
-
-;; Return a string made from formatting header name @var{n} and value
-;; @var{v}.  Additional headers can be specified as alternating name and
-;; value args.  Each header is formatted like so: ``@var{name}:
-;; @var{value}\r\n''.
-;;
-;; Each @var{n} may be a string, symbol or keyword.  Each @var{v} may be a
-;; string, number, symbol, or a tree.
-;;
-;; @strong{NOTE}: This proc @strong{will be removed} after 2011-12-31.
-;; Use @code{string<-headers} instead.
-;;
-;;-sig: (n v [n1 v1...])
-;;
-(define (string<-header-components . ls)
-  (string<-headers
-   (let loop ((acc '()) (ls ls))
-     (if (null? ls)
-         (reverse! acc)
-         (loop (acons (car ls) (cadr ls) acc)
-               (cddr ls))))))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a

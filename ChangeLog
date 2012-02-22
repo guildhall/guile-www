@@ -1,3 +1,9 @@
+2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Zonk ‘(www server-utils answer) string<-header-components’.
+
+	* doc/guile-www.texh (answer): Delete @tsin for ‘string<-header-components’.
+
 2012-02-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] New internal module: (www crlf)
