@@ -1,3 +1,12 @@
+2012-02-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[http] Accept symbolic METHOD for ‘http:request’.
+
+	* http.scm (http:head, http:get, http:post-form):
+	Use symbolic method for ‘http:request’ call.
+	(http:request): If ‘method’ is a string, convert to symbol;
+	‘error’ if neither string nor symbol; handle symbol internally.
+
 2012-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] New (www crlf) proc: read-characters

@@ -135,7 +135,7 @@
 ;; The @code{Host} header is automatically included.
 ;;
 (define (http:head url)
-  (http:request "HEAD" url))
+  (http:request 'HEAD url))
 
 ;; Submit an http request using the @code{GET} method on the @var{url}.
 ;; The @code{Host} header is automatically included.
@@ -143,7 +143,7 @@
 (define (http:get url)
   ;; FIXME: if http:open returns an old connection that has been
   ;; closed remotely, this will fail.
-  (http:request "GET" url))
+  (http:request 'GET url))
 
 ;; Submit an http request using the @code{POST} method on the @var{url}.
 ;; @var{extra-headers} is a list of extra headers, each a string of form
@@ -218,7 +218,7 @@
     (set! uploads (reverse! uploads))
     ;; do it!
     (http:request
-     "POST" url
+     'POST url
      ;; headers
      (cons
       (if (null? uploads)
@@ -314,7 +314,8 @@
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.
 ;;
-;; @var{method} is the name of some HTTP method, e.g. "GET" or "POST".
+;; @var{method} is the symbolic name of some HTTP method, e.g.,
+;; @code{GET} or @code{POST}.  It may also be a string.
 ;; @var{url} is a url object returned by @code{url:parse}.  Optional
 ;; args @var{headers} and @var{body} are lists of strings that comprise
 ;; the lines of an HTTP message.  The header strings should not end with
@@ -323,11 +324,11 @@
 ;; automatically and should not be supplied.  Here are two examples:
 ;;
 ;; @example
-;; (http:request "GET" parsed-url
+;; (http:request 'GET parsed-url
 ;;   (list "User-Agent: Anonymous/0.1"
 ;;         "Content-Type: text/plain"))
 ;;
-;; (http:request "POST" parsed-url
+;; (http:request 'POST parsed-url
 ;;   (list "User-Agent: Fred/0.1"
 ;;         "Content-Type: application/x-www-form-urlencoded")
 ;;   (list "search=Gosper"
@@ -341,6 +342,10 @@
 ;;-args: (- 2 0 headers body)
 ;;
 (define (http:request method url . args)
+  (cond ((symbol? method))
+        ;; Handle string ‘method’ for backward compatability.
+        ((string? method) (set! method (string->symbol method)))
+        (else (error "bad method:" method)))
   (let ((host     (url:host url))
         (tcp-port (or (url:port url) 80))
         (path     (fs "/~A" (or (url:path url) ""))))
@@ -386,7 +391,7 @@
             ;; that many chars.  Otherwise, read until EOF
             (let ((response-body
                    (if (and content-length
-                            (not (string-ci=? method "HEAD")))
+                            (not (eq? method 'HEAD)))
                        (read-characters (string->number content-length) sock)
                        (with-output-to-string
                          (lambda ()
