@@ -17,6 +17,7 @@ Makefile.in
 /build-aux/install-sh
 /build-aux/mdate-sh
 /build-aux/missing
+/build-aux/snuggle.m4
 /build-aux/texinfo.tex
 
 /build-aux/guile-baux/common.scm

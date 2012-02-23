@@ -27,6 +27,7 @@ ACLOCAL_AMFLAGS = -I build-aux
 
 EXTRA_DIST = \
  build-aux/guile-baux \
+ build-aux/snuggle.m4 \
  examples/README \
  examples/cookie.cgi \
  examples/wwwcat \

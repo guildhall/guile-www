@@ -16,6 +16,8 @@
 guile-baux-tool import re-prefixed-site-dirs \
     common punify tsar tsin gbaux-do
 
+snuggle m4 build-aux
+
 # automake is not so smooth handling generated .texi
 texi='doc/guile-www.texi'
 if [ ! -f $texi ] ; then
