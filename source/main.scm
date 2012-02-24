@@ -32,7 +32,8 @@
             www:get
             www:http-head-get)
   #:use-module (www http)
-  #:use-module (www url))
+  #:use-module (www url)
+  #:use-module (ice-9 optargs))
 
 
 (define dispatch-table
@@ -74,15 +75,13 @@
 ;; Optional second arg @code{alist?} non-@code{#f} means return only the
 ;; alist portion of the HTTP response object.
 ;;
-;;-args: (- 1 0)
-;;
-(define (www:http-head-get url-string . alist?)
+(define* (www:http-head-get url-string #:optional alist?)
   (let ((url (url:parse url-string)))
     (or (eq? 'http (url:scheme url))
         (error "URL scheme not ‘http’" url-string))
-    ((if (or (null? alist?) (not (car alist?)))
-         identity
-         http:message-headers)
+    ((if alist?
+         http:message-headers
+         identity)
      (http:head url))))
 
 ;;; (www main) ends here

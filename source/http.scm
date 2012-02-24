@@ -48,6 +48,7 @@
                                      read-characters))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
+  #:use-module (ice-9 optargs)
   #:use-module (ice-9 rw))
 
 
@@ -193,16 +194,16 @@
              (and=> (xfer-enc: spec) string-or-symbol?))
         (error "bad upload spec:" spec)))
 
-  (define (c-type type . boundary)
+  (define* (c-type type #:optional boundary)
     (fs "Content-Type: ~A~A"
         type
-        (if (null? boundary)
-            ""
-            (fs "; boundary=~S" (car boundary)))))
+        (if boundary
+            (fs "; boundary=~S" boundary)
+            "")))
 
-  (define (c-disp disp name . f?)
+  (define* (c-disp disp name #:optional f?)
     (fs "Content-Disposition: ~A; ~Aname=\"~A\""
-        disp (if (null? f?) "" "file") name))
+        disp (if f? "file" "") name))
 
   (let ((simple '()) (uploads '())      ; partition fields
         (boundary "gUiLeWwWhTtPpOsTfOrM"))
@@ -302,14 +303,10 @@
 ;; Return an HTTP connection (a socket) to @var{host} (a string) on TCP
 ;; port @var{port} (default 80 if unspecified).
 ;;
-;;-args: (- 1 0 port)
-;;
-(define (http:open host . args)
-  (let ((ipaddr (car (hostent:addr-list (gethost host))))
-        (port (cond ((null? args) 80)
-                    ((not (car args)) 80)
-                    (else (car args)))))
-    (http:connect PF_INET AF_INET ipaddr port)))
+(define* (http:open host #:optional (port 80))
+  (http:connect PF_INET AF_INET
+                (car (hostent:addr-list (gethost host)))
+                port))
 
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.
@@ -339,9 +336,7 @@
 ;; In the second example, the @code{Content-Length} header is
 ;; computed to have value 33 (the sum of 13, 8 and 12).
 ;;
-;;-args: (- 2 0 headers body)
-;;
-(define (http:request method url . args)
+(define* (http:request method url #:optional (headers '()) (body '()))
   (cond ((symbol? method))
         ;; Handle string ‘method’ for backward compatability.
         ((string? method) (set! method (string->symbol method)))
@@ -351,11 +346,7 @@
         (path     (fs "/~A" (or (url:path url) ""))))
     (let ((sock (http:open host tcp-port))
           (request (fs "~A ~A ~A" method path http:version))
-          (headers (cons (fs "Host: ~A" (url:host url))
-                         (if (pair? args) (car args) '())))
-          (body    (if (and (pair? args) (pair? (cdr args)))
-                       (cadr args)
-                       '())))
+          (headers (cons (fs "Host: ~A" (url:host url)) headers)))
       (define (through/discarding-CRLF)
         (read-through-CRLF sock))
       (let* ((content-length (apply + (map string-length body)))

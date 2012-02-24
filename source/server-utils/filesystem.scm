@@ -42,6 +42,7 @@
   #:use-module ((srfi srfi-14) #:select (char-set-complement
                                          char-set))
   #:use-module (ice-9 and-let-star)
+  #:use-module (ice-9 optargs)
   #:autoload (www data mime-types) (mime-types<-extension))
 
 ;; Create and return a filesystem-access procedure based on
@@ -148,10 +149,7 @@
 ;;
 ;; Directory names are always returned with a trailing slash.
 ;;
-;;-args: (- 1 0 dir-indexes)
-;;
-(define (upath->filename-proc docroot . idx)
-  (or (null? idx) (set! idx (car idx)))
+(define* (upath->filename-proc docroot #:optional (dir-indexes '()))
   ;; rv
   (lambda (upath)
     (let ((filename (cleanup-filename (in-vicinity docroot upath))))
@@ -184,17 +182,12 @@
 ;;
 ;; @xref{mime-types}, proc @code{put-mime-types!}, for more info.
 ;;
-;;-args: (- 1 0)
-;;
-(define (filename->content-type filename . default)
+(define* (filename->content-type filename #:optional (default "application/octet-stream"))
   (or (and-let* ((cut (string-rindex filename #\.))
                  (mt (mime-types<-extension (subs filename (1+ cut)))))
         (symbol->string (if (pair? mt)
                             (car mt)
                             mt)))
-      ;; use ‘if’ here to allow #f for ‘default’
-      (if (not (null? default))
-          (car default)
-          "application/octet-stream")))
+      default))
 
 ;;; (www server-utils filesystem) ends here

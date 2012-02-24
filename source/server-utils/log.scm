@@ -22,7 +22,8 @@
 
 (define-module (www server-utils log)
   ;; naming convention: log-SOMETHING-proc
-  #:export (log-http-response-proc))
+  #:export (log-http-response-proc)
+  #:use-module (ice-9 optargs))
 
 ;; Return a procedure that writes an HTTP response log entry to @var{port}.
 ;; The procedure is called with args @var{client}, @var{method}, @var{upath}
@@ -54,14 +55,13 @@
 ;;
 ;; The buffering mode for @var{port} is set to line-buffered.
 ;;
-;;-args: (- 3 0 gmtime? stamp-format method-pair?)
-;;
-(define (log-http-response-proc port . opts)
+(define* (log-http-response-proc port #:optional
+                                 gmtime?
+                                 (stamp-format "%Y-%m-%d:%H:%M:%S %Z")
+                                 method-pair?)
   (setvbuf port _IOLBF)
   (let* ((len (length opts))
-         (rep (or (and (<= 1 len) (car opts) gmtime) localtime))
-         (tfmt (or (and (<= 2 len) (cadr opts)) "%Y-%m-%d:%H:%M:%S %Z"))
-         (mpair? (and (<= 3 len) (caddr opts)))
+         (rep (if gmtime? gmtime localtime))
          (meth (if mpair? car identity))
          (vers (if mpair?
                    (lambda (x) (simple-format #f " ~A" (cdr x)))
@@ -70,7 +70,7 @@
     (lambda (client method upath status)
       (simple-format port "~A - - [~A] \"~A ~A~A\" ~A"
                      client
-                     (strftime tfmt (rep (current-time)))
+                     (strftime stamp-format (rep (current-time)))
                      (meth method) upath (vers method)
                      (if (pair? status) (car status) status))
       (and (pair? status)

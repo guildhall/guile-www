@@ -371,7 +371,7 @@
     (define (inhibit-content! value)
       (set! inhibit-content? (->bool value)))
 
-    (define (send-reply . close)
+    (define* (send-reply #:optional close)
       (define (out! s stop)
         (let loop ((start 0))
           (set! start (+ start (write-string/partial s out-port start stop)))
@@ -399,13 +399,12 @@
       (force-output out-port)
       (status-content-length! (if inhibit-content? 0 content-length))
       (reset-protocol!)
-      (or (null? close)
-          (let ((close (car close)))
-            (and (eq? 'socket (port-filename out-port))
-                 (shutdown out-port (if (thunk? close)
-                                        (close)
-                                        close)))
-            (set! out-port #f))))
+      (cond (close
+             (and (eq? 'socket (port-filename out-port))
+                  (shutdown out-port (if (thunk? close)
+                                         (close)
+                                         close)))
+             (set! out-port #f))))
 
     ;; rv
     (lambda (command . args)

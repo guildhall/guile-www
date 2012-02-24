@@ -1,5 +1,18 @@
 2012-02-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use (ice-9 optargs) more.
+
+	Implicit ∀ files: "Use module ‘(ice-9 optargs)’".
+	* http.scm (http:post-form c-type, http:post-form c-disp)
+	(http:open, http:request): Use ‘define*’.
+	* main.scm (www:http-head-get): Likewise.
+	* server-utils/answer.scm (mouthpiece send-reply): Likewise.
+	* server-utils/filesystem.scm (upath->filename-proc)
+	(filename->content-type): Likewise.
+	* server-utils/log.scm (log-http-response-proc): Likewise.
+
+2012-02-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Make ‘(www crlf) read-headers’ handle name normalization.
 
 	* crlf.scm (read-headers): Take arg NORM; call it
