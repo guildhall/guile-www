@@ -100,7 +100,9 @@
                 ""))))
 
 ;; Read headers from @var{port}; consume the trailing @var{CRLF}.
-;; Return a list of string pairs @code{(@var{name} . @var{value})}.
+;; Return a list of string @code{(@var{name} . @var{value})},
+;; where @var{name} is the result of calling @var{norm} on the
+;; original (string) header name, and @var{value} is a string.
 ;; On error, throw to @code{parse-error} a symbol @var{problem}
 ;; and a @var{problem}-specific argument.
 ;;
@@ -120,7 +122,7 @@
 ;; The argument is a pair @code{(@var{line} . @var{headers}).
 ;; @end table
 ;;
-(define (read-headers port)
+(define (read-headers port norm)
 
   (define (badness k v)
     (throw 'parse-error k v))
@@ -156,7 +158,7 @@
              (let ((colon (string-index line #\:)))
                (or colon (badness 'missing-colon (cons line (racc!))))
                (loop (acons
-                      (string-trim-right line char-set:whitespace 0 colon)
+                      (norm (string-trim-right line char-set:whitespace 0 colon))
                       (string-trim-both line char-set:whitespace (1+ colon))
                       acc))))))))
 

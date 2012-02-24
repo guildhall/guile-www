@@ -378,12 +378,10 @@
         ;; parse and add status line
         ;; also cons up a list of response headers
         (let-values (((rvers rcode rtext) (read-three-part-line sock)))
-          (let* ((response-headers (map (lambda (pair)
-                                          (cons (string->symbol
-                                                 (string-downcase
-                                                  (car pair)))
-                                                (cdr pair)))
-                                        (read-headers sock)))
+          (let* ((response-headers (read-headers sock (lambda (string)
+                                                        (string->symbol
+                                                         (string-downcase
+                                                          string)))))
                  (content-length (http:fetch-header
                                   'content-length
                                   response-headers)))

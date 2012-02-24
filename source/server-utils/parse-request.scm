@@ -117,7 +117,7 @@
 ;;
 (define (read-headers port)
   (catch 'parse-error (lambda ()
-                        (crlf:read-headers port))
+                        (crlf:read-headers port identity))
          (lambda ignored
            #f)))
 

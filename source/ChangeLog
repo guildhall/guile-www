@@ -1,3 +1,13 @@
+2012-02-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Make ‘(www crlf) read-headers’ handle name normalization.
+
+	* crlf.scm (read-headers): Take arg NORM; call it
+	on each header name string to compute result alist keys.
+	* http.scm (http:request): Update call to ‘read-headers’.
+	* server-utils/parse-request.scm (read-headers):
+	Update call to ‘crlf:read-headers’.
+
 2012-02-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[http] Accept symbolic METHOD for ‘http:request’.
