@@ -68,7 +68,7 @@
 ;; Each of VERSION, STATUS-CODE, STATUS-TEXT are strings.  HEADERS
 ;; is an alist of headers and their contents.  BODY is a single string.
 
-(define (http:make-message version statcode stattext headers body)
+(define (make-message version statcode stattext headers body)
   (vector version statcode stattext headers body))
 
 ;;;; HTTP status predicates.
@@ -385,8 +385,8 @@
               ;; FIXME: what about keepalives?
               (close-port sock)
 
-              (http:make-message rvers rcode rtext
-                                 response-headers
-                                 response-body))))))))
+              (make-message rvers rcode rtext
+                            response-headers
+                            response-body))))))))
 
 ;;; (www http) ends here
