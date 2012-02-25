@@ -84,9 +84,13 @@
 (define (http:message-status-ok? msg)
   (http:status-ok? (http:message-status-code msg)))
 
-;; Return @code{#t} iff @var{status} (a string) begins with "2".
+;; Return @code{#t} iff @var{status} (string or integer) is @code{2xx}.
+;;
 (define (http:status-ok? status)
-  (char=? #\2 (string-ref status 0)))
+  (= 2 (quotient (if (string? status)
+                     (string->number status)
+                     status)
+                 100)))
 
 ;; Return the body of the HTTP message @var{msg}.
 (define (http:message-body msg) (vector-ref msg 4))

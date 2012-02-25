@@ -1,5 +1,12 @@
 2012-02-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http] Make ‘http:status-ok?’ accept also integer.
+
+	* http.scm (http:status-ok?): Rewrite to test
+	numerically; if arg is a string, convert to number first.
+
+2012-02-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Rename internal proc w/o "http:" prefix.
 
 	* http.scm (make-message): Rename from ‘http:make-message’.
