@@ -1,3 +1,11 @@
+2012-02-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Decruft: Drop ‘http:fetch-header’.
+
+	* http.scm (http:message-header): Use ‘assq-ref’ directly.
+	(http:fetch-header): Delete proc.
+	(http:request): Use ‘assq-ref’ directly.
+
 2012-02-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use (ice-9 optargs) more.

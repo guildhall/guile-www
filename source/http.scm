@@ -121,10 +121,7 @@
 ;; or @code{#f} if no such header is present in the message.
 ;;
 (define (http:message-header header msg)
-  (http:fetch-header header (http:message-headers msg)))
-
-(define (http:fetch-header header header-alist)
-  (assq-ref header-alist header))
+  (assq-ref (http:message-headers msg) header))
 
 
 
@@ -373,9 +370,7 @@
                                                         (string->symbol
                                                          (string-downcase
                                                           string)))))
-                 (content-length (http:fetch-header
-                                  'content-length
-                                  response-headers)))
+                 (content-length (assq-ref response-headers 'content-length)))
             ;; Get message body: if Content-Length header was supplied, read
             ;; that many chars.  Otherwise, read until EOF
             (let ((response-body
