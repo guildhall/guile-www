@@ -28,7 +28,8 @@
 ;;; Code:
 
 (define-module (www http)
-  #:export (http:message-version
+  #:export (protocol-version
+            http:message-version
             http:message-status-code
             http:message-status-text
             http:message-status-ok?
@@ -46,6 +47,7 @@
                                      read-three-part-line
                                      read-headers
                                      read-characters))
+  #:use-module ((srfi srfi-1) #:select (car+cdr))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
   #:use-module (ice-9 optargs)
@@ -60,7 +62,21 @@
 
 ;;; Variables that affect HTTP usage.
 
-(define http:version "HTTP/1.0")
+;; A pair of integers representing the major and minor
+;; portions of the protocol version this module should support.
+;; The default value is @code{(1 . 0)}.  Users:
+;;
+;; @example
+;; http:request
+;; http:head        ; via http:request
+;; http:get         ; likewise
+;; http:post-form   ; likewise
+;; @end example
+;;
+;;-category: fluid
+;;
+(define protocol-version (make-fluid))
+(fluid-set! protocol-version '(1 . 0))
 
 ;; An HTTP message is represented by a vector:
 ;;      #(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
@@ -346,7 +362,8 @@
         (tcp-port (or (url:port url) 80))
         (path     (fs "/~A" (or (url:path url) ""))))
     (let ((sock (http:open host tcp-port))
-          (request (fs "~A ~A ~A" method path http:version))
+          (request (let-values (((major minor) (car+cdr (fluid-ref protocol-version))))
+                     (fs "~A ~A HTTP/~A.~A" method path major minor)))
           (headers (cons (fs "Host: ~A" (url:host url)) headers)))
       (define (through/discarding-CRLF)
         (read-through-CRLF sock))

@@ -130,8 +130,13 @@ Data -- (www data *)
 @node         http
 @chapter (www http)
 
-The @code{(www http)} module includes procedures for high-level HTTP
+The @code{(www http)} module includes module-configuration fluids,
+procedures for high-level HTTP
 operation, low-level HTTP message object access, and common messages.
+
+@section Dynamic Configuration
+
+@tsin i protocol-version
 
 @section High-Level HTTP Operation
 
