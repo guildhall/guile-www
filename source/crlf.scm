@@ -45,13 +45,15 @@
                                          substring/shared))
   #:use-module ((srfi srfi-14) #:select (char-set:whitespace)))
 
+(define CR "\r")
+
 ;; Read a string from @var{port} through the next @samp{CRLF},
 ;; discarding the @samp{CRLF}.  On EOF, throw to @code{unexpected-eof}
 ;; the accumulated string prior to the EOF.
 ;;
 (define (read-through-CRLF port)
   (let loop ((acc '()))
-    (let* ((s (read-delimited "\r" port))
+    (let* ((s (read-delimited CR port))
            (c (peek-char port)))
 
       (define (so-far)
@@ -76,7 +78,7 @@
 
        ;; foolish
        (else
-        (loop (cons* "\r" s acc)))))))
+        (loop (cons* CR s acc)))))))
 
 ;; Read a @samp{CRLF}-terminated line from @var{port}
 ;; as three @code{#\space}-separated parts.
