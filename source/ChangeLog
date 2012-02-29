@@ -1,5 +1,13 @@
 2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http int] Rewrite ‘http:request’.
+
+	* http.scm: Don't import ‘read-headers’, ‘read-characters’.
+	(msg-string-rcode!): New proc.
+	(http:request): Rewrite, using ‘send-request’, ‘receive-response’.
+
+2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Add (www http) procs: ‘send-request’, ‘receive-response’
 
 	* http.scm: Import ‘hsym-proc’, ‘read-headers/get-body’, ‘out!’.

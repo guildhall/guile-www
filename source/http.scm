@@ -46,8 +46,6 @@
             receive-response
             http:request)
   #:use-module ((www crlf) #:select (read-three-part-line
-                                     read-headers
-                                     read-characters
                                      hsym-proc
                                      read-headers/get-body
                                      out!))
@@ -147,6 +145,9 @@
 
 (define (msg-headers! msg alist) (vector-set! msg 3 alist))
 (define (msg-body! msg string)   (vector-set! msg 4 string))
+
+(define (msg-string-rcode! msg)
+  (vector-set! msg 1 (fs "~A" (vector-ref msg 1))))
 
 
 
@@ -520,6 +521,9 @@
 
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.
+;; The field types and values of this message object are as described in
+;; @code{receive-response}, with two exceptions (for backward compatability):
+;; the status code is a string; the header names are symbols, all lower-case.
 ;;
 ;; @var{method} is the symbolic name of some HTTP method, e.g.,
 ;; @code{GET} or @code{POST}.  It may also be a string.
@@ -551,54 +555,19 @@
         ;; Handle string ‘method’ for backward compatability.
         ((string? method) (set! method (string->symbol method)))
         (else (error "bad method:" method)))
-  (let ((host     (url:host url))
-        (tcp-port (or (url:port url) 80))
-        (path     (fs "/~A" (or (url:path url) ""))))
-    (let ((sock (http:open host tcp-port))
-          (request (let-values (((major minor) (car+cdr (fluid-ref protocol-version))))
-                     (fs "~A ~A HTTP/~A.~A" method path major minor)))
-          (headers (cons (fs "Host: ~A" (url:host url)) headers)))
-      (let* ((content-length (apply + (map string-length body)))
-             (headers (if (positive? content-length)
-                          (cons (fs "Content-Length: ~A" content-length)
-                                headers)
-                          headers)))
-
-        (define (display/crlf line)
-          (display line sock)
-          (display "\r\n" sock))
-
-        (display/crlf request)
-        (for-each display/crlf headers)
-        (display/crlf "")
-        (for-each (lambda (s)
-                    (display s sock))
-                  body)
-
-        ;; parse and add status line
-        ;; also cons up a list of response headers
-        (let-values (((rvers rcode rtext) (read-three-part-line sock)))
-          (let* ((response-headers (read-headers sock (lambda (string)
-                                                        (string->symbol
-                                                         (string-downcase
-                                                          string)))))
-                 (content-length (assq-ref response-headers 'content-length)))
-            ;; Get message body: if Content-Length header was supplied, read
-            ;; that many chars.  Otherwise, read until EOF
-            (let ((response-body
-                   (if (and content-length
-                            (not (eq? method 'HEAD)))
-                       (read-characters (string->number content-length) sock)
-                       (with-output-to-string
-                         (lambda ()
-                           (while (not (eof-object? (peek-char sock)))
-                             (display (read-char sock))))))))
-
-              ;; FIXME: what about keepalives?
-              (close-port sock)
-
-              (make-message rvers rcode rtext
-                            response-headers
-                            response-body))))))))
+  (let* ((sock (http:open (url:host url) (or (url:port url)
+                                             80)))
+         (get (send-request sock method url
+                            #:headers headers
+                            #:body body
+                            #:protocol-version (fluid-ref protocol-version)))
+         (ans (receive-response get
+                                ;; Backward comptability; blech!
+                                #:s2s string-downcase)))
+    ;; Backward compatability; blech!
+    (msg-string-rcode! ans)
+    ;; FIXME: what about keepalives?
+    (close-port sock)
+    ans))
 
 ;;; (www http) ends here
