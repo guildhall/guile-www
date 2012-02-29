@@ -33,11 +33,22 @@
   #:export (read-through-CRLF
             read-three-part-line
             read-headers
-            read-characters)
+            read-characters
+            hsym-proc
+            read-headers/get-body
+            out!)
+  #:use-module (ice-9 optargs)
   #:use-module ((ice-9 rw) #:select (read-string!/partial))
   #:use-module ((ice-9 rdelim) #:select (read-delimited))
-  #:use-module ((srfi srfi-4) #:select (make-u8vector))
+  #:use-module ((srfi srfi-1) #:select (append-map!))
+  #:use-module ((srfi srfi-4) #:select (make-u8vector
+                                        u8vector?
+                                        u8vector-length
+                                        u8vector-ref
+                                        u8vector-set!))
+  #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-concatenate-reverse
+                                         string-suffix?
                                          string-index
                                          string-join
                                          string-trim-right
@@ -46,6 +57,8 @@
   #:use-module ((srfi srfi-14) #:select (char-set:whitespace)))
 
 (define CR "\r")
+
+(define CRLF "\r\n")
 
 ;; Read a string from @var{port} through the next @samp{CRLF},
 ;; discarding the @samp{CRLF}.  On EOF, throw to @code{unexpected-eof}
@@ -174,5 +187,263 @@
                  (lambda (got)
                    (loop (+ start got))))))
     s))
+
+(define (hsym-proc s2s)
+  (if (eq? identity s2s)
+      ;; trust is beautiful
+      string->symbol
+      ;; with experience comes wisdom (one hopes)
+      (lambda (string)
+        (string->symbol (s2s string)))))
+
+(define* (read-headers/get-body sock s2s #:optional request)
+
+  (define (subs s end)
+    (substring/shared s 0 end))
+
+  (define hsym (hsym-proc s2s))
+
+  (define (read-alist)
+    (read-headers sock hsym))
+
+  (define (in! len)
+    (read-characters len sock))
+
+  (define (string-read!/partial s)
+    (read-string!/partial s sock))
+
+  (define (sub-u8 src n)
+    (let ((v (make-u8vector n)))
+      (do ((i 0 (1+ i)))
+          ((= n i))
+        (u8vector-set! v i (u8vector-ref src i)))
+      v))
+
+  (define (u8-concatenate-reverse ls)
+    (let* ((len (map u8vector-length ls))
+           (end (apply + len))
+           (v (make-u8vector end)))
+      (let loop ((ls ls) (len len))
+        (or (null? ls)
+            (let ((src (car ls)))
+              (do ((si (1- (car len)) (1- si)))
+                  ((negative? si))
+                (set! end (1- end))
+                (u8vector-set! v end (u8vector-ref src si)))
+              (loop (cdr ls) (cdr len)))))
+      v))
+
+  (define (motion options)
+    (cond ((memq 'custom options)
+           => (lambda (ls)
+                (let-values (((mkx r! cat-r subseq) (cadr ls)))
+                  (values mkx
+                          (lambda (len)
+                            (let ((x (mkx len)))
+                              (r! x sock)
+                              x))
+                          (lambda (x)
+                            (let ((count (r! x sock)))
+                              (and (positive? count)
+                                   count)))
+                          cat-r
+                          subseq))))
+          ((memq 'u8 options)
+           (motion (append `(custom ,(values make-u8vector
+                                             uniform-vector-read!
+                                             u8-concatenate-reverse
+                                             sub-u8))
+                           (delq 'u8 options))))
+          (else
+           (values make-string
+                   in!
+                   string-read!/partial
+                   string-concatenate-reverse
+                   subs))))
+
+  (let ((headers (read-alist)))
+
+    (define (get-body options)
+      (let-values (((mkx data-in! read!/partial concat-reverse first)
+                    (motion options)))
+
+        (define body<-acc
+          (if (memq 'no-cat options)
+              reverse!
+              concat-reverse))
+
+        (define (try-chunked)
+          (let ((t-enc (assq (hsym "Transfer-Encoding") headers)))
+            (and (pair? t-enc)
+                 (equal? "chunked" (cdr t-enc))
+                 (let loop ((acc '()))
+                   (let* ((spec (read-through-CRLF sock))
+                          (len (string->number
+                                (cond ((string-index spec #\;)
+                                       => (lambda (semi)
+                                            ;; ignore extensions for now
+                                            (subs spec semi)))
+                                      (else spec))
+                                16)))
+                     (if (positive? len)
+                         ;; more
+                         (let* ((chunk (data-in! len))
+                                (end (in! 2)))
+                           (or (string=? CRLF end)
+                               (throw 'chunked-transfer-encoding
+                                      'trailing-garbage end))
+                           (loop (cons chunk acc)))
+                         ;; done
+                         (values
+                          (append
+                           ;; Self-deprecate when work is done.
+                           (delq t-enc headers)
+                           ;; New trailers, if any.
+                           (read-alist))
+                          (body<-acc acc))))))))
+
+        (define (same-headers s)
+          (values #f s))
+
+        (define (try-known)
+          (and=> (assq-ref headers (hsym "Content-Length"))
+                 (lambda (s)
+                   (same-headers
+                    (data-in! (string->number s))))))
+
+        (define (drain)
+          (let loop ((acc '()))
+            (let ((x (mkx 1024)))
+              (cond ((read!/partial x)
+                     => (lambda (n)
+                          (loop (cons (if (= 1024 n)
+                                          x
+                                          (first x n))
+                                      acc))))
+                    (else
+                     (same-headers
+                      (body<-acc acc)))))))
+
+        (or (try-chunked)
+            (try-known)
+            (drain))))
+
+    (values headers
+            (and (or (not request)
+                     (let-values (((method rcode) request))
+                       ;; Sometimes no body is indicated.
+                       ;; See RFC 2068: Section 4.3 "Message Body".
+                       (not (or (eq? 'HEAD method)
+                                (= 1 (quotient rcode 100))
+                                (memq rcode '(204 304))))))
+                 get-body))))
+
+(define FRONT-FORMAT (string-append "~A ~A ~A" CRLF
+                                    "~A" CRLF))
+
+(define-macro (pop var)
+  `(let ((head (car ,var)))
+     (set! ,var (cdr ,var))
+     head))
+
+(define-macro (x-move what next-x)
+  `(lambda (sel)
+     ((footer-names) #f)
+     ((content-length) (apply + lengths))
+     ((next-chunk) (if (pair? ,what)
+                       (values (pop lengths)
+                               ,next-x)
+                       (values #f #f)))
+     ((footers) #f)))
+
+(define CHUNKS-DONE/FOOTER (string-append "0" CRLF
+                                          "~A" CRLF))
+
+(define (out! sock host a b c headers body flags)
+
+  (define (fsock s . args)
+    (apply simple-format sock s args))
+
+  (define (fkv k v)
+    (simple-format #f "~A: ~A" k v))
+
+  (define (h+! k v)
+    (set! headers (cons (fkv k v) headers)))
+
+  (define move!
+    (cond ((not body) #f)
+          ((null? body) (set! body #f) #f)
+          ((procedure? body) body)
+          ((or (and (u8vector? body) (list body))
+               (and (u8vector? (car body)) body))
+           => (lambda (vectors)
+                (let ((lengths (map u8vector-length vectors)))
+                  ;; move!
+                  (x-move vectors (lambda (sock)
+                                    (uniform-vector-write
+                                     (pop vectors)
+                                     sock))))))
+          (else
+           (let* ((strings (if (string? body) (list body) body))
+                  (lengths (map string-length strings)))
+             ;; move!
+             (x-move strings (pop strings))))))
+
+  (define (string<-elements ls)
+    (string-concatenate
+     (append-map! (lambda (s)
+                    (if (string-suffix? CRLF s)
+                        (list s)
+                        (list s CRLF)))
+                  ls)))
+
+  (let* ((options (if (or (not flags) (null? flags))
+                      '()
+                      flags))
+         (chunked? (memq 'chunked options))
+         (close? (memq 'close options)))
+
+    ;; All requests MUST include ‘Host’.  See RFC 2616
+    ;; Sections: 9 "Method Definitions"; 14.23 "Host".
+    (h+! 'Host host)
+
+    (and body (if chunked?
+                  (begin
+                    (and=> (move! 'footer-names)
+                           (lambda (ls)
+                             (for-each (lambda (name)
+                                         (h+! 'Trailer name))
+                                       ls)))
+                    (h+! 'Transfer-Encoding "chunked"))
+                  (and=> (move! 'content-length)
+                         (lambda (len)
+                           (and (positive? len)
+                                (h+! 'Content-Length len))))))
+
+    (fsock FRONT-FORMAT a b c (string<-elements headers))
+
+    (and body
+         (let loop ()
+           (let-values (((len s) (move! 'next-chunk)))
+             (cond ((and len s)
+                    (or (zero? len)     ; skip
+                        (begin
+                          (and chunked?
+                               (fsock "~A~A" (number->string len 16) CRLF))
+                          (if (string? s)
+                              (display s sock)
+                              (s sock))
+                          (and chunked? (display CRLF sock))))
+                    (loop))
+                   (else
+                    (and chunked?
+                         (fsock CHUNKS-DONE/FOOTER
+                                (cond ((move! 'footers)
+                                       => (lambda (ls)
+                                            (string<-elements
+                                             (map fkv
+                                                  (map car ls)
+                                                  (map cdr ls)))))
+                                      (else "")))))))))))
 
 ;;; (www crlf) ends here

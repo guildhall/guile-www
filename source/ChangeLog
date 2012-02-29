@@ -1,3 +1,17 @@
+2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add some support procs to (www crlf).
+
+	* crlf.scm: Import ‘(ice-9 optargs)’, SRFI 1 ‘append-map!’,
+	SRFI 4 ‘u8vector?’, ‘u8vector-length’, ‘u8vector-ref’,
+	‘u8vector-set!’, SRFI 11 ‘let-values’, SRFI 13 ‘string-suffix?’.
+	(CRLF): New string.
+	(hsym-proc, read-headers/get-body): New procs, exported.
+	(FRONT-FORMAT): New string.
+	(pop, x-move): New macros.
+	(CHUNKS-DONE/FOOTER): New string.
+	(out!): New proc, exported.
+
 2012-02-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add abstraction: CR
