@@ -17,6 +17,7 @@ It lives in the repo but is not included in the distribution.
   |     1.4.1.119 | yes       | yes   | yes |
   |     1.4.1.120 | yes       | yes   | yes |
   |     1.4.1.121 | yes       | yes   | yes |
+  |         1.8.7 | yes       | yes   | yes |
   |        1.9.14 | ?         | yes   | yes |
 
 * bootstrap: see autogen.sh for required tools
