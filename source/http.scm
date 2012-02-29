@@ -42,10 +42,15 @@
             http:post-form
             http:connect
             http:open
+            send-request
+            receive-response
             http:request)
   #:use-module ((www crlf) #:select (read-three-part-line
                                      read-headers
-                                     read-characters))
+                                     read-characters
+                                     hsym-proc
+                                     read-headers/get-body
+                                     out!))
   #:use-module ((srfi srfi-1) #:select (car+cdr))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
@@ -139,6 +144,9 @@
 ;;
 (define (http:message-header header msg)
   (assq-ref (http:message-headers msg) header))
+
+(define (msg-headers! msg alist) (vector-set! msg 3 alist))
+(define (msg-body! msg string)   (vector-set! msg 4 string))
 
 
 
@@ -321,6 +329,194 @@
   (http:connect PF_INET AF_INET
                 (car (hostent:addr-list (gethost host)))
                 port))
+
+;; Submit to socket @var{sock} an HTTP request using @var{method}
+;; (a symbol) and @var{url}, an object returned by @code{url:parse},
+;; forming the message with additional @var{headers}, a list of strings,
+;; each of which should have one of the forms:
+;;
+;; @example
+;; NAME ": " VALUE
+;; NAME ": " VALUE CRLF
+;; @end example
+;;
+;; @noindent
+;; and @var{body}, which may be @code{#f} (which means no body),
+;; a string or list of them, a @code{u8} vector or list of them,
+;; or a procedure @var{m} which manages the transmission of the
+;; body data by supporting the @dfn{body transmission protocol}.
+;; This means @var{m} takes one arg, @var{command} (symbol):
+;;
+;; @table @code
+;; @item content-length
+;; This is called if the transfer is not ``chunked'' (see below).
+;; @var{m} returns the total length (in bytes) of the data.
+;;
+;; @item next-chunk
+;; Return two values: the length (in bytes) of the next chunk of
+;; data to send, and either a string, or a procedure @var{w} that
+;; does the actual writing to its port arg (which will be @var{sock}).
+;; If there is no more data, both values should be @code{#f}, i.e.,
+;; @var{m} should return @code{(values #f #f)}.
+;; @end table
+;;
+;; If @code{flags} contains the symbol @code{chunked}, send the body
+;; with ``chunked'' @code{Transfer-Encoding}.  Otherwise, compute and
+;; add to the headers its total @code{Content-Length}.
+;;
+;; If @code{flags} contains the symbol @code{close},
+;; add @code{Connection: close} to the headers.
+;;
+;; The @var{protocol-version} is a pair specifying the major and minor
+;; version numbers of HTTP to send as.  It defaults to @code{(1 . 1)}.
+;; For HTTP 1.x (x >= 1), automatically add @code{chunked} to @var{flags}
+;; as well as the headers:
+;;
+;; @example
+;; TE: trailers
+;; Connection: TE
+;; @end example
+;;
+;; Return an unspecified object @var{pending} that can be passed
+;; to @code{receive-response}.
+;;
+(define* (send-request sock method url #:key
+                       (headers '())
+                       body
+                       (flags '())
+                       (protocol-version '(1 . 1)))
+
+  (define (chunked!)
+    (set! flags (cons 'chunked flags)))
+
+  (let-values (((major minor) (car+cdr protocol-version)))
+
+    (define (h+! . more)
+      (set! headers (append more headers)))
+
+    ;; Pile on some version-specific boilerplate; auto-enable chunking.
+    (cond
+     ;; 1.x, x>0
+     ((and (= 1 major) (positive? minor))
+      (chunked!)
+      (h+! "TE: trailers"
+           "Connection: TE")))
+
+    ;; Spew!
+    (out! sock (url:host url)
+          method
+          (fs "/~A" (or (url:path url) ""))
+          (fs "HTTP/~A.~A" major minor)
+          headers body
+          flags))
+
+  ;; rv: pending
+  (lambda (s2s)
+    (let-values (((rvers rcode rtext) (read-three-part-line sock)))
+      (let ((numeric (string->number rcode)))
+        (let-values (((headers body) (read-headers/get-body
+                                      sock s2s (values method numeric))))
+          (make-message rvers numeric rtext headers body))))))
+
+;; Receive the @var{pending} (from @code{send-request}) response.
+;; Return an HTTP message object.  The header names are symbols made
+;; by @code{(string->symbol (s2s @var{orig}))}, where @var{s2s}
+;; defaults to @code{string-titlecase}.  The status code is a 3-digit
+;; integer.  The body of the message may be @code{#f} if there is
+;; no body possible (per HTTP).  Otherwise, its value depends on
+;; @var{intervene} and @var{flags}.
+;;
+;; @itemize
+;; @item If @var{intervene} is specified, it should be a procedure
+;; that takes two args, @var{hget} and @var{flags} and returns
+;; two values, @var{new-headers} and @var{new-flags}.  It is called
+;; after the headers are parsed but before the body is received so
+;; that its returned values may influence the body processing.
+;;
+;; @var{hget} is a procedure that takes one arg @var{sel}.
+;; @table @asis
+;; @item @code{#f}
+;; Return the headers (alist).
+;; @item @code{#t}
+;; Return the name normalization procedure
+;; (involving @var{s2s}, described above).
+;; @item @var{string}
+;; Normalize it; return the associated header value.
+;; @item @var{symbol}
+;; Return the associated header value.
+;; @end table
+;;
+;; A @code{#f} value for @var{new-headers} means ``don't change
+;; the headers''.  Likewise, for @var{new-flags}.  Otherwise, the
+;; respective items are replaced (@strong{NB}: not just added!).
+;;
+;; @item If @var{flags} is null (the default), the body is a string.
+;;
+;; @item If @var{flags} contains the symbol @code{u8}, the body is
+;; a @code{u8} vector.
+;;
+;; @item If @var{flags} contains the symbol @code{custom}, the
+;; following item in @var{flags} should be four values (all procedures)
+;; that support the @dfn{chunk transfer protocol}.  These are:
+;;
+;; @table @code
+;; @item (mkx @var{len})
+;; Create and return a container capable of holding @var{len} bytes.
+;; @item (r! @var{x} @var{sock})
+;; Fill @var{x}, reading from @var{sock}.
+;; Return the number of bytes read (positive integer), or zero on EOF.
+;; @item (cat-r @var{list})
+;; Return a new container formed by reversing @var{list}
+;; and concatenating its elements.
+;; @item (subseq @var{x} @var{len})
+;; Return a new container that holds the first @var{len}
+;; bytes of container @var{x}.
+;; @end table
+;;
+;; The message body is a single container, either constructed from
+;; multiple exact chunks (``chunked'' @code{Transfer-Encoding}),
+;; or read in one swoop (if @code{Content-Length} is given),
+;; or from multiple inexact chunks (the default).
+;;
+;; @item If @var{flags} contains the symbol @code{no-cat}, then all
+;; multi-chunk transfers are not ``concatenated''; instead, the message
+;; body is the list of chunk data (string, @code{u8} or @code{custom}),
+;; in order of reception.
+;; @end itemize
+;;
+(define* (receive-response pending #:key
+                           (s2s string-titlecase)
+                           intervene
+                           (flags '()))
+  (let ((msg (pending s2s)))
+
+    (define (h-maybe! x)
+      (and x (msg-headers! msg x)))
+
+    (define (intervene!)
+
+      (define hget
+        (let ((headers (http:message-headers msg))
+              (hsym (hsym-proc s2s)))
+          ;; hget
+          (lambda (sel)
+            (cond ((not sel) headers)
+                  ((eq? #t sel) hsym)
+                  (else (assq-ref headers (if (string? sel)
+                                              (hsym sel)
+                                              sel)))))))
+
+      (let-values (((new-headers new-flags) (intervene hget flags)))
+        (h-maybe! new-headers)
+        (and new-flags (set! flags new-flags))))
+
+    (and=> (http:message-body msg)
+           (lambda (get-body)
+             (and intervene (intervene!))
+             (let-values (((new-headers s) (get-body flags)))
+               (h-maybe! new-headers)
+               (msg-body! msg s))))
+    msg))
 
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.

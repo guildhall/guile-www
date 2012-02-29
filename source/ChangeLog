@@ -1,5 +1,13 @@
 2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Add (www http) procs: ‘send-request’, ‘receive-response’
+
+	* http.scm: Import ‘hsym-proc’, ‘read-headers/get-body’, ‘out!’.
+	(msg-headers!, msg-body!): New procs.
+	(send-request, receive-response): New procs, exported.
+
+2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[http int] Decruft: Delete unused internal proc.
 
 	Omission from 2012-02-21, "New internal module: (www crlf)".

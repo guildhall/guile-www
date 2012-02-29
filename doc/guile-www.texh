@@ -142,6 +142,54 @@ operation, low-level HTTP message object access, and common messages.
 
 @tsin i http:connect
 @tsin i http:open
+@tsin i send-request
+@tsin i receive-response
+
+Here is an example that uses @code{receive-request} argument
+@var{intervene} to arrange for the message body to be a @code{u8}
+vector if the @code{Content-Type} is not ``text/*''.
+
+@example
+(use-modules
+ (srfi srfi-13)   ; string-prefix?
+ (www url))       ; url:parse
+
+(define (text? type)
+  (string-prefix? "text/" type))
+
+(define (u8-maybe hget flags)
+  (cond ((hget 'Content-Type)
+         => (lambda (type)
+              (values #f (and (not (text? type))
+                              (cons 'u8 flags)))))
+        (else
+         (values #f #f))))
+
+(define SOCK (http:open @dots{}))
+
+(define (gimme string)
+  (send-request SOCK 'GET (url:parse string)))
+
+(define (ok pending)
+  (receive-response pending #:intervene u8-maybe))
+
+(define ICO (ok (gimme "http://localhost/favicon.ico")))
+(define IDX (ok (gimme "http://localhost/index.html")))
+
+(http:message-body ICO)
+@result{} #u8(0 0 1 0 1 0 46 @dots{})
+
+(http:message-body IDX)
+@result{} "<?xml version=\"1.0\" @dots{}"
+@end example
+
+@noindent
+Note that to find the content type in @code{u8-maybe}, we rely on the
+default header-name normalization of @code{string-titlecase}, since we
+know @code{ok} does not specify @code{#:s2s @var{s2s}} in its call to
+@code{receive-response}.  To enable @code{u8-maybe} to work with any
+pending response, you can instead use @code{(hget "Content-Type")}
+(i.e., a string name).
 @tsin i http:request
 
 @section Low-Level HTTP Message Object Access
