@@ -1,5 +1,102 @@
 NEWS for Guile-WWW
 
+
+- 2.33 | 2012-02-29
+
+  - distribution now .tar.xz
+
+	If you have GNU tar, you can use "tar xf" and it will DTRT.
+	If not, you can use "xz -dc TARBALL | tar xf -" to unpack.
+
+  - configure no longer checks for some widely-available modules
+
+	The modules ‘(ice-9 and-let-star)’, ‘(ice-9 rdelim)’ and
+	‘(ice-9 regex)’ have been widely-available since Guile 1.4.x.
+
+  - configure uses SNUGGLE for cross-Guile portability
+
+	SNUGGLE is Free Software: <http://www.gnuvola.org/software/>.
+	It provides ‘build-aux/snuggle.m4’, which is more amicable than
+	the various ‘guile.m4’ in the wild.
+
+  - dropped ‘(www server-utils answer) string<-header-components’
+
+	This was pre-announced below in Guile-WWW 2.28 (2010-06-22).
+
+  - changes to (www http)
+
+    - bug fix: ‘http:request’ sends message body as-is
+
+	This procedure used to erroneously send ‘CRLF’ after each string
+	specified in BODY.  Now, it sends BODY only.
+
+    - ‘http:status-ok?’ also accepts numeric arg
+
+	E.g., ‘(http:status-ok? 200)’ and ‘(http:status-ok? "200")’
+	both return ‘#t’.
+
+    - ‘http:request’ also accepts a symbolic method
+
+	Of course, a string is still acceptable.  Additionally, it is
+	now an error if ‘method’ is neither string nor symbol.
+
+    - new procs: ‘send-request’, ‘receive-response’
+
+	These give (www http) a more asynchronous feel; it is now
+	possible to implement pipelining, connection re-use, etc.
+	Support for "chunked" transfer encoding and other HTTP 1.1 bits
+	is built-in, although you can explicitly downgrade to 1.0 if you
+	wish.
+
+	Other features: (optional) caller-directed i/o to reduce data
+	motion; support for ‘u8vector’ body (see example in the docs);
+	support for custom body type; caller-specifiable header-name
+	normalization; procedure names w/o "http:" prefix :-D.
+
+    - message field types now documented
+
+	The message object returned by ‘receive-response’ has a numeric
+	status-code and header names normalized by the caller.
+
+	In contrast, for backward compatability, the message object
+	returned by ‘http:request’ has a string status-code and
+	lower-case header names.
+
+	(Header names are symbolic in any case.)
+
+    - new fluid: protocol-version
+
+	This affects how ‘http:request’ calls ‘send-request’ internally.
+	It also impacts ‘http:get’, ‘http:head’, and ‘http:post-form’,
+	which call ‘http:request’.
+
+	The default value is ‘(1 . 0)’, i.e., HTTP 1.0.  The idea is to
+	support backward compatability out of the box, but allow users
+	to experimentally do:
+
+	  (set-fluid! protocol-version '(1 . 1))
+
+	without having to modify their current code.  (New code
+	should use ‘send-request’ and ‘receive-response’ directly.)
+	This is a transitional feature of Guile-WWW 2.x; 3.x will
+	drop ‘http:request’ (et al) along with the need for this
+	fluid, entirely.
+
+  - (www cgi) recognizes ‘application/x-www-form-urlencoded’ better
+
+	Before, Content-Type recognition was over-constrained, failing
+	to handle parameters (usually of the form "; charset=...").
+	Things are now more relaxed.
+
+  - documentation now explicitly UTF-8
+
+	This has no immediate impact, but if you regenerate the .info,
+	it may be possible that the makeinfo you use will generate nicer
+	quotes, e.g., ‘foo’ instead of `foo'.  Time will tell.
+
+  - maintenance: Autoconf 2.68, Automake 1.11.3, Guile-BAUX 20111227
+
+
 - 2.32 | 2011-07-08
   - bugfix: make (www cgi) work (again) with GET request method
 
@@ -245,7 +342,7 @@ NEWS for Guile-WWW
 
 
 
-Copyright (C) 2010, 2011 Thien-Thi Nguyen
+Copyright (C) 2010, 2011, 2012 Thien-Thi Nguyen
 
 Copying and distribution of this file, with or without modification,
 are permitted provided the copyright notice and this notice are preserved.

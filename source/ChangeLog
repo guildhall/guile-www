@@ -1,5 +1,9 @@
 2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.33
+
+2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[http int] Rewrite ‘http:request’.
 
 	* http.scm: Don't import ‘read-headers’, ‘read-characters’.
