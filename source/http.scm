@@ -81,8 +81,10 @@
 ;; An HTTP message is represented by a vector:
 ;;      #(VERSION STATUS-CODE STATUS-TEXT HEADERS BODY)
 ;;
-;; Each of VERSION, STATUS-CODE, STATUS-TEXT are strings.  HEADERS
-;; is an alist of headers and their contents.  BODY is a single string.
+;; VERSION and STATUS-TEXT are strings.  STATUS-CODE is a number
+;; if through ‘receive-response’, a string if through ‘http:request’.
+;; HEADERS is an alist with symbolic keys and string values.
+;; BODY is #f, a "get body" procedure, a string, a u8 vector, etc.
 
 (define (make-message version statcode stattext headers body)
   (vector version statcode stattext headers body))
@@ -111,27 +113,23 @@
 ;; Return the body of the HTTP message @var{msg}.
 (define (http:message-body msg) (vector-ref msg 4))
 
-;; HTTP response headers functions
+;; {HTTP response headers functions}
 ;;
-;; An HTTP message header is represented here by a pair.  The CAR is a
-;; symbol representing the header name, and the CDR is a string
+;; An HTTP message header is represented here by a pair.  The @sc{car}
+;; is a symbol representing the header name, and the @sc{cdr} is a string
 ;; containing the header text.  E.g.:
 ;;
-;;      '((date . "Thu, 29 May 1997 23:48:27 GMT")
-;;        (server . "NCSA/1.5.1")
-;;        (last-modified . "Tue, 06 May 1997 18:32:03 GMT")
-;;        (content-type . "text/html")
-;;        (content-length . "8097"))
+;; @example
+;; ((date . "Thu, 29 May 1997 23:48:27 GMT")
+;;  (server . "NCSA/1.5.1")
+;;  (last-modified . "Tue, 06 May 1997 18:32:03 GMT")
+;;  (content-type . "text/html")
+;;  (content-length . "8097"))
+;; @end example
 ;;
+;; @noindent
 ;; Note: these symbols are all lowercase, although the original headers
-;; were mixed-case.  Clients using this library should keep this in
-;; mind, since Guile symbols are case-sensitive.
-;;
-;; FIXME: should headers with known semantics be parsed automatically?
-;;   I.e. should the Content-Length header automatically get string->number?
-;;   Should Date and Last-Modified headers be run through strptime?
-;;   It is advantageous to keep headers in a uniform format, but it may
-;;   be convenient to parse headers that have unambiguous meanings.
+;; were mixed-case.
 
 ;; Return a list of the headers from HTTP message @var{msg}.
 ;;
