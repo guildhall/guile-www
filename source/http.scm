@@ -43,8 +43,7 @@
             http:connect
             http:open
             http:request)
-  #:use-module ((www crlf) #:select (read-through-CRLF
-                                     read-three-part-line
+  #:use-module ((www crlf) #:select (read-three-part-line
                                      read-headers
                                      read-characters))
   #:use-module ((srfi srfi-1) #:select (car+cdr))
@@ -363,8 +362,6 @@
           (request (let-values (((major minor) (car+cdr (fluid-ref protocol-version))))
                      (fs "~A ~A HTTP/~A.~A" method path major minor)))
           (headers (cons (fs "Host: ~A" (url:host url)) headers)))
-      (define (through/discarding-CRLF)
-        (read-through-CRLF sock))
       (let* ((content-length (apply + (map string-length body)))
              (headers (if (positive? content-length)
                           (cons (fs "Content-Length: ~A" content-length)

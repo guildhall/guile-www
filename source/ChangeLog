@@ -1,5 +1,14 @@
 2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http int] Decruft: Delete unused internal proc.
+
+	Omission from 2012-02-21, "New internal module: (www crlf)".
+
+	* http.scm: Don't import ‘(www crlf) read-through-CRLF’.
+	(http:request through/discarding-CRLF): Delete proc.
+
+2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Add some support procs to (www crlf).
 
 	* crlf.scm: Import ‘(ice-9 optargs)’, SRFI 1 ‘append-map!’,
