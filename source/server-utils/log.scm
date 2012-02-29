@@ -1,6 +1,6 @@
 ;;; (www server-utils log) --- Love notes to other programs
 
-;; Copyright (C) 2009, 2011 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2011, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2006, 2007 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

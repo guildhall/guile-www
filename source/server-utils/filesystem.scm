@@ -1,6 +1,6 @@
 ;;; (www server-utils filesystem) --- Work with the local filesystem
 
-;; Copyright (C) 2009, 2010, 2011 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2010, 2011, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 ;; Copyright (C) 2000, 2001 Martin Grabmueller
 ;;
