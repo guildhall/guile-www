@@ -60,10 +60,9 @@
                                  (stamp-format "%Y-%m-%d:%H:%M:%S %Z")
                                  method-pair?)
   (setvbuf port _IOLBF)
-  (let* ((len (length opts))
-         (rep (if gmtime? gmtime localtime))
-         (meth (if mpair? car identity))
-         (vers (if mpair?
+  (let* ((rep (if gmtime? gmtime localtime))
+         (meth (if method-pair? car identity))
+         (vers (if method-pair?
                    (lambda (x) (simple-format #f " ~A" (cdr x)))
                    (lambda (x) ""))))
     ;; rv

@@ -158,7 +158,7 @@
              ((regular) filename)
              ((directory)
               (set! filename (in-vicinity filename "")) ; ensure trailing /
-              (let loop ((ls idx))
+              (let loop ((ls dir-indexes))
                 (cond ((null? ls)
                        filename)
                       ((eq? #f (car ls))
