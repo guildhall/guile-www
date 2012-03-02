@@ -307,7 +307,7 @@
                                                 port)))
                               ((= PF_UNIX fam)
                                (let ((fn (sockaddr:path sock)))
-                                 (if (string-null? fn)
+                                 (if (or (not fn) (string-null? fn))
                                      "localhost"
                                      fn)))
                               (else

@@ -1,3 +1,14 @@
+2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[bdl slog] Handle ‘(sockaddr:path SOCK) => #f’.
+
+	For Unix domain sockets, some Guile versions have ‘sockaddr:path’
+	sometimes return the empty string, others ‘#f’.
+
+	* server-utils/big-dishing-loop.scm
+	(big-dishing-loop handle-request) <PF_UNIX>:
+	Use "localhost" also for the case when ‘sockaddr:path’ returns ‘#f’.
+
 2012-03-01  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Fix bug: Remediate botched (ice-9 optargs) transition.
