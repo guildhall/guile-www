@@ -231,12 +231,10 @@
 ;; subsequently.
 ;; @end table
 ;;
-(define* (mouthpiece out-port #:optional (status-box '()) (style #f))
-
-  (and (or (not status-box)
-           (and (not (null? status-box))         ; normalize
-                (not (list? (car status-box)))))
-       (set! status-box '()))
+(define* (mouthpiece out-port #:optional (status-box #f) (style #f))
+  ;; normalize
+  (or (list? status-box)
+      (set! status-box #f))
   (or style (set! style http-ish))
 
   (let* ((pre-tree (list #f))
@@ -244,17 +242,14 @@
          (pre-len 0)
          (preamble (make-string (- 1024 16)))
          (tree<-header (tree<-header-proc style))
-         (status-number! (if (null? status-box)
-                             identity
-                             (let ((place (car status-box)))
-                               (lambda (number)
-                                 (set-car! place number)))))
-         (status-content-length! (if (or (null? status-box)
-                                         (null? (cdar status-box)))
-                                     identity
-                                     (let ((place (cdar status-box)))
-                                       (lambda (length)
-                                         (set-car! place length)))))
+         (status-number! (if status-box
+                             (lambda (number)
+                               (set-car! status-box number))
+                             identity))
+         (status-content-length! (if status-box
+                                     (lambda (length)
+                                       (set-car! (cdr status-box) length))
+                                     identity))
          (inhibit-content? #f)
          (direct-writers '())
          (content '())

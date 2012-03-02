@@ -1,5 +1,17 @@
 2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[answer] Fix bug: Handle optional ‘status-box’ correctly.
+
+	Regression introduced 2010-06-22, "Add EXPERIMENTAL modlisp support".
+	The concomitant transition to use (ice-9 optargs) was incomplete.
+
+	* server-utils/answer.scm (mouthpiece):
+	Make ‘status-box’ default to ‘#f’; update ‘status-number!’
+	and ‘status-content-length!’ to mutate the contents of
+	‘status-box’ directly.
+
+2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[bdl slog] Handle ‘(sockaddr:path SOCK) => #f’.
 
 	For Unix domain sockets, some Guile versions have ‘sockaddr:path’
