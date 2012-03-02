@@ -48,7 +48,7 @@
     (405 . "Method Not Allowed")
     (406 . "Not Acceptable")
     (407 . "Proxy Authentication Required")
-    (408 . "Request Time-out")
+    (408 . "Request Time-Out")
     (409 . "Conflict")
     (410 . "Gone")
     (411 . "Length Required")
@@ -56,14 +56,14 @@
     (413 . "Request Entity Too Large")
     (414 . "Request-URI Too Large")
     (415 . "Unsupported Media Type")
-    (416 . "Requested range not satisfiable")
+    (416 . "Requested Range Not Satisfiable")
     (417 . "Expectation Failed")
     (500 . "Internal Server Error")
     (501 . "Not Implemented")
     (502 . "Bad Gateway")
     (503 . "Service Unavailable")
-    (504 . "Gateway Time-out")
-    (505 . "HTTP Version not supported")))
+    (504 . "Gateway Time-Out")
+    (505 . "HTTP Version Not Supported")))
 
 ;; Return the string associated with HTTP status @var{number}.
 ;;

@@ -1,5 +1,12 @@
 2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http-status] Futz w/ case of selected HTTP status text.
+
+	* data/http-status.scm (*http-status*):
+	Titlecase the text for 408, 416, 504, 505.
+
+2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[answer] Fix bug: Handle optional ‘status-box’ correctly.
 
 	Regression introduced 2010-06-22, "Add EXPERIMENTAL modlisp support".
