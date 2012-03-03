@@ -1,3 +1,11 @@
+2012-03-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[style] Use symbol for ‘#:add-header’ NAME arg.
+
+	* doc/guile-www.texh (answer): In examples,
+	call ‘M #:add-header’ with symbolic header name.
+	* examples/you-are-here (you-are-here): Likewise.
+
 2012-02-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.33

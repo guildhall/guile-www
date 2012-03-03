@@ -734,11 +734,11 @@ Here is an example that uses most of the @code{mouthpiece} commands:
 
 (define (transmit-file filename)
   (M #:set-reply-status:success)
-  (M #:add-header #:Server (string-append SERVER-NAME " "
-                                          SERVER-VERSION))
-  (M #:add-header #:Connection "close")
-  (M #:add-header #:Content-Type (filename->content-type
-                                  filename "text/plain"))
+  (M #:add-header 'Server (string-append SERVER-NAME "/"
+                                         SERVER-VERSION))
+  (M #:add-header 'Connection "close")
+  (M #:add-header 'Content-Type (filename->content-type
+                                 filename "text/plain"))
   (M #:add-content (slurp filename))
   (simple-format #t "rechunked: ~A\n"
                  (M #:rechunk-content (* 8 1024)))
@@ -783,8 +783,8 @@ preformatted headers and @code{fs}:
 (define (transmit-file filename)
   (M #:set-reply-status:success)
   (M #:add-header #t CONSTANT-HEADERS)
-  (M #:add-header #:Content-Type (filename->content-type
-                                  filename "text/plain"))
+  (M #:add-header 'Content-Type (filename->content-type
+                                 filename "text/plain"))
   (M #:add-content (slurp filename))
   (display (fs "rechunked: ~A\n" (M #:rechunk-content (* 8 1024))))
   (M #:send-reply))

@@ -1,3 +1,10 @@
+2012-03-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[style] Use symbol for ‘#:add-header’ NAME arg.
+
+	* server-utils/big-dishing-loop.scm (echo-upath):
+	Call ‘M #:add-header’ with symbolic header name.
+
 2012-03-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[http-status] Futz w/ case of selected HTTP status text.

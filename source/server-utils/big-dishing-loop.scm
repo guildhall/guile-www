@@ -97,8 +97,8 @@
 ;;
 (define (echo-upath M upath . extra-args)
   (M #:set-reply-status:success)
-  (M #:add-header #:Connection "close")
-  (M #:add-header #:Content-Type "text/plain")
+  (M #:add-header 'Connection "close")
+  (M #:add-header 'Content-Type "text/plain")
   (M #:add-content upath "\n")
   (for-each (lambda (arg)
               (M #:add-formatted "extra-arg: ~S\n" arg))

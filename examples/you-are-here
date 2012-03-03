@@ -40,9 +40,9 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 
 (define (you-are-here M upath return)
   (M #:set-reply-status:success)
-  (M #:add-header #:Server "you-are-here")
-  (M #:add-header #:Connection "close")
-  (M #:add-header #:Content-Type "text/plain")
+  (M #:add-header 'Server "you-are-here/1.0")
+  (M #:add-header 'Connection "close")
+  (M #:add-header 'Content-Type "text/plain")
   (M #:add-content blurb upath "\n(and still you remain here)\n")
   (M #:add-content "here's some state, btw: ")
   (M #:add-formatted #f (assoc (substring upath 1) state))
