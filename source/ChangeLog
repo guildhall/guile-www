@@ -1,5 +1,12 @@
 2012-03-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Make ‘tree<-header-proc’ caching.
+
+	* server-utils/answer.scm (tree<-header-proc):
+	Maintain private cache; consult it preferentially.
+
+2012-03-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Handle short-writes in ‘(www crlf) out!’.
 
 	Sometimes ‘display’ stops prematurely.

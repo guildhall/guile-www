@@ -99,31 +99,42 @@
                          ": " CRLF
                          CRLF))
 
-(define (tree<-header-proc style)       ; => (lambda (key val) ...)
-  (define (k x)
-    (if (string? x)
-        x
-        (fs "~A" (if (keyword? x)
-                     (keyword->symbol x)
-                     x))))
-  (define (v x)
-    (if (or (string? x) (pair? x) (null? x))
-        x
-        (fs "~A" x)))
-  (let* ((one (ish-h-k-end style))
-         (two (ish-h-v-end style))
-         (k-len (+ (string-length one)
-                   (string-length two))))
-    ;; rv
-    (lambda (key val)
-      (set! key (k key))
-      (set! val (v val))
-      (let ((tree (list key one
-                        val two)))
-        (set! (flat-length tree) (+ (string-length key)
-                                    (tree-flat-length! val)
-                                    k-len))
-        tree))))
+(define tree<-header-proc               ; => (lambda (key val) ...)
+  (let ((cache '()))
+
+    (define (k x)
+      (if (string? x)
+          x
+          (fs "~A" (if (keyword? x)
+                       (keyword->symbol x)
+                       x))))
+
+    (define (v x)
+      (if (or (string? x) (pair? x) (null? x))
+          x
+          (fs "~A" x)))
+
+    ;; tree<-header-proc
+    (lambda (style)
+      (define (trundle)
+        (let* ((one (ish-h-k-end style))
+               (two (ish-h-v-end style))
+               (k-len (+ (string-length one)
+                         (string-length two))))
+          ;; rv
+          (lambda (key val)
+            (set! key (k key))
+            (set! val (v val))
+            (let ((tree (list key one
+                              val two)))
+              (set! (flat-length tree) (+ (string-length key)
+                                          (tree-flat-length! val)
+                                          k-len))
+              tree))))
+      (or (assq-ref cache style)
+          (let ((rv (trundle)))
+            (set! cache (acons style rv cache))
+            rv)))))
 
 ;; Return a string made from formatting name/value pairs in @var{alist},
 ;; according to the optional @code{style} argument.  If unspecified or
