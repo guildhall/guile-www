@@ -24,8 +24,8 @@
 ;; This module is "internal": distributed, installed,
 ;; but not documented (at least, for now).
 ;;
-;; It contains procedures to parse the HTTP byte-stream,
-;; whose format makes heavy use of CRLF.
+;; It contains procedures to parse (inbound) and format (outbound)
+;; an HTTP byte-stream, whose particulars makes heavy use of CRLF.
 
 ;;; Code:
 
@@ -38,7 +38,8 @@
             read-headers/get-body
             out!)
   #:use-module (ice-9 optargs)
-  #:use-module ((ice-9 rw) #:select (read-string!/partial))
+  #:use-module ((ice-9 rw) #:select (read-string!/partial
+                                     write-string/partial))
   #:use-module ((ice-9 rdelim) #:select (read-delimited))
   #:use-module ((srfi srfi-1) #:select (append-map!))
   #:use-module ((srfi srfi-4) #:select (make-u8vector
@@ -370,6 +371,11 @@
   (define (h+! k v)
     (set! headers (cons (fkv k v) headers)))
 
+  (define (string-out! stop s)
+    (let loop ((start 0))
+      (or (= start stop)
+          (loop (+ start (write-string/partial s sock start stop))))))
+
   (define move!
     (cond ((not body) #f)
           ((null? body) (set! body #f) #f)
@@ -431,7 +437,7 @@
                           (and chunked?
                                (fsock "~A~A" (number->string len 16) CRLF))
                           (if (string? s)
-                              (display s sock)
+                              (string-out! len s)
                               (s sock))
                           (and chunked? (display CRLF sock))))
                     (loop))
