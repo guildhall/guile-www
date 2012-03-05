@@ -90,13 +90,16 @@
 
 (define ((ish-ref idx) ish) (vector-ref ish idx))
 
-(define ish-status   (ish-ref 0))
-(define ish-h-k-end  (ish-ref 1))
-(define ish-h-v-end  (ish-ref 2))
-(define ish-neck     (ish-ref 3))
+(define ish-eol      (ish-ref 0))
+(define ish-proto-v  (ish-ref 1))
+(define ish-status   (ish-ref 2))
+(define ish-kv-sep   (ish-ref 3))
+(define ish-neck     (ish-ref 4))
 
-(define http-ish (vector "HTTP/1.0 ~A ~A\r\n"
-                         ": " CRLF
+(define http-ish (vector CRLF
+                         "HTTP/~A.~A "
+                         #f
+                         ": "
                          CRLF))
 
 (define tree<-header-proc               ; => (lambda (key val) ...)
@@ -117,8 +120,8 @@
     ;; tree<-header-proc
     (lambda (style)
       (define (trundle)
-        (let* ((one (ish-h-k-end style))
-               (two (ish-h-v-end style))
+        (let* ((one (ish-kv-sep style))
+               (two (ish-eol    style))
                (k-len (+ (string-length one)
                          (string-length two))))
           ;; rv
@@ -243,6 +246,8 @@
 ;; @end table
 ;;
 (define* (mouthpiece out-port #:optional (status-box #f) (style #f))
+  (define protocol-version '(1 . 0))
+
   ;; normalize
   (or (list? status-box)
       (set! status-box #f))
@@ -277,7 +282,15 @@
 
     (define (set-reply-status number msg)
       (status-number! number)
-      (let ((s (fs (ish-status style) number msg)))
+      (let ((s (string-append (cond ((ish-proto-v style)
+                                     => (lambda (fmt)
+                                          (fs fmt
+                                              (car protocol-version)
+                                              (cdr protocol-version))))
+                                    (else ""))
+                              (or (ish-status style) "")
+                              (fs "~A ~A" number msg)
+                              (ish-eol style))))
         (+! pre-len (string-length s))
         (set-car! pre-tree s)))
 

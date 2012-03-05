@@ -1,3 +1,19 @@
+2012-03-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Rework ish fields; make eol and proto-v explicit.
+
+	* server-utils/answer.scm (ish-eol, ish-proto-v): New procs.
+	(ish-status): Reseat.
+	(ish-kv-sep): New proc.
+	(ish-h-k-end, ish-h-v-end): Delete procs.
+	(ish-neck): Reseat.
+	(http-ish): Update.
+	(tree<-header-proc): Use ‘ish-kv-sep’ and ‘ish-eol’.
+	(mouthpiece): Hardcode protocol version.
+	(mouthpiece set-reply-status): Use ‘ish-proto-v’,
+	‘protocol-version’, ‘ish-status’, ‘ish-eol’.
+	* server-utils/modlisp.scm (modlisp-ish): Update.
+
 2012-03-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Make ‘tree<-header-proc’ caching.

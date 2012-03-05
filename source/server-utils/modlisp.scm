@@ -60,9 +60,11 @@
 ;;
 ;;-category: object
 ;;
-(define modlisp-ish (vector "Status\n~A ~A\n"
-                            LF LF
-                            "end\n"))
+(define modlisp-ish (vector LF
+                            #f
+                            (string-append "Status" LF)
+                            LF
+                            (string-append "end" LF)))
 
 ;; An object suitable for the value of @code{make-big-dishing-loop}
 ;; keyword argument @code{#:style}.
