@@ -145,7 +145,7 @@ operation, low-level HTTP message object access, and common messages.
 @tsin i send-request
 @tsin i receive-response
 
-Here is an example that uses @code{receive-request} argument
+Here is an example that uses @code{receive-response} argument
 @var{intervene} to arrange for the message body to be a @code{u8}
 vector if the @code{Content-Type} is not ``text/*''.
 
