@@ -155,6 +155,29 @@
                      (map car alist)
                      (map cdr alist))))
 
+(define status-format-string
+  (let ((cache '()))
+    ;; status-format-string
+    (lambda (protocol-version style)
+      (define (trundle)
+        (string-append (cond ((and protocol-version
+                                   (ish-proto-v style))
+                              => (lambda (fmt)
+                                   (fs fmt
+                                       (car protocol-version)
+                                       (cdr protocol-version))))
+                             (else ""))
+                       (or (ish-status style) "")
+                       "~A"             ; code (integer)
+                       " "
+                       "~A"             ; text (string)
+                       (ish-eol style)))
+      (let ((key (cons protocol-version style)))
+        (or (assoc-ref cache key)
+            (let ((rv (trundle)))
+              (set! cache (acons key rv cache))
+              rv))))))
+
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a
 ;; list whose @sc{car} is set to the numeric status code given to a
@@ -282,15 +305,7 @@
 
     (define (set-reply-status number msg)
       (status-number! number)
-      (let ((s (string-append (cond ((ish-proto-v style)
-                                     => (lambda (fmt)
-                                          (fs fmt
-                                              (car protocol-version)
-                                              (cdr protocol-version))))
-                                    (else ""))
-                              (or (ish-status style) "")
-                              (fs "~A ~A" number msg)
-                              (ish-eol style))))
+      (let ((s (fs (status-format-string protocol-version style) number msg)))
         (+! pre-len (string-length s))
         (set-car! pre-tree s)))
 
