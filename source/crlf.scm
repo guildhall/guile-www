@@ -365,8 +365,11 @@
   (define (fsock s . args)
     (apply simple-format sock s args))
 
-  (define (fkv k v)
-    (simple-format #f "~A: ~A" k v))
+  (define fkv
+    (if (procedure? a)
+        a
+        (lambda (k v)
+          (simple-format #f "~A: ~A" k v))))
 
   (define (h+! k v)
     (set! headers (cons (fkv k v) headers)))
@@ -426,7 +429,10 @@
                            (and (positive? len)
                                 (h+! 'Content-Length len))))))
 
-    (fsock FRONT-FORMAT a b c (string<-elements headers))
+    (if (procedure? a)
+        (let ((s (string-append b (string-concatenate headers) c)))
+          (string-out! (string-length s) s))
+        (fsock FRONT-FORMAT a b c (string<-elements headers)))
 
     (and body
          (let loop ()
