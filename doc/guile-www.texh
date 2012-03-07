@@ -813,6 +813,7 @@ The @code{(www server-utils log)} module provides procedure generators for
 writing log information to an output port.  Each generator is conventionally
 named @code{log-SOMETHING-proc}.
 
+@tsin i string<-sockaddr
 @tsin i log-http-response-proc
 
 @c ---------------------------------------------------------------------------

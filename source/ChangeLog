@@ -1,3 +1,10 @@
+2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[log] New (www server-utils log) proc: string<-sockaddr
+
+	* server-utils/log.scm (fs): New proc.
+	(string<-sockaddr): New proc, exported.
+
 2012-03-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add abstraction: status-format-string

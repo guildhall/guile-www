@@ -22,8 +22,40 @@
 
 (define-module (www server-utils log)
   ;; naming convention: log-SOMETHING-proc
-  #:export (log-http-response-proc)
+  #:export (string<-sockaddr
+            log-http-response-proc)
   #:use-module (ice-9 optargs))
+
+(define (fs s . args)
+  (apply simple-format #f s args))
+
+;; Return a string describing the @code{AF_INET} or @code{AF_UNIX}
+;; socket address object @var{saddr}.  This is typically found as
+;; the @sc{cdr} of the @var{accept} return value.
+;;
+;; For @code{AF_UNIX}, return "localhost" unless (somehow) the
+;; expression @code{(sockaddr:path saddr)} has non-@code{#f} and
+;; non-empty-string value.
+;;
+;; For @code{AF_INET} the format is @code{@var{hostname}:@var{port}},
+;; where @var{hostname} is from @code{inet-ntoa} and @var{port} is
+;; an integer.
+;;
+;; For any other family, return what @code{object->string} returns.
+;;
+(define (string<-sockaddr saddr)
+  (let ((fam (sockaddr:fam saddr)))
+    (cond ((= AF_UNIX fam)
+           (let ((fn (sockaddr:path saddr)))
+             (if (or (not fn) (string-null? fn))
+                 "localhost"
+                 fn)))
+          ((= AF_INET fam)
+           (let ((addr (sockaddr:addr saddr))
+                 (port (sockaddr:port saddr)))
+             (fs "~A:~A" (inet-ntoa addr) port)))
+          (else
+           (object->string saddr)))))
 
 ;; Return a procedure that writes an HTTP response log entry to @var{port}.
 ;; The procedure is called with args @var{client}, @var{method}, @var{upath}

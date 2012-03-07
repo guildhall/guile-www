@@ -1,3 +1,9 @@
+2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[log] New (www server-utils log) proc: string<-sockaddr
+
+	* doc/guile-www.texh (log): Add @tsin for ‘string<-sockaddr’.
+
 2012-03-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Fix typo: Spell ‘receive-response’ correctly.
