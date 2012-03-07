@@ -95,18 +95,22 @@
   (let* ((rep (if gmtime? gmtime localtime))
          (meth (if method-pair? car identity))
          (vers (if method-pair?
-                   (lambda (x) (simple-format #f " ~A" (cdr x)))
+                   (lambda (x) (fs " ~A" (cdr x)))
                    (lambda (x) ""))))
+
+    (define (fsp s . args)
+      (apply simple-format port s args))
+
     ;; rv
     (lambda (client method upath status)
-      (simple-format port "~A - - [~A] \"~A ~A~A\" ~A"
-                     client
-                     (strftime stamp-format (rep (current-time)))
-                     (meth method) upath (vers method)
-                     (if (pair? status) (car status) status))
+      (fsp "~A - - [~A] \"~A ~A~A\" ~A"
+           client
+           (strftime stamp-format (rep (current-time)))
+           (meth method) upath (vers method)
+           (if (pair? status) (car status) status))
       (and (pair? status)
            (for-each (lambda (x)
-                       (simple-format port " ~A" x))
+                       (fsp " ~A" x))
                      (cdr status)))
       (newline port))))
 

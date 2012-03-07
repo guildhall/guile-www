@@ -1,5 +1,12 @@
 2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use ‘fs’ more; add abstraction: fsp
+
+	* server-utils/log.scm (log-http-response-proc): Use ‘fs’.
+	(log-http-response-proc fsp): New proc.
+
+2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[log] New (www server-utils log) proc: string<-sockaddr
 
 	* server-utils/log.scm (fs): New proc.
