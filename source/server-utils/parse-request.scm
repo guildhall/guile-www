@@ -60,34 +60,41 @@
                "HTTP/1.0"
                vers)))))
 
-;; Parse @var{upath} and return three values representing
+;; Parse string @var{upath} and return three values representing
 ;; its hierarchy, query and fragment components.
 ;; If a component is missing, its value is @code{#f}.
 ;;
 ;; @example
 ;; (hqf<-upath "/aa/bb/cc?def=xyz&hmm#frag")
-;; @result{} #<values "/aa/bb/cc" "def=xyz&hmm" "frag">
+;; @result{} "/aa/bb/cc"
+;; @result{} "def=xyz&hmm"
+;; @result{} "frag"
 ;;
 ;; (hqf<-upath "/aa/bb/cc#fr?ag")
-;; @result{} #<values "/aa/bb/cc" #f "fr?ag">
+;; @result{} "/aa/bb/cc"
+;; @result{} #f
+;; @result{} "fr?ag"
 ;; @end example
 ;;
-(define (hqf<-upath upath)
-  (define (bit . x)
-    (apply substring/shared upath x))
-  (or (and-let* ((one (string-index upath (char-set #\? #\#)))
-                 (h (bit 0 one))
-                 (more (1+ one)))
-        (and (string-null? h)
-             (set! h #f))
-        (cond ((char=? #\# (string-ref upath one))
-               (values h #f (bit more)))
-              ((string-index upath #\# more)
-               => (lambda (two)
-                    (values h (bit more two) (bit (1+ two)))))
-              (else
-               (values h (bit more) #f))))
-      (values upath #f #f)))
+(define hqf<-upath
+  (let ((question-mark/number-sign (char-set #\? #\#)))
+    (define (bit . x)
+      (apply substring/shared upath x))
+    ;; hqf<-upath
+    (lambda (upath)
+      (or (and-let* ((one (string-index upath question-mark/number-sign))
+                     (h (bit 0 one))
+                     (more (1+ one)))
+            (and (string-null? h)
+                 (set! h #f))
+            (cond ((char=? #\# (string-ref upath one))
+                   (values h #f (bit more)))
+                  ((string-index upath #\# more)
+                   => (lambda (two)
+                        (values h (bit more two) (bit (1+ two)))))
+                  (else
+                   (values h (bit more) #f))))
+          (values upath #f #f)))))
 
 (define amp-split
   (let ((not-amp-cs (char-set-complement (char-set #\&))))

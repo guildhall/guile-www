@@ -1,3 +1,10 @@
+2012-03-09  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Move ‘hqf<-upath’ char-set computation to load-time.
+
+	* server-utils/parse-request.scm (hqf<-upath):
+	Form the ‘#\?’ / ‘#\#’ character-set at load-time.
+
 2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use ‘fs’ more; add abstraction: fsp
