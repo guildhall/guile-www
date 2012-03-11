@@ -28,31 +28,6 @@ include $(top_srcdir)/build-aux/comp.mk
 
 EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
 
-BUILT_SOURCES = all-modules.list
-
-all-modules.list:
-	@echo Creating $@ ...
-	{ for m in $(top_leaves) ; do echo "(www $$m)" ; done ;			\
-	  for m in $(su_leaves) ; do echo "(www server-utils $$m)" ; done ;	\
-	  for m in $(data_leaves) ; do echo "(www data $$m)" ; done ;		\
-	} > $@
-
-check_DATA = .fake
-
-.fake: $(www_DATA)
-	top=`pwd`/.fake ;			\
-	rm -rf $$top ;				\
-	$(MAKE) $(AM_MAKEFLAGS) install		\
-	  FOR_MAKE_CHECK=1			\
-	  prefix="$$top"
-
-clean-local:
-	-rm -rf .fake
-
-TESTS = alive.test
-
-EXTRA_DIST += $(TESTS)
-
 update-site-module-catalog:
 if HAVE_MKPIMMC
 	$(GUILE_TOOLS) make-module-catalog \

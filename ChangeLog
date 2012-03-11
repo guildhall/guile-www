@@ -1,3 +1,15 @@
+2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Move testing to dedicated dir; revamp to use Automake-fu.
+
+	* v/: New directory.
+	* v/Makefile.am: New file.
+	* v/common: New file.
+	* v/v.in: New file.
+	* Makefile.am (SUBDIRS): Add v.
+	* configure.ac (AC_CONFIG_FILES): Add v/Makefile.
+	(v/v): New CONFIG_SCRIPT.
+
 2012-03-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[log] New (www server-utils log) proc: string<-sockaddr

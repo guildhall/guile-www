@@ -49,11 +49,13 @@ AC_CONFIG_FILES([
   source/data/Makefile
   source/Makefile
   doc/Makefile
+  v/Makefile
 ])
 
 AC_DEFUN([CONFIG_SCRIPT],[AC_CONFIG_FILES([$1],[chmod +x $1])])
 CONFIG_SCRIPT([examples/id.cgi])
 CONFIG_SCRIPT([examples/wily-guile])
+CONFIG_SCRIPT([v/v])
 
 AC_OUTPUT
 

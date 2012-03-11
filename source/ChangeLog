@@ -1,3 +1,15 @@
+2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Move testing to dedicated dir; revamp to use Automake-fu.
+
+	* Makefile.am (BUILT_SOURCES): Delete var.
+	(all-modules.list): Delete target.
+	(check_DATA): Delete var.
+	(.fake, clean-local): Delete targets.
+	(TESTS): Delete var.
+	(EXTRA_DIST): Remove $(TESTS).
+	* alive.test: Delete file.
+
 2012-03-09  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Move ‘hqf<-upath’ char-set computation to load-time.

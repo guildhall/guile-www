@@ -31,6 +31,8 @@ Installation
 	  GUILE           -- the interpreter to use [guile]
 	  DEBUG           -- if "1", display progress information,
 			     and invoke guile with option ‘--debug’
+	  VERBOSE         -- if "1", set ‘%load-verbosely’, and
+			     enable some tests to display more info
 
 	If "make check" fails, please report the problem (see below).
 
