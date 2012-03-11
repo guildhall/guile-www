@@ -1,5 +1,13 @@
 2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add test for ‘url:parse’.
+
+	* v/x100: New file.
+	* v/Makefile.am (explicit): New var.
+	(TESTS, EXTRA_DIST): Add $(explicit).
+
+2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Move testing to dedicated dir; revamp to use Automake-fu.
 
 	* v/: New directory.

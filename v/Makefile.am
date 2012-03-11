@@ -35,7 +35,12 @@ single = \
  x011 x012 x013 x014 x015 x016 x017 x018
 TESTS += $(single)
 
-EXTRA_DIST =
+explicit = \
+ x100
+
+TESTS += $(explicit)
+
+EXTRA_DIST = $(explicit)
 
 all-modules.list:
 	@echo Creating $@ ... ;						\

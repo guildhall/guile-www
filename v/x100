@@ -1,0 +1,54 @@
+;;; x100 --- test ‘url:parse’
+
+;; Copyright (C) 2012 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules (www url))
+
+(define (try string user host port path)
+  (define (badness s . args)
+    (apply simple-format (current-error-port)
+           (string-append "misparse: " s " (input: ~S)~%")
+           (append args (list string)))
+    (exit #f))
+  (define (sub which want got)
+    (or (equal? want got)
+        (badness "~A mismatch, want ~S, got ~S" which want got)))
+  (let ((got (url:parse string)))
+    (vfso "got: ~S~%" got)
+    (or (vector? got) (badness "not a vector: ~S" got))
+    (sub 'scheme 'http (url:scheme got))
+    (sub 'user user (url:user got))
+    (sub 'host host (url:host got))
+    (sub 'port port (url:port got))
+    (sub 'path path (url:path got))))
+
+(try "http://123.com"
+     #f
+     "123.com"
+     #f
+     #f)
+
+(try "http://127.0.0.1:2345/so/be/it"
+     #f
+     "127.0.0.1"
+     2345
+     "so/be/it")
+
+;;; x100 ends here
