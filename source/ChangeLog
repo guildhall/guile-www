@@ -1,3 +1,12 @@
+2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[url int] Restructure ‘url:parse’.
+
+	* url.scm: Import SRFI 13 ‘substring/shared’, ‘string-prefix?’.
+	(parse-http, parse-ftp): New procs.
+	(http-regexp, ftp-regexp, mailto-regexp): Delete regexp objects.
+	(url:parse): Rewrite.
+
 2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Move testing to dedicated dir; revamp to use Automake-fu.

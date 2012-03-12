@@ -1,6 +1,6 @@
 ;;; (www url) --- URL manipulation tools
 
-;; Copyright (C) 2008, 2009 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2009, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005,
 ;;   2006 Free Software Foundation, Inc.
 ;;
@@ -42,6 +42,8 @@
                        url:parse url:unparse
                        url:decode url:encode)
   #:use-module (www url-coding)
+  #:use-module ((srfi srfi-13) #:select (substring/shared
+                                         string-prefix?))
   #:use-module (ice-9 regex))
 
 ;; Extract and return the "scheme" portion of a @var{url} object.
@@ -98,37 +100,37 @@
 (define (url:make-mailto address)
   (vector 'mailto address))
 
-(define http-regexp (make-regexp "^http://([^:/]+)(:([0-9]+))?(/(.*))?$"))
-(define ftp-regexp
-  (make-regexp "^ftp://(([^@:/]+)@)?([^:/]+)(:([0-9]+))?(/(.*))?$"))
-(define mailto-regexp (make-regexp "^mailto:(.*)$"))
+(define parse-http
+  (let ((rx (make-regexp "([^:/]+)(:([0-9]+))?(/(.*))?$")))
+    ;; parse-http
+    (lambda (string)
+      (let ((m (regexp-exec rx string)))
+        (url:make-http (match:substring m 1)
+                       (cond ((match:substring m 3) => string->number)
+                             (else #f))
+                       (match:substring m 5))))))
+
+(define parse-ftp
+  (let ((rx (make-regexp "^(([^@:/]+)@)?([^:/]+)(:([0-9]+))?(/(.*))?$")))
+    (lambda (string)
+      (let ((m (regexp-exec rx string)))
+        (url:make-ftp (match:substring m 2)
+                      (match:substring m 3)
+                      (cond ((match:substring m 5) => string->number)
+                            (else #f))
+                      (match:substring m 7))))))
 
 ;; Parse @var{string} and return a url object, with one of the
 ;; following "schemes": HTTP, FTP, mailto, unknown.
 ;;
 (define (url:parse string)
-  (cond
-   ((regexp-exec http-regexp string)
-    => (lambda (m)
-         (url:make-http (match:substring m 1)
-                        (cond ((match:substring m 3) => string->number)
-                              (else #f))
-                        (match:substring m 5))))
-
-   ((regexp-exec ftp-regexp string)
-    => (lambda (m)
-         (url:make-ftp (match:substring m 2)
-                       (match:substring m 3)
-                       (cond ((match:substring m 5) => string->number)
-                             (else #f))
-                       (match:substring m 7))))
-
-   ((regexp-exec mailto-regexp string)
-    => (lambda (m)
-         (url:make-mailto (match:substring m 1))))
-
-   (else
-    (url:make 'unknown string))))
+  (define (try prefix ok)
+    (and (string-prefix? prefix string)
+         (ok (substring/shared string (string-length prefix)))))
+  (or (try "http://" parse-http)
+      (try "ftp://"  parse-ftp)
+      (try "mailto:" url:make-mailto)
+      (url:make 'unknown string)))
 
 ;; Return the @var{url} object formatted as a string.
 ;; Note: The username portion is not included!
