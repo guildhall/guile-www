@@ -35,11 +35,13 @@
 ;;     encoding methods (e.g. a url-scheme-reserved-char-alist)
 
 (define-module (www url)
-  #:export (url:scheme url:address url:unknown
-                       url:user url:host url:port url:path
-                       url:make url:make-http url:make-ftp url:make-mailto
-                       url:parse url:unparse
-                       url:decode url:encode)
+  #:export (url:scheme
+            url:address url:unknown
+            url:user url:host url:port url:path
+            url:make
+            url:make-http url:make-ftp url:make-mailto
+            url:parse url:unparse
+            url:decode url:encode)
   #:use-module (www url-coding)
   #:use-module ((srfi srfi-13) #:select (substring/shared
                                          string-index
@@ -185,7 +187,6 @@
     ((ftp)  (pathy 'ftp (url:user url) url))
     ((mailto) (fs "mailto:~A" (url:address url)))
     ((unknown) (url:unknown url))))
-
 
 ;; Re-export @code{url-coding:decode}.  @xref{url-coding}.
 ;;
