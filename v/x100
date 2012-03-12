@@ -51,4 +51,22 @@
      2345
      "so/be/it")
 
+(try "http://user@host:42/path"
+     "user"
+     "host"
+     42
+     "path")
+
+(try "http://fool@[::ffff:192.0.2.1]:42/foo"
+     "fool"
+     "[::ffff:192.0.2.1]"
+     42
+     "foo")
+
+(try "http://fool@:42/foo"
+     "fool"
+     #f
+     42
+     "foo")
+
 ;;; x100 ends here

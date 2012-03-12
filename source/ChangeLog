@@ -1,5 +1,12 @@
 2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[url] Handle "user@" in ‘http’-specific ‘url:parse’.
+
+	* url.scm: Import SRFI 13 ‘string-index’, ‘string-take’.
+	(parse-http): Rewrite.
+
+2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Refine ‘.fake’ prereqs; elide "make clean" requirement.
 
 	* Makefile.am (witness): New var.

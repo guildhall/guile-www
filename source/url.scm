@@ -29,7 +29,6 @@
 
 
 ;; TODO:
-;;   * support ‘user:password@’ strings where appropriate in URLs.
 ;;   * make URL parsing smarter.  This is good for most TCP/IP-based
 ;;     URL schemes, but parsing is actually specific to each URL scheme.
 ;;   * fill out url:encode, include facilities for URL-scheme-specific
@@ -43,6 +42,8 @@
                        url:decode url:encode)
   #:use-module (www url-coding)
   #:use-module ((srfi srfi-13) #:select (substring/shared
+                                         string-index
+                                         string-take
                                          string-prefix?))
   #:use-module (ice-9 regex))
 
@@ -101,14 +102,47 @@
   (vector 'mailto address))
 
 (define parse-http
-  (let ((rx (make-regexp "([^:/]+)(:([0-9]+))?(/(.*))?$")))
+  (let ((port-rx (make-regexp ":[0-9]+$")))
     ;; parse-http
     (lambda (string)
-      (let ((m (regexp-exec rx string)))
-        (url:make-http (match:substring m 1)
-                       (cond ((match:substring m 3) => string->number)
-                             (else #f))
-                       (match:substring m 5))))))
+
+      (define (maybe pred)
+        (string-index string pred))
+
+      (define (after pos)
+        (substring/shared string (1+ pos)))
+
+      (define (before pos)
+        (string-take string pos))
+
+      ;; Whittle down ‘string’...
+      (let ((user #f) (host #f) (port #f) (path #f))
+
+        ;; ...removing (optional) ‘path’ on the right...
+        (cond ((maybe #\/)
+               => (lambda (pos)
+                    (set! path (after pos))
+                    (set! string (before pos)))))
+
+        ;; ...removing (optional) ‘user’ on the left...
+        (cond ((maybe #\@)
+               => (lambda (pos)
+                    (set! user (before pos))
+                    (set! string (after pos)))))
+
+        ;; ...removing (optional) ‘port’ on the right...
+        (cond ((regexp-exec port-rx string)
+               => (lambda (m)
+                    (let ((pos (match:start m)))
+                      (set! port (string->number (after pos)))
+                      (set! string (before pos))))))
+
+        ;; ...leaving it to represent ‘host’ (maybe).
+        (or (string-null? string)
+            (set! host string))
+
+        ;; rv
+        (url:make 'http user host port path)))))
 
 (define parse-ftp
   (let ((rx (make-regexp "^(([^@:/]+)@)?([^:/]+)(:([0-9]+))?(/(.*))?$")))

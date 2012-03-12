@@ -1,5 +1,11 @@
 2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[url] Handle "user@" in ‘http’-specific ‘url:parse’.
+
+	* v/x100: Add three test cases.
+
+2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Refine ‘.fake’ prereqs; elide "make clean" requirement.
 
 	* v/Makefile.am (witness): New var.
