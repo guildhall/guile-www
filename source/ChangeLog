@@ -1,5 +1,12 @@
 2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v int] Refine ‘.fake’ prereqs; elide "make clean" requirement.
+
+	* Makefile.am (witness): New var.
+	($(witness), all-local): New targets.
+
+2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[url int] Restructure ‘url:parse’.
 
 	* url.scm: Import SRFI 13 ‘substring/shared’, ‘string-prefix?’.

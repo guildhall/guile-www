@@ -1,3 +1,11 @@
+2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Refine ‘.fake’ prereqs; elide "make clean" requirement.
+
+	* v/Makefile.am (witness): New var.
+	($(witness)): New target.
+	(.fake): Add $(witness) to prereq list.
+
 2012-03-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Add test for ‘url:parse’.

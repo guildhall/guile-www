@@ -59,7 +59,14 @@ all-modules.list:
 
 check_DATA = .fake
 
-.fake: $(www_DATA)
+## This hair is so that we can do, e.g.:
+##  touch ../source/url.scm && make check
+witness = SOURCE-ALL-STAMP
+
+$(witness):
+	@cd ../source && $(MAKE)
+
+.fake: $(www_DATA) $(witness)
 	@echo Doing .fake install ... ;		\
 	top=`pwd`/.fake ;			\
 	rm -rf $$top ;				\
