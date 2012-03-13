@@ -1,9 +1,9 @@
 #!/bin/sh
-exec @GUILE@ -s $0 "$@" # -*- scheme -*-
+exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -*-
 !#
 ;;; id.cgi --- the "hello world" of CGI scripts
 
-;; Copyright (C) 2009 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2005 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.
@@ -30,14 +30,6 @@ exec @GUILE@ -s $0 "$@" # -*- scheme -*-
 
 ;;; Code:
 
-;; Load the module.  Normally, these explicit loads can be omitted --
-;; they ensure that Guile uses the proper (pre-installed) modules.
-
-(load-from-path "@abs_top_builddir@/source/url-coding.scm")
-(load-from-path "@abs_top_builddir@/source/server-utils/parse-request.scm")
-(load-from-path "@abs_top_builddir@/source/server-utils/form-2-form.scm")
-(load-from-path "@abs_top_builddir@/source/server-utils/cookies.scm")
-(load-from-path "@abs_top_builddir@/source/cgi.scm")
 (use-modules (www cgi) (www server-utils parse-request))
 
 ;; Abstractions: formatted string output, sectioned output, collection.

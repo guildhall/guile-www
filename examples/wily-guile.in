@@ -2,12 +2,12 @@
 guile=${GUILE-"@GUILE@"}
 d=`dirname $0`
 d=`cd $d ; pwd`
-source=`echo $d | sed 's|examples$|source|'`
-prefix="$source/.fake"
+v=`echo $d | sed 's|examples$|v|'`
+prefix="$v/.fake"
 if ! test -d "$prefix" ; then
-    echo 'ERROR: No partial installation under source/'
+    echo 'ERROR: No partial installation under v/'
     echo 'Do "make check" from top build dir, first.'
     exit 1
 fi
-eval `sed '/^GUILE_LIBSITE *= */!d;s/ *= */=/' $source/Makefile`
+eval `sed '/^GUILE_LIBSITE *= */!d;s/ *= */=/' $v/Makefile`
 exec $guile -L "$GUILE_LIBSITE" "$@"

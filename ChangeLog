@@ -1,5 +1,13 @@
 2012-03-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[maint] Update examples/ files to use v/.fake.
+
+	* examples/wily-guile.in: Look for .fake in v/, not source/.
+	* examples/id.cgi.in: If env var ‘GUILE’ is set,
+	use it; otherwise, default to examples/wily-guile.
+
+2012-03-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Extend ‘.fake’ prereqs machinery to all source/ subdirs.
 
 	* build-aux/comp.mk (CLEANFILES): Add .stamp-all.
