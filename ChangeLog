@@ -1,3 +1,14 @@
+2012-03-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Extend ‘.fake’ prereqs machinery to all source/ subdirs.
+
+	* build-aux/comp.mk (CLEANFILES): Add .stamp-all.
+	(.stamp-all): New target.
+	* v/Makefile.am (bsrc, witnesses): New vars.
+	($(witness)): Delete target.
+	(.PHONY, $(witnesses), .stamp-all): New targets.
+	(.fake): Depend solely on .stamp-all.
+
 2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[url] Handle "user@" in ‘http’-specific ‘url:parse’.

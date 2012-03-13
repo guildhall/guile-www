@@ -32,4 +32,8 @@ CLEANFILES = $(www_DATA)
 
 SUFFIXES = .scm
 
+CLEANFILES += .stamp-all
+.stamp-all: $(www_DATA)
+	@touch $@
+
 ## comp.mk ends here

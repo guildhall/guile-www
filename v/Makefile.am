@@ -60,13 +60,22 @@ all-modules.list:
 check_DATA = .fake
 
 ## This hair is so that we can do, e.g.:
-##  touch ../source/url.scm && make check
-witness = SOURCE-ALL-STAMP
+##  touch ../source/**/foo.scm && make check
+bsrc = $(top_builddir)/source
+witnesses = \
+$(bsrc)/.stamp-all \
+$(bsrc)/data/.stamp-all \
+$(bsrc)/server-utils/.stamp-all
 
-$(witness):
-	@cd ../source && $(MAKE)
+.PHONY: $(witnesses)
 
-.fake: $(www_DATA) $(witness)
+$(witnesses):
+	@cd `dirname $@` && $(MAKE) .stamp-all
+
+.stamp-all: $(witnesses)
+	@touch -r `ls -t $(witnesses) | head -n 1` $@
+
+.fake: .stamp-all
 	@echo Doing .fake install ... ;		\
 	top=`pwd`/.fake ;			\
 	rm -rf $$top ;				\

@@ -1,3 +1,10 @@
+2012-03-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Extend ‘.fake’ prereqs machinery to all source/ subdirs.
+
+	* Makefile.am (witness): Delete var.
+	($(witness), all-local): Delete targets.
+
 2012-03-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[url] Handle "user@" in ‘http’-specific ‘url:parse’.

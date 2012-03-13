@@ -26,14 +26,6 @@ www_DATA = $(top_leaves)
 
 include $(top_srcdir)/build-aux/comp.mk
 
-# Hmm, is this cool?
-witness = ../v/SOURCE-ALL-STAMP
-
-$(witness): $(www_DATA)
-	@touch $@
-
-all-local: $(witness)
-
 EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
 
 update-site-module-catalog:

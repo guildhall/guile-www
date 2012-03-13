@@ -1,4 +1,5 @@
 # anywhere
+.stamp-all
 Makefile
 Makefile.in
 
@@ -63,7 +64,6 @@ Makefile.in
 /examples/www
 
 /v/.fake
-/v/SOURCE-ALL-STAMP
 /v/all-modules.list
 /v/v
 /v/x000
