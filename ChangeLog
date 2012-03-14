@@ -1,5 +1,12 @@
 2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add a test for ‘(www crlf) read-headers/get-body’.
+
+	* v/x300: New file.
+	* v/Makefile.am (explicit): Add x300.
+
+2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Add a test for ‘(www crlf) out!’.
 
 	* v/x200: New file.

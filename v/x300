@@ -1,0 +1,173 @@
+;;; x300 --- test ‘(www crlf) read-headers/get-body’
+
+;; Copyright (C) 2012 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules
+ (ice-9 q)
+ (ice-9 rw)
+ (srfi srfi-1)
+ (srfi srfi-4)
+ (srfi srfi-11)
+ (srfi srfi-13)
+ (www crlf))
+
+(define TMPFILE "x300.tmp")
+
+(define (write-tmpfile string)
+  (call-with-output-file TMPFILE
+    (lambda (port)
+      (let ((stop (string-length string)))
+        (let loop ((start 0))
+          (or (= start stop)
+              (loop (+ start (write-string/partial string port start stop))))))
+      (force-output port))))
+
+(define CRLF "\r\n")
+
+(define (sj/crlf . args)
+  (string-join args CRLF))
+
+(define NECK "")
+(define END-CHUNKS CRLF)
+
+(define (r-h/g-b port)
+  (read-headers/get-body port string-titlecase))
+
+(define (badness s . args)
+  (apply fse (string-append "badness: " s "~%") args)
+  (exit #f))
+
+(define (try flags expected-new-headers input)
+  (write-tmpfile input)
+  (vfso "flags: ~S~%" flags)
+  (let ((port (open-input-file TMPFILE)))
+    (let-values (((headers get-body) (r-h/g-b port)))
+      (vfso "\theaders: ~S~%" headers)
+      (or (pair? headers)
+          (badness "headers not a pair: ~S" headers))
+      (or (equal? "host" (assq-ref headers 'Host))
+          (badness "missing ‘Host’ header: ~S" headers))
+      (or (procedure? get-body)
+          (badness "get-body not a procedure: ~S" get-body))
+      (let-values (((new-headers body) (get-body flags)))
+        (vfso "\tnew-headers: ~S~%" new-headers)
+        (vfso "\tbody: ~S~%" body)
+        (or (equal? expected-new-headers new-headers)
+            (badness "unexpected new-headers: ~S" new-headers))
+        (let ((u8? (memq 'u8 flags)))
+          (define (check-type part x)
+            (or ((if u8? u8vector? string?) x)
+                (badness "body~A not a ~A: ~S"
+                         part
+                         (if u8? 'u8vector 'string)
+                         x)))
+          (cond ((memq 'custom flags)
+                 => (lambda (ls)
+                      (or (equal? (caddr ls) body)
+                          (badness "bad body, want ‘~S’ but got ‘~S’"
+                                   (caddr ls) body))))
+                ((memq 'no-cat flags)
+                 ;; Normalize for testing.
+                 (and (assq 'Content-Length headers)
+                      (not (list? body))
+                      (set! body (list body)))
+                 (or (list? body)
+                     (badness "body not a list: ~S" body))
+                 (for-each (lambda (x)
+                             (check-type " element" x))
+                           body))
+                (else
+                 (check-type "" body)))
+          (close-port port)
+          body)))))
+
+(define (try/drain input)
+  (let ((body (try '() #f
+                   (sj/crlf "Host: host" ; NB: no Content-Length
+                            NECK
+                            input))))
+    (or (equal? input body)
+        (badness "unexpected body~%exp ~A\t|~S|~%got ~A\t|~S~%"
+                 (string-length input) input
+                 (and (string? body) (string-length body)) body))))
+
+(try/drain "")
+(try/drain "abcdef")
+(try/drain (string-join (map number->string (iota 500))))
+
+(define loi                             ; list of integers
+  (let ()
+    (define (mkx len)
+      (make-list len))
+    (define (r! x sock)
+      (let loop ((ls x) (count 0))
+        (if (null? ls)
+            count
+            (let ((c (read-char sock)))
+              (if (eof-object? c)
+                  count
+                  (begin (set-car! ls (char->integer c))
+                         (loop (cdr ls) (1+ count))))))))
+    (define (cat-r ls)
+      (apply append (reverse! ls)))
+    (values mkx r! cat-r take)))
+
+(define LOI-BODY '(97 98 99 100 101 102))
+
+(define (try/cl . flags)
+  (try flags #f
+       (sj/crlf "Content-Length: 6"
+                "Host: host"
+                NECK
+                "abcdef")))
+
+(try/cl)
+(try/cl 'u8)
+(try/cl 'no-cat)
+(try/cl 'u8 'no-cat)
+(try/cl 'custom loi LOI-BODY)
+(try/cl 'custom loi LOI-BODY 'no-cat)
+
+(define (try/te . flags)
+  (try flags '((Host . "host"))
+       (sj/crlf "Transfer-Encoding: chunked"
+                "Host: host"
+                NECK
+                "3"
+                "abc"
+                "3"
+                "def"
+                "0"
+                END-CHUNKS)))
+
+(try/te)
+(try/te 'u8)
+(try/te 'no-cat)
+(try/te 'u8 'no-cat)
+(try/te 'custom loi LOI-BODY)
+(try/te 'custom loi (list (take LOI-BODY 3)
+                          (drop LOI-BODY 3))
+        'no-cat)
+
+(and (file-exists? TMPFILE)
+     (delete-file TMPFILE))
+(exit #t)
+
+;;; x300 ends here

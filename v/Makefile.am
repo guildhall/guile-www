@@ -37,7 +37,8 @@ TESTS += $(single)
 
 explicit = \
  x100 \
- x200
+ x200 \
+ x300
 
 TESTS += $(explicit)
 
