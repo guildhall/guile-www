@@ -1,5 +1,12 @@
 2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add a test for ‘(www crlf) out!’.
+
+	* v/x200: New file.
+	* v/Makefile.am (explicit): Add x200.
+
+2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Add abstraction: fse
 
 	* v/common (fse): New proc.

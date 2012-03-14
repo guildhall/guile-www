@@ -1,0 +1,140 @@
+;;; x200 --- test ‘(www crlf) out!’
+
+;; Copyright (C) 2012 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules
+ (ice-9 q)
+ (srfi srfi-4)
+ (srfi srfi-13)
+ (www crlf))
+
+(define TMPFILE "x200.tmp")
+
+(define (tmpfile-contents)
+  (let ((port (open-input-file TMPFILE))
+        (chars (make-q)))
+    (let loop ()
+      (let ((c (read-char port)))
+        (cond ((char? c)
+               (enq! chars c)
+               (loop))
+              (else
+               (close-port port)
+               (apply string (car chars))))))))
+
+(define CRLF "\r\n")
+
+(define (sj/crlf . args)
+  (string-join args CRLF))
+
+(define NECK "")
+(define END-CHUNKS CRLF)
+
+(define (try out!args expected)
+  (define (badness s . args)
+    (apply fse (string-append "badness: " s " (input: ~S)~%")
+           (append args (list out!args)))
+    (exit #f))
+  (call-with-output-file TMPFILE
+    (lambda (port)
+      (apply out! port out!args)))
+  (let ((got (tmpfile-contents)))
+    (or (equal? expected got)
+        (badness "unexpected ‘out!’ result: ~A|~S|"
+                 (and (string? got)
+                      (string-length got))
+                 got))))
+
+(try '(host a b c () () ())
+     (sj/crlf "a b c"
+              "Host: host"
+              NECK
+              ""))
+
+(try '(host a b c ("name: value") () ())
+     (sj/crlf "a b c"
+              "Host: host"
+              "name: value"
+              NECK
+              ""))
+
+(try '(host a b c () ("abc" "def") ())
+     (sj/crlf "a b c"
+              "Content-Length: 6"
+              "Host: host"
+              NECK
+              "abcdef"))
+
+(try '(host a b c () ("abc" "def") (chunked))
+     (sj/crlf "a b c"
+              "Transfer-Encoding: chunked"
+              "Host: host"
+              NECK
+              "3"
+              "abc"
+              "3"
+              "def"
+              "0"
+              END-CHUNKS))
+
+(try '(host a b c () (#u8(97 98 99) #u8(100 101 102)) (u8 chunked))
+     (sj/crlf "a b c"
+              "Transfer-Encoding: chunked"
+              "Host: host"
+              NECK
+              "3"
+              "abc"
+              "3"
+              "def"
+              "0"
+              END-CHUNKS))
+
+(try `(host a b c () ,(let ((chunks (list (u8vector #x61 #x62 #x63)
+                                          (u8vector #x64 #x65 #x66))))
+                        (lambda (sel)
+                          (case sel
+                            ((content-length) 6)
+                            ((next-chunk)
+                             (if (pair? chunks)
+                                 (let ((head (car chunks)))
+                                   (set! chunks (cdr chunks))
+                                   (values (u8vector-length head)
+                                           (lambda (p)
+                                             (uniform-vector-write
+                                              head p))))
+                                 (values #f #f)))
+                            (else #f))))
+            (chunked))
+     (sj/crlf "a b c"
+              "Transfer-Encoding: chunked"
+              "Host: host"
+              NECK
+              "3"
+              "abc"
+              "3"
+              "def"
+              "0"
+              END-CHUNKS))
+
+(and (file-exists? TMPFILE)
+     (delete-file TMPFILE))
+(exit #t)
+
+;;; x200 ends here
