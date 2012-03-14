@@ -35,6 +35,7 @@
             read-headers
             read-characters
             hsym-proc
+            get-body-proc
             read-headers/get-body
             out!)
   #:use-module (ice-9 optargs)
@@ -49,6 +50,7 @@
                                         u8vector-set!))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-concatenate-reverse
+                                         string-take
                                          string-suffix?
                                          string-index
                                          string-join
@@ -197,21 +199,13 @@
       (lambda (string)
         (string->symbol (s2s string)))))
 
-(define* (read-headers/get-body sock s2s #:optional request)
-
-  (define (subs s end)
-    (substring/shared s 0 end))
-
-  (define hsym (hsym-proc s2s))
-
-  (define (read-alist)
-    (read-headers sock hsym))
-
-  (define (in! len)
-    (read-characters len sock))
+(define (get-body-proc sock hsym headers)
 
   (define (string-read!/partial s)
     (read-string!/partial s sock))
+
+  (define (in! len)
+    (read-characters len sock))
 
   (define (sub-u8 src n)
     (let ((v (make-u8vector n)))
@@ -260,75 +254,79 @@
                    in!
                    string-read!/partial
                    string-concatenate-reverse
-                   subs))))
+                   string-take))))
 
-  (let ((headers (read-alist)))
+  (define (get-body options)
+    (let-values (((mkx data-in! read!/partial concat-reverse first)
+                  (motion options)))
 
-    (define (get-body options)
-      (let-values (((mkx data-in! read!/partial concat-reverse first)
-                    (motion options)))
+      (define body<-acc
+        (if (memq 'no-cat options)
+            reverse!
+            concat-reverse))
 
-        (define body<-acc
-          (if (memq 'no-cat options)
-              reverse!
-              concat-reverse))
+      (define (try-chunked)
+        (let ((t-enc (assq (hsym "Transfer-Encoding") headers)))
+          (and (pair? t-enc)
+               (equal? "chunked" (cdr t-enc))
+               (let loop ((acc '()))
+                 (let* ((spec (read-through-CRLF sock))
+                        (len (string->number
+                              (cond ((string-index spec #\;)
+                                     => (lambda (semi)
+                                          ;; ignore extensions for now
+                                          (string-take spec semi)))
+                                    (else spec))
+                              16)))
+                   (if (positive? len)
+                       ;; more
+                       (let* ((chunk (data-in! len))
+                              (end (in! 2)))
+                         (or (string=? CRLF end)
+                             (throw 'chunked-transfer-encoding
+                                    'trailing-garbage end))
+                         (loop (cons chunk acc)))
+                       ;; done
+                       (values
+                        (append
+                         ;; Self-deprecate when work is done.
+                         (delq t-enc headers)
+                         ;; New trailers, if any.
+                         (read-headers sock hsym))
+                        (body<-acc acc))))))))
 
-        (define (try-chunked)
-          (let ((t-enc (assq (hsym "Transfer-Encoding") headers)))
-            (and (pair? t-enc)
-                 (equal? "chunked" (cdr t-enc))
-                 (let loop ((acc '()))
-                   (let* ((spec (read-through-CRLF sock))
-                          (len (string->number
-                                (cond ((string-index spec #\;)
-                                       => (lambda (semi)
-                                            ;; ignore extensions for now
-                                            (subs spec semi)))
-                                      (else spec))
-                                16)))
-                     (if (positive? len)
-                         ;; more
-                         (let* ((chunk (data-in! len))
-                                (end (in! 2)))
-                           (or (string=? CRLF end)
-                               (throw 'chunked-transfer-encoding
-                                      'trailing-garbage end))
-                           (loop (cons chunk acc)))
-                         ;; done
-                         (values
-                          (append
-                           ;; Self-deprecate when work is done.
-                           (delq t-enc headers)
-                           ;; New trailers, if any.
-                           (read-alist))
-                          (body<-acc acc))))))))
+      (define (same-headers s)
+        (values #f s))
 
-        (define (same-headers s)
-          (values #f s))
+      (define (try-known)
+        (and=> (assq-ref headers (hsym "Content-Length"))
+               (lambda (s)
+                 (same-headers
+                  (data-in! (string->number s))))))
 
-        (define (try-known)
-          (and=> (assq-ref headers (hsym "Content-Length"))
-                 (lambda (s)
+      (define (drain)
+        (let loop ((acc '()))
+          (let ((x (mkx 1024)))
+            (cond ((read!/partial x)
+                   => (lambda (n)
+                        (loop (cons (if (= 1024 n)
+                                        x
+                                        (first x n))
+                                    acc))))
+                  (else
                    (same-headers
-                    (data-in! (string->number s))))))
+                    (body<-acc acc)))))))
 
-        (define (drain)
-          (let loop ((acc '()))
-            (let ((x (mkx 1024)))
-              (cond ((read!/partial x)
-                     => (lambda (n)
-                          (loop (cons (if (= 1024 n)
-                                          x
-                                          (first x n))
-                                      acc))))
-                    (else
-                     (same-headers
-                      (body<-acc acc)))))))
+      (or (try-chunked)
+          (try-known)
+          (drain))))
 
-        (or (try-chunked)
-            (try-known)
-            (drain))))
+  get-body)
 
+(define* (read-headers/get-body sock s2s #:optional request)
+  (let* ((hsym (hsym-proc s2s))
+         (headers (read-headers sock hsym))
+         (get-body (get-body-proc sock hsym headers)))
     (values headers
             (and (or (not request)
                      (let-values (((method rcode) request))

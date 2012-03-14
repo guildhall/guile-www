@@ -1,5 +1,13 @@
 2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Add (www crlf) abstraction: get-body-proc
+
+	* crlf.scm: Import SRFI 13 ‘string-take’.
+	(get-body-proc): New proc, exported.
+	(read-headers/get-body): Use ‘get-body-proc’.
+
+2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[crlf] Fix bug: Include ‘case’ in ‘case’ expression!
 
 	Omission from 2012-02-29, "Add some support procs to (www crlf)".
