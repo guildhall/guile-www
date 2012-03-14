@@ -29,4 +29,7 @@
                  (lambda ignored
                    #f)))
 
+(define (fse s . args)
+  (apply simple-format (current-error-port) s args))
+
 ;;; common ends here

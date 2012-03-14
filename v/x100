@@ -23,7 +23,7 @@
 
 (define (try string user host port path)
   (define (badness s . args)
-    (apply simple-format (current-error-port)
+    (apply fse
            (string-append "misparse: " s " (input: ~S)~%")
            (append args (list string)))
     (exit #f))
