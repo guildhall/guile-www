@@ -1,3 +1,12 @@
+2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[crlf] Fix bug: Include ‘case’ in ‘case’ expression!
+
+	Omission from 2012-02-29, "Add some support procs to (www crlf)".
+	Catching this kind of stupidity is why the test suite is necessary.
+
+	* crlf.scm (x-move): Include ‘case’ in ‘case’ expression!
+
 2012-03-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v int] Extend ‘.fake’ prereqs machinery to all source/ subdirs.

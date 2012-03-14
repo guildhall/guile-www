@@ -349,13 +349,14 @@
 
 (define-macro (x-move what next-x)
   `(lambda (sel)
-     ((footer-names) #f)
-     ((content-length) (apply + lengths))
-     ((next-chunk) (if (pair? ,what)
-                       (values (pop lengths)
-                               ,next-x)
-                       (values #f #f)))
-     ((footers) #f)))
+     (case sel
+       ((footer-names) #f)
+       ((content-length) (apply + lengths))
+       ((next-chunk) (if (pair? ,what)
+                         (values (pop lengths)
+                                 ,next-x)
+                         (values #f #f)))
+       ((footers) #f))))
 
 (define CHUNKS-DONE/FOOTER (string-append "0" CRLF
                                           "~A" CRLF))
