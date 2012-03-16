@@ -1,3 +1,12 @@
+2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (... answer) proc: compose-response
+
+	* doc/guile-www.texh (answer): Expand intro blurb;
+	mention major- and minior-numbers for protocol version;
+	mention ‘mouthpiece’ hardcoding of ‘protocol-version’;
+	add @tsin for ‘compose-response’.
+
 2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Add a test for ‘(www crlf) read-headers/get-body’.

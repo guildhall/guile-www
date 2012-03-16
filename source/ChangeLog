@@ -1,3 +1,11 @@
+2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (... answer) proc: compose-response
+
+	* server-utils/answer.scm: Import ‘(www crlf) out!’; import
+	‘(ice-9 q)’ procs ‘make-q’, ‘enq!’, ‘q-empty?’, ‘deq!’, ‘sync-q!’.
+	(compose-response): New proc, exported.
+
 2012-03-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add (www crlf) abstraction: get-body-proc

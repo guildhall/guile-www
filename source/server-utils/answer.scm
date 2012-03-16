@@ -23,9 +23,16 @@
 (define-module (www server-utils answer)
   #:export (CRLF flat-length fs walk-tree tree-flat-length! string<-tree
                  string<-headers
+                 compose-response
                  mouthpiece)
+  #:use-module ((www crlf) #:select (out!))
   #:use-module (ice-9 curried-definitions)
   #:use-module (ice-9 optargs)
+  #:use-module ((ice-9 q) #:select (make-q
+                                    enq!
+                                    q-empty?
+                                    deq!
+                                    sync-q!))
   #:use-module ((ice-9 rw) #:select (write-string/partial)))
 
 (define-macro (+! v n)
@@ -177,6 +184,265 @@
             (let ((rv (trundle)))
               (set! cache (acons key rv cache))
               rv))))))
+
+;; Return a command-delegating closure capable of writing a properly
+;; formatted HTTP 1.1 response with @code{Host} header set to @var{host}.
+;; The actual status and header format is controlled by @var{style},
+;; an opaque object.
+;; The actual protocol version is controlled by @var{protocol-version},
+;; a pair of integers, such as @code{(1 . 0)} to indicate HTTP 1.0.
+;;
+;; The returned closure @var{r} accepts commands and args:
+;;
+;; @table @code
+;; @findex set-protocol-version
+;; @item #:set-protocol-version @var{pair}
+;; Set the major and minor version protocol-version numbers.
+;;
+;; @findex set-reply-status
+;; @item #:set-reply-status @var{number} @var{message}
+;; Set the reply status.  @var{message} is a short string.
+;;
+;; @findex add-header
+;; @item #:add-header @var{name} @var{value}
+;; @var{name} may be @code{#f}, @code{#t}, a string, symbol or keyword.
+;; @var{value} is a string.  If @var{name} is @code{#f} or @code{#t},
+;; @var{value} is taken to be a pre-formatted string, "A: B" or "A:
+;; B\r\n", respectively.  If @var{name} is not a boolean, @var{value}
+;; may also be a tree of strings or a number.
+;;
+;; @findex add-content
+;; @item #:add-content [@var{tree} @dots{}]
+;; @var{tree} may be a string, a nested list of strings, or a series of such.
+;; Subsequent calls to @code{#:add-content} append their trees to the
+;; collected content tree thus far.
+;;
+;; @findex add-formatted
+;; @item #:add-formatted @var{format-string} [@var{args} @dots{}]
+;; @var{format-string} may be @code{#f} to mean @code{~S}, @code{#t} to
+;; mean @code{~A}, or a normal format string.  It is used to format
+;; @var{args}, and the result passed to @code{#:add-content}.
+;;
+;; @findex add-direct-writer
+;; @item #:add-direct-writer @var{len} @var{write}
+;; @var{len} is the number of bytes that procedure @var{write} will
+;; output to its arg, @var{out-port} (passed back), when called during
+;; @code{#:send-reply}.  This is to allow sendfile(2) and related
+;; hackery.
+;;
+;; @findex entity-length
+;; @item #:entity-length
+;; Return the total number of bytes in the content added thus far.
+;;
+;; @findex rechunk-content
+;; @item #:rechunk-content @var{chunk}
+;; @var{chunk} may be @code{#f}, in which case a list of the string
+;; lengths collected thus far is returned; @code{#t} which means to use
+;; the content length as the chunk size (effectively producing one
+;; chunk); or a number specifying the maximum size of a chunk.  The
+;; return value is a list of the chunk sizes.
+;;
+;; It is an error to use @code{#:rechunk-content} with a non-@code{#f}
+;; @var{chunk} in the presence of a previous @code{#:add-direct-writer}.
+;;
+;; @findex inhibit-content!
+;; @item #:inhibit-content! @var{bool}
+;; Non-@code{#f} @var{bool} arranges for @code{#:send-reply} (below) to
+;; compute content length and add the appropriate header, as usual, but
+;; no content is actually sent.  This is useful, e.g., when answering a
+;; @code{HEAD} request.  If @var{bool} is @code{#f}, @code{#:send-reply}
+;; acts normally (i.e., sends both headers and content).
+;;
+;; @findex send!
+;; @item #:send! @var{sock} [@var{flags}]
+;; Send the properly formatted response to file-port @var{sock}.  It is
+;; an error to invoke @code{#:send-reply} without having first set
+;; the reply status.
+;;
+;; Optional arg @var{flags} are the same as for @code{send-request}.
+;; @xref{http}.
+;; @end table
+;;
+(define* (compose-response host #:key
+                           (style http-ish)
+                           (protocol-version '(1 . 1)))
+
+  (define tree<-header
+    (tree<-header-proc style))
+
+  (let* ((status #f)
+         (hq (make-q))
+         (hlen 0)
+         (headers '())
+         (body? #t)
+         (direct-writers '())
+         (entq (make-q))
+         (lenq (make-q))
+         (final-entity-length #f))
+
+    (define (current-entity-length)
+      (or final-entity-length (apply + (car lenq))))
+
+    (define (walk-content proc)
+      (walk-tree proc (car entq)))
+
+    (define (set-protocol-version pair)
+      (or (and (pair? pair)
+               (integer? (car pair))
+               (integer? (cdr pair)))
+          (error "bad protocol-version:" pair))
+      (set! protocol-version pair))
+
+    (define (set-reply-status number msg)
+      (and number msg (set! status (list number msg))))
+
+    (define (add-header name value)
+      (define (up! new)
+        (+! hlen (tree-flat-length! new))
+        (enq! hq new))
+      (cond ((eq? #f name)
+             (up! (list value CRLF)))
+            ((eq? #t name)
+             (up! value))
+            (else
+             (up! (tree<-header name value)))))
+
+    (define (add-string s)
+      (enq! lenq (string-length s))
+      (enq! entq s))
+
+    (define (add-content . tree)
+      (add-string (string<-tree tree)))
+
+    (define (add-formatted fstr . args)
+      (add-string (apply fs
+                         (cond ((eq? #f fstr) "~S")
+                               ((eq? #t fstr) "~A")
+                               (else fstr))
+                         args)))
+
+    (define* (add-direct-writer len write #:optional chunkable?)
+      (set! direct-writers (acons write (cons len chunkable?) direct-writers))
+      (enq! lenq len)
+      (enq! entq (if chunkable?
+                     (lambda (port)
+                       (write port len))
+                     write)))
+
+    (define (x-length x)
+      (if (procedure? x)
+          (car (assq-ref direct-writers x))
+          (string-length x)))
+
+    (define (rechunk-content chunk)
+      (cond ((not chunk)
+             (car lenq))
+            ((not (null? direct-writers))
+             (error "cannot rechunk in the presence of direct-writers"))
+            ((eq? #t chunk)
+             (rechunk-content (current-entity-length)))
+            ((not (number? chunk))
+             (error "bad #:rechunk-content spec:" chunk))
+            ((zero? chunk) ;;; slack
+             '())
+            (else
+             (let* ((entlen (current-entity-length))
+                    (extra (remainder entlen chunk))
+                    (dreck (make-list (quotient entlen chunk) chunk))
+                    (frizz (if (zero? extra)
+                               dreck
+                               (append! dreck (list extra))))
+                    (noise (map (lambda (n) (make-string n)) frizz))
+                    (nw noise)
+                    (dest (car nw))
+                    (dlen (string-length dest))
+                    (wpos 0))
+
+               (define (shift s)
+                 (let* ((size (string-length s))
+                        (dpos (remainder wpos chunk))
+                        (left (- dlen dpos)))
+                   (let loop ((start 0) (move (min size left)))
+                     (substring-move! s start (+ start move)
+                                      dest dpos)
+                     (+! wpos move)
+                     (let ((new-start (+ start move))
+                           (new-dpos (remainder wpos chunk)))
+                       (cond ((zero? new-dpos)
+                              (set! nw (cdr nw))
+                              (cond ((not (null? nw))
+                                     (set! dest (car nw))
+                                     (set! dlen (string-length dest))))))
+                       (or (= size new-start)
+                           (begin
+                             (set! dpos new-dpos)
+                             (set! left (- dlen dpos))
+                             (loop new-start
+                                   (min (- size new-start)
+                                        left))))))))
+
+               (walk-content shift)
+               (set-car! entq noise) (sync-q! entq)
+               (set-car! lenq frizz) (sync-q! lenq)
+               frizz))))
+
+    (define (inhibit-content! value)
+      (set! body? (not value)))
+
+    (define (entity-length)
+      (if body? (current-entity-length) 0))
+
+    (define* (send! sock #:optional (flags '()))
+      (or status (error "reply status not set"))
+      (set! final-entity-length (current-entity-length))
+      (out! sock host
+            ;; fkv
+            (lambda (k v)
+              (string<-headers (acons k v '()) style))
+            ;; status
+            (apply fs (status-format-string protocol-version style) status)
+            ;; neck
+            (ish-neck style)
+            ;; headers
+            (let ((h-str (make-string hlen))
+                  (wp 0))
+              (walk-tree (lambda (s)
+                           (let ((len (string-length s)))
+                             (substring-move! s 0 len h-str wp)
+                             (+! wp len)))
+                         (car hq))
+              (list h-str))
+            ;; body
+            (and body?
+                 ;; body
+                 (lambda (command)
+                   (case command
+                     ((content-length) final-entity-length)
+                     ((next-chunk) (if (q-empty? entq)
+                                       (values #f #f)
+                                       (values (deq! lenq)
+                                               (deq! entq))))
+                     (else #f))))
+            flags)
+      ;; rv
+      (list (car status) (if body? final-entity-length 0)))
+
+    ;; rv
+    (lambda (command . args)
+      (apply
+       (case command
+         ((#:set-protocol-version) set-protocol-version)
+         ((#:set-reply-status) set-reply-status)
+         ((#:add-header) add-header)
+         ((#:add-content) add-content)
+         ((#:add-formatted) add-formatted)
+         ((#:add-direct-writer) add-direct-writer)
+         ((#:rechunk-content) rechunk-content)
+         ((#:inhibit-content!) inhibit-content!)
+         ((#:entity-length) entity-length)
+         ((#:send!) send!)
+         (else (error "unrecognized command:" command)))
+       args))))
 
 ;; Return a command-delegating closure capable of writing a properly formatted
 ;; HTTP 1.0 response to @var{out-port}.  Optional arg @var{status-box} is a

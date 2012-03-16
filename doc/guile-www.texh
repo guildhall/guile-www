@@ -699,26 +699,31 @@ response.  Additionally, the @code{#:rechunk-content} facility allows
 some degree of performance tuning; a server may be able to achieve
 better throughput with certain chunk sizes than with others.
 
-The output from @code{mouthpiece} and @code{string<-headers}
+The output from @code{compose-response},
+@code{mouthpiece} and @code{string<-headers}
 is formatted according to their optional @var{style} argument.
 By default, headers have the form:
 
 @example
-NAME #\: #\space VALUE #\cr #\lf
+NAME ": " VALUE CR LF
 @end example
 
 @noindent
-Additionally, for @code{mouthpiece}, the first line, preceding all the
+Additionally, for @code{compose-response} and
+@code{mouthpiece}, the first line, preceding all the
 headers, has the form:
 
 @example
-HTTP/1.0 @var{nnn} @var{msg}
+"HTTP/" MAJOR "." MINOR SP NNN SP MSG
 @end example
 
 @noindent
-and a single @code{#\cr #\lf} pair separates the headers from the body.
+and a single @code{CRLF} pair separates the headers from the body.
+(Actually, @var{mouthpiece} hardcodes the protocol version to @samp{1.0},
+which is one reason why new code should use @code{compose-response}.)
 @xref{modlisp}, for another way to format this information.
 
+@tsin i compose-response
 @tsin i mouthpiece
 
 @heading example
