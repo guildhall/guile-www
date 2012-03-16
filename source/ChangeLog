@@ -1,5 +1,11 @@
 2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use ‘compose-response’ underneath ‘mouthpiece’.
+
+	* server-utils/answer.scm (mouthpiece): Use ‘compose-response’.
+
+2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (... answer) proc: compose-response
 
 	* server-utils/answer.scm: Import ‘(www crlf) out!’; import
