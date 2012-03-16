@@ -1,5 +1,12 @@
 2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (... parse-request) record type (plus procs): request
+
+	* doc/guile-www.texh (parse-request):
+	Add @tsin for ‘request’, "request procs".
+
+2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (... answer) proc: compose-response
 
 	* doc/guile-www.texh (answer): Expand intro blurb;

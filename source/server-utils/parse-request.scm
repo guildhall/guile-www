@@ -21,7 +21,13 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (define-module (www server-utils parse-request)
-  #:export (read-first-line
+  #:export (request?
+            request-method
+            request-upath
+            request-protocol-version
+            request-headers
+            request-body
+            read-first-line
             hqf<-upath alist<-query
             read-headers skip-headers read-body)
   #:use-module ((www crlf) #:select (read-through-CRLF
@@ -29,11 +35,64 @@
                                      (read-headers . crlf:read-headers)
                                      read-characters))
   #:autoload (www url-coding) (url-coding:decode)
+  #:use-module (srfi srfi-9)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module (ice-9 rw)
   #:use-module (ice-9 and-let-star))
+
+;; A request object has five fields.
+;;
+;; @table @code
+;; @item method
+;; A symbol, such as @code{GET}.
+;;
+;; @item upath
+;; A string.  You can use @code{hqf<-upath}
+;; and @code{alist<-query} to break this down further.
+;;
+;; @item protocol-version
+;; A pair of integers indicating the protocol version.
+;; For example, @code{(1 . 1)} corresponds to HTTP 1.1.
+;;
+;; @item headers
+;; A list of pairs @code{(@var{name} . @var{value})}, aka alist,
+;; where @var{name} is a symbol and @var{value} is a string.
+;; How @var{name} is normalized depends on which @var{s2s}
+;; was specified to @code{parse-request-proc}.
+;;
+;; @item body
+;; Either @code{#f} or a procedure @var{get-body}.
+;; This should be called with one arg, @var{flags},
+;; to retrieve the request body.
+;; @c FIXME: Factor into its own node; xref directly.
+;; @xref{http}, procedure @code{receive-response},
+;; for @var{flags} documentation.
+;; @end table
+;;
+(define-record-type request
+    (make-request method upath protocol-version headers body)
+    request?
+  (method request-method)
+  (upath request-upath)
+  (protocol-version request-protocol-version)
+  (headers request-headers)
+  (body request-body))
+
+;; {request procs}
+;;
+;; @deffn {Procedure} request? obj
+;; Return @code{#t} if @var{obj} is a request object.
+;; @end deffn
+;;
+;; @deffn {Procedure} request-method req
+;; @deffnx {Procedure} request-upath req
+;; @deffnx {Procedure} request-protocol-version req
+;; @deffnx {Procedure} request-headers req
+;; @deffnx {Procedure} request-body req
+;; Return the respective field of request object @var{req}.
+;; @end deffn
 
 (define-macro (false-if-eof . body)
   `(catch 'unexpected-eof

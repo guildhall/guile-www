@@ -1,5 +1,13 @@
 2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (... parse-request) record type (plus procs): request
+
+	* server-utils/parse-request.scm: Import SRFI 9.
+	(request): New ‘define-record-type’.
+	("request procs"): New named-text-block (comment).
+
+2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use ‘compose-response’ underneath ‘mouthpiece’.
 
 	* server-utils/answer.scm (mouthpiece): Use ‘compose-response’.
