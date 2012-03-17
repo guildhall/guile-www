@@ -262,23 +262,39 @@
           (parent-finish close-port)
           (log #f))
 
+  (define (parse port)
+    (catch 'parse-error
+           (lambda ()
+             (receive-request port
+                              ;; backward compat
+                              #:s2s identity
+                              #:style style))
+           (lambda (k prob obj)
+             ;; This awaits ‘#:error-notification-port’ or somesuch.
+             ;; (simple-format (current-error-port) "~A: ~A ~S~%" k prob obj)
+             #f)))
+
   (or style (set! style http-hgrok))
-  (let* ((hgrok-first-line (vector-ref style 0))
-         (hgrok (cond ((and (not need-headers) (not need-input-port))
-                       (lambda (port) #t))
-                      (need-input-port (vector-ref style 1))
-                      (else            (vector-ref style 2)))))
+  (let ()
 
     (define (bdlcore queue-length sock handle-request)
       (listen sock queue-length)
       (let loop ((conn (accept sock)))
-        (and (handle-request conn (hgrok-first-line (car conn)))
+        (and (handle-request conn (parse (car conn)))
              (loop (accept sock)))))
 
-    (define (handle-request conn upath method)
+    (define (good conn req)
       (let* ((p (car conn))
+             (method (request-method req))
+             (upath (request-upath req))
              ;; headers
-             (h (hgrok p))
+             (h (and need-headers
+                     (map (lambda (pair)
+                            (cons
+                             ;; backward compat
+                             (symbol->string (car pair))
+                             (cdr pair)))
+                          (request-headers req))))
              ;; status box
              (b (and (number? status-box-size)
                      (make-list status-box-size #f)))
@@ -340,7 +356,7 @@
 
            (define (child)
              (let ((rv (cond (req
-                              (apply handle-request conn (cdr (reverse! req))))
+                              (good conn req))
                              (bad-request-handler
                               (bad-request-handler (mouthpiece p)))
                              (else

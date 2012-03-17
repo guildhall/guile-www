@@ -1,5 +1,18 @@
 2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use ‘receive-request’ in ‘make-big-dishing-loop’.
+
+	* server-utils/big-dishing-loop.scm (make-big-dishing-loop):
+	No longer use the first three elements of the ‘style’ object.
+	(make-big-dishing-loop parse): New proc.
+	(make-big-dishing-loop bdlcore): Use ‘parse’.
+	(make-big-dishing-loop good): Rename from ‘handle-request’;
+	take arg REQ instead of UPATH and METHOD; compute them from REQ;
+	use ‘need-headers’ here, to enable processing.
+	(make-big-dishing-loop child): Update call to ‘good’.
+
+2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	New (... parse-request) proc: receive-request
 
 	* server-utils/parse-request.scm: Import ‘read-headers/get-body’,
