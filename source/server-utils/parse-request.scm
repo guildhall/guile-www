@@ -27,20 +27,58 @@
             request-protocol-version
             request-headers
             request-body
+            receive-request
             read-first-line
             hqf<-upath alist<-query
             read-headers skip-headers read-body)
   #:use-module ((www crlf) #:select (read-through-CRLF
                                      read-three-part-line
                                      (read-headers . crlf:read-headers)
-                                     read-characters))
+                                     read-characters
+                                     read-headers/get-body))
   #:autoload (www url-coding) (url-coding:decode)
   #:use-module (srfi srfi-9)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
+  #:use-module ((ice-9 regex) #:select (match:substring))
+  #:use-module (ice-9 optargs)
   #:use-module (ice-9 rw)
   #:use-module (ice-9 and-let-star))
+
+(define (read-request port s2s)
+  (let-values (((method upath pvers) (read-three-part-line port)))
+    (let-values (((headers get-body) (read-headers/get-body port s2s)))
+      (values method upath pvers headers get-body))))
+
+(define PV-RX (make-regexp "HTTP/([0-9]+)[.]([0-9]+)"))
+
+;; Return a request object read from @var{port}.
+;; Use @var{s2s} (defaults to @code{string-titlecase}) to normalize
+;; the header names.
+;; With @code{#:s2s string-downcase}, for instance, you would
+;; see @code{(host . "example.com")} in the @code{headers} field
+;; of the request object.
+;;
+;; Keyword arg @var{style} is an object specifying the syntax of the
+;; initial (non-body) portion.  By default, @var{parse} expects a normal
+;; HTTP 1.1 request message as per RFC 2616.
+;;
+(define* (receive-request port #:key (s2s string-titlecase) (style #f))
+  (let ((rd-req (or (and style (vector-ref style 4))
+                    read-request)))
+    (let-values (((method upath pvers headers get-body) (rd-req port s2s)))
+      (make-request (string->symbol method)
+                    upath
+                    (cond ((regexp-exec PV-RX pvers)
+                           => (lambda (m)
+                                (define (num n)
+                                  (string->number (match:substring m n)))
+                                (cons (num 1) (num 2))))
+                          (else
+                           '(1 . 0)))
+                    headers
+                    get-body))))
 
 ;; A request object has five fields.
 ;;
@@ -60,7 +98,7 @@
 ;; A list of pairs @code{(@var{name} . @var{value})}, aka alist,
 ;; where @var{name} is a symbol and @var{value} is a string.
 ;; How @var{name} is normalized depends on which @var{s2s}
-;; was specified to @code{parse-request-proc}.
+;; was specified to @code{receive-request}.
 ;;
 ;; @item body
 ;; Either @code{#f} or a procedure @var{get-body}.

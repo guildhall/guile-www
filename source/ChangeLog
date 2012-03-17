@@ -1,5 +1,15 @@
 2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	New (... parse-request) proc: receive-request
+
+	* server-utils/parse-request.scm: Import ‘read-headers/get-body’,
+	‘(ice-9 regex) match:substring’, ‘(ice-9 optargs)’.
+	(read-request): New var.
+	(PV-RX): New regexp.
+	(receive-request): New proc, exported.
+
+2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Add 5th element to hgrok objects.
 
 	* server-utils/big-dishing-loop.scm (http-hgrok): Add 5th element ‘#f’.

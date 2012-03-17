@@ -1,3 +1,9 @@
+2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	New (... parse-request) proc: receive-request
+
+	* doc/guile-www.texh (parse-request): Add @tsin for ‘receive-request’.
+
 2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (... parse-request) record type (plus procs): request

@@ -87,7 +87,7 @@
 
 ;; An object suitable for the @code{#:style} argument to
 ;; both @code{make-big-dishing-loop} (@pxref{big-dishing-loop})
-;; and @code{parse-request-proc} (@pxref{parse-request}).
+;; and @code{receive-request} (@pxref{parse-request}).
 ;;
 ;;-category: object
 ;;

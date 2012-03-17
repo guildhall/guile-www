@@ -378,6 +378,8 @@ The @code{(www server-utils parse-request)} module provides procedures to
 read the first line, the headers and the body, of an HTTP message on the
 input port.
 
+@tsin i receive-request
+
 @tsin i request
 @tsin i "request procs"
 
