@@ -1,3 +1,16 @@
+2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add 5th element to hgrok objects.
+
+	* server-utils/big-dishing-loop.scm (http-hgrok): Add 5th element ‘#f’.
+	* server-utils/modlisp.scm: Import ‘(www crlf) get-body-proc’;
+	SRFI 1 ‘lset-difference’.
+	(read-until-body): Take 2nd arg HSYM;
+	normalize the header name with it.
+	(read-headers): Update call to ‘read-until-body’.
+	(read-request): New proc.
+	(modlisp-hgrok): Add 5th element ‘read-request’.
+
 2012-03-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (... parse-request) record type (plus procs): request

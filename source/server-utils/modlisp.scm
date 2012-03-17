@@ -29,19 +29,24 @@
 (define-module (www server-utils modlisp)
   #:export (modlisp-hgrok
             modlisp-ish)
+  #:use-module ((www crlf) #:select (get-body-proc))
+  #:use-module ((srfi srfi-1) #:select (lset-difference))
   #:use-module ((ice-9 rdelim) #:select (read-line)))
+
+(define (read-until-body port hsym)
+  (let loop ((acc '()))
+    (let ((k (read-line port)))
+      (if (string=? "end" k)
+          (reverse! acc)
+          (loop (acons (hsym k) (read-line port) acc))))))
 
 (define stashed (make-object-property))
 
 (define (read-headers port)
   (or (stashed port)
-      (let loop ((acc '()))
-        (let ((k (read-line port)))
-          (if (string=? "end" k)
-              (let ((rv (reverse! acc)))
-                (set! (stashed port) rv)
-                rv)
-              (loop (acons k (read-line port) acc)))))))
+      (let (let ((rv (read-until-body port identity)))
+             (set! (stashed port) rv)
+             rv))))
 
 (define (read-first-line port)
   (set! (stashed port) #f)
@@ -51,6 +56,20 @@
                   '("method" "url" "server-protocol"))))
     (set-car! rv (string->symbol (car rv)))
     rv))
+
+(define (read-request port s2s)
+  (define (hsym string)
+    (string->symbol (s2s string)))
+  (let* ((headers (read-until-body port hsym))
+         (method (assq (hsym "method") headers))
+         (upath (assq (hsym "url") headers))
+         (pvers (assq (hsym "server-protocol") headers)))
+    (set! headers (lset-difference eq? headers (list method upath pvers)))
+    (values (cdr method)
+            (cdr upath)
+            (cdr pvers)
+            headers
+            (get-body-proc port hsym headers))))
 
 (define LF "\n")
 
@@ -66,15 +85,16 @@
                             LF
                             (string-append "end" LF)))
 
-;; An object suitable for the value of @code{make-big-dishing-loop}
-;; keyword argument @code{#:style}.
-;; @xref{big-dishing-loop}.
+;; An object suitable for the @code{#:style} argument to
+;; both @code{make-big-dishing-loop} (@pxref{big-dishing-loop})
+;; and @code{parse-request-proc} (@pxref{parse-request}).
 ;;
 ;;-category: object
 ;;
 (define modlisp-hgrok (vector read-first-line
                               read-headers
                               read-headers
-                              modlisp-ish))
+                              modlisp-ish
+                              read-request))
 
 ;;; modlisp.scm ends here

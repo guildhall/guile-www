@@ -109,6 +109,7 @@
 (define http-hgrok (vector read-first-line
                            read-headers
                            skip-headers
+                           #f
                            #f))
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
