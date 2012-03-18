@@ -1,3 +1,11 @@
+2012-03-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[crlf] Do more sanity checks for ‘out!’ BODY.
+
+	* crlf.scm (out! move!): For u8 vector and string support,
+	require all elements in the list to be of the supported type;
+	if BODY does not qualify, throw ‘bad’, ‘body’ and BODY.
+
 2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use ‘receive-request’ in ‘make-big-dishing-loop’.

@@ -383,7 +383,7 @@
           ((null? body) (set! body #f) #f)
           ((procedure? body) body)
           ((or (and (u8vector? body) (list body))
-               (and (u8vector? (car body)) body))
+               (and (pair? body) (and-map u8vector? body) body))
            => (lambda (vectors)
                 (let ((lengths (map u8vector-length vectors)))
                   ;; move!
@@ -391,11 +391,14 @@
                                     (uniform-vector-write
                                      (pop vectors)
                                      sock))))))
+          ((or (and (string? body) (list body))
+               (and (pair? body) (and-map string? body) body))
+           => (lambda (strings)
+                (let ((lengths (map string-length strings)))
+                  ;; move!
+                  (x-move strings (pop strings)))))
           (else
-           (let* ((strings (if (string? body) (list body) body))
-                  (lengths (map string-length strings)))
-             ;; move!
-             (x-move strings (pop strings))))))
+           (throw 'bad 'body body))))
 
   (define (string<-elements ls)
     (string-concatenate
