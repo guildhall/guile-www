@@ -1,3 +1,10 @@
+2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Move ‘http:post-form’ bulk to new internal module.
+
+	* build-aux/common.mk (top_leaves): Add post.
+	* v/Makefile.am (single): Add x019.
+
 2012-03-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	New (... parse-request) proc: receive-request

@@ -32,7 +32,7 @@ TESTS += x000
 # in ../build-aux/common.mk (i.e., be manually maintained).
 single = \
  x001 x002 x003 x004 x005 x006 x007 x008 x009 x010 \
- x011 x012 x013 x014 x015 x016 x017 x018
+ x011 x012 x013 x014 x015 x016 x017 x018 x019
 TESTS += $(single)
 
 explicit = \

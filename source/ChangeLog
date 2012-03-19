@@ -1,3 +1,13 @@
+2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Move ‘http:post-form’ bulk to new internal module.
+
+	* post.scm: New file.
+	* http.scm: Autoload ‘(www post)’
+	on trigger ‘formatted-form-for-http:post-form’.
+	(http:post-form): Document Content-Type computation;
+	use ‘formatted-form-for-http:post-form’.
+
 2012-03-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[crlf] Do more sanity checks for ‘out!’ BODY.

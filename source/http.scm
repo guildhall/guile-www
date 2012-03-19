@@ -49,6 +49,7 @@
                                      hsym-proc
                                      read-headers/get-body
                                      out!))
+  #:autoload (www post) (formatted-form-for-http:post-form)
   #:use-module ((srfi srfi-1) #:select (car+cdr))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
@@ -195,107 +196,20 @@
 ;; it is the caller's responsibility to ensure that the MIME type and
 ;; transfer encoding specified describe @var{source} accurately.
 ;;
+;; If there are no file-upload specifications in @var{fields}, the
+;; @code{Content-Type} is @code{application/x-www-form-urlencoded},
+;; and furthermore all the @var{fkey} and @var{fvalue} are transformed
+;; by @code{url-coding:encode} (@pxref{url-coding}).
+;;
+;; Otherwise, the @code{Content-Type} is @code{multipart/form-data},
+;; with each field in @var{fields} formatted as a MIME sub-part.
+;;
 (define (http:post-form url extra-headers fields)
-
-  (define (source: spec)        (list-ref spec 0))
-  (define (name: spec)          (list-ref spec 1))
-  (define (mime-type: spec) (or (list-ref spec 2) "text/plain"))
-  (define (xfer-enc: spec)  (or (list-ref spec 3) "binary"))
-
-  (define (validate-upload-spec spec)
-    (define (string-or-symbol? obj) (or (string? obj) (symbol? obj)))
-    (or (and (list? spec)
-             (= 4 (length spec))
-             (and=> (source: spec) (lambda (source)
-                                     (or (and (procedure? source)
-                                              (equal? '(0 0 #f) ; thunk
-                                                      (procedure-property
-                                                       source 'arity)))
-                                         (string? source))))
-             (and=> (name: spec) string-or-symbol?)
-             (and=> (mime-type: spec) string-or-symbol?)
-             (and=> (xfer-enc: spec) string-or-symbol?))
-        (error "bad upload spec:" spec)))
-
-  (define* (c-type type #:optional boundary)
-    (fs "Content-Type: ~A~A"
-        type
-        (if boundary
-            (fs "; boundary=~S" boundary)
-            "")))
-
-  (define* (c-disp disp name #:optional f?)
-    (fs "Content-Disposition: ~A; ~Aname=\"~A\""
-        disp (if f? "file" "") name))
-
-  (let ((simple '()) (uploads '())      ; partition fields
-        (boundary "gUiLeWwWhTtPpOsTfOrM"))
-    (for-each (lambda (field)
-                (if (pair? (cdr field))
-                    (begin
-                      (for-each validate-upload-spec (cdr field))
-                      (set! uploads (cons field uploads)))
-                    (set! simple (cons field simple))))
-              fields)
-    ;; reorder
-    (set! simple (reverse! simple))
-    (set! uploads (reverse! uploads))
-    ;; do it!
+  (let-values (((headers body) (formatted-form-for-http:post-form fields)))
     (http:request
      'POST url
-     ;; headers
-     (cons
-      (if (null? uploads)
-          (c-type "application/x-www-form-urlencoded")
-          (c-type "multipart/form-data" boundary))
-      extra-headers)
-     ;; body
-     (if (null? uploads)
-         (or (and (null? simple) simple)
-             (let* ((enc (lambda (extract pair)
-                           (url:encode (extract pair) '())))
-                    (one (lambda (fmt pair)
-                           (fs fmt (enc car pair) (enc cdr pair)))))
-               (list                    ; all on one line
-                (apply string-append
-                       (one "~A=~A" (car simple))
-                       (map (lambda (field)
-                              (one "&~A=~A" field))
-                            (cdr simple))))))
-         (let ((boundary-line (string-append "--" boundary)))
-           (define (aam proc ls)
-             ;; note: PROC must cons else ‘append!’ will corrupt LS
-             (apply append! (map proc ls)))
-           `(,@(aam (lambda (pair)
-                      (list
-                       boundary-line
-                       (c-disp "form-data" (car pair))
-                       ""
-                       (cdr pair)))
-                    simple)
-             ,@(aam (lambda (name-spec)
-                      (let* ((sub-b (string-append "SuB" boundary))
-                             (sub-b-line (string-append "--" sub-b)))
-                        `(,boundary-line
-                          ,(c-disp "form-data" (car name-spec))
-                          ,(c-type "multipart/mixed" sub-b)
-                          ""
-                          ,@`(,@(aam (lambda (spec)
-                                       (list
-                                        sub-b-line
-                                        (c-disp "attachment"
-                                                (basename (name: spec))
-                                                #t)
-                                        (c-type (mime-type: spec))
-                                        (fs "Content-Transfer-Encoding: ~A"
-                                            (xfer-enc: spec))
-                                        ""
-                                        (let ((s (source: spec)))
-                                          (if (string? s) s (s)))))
-                                     (cdr name-spec)))
-                          ,(string-append sub-b-line "--"))))
-                    uploads)
-             ,(string-append boundary-line "--")))))))
+     (append headers extra-headers)
+     body)))
 
 ;; Connection-oriented functions:
 

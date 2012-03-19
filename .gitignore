@@ -86,6 +86,7 @@ Makefile.in
 /v/x016
 /v/x017
 /v/x018
+/v/x019
 
 # here we try to express:
 # everything else under source except Makefile.am and *.scm

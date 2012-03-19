@@ -33,6 +33,7 @@ top_leaves =		\
  cgi			\
  http			\
  main			\
+ post			\
  url			\
  url-coding		\
  utcsec
