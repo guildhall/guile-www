@@ -1,6 +1,6 @@
 ;;; (www server-utils big-dishing-loop) --- Customizable listener and dispatch
 
-;; Copyright (C) 2008, 2009, 2010, 2011 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2009, 2010, 2011, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2005, 2006, 2007 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

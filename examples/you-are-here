@@ -3,7 +3,7 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
 !#
 ;;; you-are-here --- play with the big dishing loop
 
-;; Copyright (C) 2008 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.

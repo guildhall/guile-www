@@ -1,6 +1,6 @@
 ;;; (www server-utils modlisp) --- Handlers for Apache mod_lisp protocol
 
-;; Copyright (C) 2010, 2011 Thien-Thi Nguyen
+;; Copyright (C) 2010, 2011, 2012 Thien-Thi Nguyen
 ;;
 ;; This file is part of Guile-WWW.
 ;;

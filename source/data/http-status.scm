@@ -1,6 +1,6 @@
 ;;; (www data http-status) --- Standard strings for HTTP status codes
 
-;; Copyright (C) 2009, 2010 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2010, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.
