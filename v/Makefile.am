@@ -42,7 +42,7 @@ explicit = \
 
 TESTS += $(explicit)
 
-EXTRA_DIST = $(explicit)
+EXTRA_DIST = $(explicit) common
 
 all-modules.list:
 	@echo Creating $@ ... ;						\

@@ -1,5 +1,14 @@
 2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Also distribute v/common.
+
+	Omission from 2012-03-11, "Move testing
+	to dedicated dir; revamp to use Automake-fu".
+
+	* v/Makefile.am (EXTRA_DIST): Add common.
+
+2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Move ‘http:post-form’ bulk to new internal module.
 
 	* build-aux/common.mk (top_leaves): Add post.
