@@ -199,7 +199,8 @@
 ;; If there are no file-upload specifications in @var{fields}, the
 ;; @code{Content-Type} is @code{application/x-www-form-urlencoded},
 ;; and furthermore all the @var{fkey} and @var{fvalue} are transformed
-;; by @code{url-coding:encode} (@pxref{url-coding}).
+;; by @code{url-coding:encode} (@pxref{url-coding}) with the additional
+;; reserved characters @code{#\&} (ampersand) and @code{#\=} (equal sign).
 ;;
 ;; Otherwise, the @code{Content-Type} is @code{multipart/form-data},
 ;; with each field in @var{fields} formatted as a MIME sub-part.

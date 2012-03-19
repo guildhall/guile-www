@@ -1,5 +1,13 @@
 2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[http] Fix bug: Also reserve ‘#\&’ and ‘#\=’ when urlencoding.
+
+	* post.scm (formatted-form-for-http:post-form urlenc):
+	Also reserve ‘#\&’ and ‘#\=’.
+	* http.scm (http:post-form): Update doc comment.
+
+2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Move ‘http:post-form’ bulk to new internal module.
 
 	* post.scm: New file.

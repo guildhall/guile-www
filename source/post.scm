@@ -58,7 +58,7 @@
     (url-coding:encode (cond ((string? x) x)
                              ((symbol? x) (symbol->string x))
                              (else (object->string x)))
-                       '()))
+                       '(#\& #\=)))
 
   (define* (c-type type #:optional boundary)
     (fs "Content-Type: ~A~A"
