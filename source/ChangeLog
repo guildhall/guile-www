@@ -1,5 +1,13 @@
 2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[url-coding int] Use SRFI 13, 14 more.
+
+	* url-coding.scm: Don't import (ice-9 regex);
+	instead, import some procs from SRFI 13, 14.
+	(url-coding:decode, url-coding:encode): Rewrite.
+
+2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[url-coding] Fix bug: Use two hex digits to encode octets 0-15.
 
 	* url-coding.scm (url-coding:encode): If the integer

@@ -29,57 +29,85 @@
 (define-module (www url-coding)
   #:export (url-coding:decode
             url-coding:encode)
-  #:use-module (ice-9 regex))
+  #:use-module ((srfi srfi-13) #:select (string-index
+                                         string-concatenate-reverse
+                                         substring/shared))
+  #:use-module ((srfi srfi-14) #:select (char-set
+                                         char-set-union
+                                         char-set-difference
+                                         list->char-set
+                                         string->char-set
+                                         char-set:letter+digit)))
 
 ;; Return a new string made from url-decoding @var{str}.  Specifically,
 ;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
 ;; their eight-bit characters.
 ;;
-(define (url-coding:decode str)
-  ;; Implementation Questions: Is a regexp faster than character scanning?
-  ;; Does it incur more overhead (which may be more important for code that
-  ;; frequently gets restarted)?
-  (regexp-substitute/global
-   #f "\\+|%([0-9A-Fa-f][0-9A-Fa-f])" str
-   'pre
-   (lambda (m)
-     (cond ((string=? "+" (match:substring m 0)) " ")
-           (else (integer->char
-                  (string->number
-                   (match:substring m 1)
-                   16)))))
-   'post))
+(define url-coding:decode
+  (let ((both (char-set #\+ #\%)))
+    ;; url-coding:decode
+    (lambda (str)
+      (define (subs b . e)
+        (apply substring/shared str b e))
+      (let ((last-start (- (string-length str) 3)))
+        (let loop ((acc '()) (start 0))
+          (define (until . e)
+            (apply subs start e))
+          (cond ((string-index str both start)
+                 => (lambda (pos)
+                      (define (with processed x)
+                        (loop (cons* x (until pos) acc)
+                              (+ processed pos)))
+                      (case (string-ref str pos)
+                        ((#\+) (with 1 " "))
+                        (else (and (< last-start pos)
+                                   (error "% too late:" str))
+                              (with 3 (string
+                                       (integer->char
+                                        (string->number
+                                         (subs (1+ pos) (+ 3 pos))
+                                         16))))))))
+                (else
+                 (string-concatenate-reverse acc (until)))))))))
 
 ;; Return a new string made from url-encoding @var{str},
 ;; unconditionally transforming those in @var{reserved-chars}, a list
 ;; of characters, in addition to those in the standard (internal) set.
 ;;
-(define (url-coding:encode str reserved-chars)
-  ;; Can't be done easily with a regexp: we would have to construct a
-  ;; regular expression like "[\277-\377]", for example, and Guile
-  ;; strings don't let you interpolate character literals.  Pity.
-  (with-output-to-string
-    (lambda ()
-      (for-each (lambda (ch)
-                  (if (and (safe-char? ch)
-                           (not (memv ch reserved-chars)))
-                      (display ch)
-                      (let ((n (char->integer ch)))
-                        (display #\%)
-                        (and (> 16 n) (display #\0))
-                        (display (number->string n 16)))))
-                (string->list str)))))
-
-(define safe-chars (append! (string->list "$-_.+!*'(),")
-                            ;; reserved
-                            (string->list ";/?:@&=")))
-
-(define (safe-char? ch)
+(define url-coding:encode
   ;; “Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
   ;; reserved characters used for their reserved purposes may be used
   ;; unencoded within a URL.” RFC 1738, #2.2.
-  (or (char-alphabetic? ch)
-      (char-numeric? ch)
-      (memv ch safe-chars)))
+  (let ((safe (char-set-union char-set:letter+digit
+                              (string->char-set "$-_.+!*'(),")
+                              (string->char-set ";/?:@&="))))
+
+    (define percent
+      (let ((v (list->vector (map (lambda (i)
+                                    (string-append
+                                     "%"
+                                     (if (> 16 i) "0" "")
+                                     (number->string i 16)))
+                                  (iota 256)))))
+        ;; percent
+        (lambda (ch)
+          (vector-ref v (char->integer ch)))))
+
+    ;; url-coding:encode
+    (lambda (str reserved-chars)
+      (let ((ok (if (pair? reserved-chars)
+                    (char-set-difference safe (list->char-set reserved-chars))
+                    safe)))
+        (let loop ((acc '()) (start 0))
+          (define (until . end)
+            (apply substring/shared str start end))
+          (cond ((string-skip str ok start)
+                 => (lambda (pos)
+                      (loop (cons* (percent (string-ref str pos))
+                                   (until pos)
+                                   acc)
+                            (1+ pos))))
+                (else
+                 (string-concatenate-reverse acc (until)))))))))
 
 ;;; (www url-coding) ends here
