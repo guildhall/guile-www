@@ -4,6 +4,9 @@ This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
 * ongoing (some of which may go into a future release)
+*** (doc) factor body-i/o protocols
+*** (doc) factor header name bits: ‘s2s’, "symbols are good", philosophy
+*** (v) round-trip POST + CGI + non-text body
 *** incorporate selected functionality from Guile 2 (web ...) modules
 *** manual chapter "Server Utilities"
 ***** more on (www server-utils answer) facilities
@@ -33,7 +36,7 @@ It lives in the repo but is not included in the distribution.
 
 * copyright update policy
 *** individual files only on change
-*** individual years
+*** individual years, except for docs (range ok there)
 *** 2008+ to ttn
 
 * repository branches
