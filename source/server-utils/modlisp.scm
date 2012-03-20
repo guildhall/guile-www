@@ -40,23 +40,6 @@
           (reverse! acc)
           (loop (acons (hsym k) (read-line port) acc))))))
 
-(define stashed (make-object-property))
-
-(define (read-headers port)
-  (or (stashed port)
-      (let (let ((rv (read-until-body port identity)))
-             (set! (stashed port) rv)
-             rv))))
-
-(define (read-first-line port)
-  (set! (stashed port) #f)
-  (let* ((headers (read-headers port))
-         (rv (map (lambda (x)
-                    (assoc-ref headers x))
-                  '("method" "url" "server-protocol"))))
-    (set-car! rv (string->symbol (car rv)))
-    rv))
-
 (define (read-request port s2s)
   (define (hsym string)
     (string->symbol (s2s string)))
@@ -91,9 +74,9 @@
 ;;
 ;;-category: object
 ;;
-(define modlisp-hgrok (vector read-first-line
-                              read-headers
-                              read-headers
+(define modlisp-hgrok (vector #f
+                              #f
+                              #f
                               modlisp-ish
                               read-request))
 

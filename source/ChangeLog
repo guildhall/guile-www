@@ -1,5 +1,13 @@
 2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Zonk now-unused ‘modlisp-hgrok’ elements.
+
+	* server-utils/modlisp.scm (stashed): Delete object property.
+	(read-headers, read-first-line): Delete procs.
+	(modlisp-hgrok): Set first three elements to ‘#f’.
+
+2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[url-coding int] Use SRFI 13, 14 more.
 
 	* url-coding.scm: Don't import (ice-9 regex);
