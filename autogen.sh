@@ -6,7 +6,8 @@
 # autoconf (GNU Autoconf) 2.68
 # automake (GNU automake) 1.11.3
 # guile (GNU Guile) 1.8.7
-# guile-baux-tool (Guile-BAUX) 20111227.1203.6977771
+# guile-baux-tool (Guile-BAUX) 20120309.1509.1c4bb92
+# snuggle (SNUGGLE) 0.1
 
 [ -f configure.ac ] || {
   echo "autogen.sh: run this command only at the top of a source tree."
