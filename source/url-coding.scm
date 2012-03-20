@@ -1,6 +1,6 @@
 ;;; (www url-coding) --- URL character coding (decode/encode)
 
-;; Copyright (C) 2009 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2012 Thien-Thi Nguyen
 ;; Copyright (C) 2004, 2005, 2007 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.
@@ -64,9 +64,10 @@
                   (if (and (safe-char? ch)
                            (not (memv ch reserved-chars)))
                       (display ch)
-                      (begin
+                      (let ((n (char->integer ch)))
                         (display #\%)
-                        (display (number->string (char->integer ch) 16)))))
+                        (and (> 16 n) (display #\0))
+                        (display (number->string n 16)))))
                 (string->list str)))))
 
 (define safe-chars (append! (string->list "$-_.+!*'(),")

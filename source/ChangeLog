@@ -1,3 +1,10 @@
+2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[url-coding] Fix bug: Use two hex digits to encode octets 0-15.
+
+	* url-coding.scm (url-coding:encode): If the integer
+	value of the octet is less than 16, output an additional ‘#\0’.
+
 2012-03-19  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[http] Fix bug: Also reserve ‘#\&’ and ‘#\=’ when urlencoding.
