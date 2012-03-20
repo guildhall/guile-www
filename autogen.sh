@@ -35,6 +35,7 @@ actually ()
     gnulib-tool --verbose --copy-file $1 $2
 }
 actually doc/INSTALL.UTF-8 INSTALL
+actually doc/fdl.texi
 
 # We aren't really interested in the backup files.
 rm -f INSTALL~

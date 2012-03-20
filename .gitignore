@@ -39,6 +39,7 @@ Makefile.in
 /build-aux/guile-baux/tsin
 /build-aux/guile-baux/write-string.scm
 
+/doc/fdl.texi
 /doc/guile-www.aux
 /doc/guile-www.cp
 /doc/guile-www.cps
