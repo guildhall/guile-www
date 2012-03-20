@@ -1,0 +1,63 @@
+;;; x110 --- test ‘url-coding:encode’ and ‘url-coding:decode’
+
+;; Copyright (C) 2012 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules
+ (srfi srfi-13)
+ (www url-coding))
+
+(define (die s . args)
+  (apply fse s args)
+  (exit #f))
+
+(define ALL (iota 256))
+(define ALL-STRING (apply string (map integer->char ALL)))
+(vfso "ALL-STRING: ~S~%" ALL-STRING)
+
+(define X (url-coding:encode ALL-STRING '()))
+(vfso "X: ~S~%" X)
+
+(define OK (+
+            ;; alphabetic
+            26 26
+            ;; numeric
+            10
+            ;; reserved
+            18))
+
+(or (= (+ OK (* 3 (- 256 OK)))
+       (string-length X))
+    (die "unexpected X: ~A|~A|~%" (string-length X) X))
+
+(define Y (url-coding:decode X))
+(vfso "Y: ~S~%" Y)
+
+(or (string=? (string-map (lambda (c)
+                            ;; Account for non bijection. :-/
+                            (if (char=? #\+ c)
+                                #\space
+                                c))
+                          ALL-STRING)
+              Y)
+    (die "unexpected Y: ~A|~A|~%~S~%" (string-length Y) Y Y))
+
+(exit #t)
+
+;;; x110 ends here
