@@ -1,5 +1,15 @@
 2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc] Mention ‘compose-response’ in ‘modlisp-ish’ doc.
+
+	Omission from 2012-03-16, "New (... answer) proc: compose-response".
+
+	* server-utils/modlisp.scm (modlisp-ish):
+	Add ‘compose-response’ to list of procedures that
+	can accept ‘modlisp-ish’ as the STYLE argument.
+
+2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Zonk now-unused ‘modlisp-hgrok’ elements.
 
 	* server-utils/modlisp.scm (stashed): Delete object property.

@@ -56,8 +56,8 @@
 
 (define LF "\n")
 
-;; An object suitable as the optional @code{style} argument for both
-;; @code{string<-headers} and @code{mouthpiece}.
+;; An object suitable as the optional @code{style} argument for
+;; @code{string<-headers}, @code{compose-response} and @code{mouthpiece}.
 ;; @xref{answer}.
 ;;
 ;;-category: object
