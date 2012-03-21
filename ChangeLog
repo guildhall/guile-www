@@ -1,5 +1,15 @@
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc] Add "NB" for marked-for-removal items.
+
+	* doc/guile-www.texh (http): Add NB for ‘http:head’, ‘http:get’.
+	(url): Add NB for ‘url:address’, ‘url:unknown’.
+	(main): Add NB for module ‘(www main)’.
+	(parse-request): Add NB for ‘read-first-line’,
+	‘read-headers’, ‘skip-headers’ and ‘read-body’.
+
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Add test for ‘modlisp-ish’ (and ‘#f’) STYLE handling.
 
 	* v/x210: New file.

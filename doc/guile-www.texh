@@ -157,6 +157,7 @@ know @code{ok} does not specify @code{#:s2s @var{s2s}} in its call to
 @code{receive-response}.  To enable @code{u8-maybe} to work with any
 pending response, you can instead use @code{(hget "Content-Type")}
 (i.e., a string name).
+
 @tsin i http:request
 
 @section Low-Level HTTP Message Object Access
@@ -190,9 +191,14 @@ symbols are case-sensitive.
 
 @section Common Messages
 
+@tsin i http:post-form
+
+@strong{NB: The following two procedures will NO LONGER BE AVAILABLE
+after 2013-02-28.}  Using @code{send-request} and @code{receive-reply}
+directly is more flexible and featureful.
+
 @tsin i http:head
 @tsin i http:get
-@tsin i http:post-form
 
 @c ---------------------------------------------------------------------------
 @node         url
@@ -217,12 +223,17 @@ and character decoding/encoding.
 @section Low-Level URL Object Access
 
 @tsin i url:scheme
-@tsin i url:address
-@tsin i url:unknown
 @tsin i url:user
 @tsin i url:host
 @tsin i url:port
 @tsin i url:path
+
+@strong{NB: The following two procedures will NO LONGER BE AVAILABLE
+after 2012-12-31.}  They are misguided attempts at abstraction better
+left behind.
+
+@tsin i url:address
+@tsin i url:unknown
 
 @section Character Decoding/Encoding
 
@@ -268,8 +279,12 @@ to access the uncollated (albeit ordered) form data.
 @node         main
 @chapter (www main)
 
+@strong{NB: This module will NO LONGER BE AVAILABLE after 2012-12-31.}
+Using @code{send-request} and @code{receive-reply} directly is more
+flexible and featureful (@pxref{http}).
+
 The @code{(www main)} module provides a generic interface useful for
-retriving data named by any URL.  The URL scheme @code{http} is pre-registered.
+retrieving data named by any URL.  The URL scheme @code{http} is pre-registered.
 
 @tsin i www:set-protocol-handler!
 @tsin i www:get
@@ -350,9 +365,13 @@ input port.
 @tsin i request
 @tsin i "request procs"
 
-@tsin i read-first-line
 @tsin i hqf<-upath
 @tsin i alist<-query
+
+@strong{NB: The following four procedures will NO LONGER BE AVAILABLE
+after 2013-02-28.}  Better to use @code{receive-request}.
+
+@tsin i read-first-line
 @tsin i read-headers
 
 @noindent
