@@ -39,6 +39,7 @@ explicit = \
  x100 \
  x110 \
  x200 \
+ x210 \
  x300
 
 TESTS += $(explicit)

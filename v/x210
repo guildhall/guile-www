@@ -1,0 +1,144 @@
+;;; x210 --- test ‘modlisp-ish’ handling
+
+;; Copyright (C) 2012 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules
+ ((www server-utils modlisp) #:prefix modlisp:)
+ ((www server-utils answer) #:select (CRLF
+                                      tree-flat-length!
+                                      string<-headers
+                                      compose-response))
+ ((srfi srfi-13) #:select (string-concatenate
+                           string-join))
+ ((ice-9 q) #:select (make-q
+                      enq!)))
+
+(define (die s . args)
+  (apply fse (string-append s "~%") args)
+  (exit #f))
+
+(define LF (string #\newline))
+
+(define TREE '("a" "b" ("c" "d" ("e" "f")) "g"))
+(let ((len (tree-flat-length! TREE)))
+  (or (= 7 len)
+      (die "unexpected len: ~S" len)))
+
+(define (try-headers style expected-output)
+  (let ((got (string<-headers '((#:AAAAAAA . a)
+                                (B . 42)
+                                ("C" . "c"))
+                              style)))
+    (vfso "~A__________~%" got)
+    (or (string=? expected-output got)
+        (die "try-unexpected output from string<-headers: ~A|~S|"
+             (string-length got) got))))
+
+(define (term eol)
+  (lambda (ls)
+    (string-concatenate
+     (map (lambda (s)
+            (string-append s eol))
+          ls))))
+
+(try-headers #f ((term CRLF)
+                 (list "AAAAAAA: a"
+                       "B: 42"
+                       "C: c")))
+
+(try-headers modlisp:modlisp-ish ((term LF)
+                                  (list "AAAAAAA" "a"
+                                        "B" "42"
+                                        "C" "c")))
+
+(define TMPFILE "x210.tmp")
+
+(define (tmpfile-contents)
+  (let ((port (open-input-file TMPFILE))
+        (chars (make-q)))
+    (let loop ()
+      (let ((c (read-char port)))
+        (cond ((char? c)
+               (enq! chars c)
+               (loop))
+              (else
+               (close-port port)
+               (apply string (car chars))))))))
+
+(define (try-compose-response style expected-content-length expected-output)
+  (let ((R (compose-response "host" #:style style)))
+    (R #:set-reply-status 404 "NO WAY!")
+    (R #:add-header 'Hello "There")
+    (R #:add-content
+       "To be or not to be?"
+       " That is the question!"
+       LF
+       TREE)
+    (let ((rv (call-with-output-file TMPFILE
+                (lambda (port)
+                  (R #:send! port)))))
+      (vfso "(M #:send-reply) => ~S~%" rv)
+      (or (and (pair? rv)
+               (= 2 (length rv))
+               (and-map integer? rv))
+          (die "bad rv: ~S~%" rv))
+      (or (= 404 (car rv))
+          (die "response code not 404: ~S" (car rv)))
+      (or (= expected-content-length (cadr rv))
+          (die "unexpected content-length: ~S" (cadr rv)))
+      (let ((got (tmpfile-contents)))
+        (vfso "got: ~A|~S|~%" (string-length got) got)
+        (or (string=? expected-output got)
+            (die "unexpected ~A contents" TMPFILE))))))
+
+(define EXPECTED-BODY
+  (string-append ((term LF)
+                  (list "To be or not to be? That is the question!"))
+                 "abcdefg"))
+
+(try-compose-response #f 49
+                      (string-append
+                       ((term CRLF)
+                        (list "HTTP/1.1 404 NO WAY!"
+                              "Content-Length: 49"
+                              "Host: host"
+                              "Hello: There"
+                              ""))
+                       EXPECTED-BODY))
+
+(try-compose-response modlisp:modlisp-ish 49
+                      (string-append
+                       ((term LF)
+                        (list "Status"
+                              "404 NO WAY!"
+                              "Content-Length"
+                              "49"
+                              "Host"
+                              "host"
+                              "Hello"
+                              "There"
+                              "end"))
+                       EXPECTED-BODY))
+
+(and (file-exists? TMPFILE)
+     (delete-file TMPFILE))
+(exit #t)
+
+;;; x210 ends here

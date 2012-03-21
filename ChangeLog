@@ -1,5 +1,12 @@
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add test for ‘modlisp-ish’ (and ‘#f’) STYLE handling.
+
+	* v/x210: New file.
+	* v/Makefile.am (explicit): Add x210.
+
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Centralize ‘CRLF’.
 
 	* v/x200 (CRLF): Don't define.
