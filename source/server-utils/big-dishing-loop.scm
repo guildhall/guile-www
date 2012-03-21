@@ -106,9 +106,9 @@
   (M #:send-reply 2)
   #t)
 
-(define http-hgrok (vector read-first-line
-                           read-headers
-                           skip-headers
+(define http-hgrok (vector #f
+                           #f
+                           #f
                            #f
                            #f))
 
