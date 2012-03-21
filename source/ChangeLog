@@ -1,5 +1,13 @@
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Centralize ‘CRLF’.
+
+	* crlf.scm (CRLF): Export.
+	* server-utils/answer.scm: Import ‘CRLF’ as ‘the-actual-CRLF’.
+	(CRLF): Use ‘the-actual-CRLF’.
+
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Zonk now-obsoleted ‘http-hgrok’ elements.
 
 	* server-utils/big-dishing-loop.scm

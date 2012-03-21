@@ -39,8 +39,6 @@
                (close-port port)
                (apply string (car chars))))))))
 
-(define CRLF "\r\n")
-
 (define (sj/crlf . args)
   (string-join args CRLF))
 

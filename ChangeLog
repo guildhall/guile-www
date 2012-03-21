@@ -1,3 +1,10 @@
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Centralize ‘CRLF’.
+
+	* v/x200 (CRLF): Don't define.
+	* v/x300 (CRLF): Don't define.
+
 2012-03-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Add test for url-coding:{en,de}code.

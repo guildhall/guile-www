@@ -25,7 +25,8 @@
                  string<-headers
                  compose-response
                  mouthpiece)
-  #:use-module ((www crlf) #:select (out!))
+  #:use-module ((www crlf) #:select ((CRLF . the-actual-CRLF)
+                                     out!))
   #:use-module (ice-9 curried-definitions)
   #:use-module (ice-9 optargs)
   #:use-module ((ice-9 q) #:select (make-q
@@ -42,7 +43,7 @@
 ;;
 ;;-category: constant string
 ;;
-(define CRLF "\r\n")
+(define CRLF the-actual-CRLF)
 
 ;; Return the flat length of @var{object},
 ;; or @code{#f} if not yet computed.

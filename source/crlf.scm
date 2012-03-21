@@ -30,7 +30,8 @@
 ;;; Code:
 
 (define-module (www crlf)
-  #:export (read-through-CRLF
+  #:export (CRLF
+            read-through-CRLF
             read-three-part-line
             read-headers
             read-characters

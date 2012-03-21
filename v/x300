@@ -39,8 +39,6 @@
               (loop (+ start (write-string/partial string port start stop))))))
       (force-output port))))
 
-(define CRLF "\r\n")
-
 (define (sj/crlf . args)
   (string-join args CRLF))
 
