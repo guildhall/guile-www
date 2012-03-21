@@ -21,10 +21,6 @@
 ;; write to the Free Software Foundation, Inc., 51 Franklin Street,
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Commentary:
-
-;; The (www http) module is fully documented in the guile-www.info file.
-
 ;;; Code:
 
 (define-module (www http)
@@ -55,9 +51,6 @@
   #:use-module (www url)
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 rw))
-
-
-;;; Compatibility
 
 (define (fs s . args)
   (apply simple-format #f s args))

@@ -21,10 +21,6 @@
 ;; write to the Free Software Foundation, Inc., 51 Franklin Street,
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Commentary:
-
-;; The (www cgi) module is fully documented in the guile-www.info file.
-
 ;;; Code:
 
 (define-module (www cgi)

@@ -21,13 +21,8 @@
 ;; write to the Free Software Foundation, Inc., 51 Franklin Street,
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
-;;; Commentary:
-
-;; The (www url) module is fully documented in the guile-www.info file.
-
 ;;; Code:
 
-
 ;; TODO:
 ;;   * make URL parsing smarter.  This is good for most TCP/IP-based
 ;;     URL schemes, but parsing is actually specific to each URL scheme.
