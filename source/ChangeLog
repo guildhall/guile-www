@@ -1,5 +1,12 @@
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Handle ‘#f’ STYLE for ‘compose-response’.
+
+	* server-utils/answer.scm (compose-response):
+	If ‘style’ is #f, set it explicitly to ‘http-ish’.
+
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Compact hgrok objects.
 
 	* server-utils/modlisp.scm (modlisp-hgrok): Move 5th and 4th

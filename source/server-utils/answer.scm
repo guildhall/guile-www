@@ -265,12 +265,9 @@
 ;; @end table
 ;;
 (define* (compose-response host #:key
-                           (style http-ish)
+                           (style #f)
                            (protocol-version '(1 . 1)))
-
-  (define tree<-header
-    (tree<-header-proc style))
-
+  (or style (set! style http-ish))
   (let* ((status #f)
          (hq (make-q))
          (hlen 0)
@@ -280,6 +277,9 @@
          (entq (make-q))
          (lenq (make-q))
          (final-entity-length #f))
+
+    (define tree<-header
+      (tree<-header-proc style))
 
     (define (current-entity-length)
       (or final-entity-length (apply + (car lenq))))
