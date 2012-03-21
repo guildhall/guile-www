@@ -102,9 +102,6 @@
   #t)
 
 (define http-hgrok (vector #f
-                           #f
-                           #f
-                           #f
                            #f))
 
 ;; Return a proc @var{dish} that loops serving http requests from a socket.
@@ -293,7 +290,7 @@
              ;; status box
              (b (and (number? status-box-size)
                      (make-list status-box-size #f)))
-             (M (mouthpiece p b (vector-ref style 3)))
+             (M (mouthpiece p b (vector-ref style 1)))
              (res (cond ((assq-ref method-handlers method)
                          => (lambda (mh)
                               (call-with-current-continuation

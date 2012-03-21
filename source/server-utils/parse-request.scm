@@ -65,7 +65,7 @@
 ;; HTTP 1.1 request message as per RFC 2616.
 ;;
 (define* (receive-request port #:key (s2s string-titlecase) (style #f))
-  (let ((rd-req (or (and style (vector-ref style 4))
+  (let ((rd-req (or (and style (vector-ref style 0))
                     read-request)))
     (let-values (((method upath pvers headers get-body) (rd-req port s2s)))
       (make-request (string->symbol method)

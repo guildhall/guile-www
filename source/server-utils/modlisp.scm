@@ -69,10 +69,7 @@
 ;;
 ;;-category: object
 ;;
-(define modlisp-hgrok (vector #f
-                              #f
-                              #f
-                              modlisp-ish
-                              read-request))
+(define modlisp-hgrok (vector read-request
+                              modlisp-ish))
 
 ;;; modlisp.scm ends here

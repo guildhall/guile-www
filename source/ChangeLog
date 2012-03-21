@@ -1,5 +1,15 @@
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Compact hgrok objects.
+
+	* server-utils/modlisp.scm (modlisp-hgrok): Move 5th and 4th
+	elems to 1st and 2nd positions, respectively; delete 3rd-5th elems.
+	* server-utils/big-dishing-loop.scm (http-hgrok): Likewise.
+	(make-big-dishing-loop good): Update style object ref accordingly.
+	* server-utils/parse-request.scm (receive-request): Likewise.
+
+2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Centralize ‘CRLF’.
 
 	* crlf.scm (CRLF): Export.
