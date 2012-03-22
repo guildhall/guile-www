@@ -1,5 +1,13 @@
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add another test case for ‘simple-parse-cookies’.
+
+	Suggested by gregory benison.
+
+	* v/x120: Add test case.
+
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cookies] Allow ‘simple-parse-cookies’ separation char override.
 
 	* v/x120 (try): Take 2nd arg SEP.

@@ -43,6 +43,30 @@
      '(("abc" . "def")
        ("z" . "z, ans=\"42\", abc=xyz")))
 
+(try "s_pers=%20s_getnr%3D1332412041588-Repeat%7C139548404158%3B%20s_nrgvo%3DRepeat%7C1395484041589%3B;
+__utma=111872281.756735707.1329594934.1329594934.1332412041.2;
+__utmz=111872281.1329594934.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none);
+__utmv=111872281.|3=User=A=1^4=JoinedOn=0=1; __qseg=Q_D|Q_T;
+__qca=P0-85920803-1329594940040;
+csrftoken=3f48bed5bd44d9ae67c0f23ec1a3424c;
+sessionid=e91499ddfb07f664f929ab3a79672015;
+__utmb=111872281.2.10.1332412041; __utmc=111872281;
+s_sess=%20s_cc%3Dtrue%3B%20s_sq%3D%3B%20s_sv_sid%3D1228563854531%3B;
+br_fp=0a0510d64037f1db682cd5874d21b485c957f444"
+     #\;
+     '(("s_pers" . "%20s_getnr%3D1332412041588-Repeat%7C139548404158%3B%20s_nrgvo%3DRepeat%7C1395484041589%3B")
+       ("__utma" . "111872281.756735707.1329594934.1329594934.1332412041.2")
+       ("__utmz" . "111872281.1329594934.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)")
+       ("__utmv" . "111872281.|3=User=A=1^4=JoinedOn=0=1")
+       ("__qseg" . "Q_D|Q_T")
+       ("__qca" . "P0-85920803-1329594940040")
+       ("csrftoken" . "3f48bed5bd44d9ae67c0f23ec1a3424c")
+       ("sessionid" . "e91499ddfb07f664f929ab3a79672015")
+       ("__utmb" . "111872281.2.10.1332412041")
+       ("__utmc" . "111872281")
+       ("s_sess" . "%20s_cc%3Dtrue%3B%20s_sq%3D%3B%20s_sv_sid%3D1228563854531%3B")
+       ("br_fp" . "0a0510d64037f1db682cd5874d21b485c957f444")))
+
 (exit #t)
 
 ;;; x120 ends here
