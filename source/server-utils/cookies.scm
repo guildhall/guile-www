@@ -59,26 +59,40 @@
 ;;;---------------------------------------------------------------------------
 ;;; simple parsing
 
-(define NOT-COMMA (char-set-complement (char-set #\,)))
+(define sep-cs
+  (let ((cache `((#\, . ,(char-set-complement (char-set #\,))))))
+    ;; sep-cs
+    (lambda (sep)
+      (or (assq-ref cache sep)
+          (let ((cs (char-set-complement (char-set sep))))
+            (set! cache (acons sep cs cache))
+            cs)))))
 
 ;; Parse @var{string} for ``cookie-like fragments'', that is,
 ;; zero or more substrings of the form @code{@var{name}=@var{value}},
-;; separated by @code{#\,} (comma) and optionally trailing whitespace.
+;; separated by character @var{sep} and optionally trailing whitespace.
+;; By default, @var{sep} is @code{#\,} (comma).
 ;;
 ;; Return a list of elements @code{(@var{name} . @var{value})},
 ;; where both @var{name} and @var{value} are strings.  For example:
 ;;
 ;; @example
-;; (simple-parse-cookies "abc=def; z=z, ans=\"42\", abc=xyz")
+;; (define COOKIE "abc=def; z=z, ans=\"42\", abc=xyz")
+;;
+;; (simple-parse-cookies COOKIE)
 ;; @result{} (("abc" . "def; z=z") ("ans" . "\"42\"") ("abc" . "xyz"))
+;;
+;; (simple-parse-cookies COOKIE #\;)
+;; @result{} (("abc" . "def") ("z" . "z, ans=\"42\", abc=xyz"))
 ;; @end example
 ;;
-(define (simple-parse-cookies string)
+(define* (simple-parse-cookies string #:optional sep)
   (define (paired clean)
     (let ((pos (string-index clean #\=)))
       (cons (string-take clean pos)
             (string-drop clean (1+ pos)))))
-  (map paired (map string-trim-both (string-tokenize string NOT-COMMA))))
+  (map paired (map string-trim-both
+                   (string-tokenize string (sep-cs (or sep #\,))))))
 
 ;;;---------------------------------------------------------------------------
 ;;; RFC2965

@@ -26,16 +26,22 @@
   (apply fse (string-append s "~%") args)
   (exit #f))
 
-(define (try string good)
-  (let ((real (simple-parse-cookies string)))
+(define (try string sep good)
+  (let ((real (simple-parse-cookies string sep)))
     (vfso "real: ~S~%" real)
     (or (equal? good real)
         (die "misparse: ~S" real))))
 
-(try "abc=def; z=z, ans=\"42\", abc=xyz"
+(define COOKIE "abc=def; z=z, ans=\"42\", abc=xyz")
+
+(try COOKIE #f
      '(("abc" . "def; z=z")
        ("ans" . "\"42\"")
        ("abc" . "xyz")))
+
+(try COOKIE #\;
+     '(("abc" . "def")
+       ("z" . "z, ans=\"42\", abc=xyz")))
 
 (exit #t)
 

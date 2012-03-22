@@ -1,5 +1,13 @@
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cookies] Allow ‘simple-parse-cookies’ separation char override.
+
+	* server-utils/cookie.scm (sep-cs): New proc.
+	(NOT-COMMA): Delete character set.
+	(simple-parse-cookies): Take optional arg ‘sep’; use ‘sep-cs’.
+
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use SRFI 13, 14 for ‘(... cookies) simple-parse-cookies’.
 
 	* server-utils/cookies.scm: Import SRFI 13 ‘string-tokenize’,

@@ -1,5 +1,12 @@
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cookies] Allow ‘simple-parse-cookies’ separation char override.
+
+	* v/x120 (try): Take 2nd arg SEP.
+	Update existing test case; add another one with ‘#\;’ SEP.
+
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Add test for ‘(... cookies) simple-parse-cookies’.
 
 	* v/x120: New file.
