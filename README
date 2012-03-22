@@ -26,7 +26,8 @@ Installation
 	  make install
 
 	Doing "make check" tests the ‘load’ability of the modules, first
-	individually, then all together (sumo).  Influential variables:
+	individually, then all together (sumo), then does some specific
+	tests to make sure things are somewhat ok.  Influential variables:
 
 	  GUILE           -- the interpreter to use [guile]
 	  DEBUG           -- if "1", display progress information,
