@@ -51,3 +51,5 @@ It lives in the repo but is not included in the distribution.
 *** q-TOPIC -- "questionably", "querulously"
     These are experimental, exploring the particular TOPIC.  They are intended
     to be ephemeral, undergoing rebase, amendment, and ultimately removal.
+* link definitions
+#+LINK: repo  http://git.savannah.gnu.org/cgit/guile-www.git/commit/?id=
