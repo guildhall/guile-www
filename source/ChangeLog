@@ -1,3 +1,14 @@
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use SRFI 13, 14 for ‘(... cookies) simple-parse-cookies’.
+
+	* server-utils/cookies.scm: Import SRFI 13 ‘string-tokenize’,
+	‘string-trim-both’, ‘string-take’, ‘string-drop’; SRFI 14
+	‘char-set-complement’, ‘char-set’; don't import ‘(ice-9 regex)’.
+	(NOT-COMMA): New character set.
+	(+pair-exp+): Delete regexp.
+	(simple-parse-cookies): Rewrite.
+
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Handle ‘#f’ STYLE for ‘compose-response’.

@@ -26,8 +26,13 @@
             rfc2965-set-cookie2-tree
             rfc2965-parse-cookie-header-value
             reach)
-  #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)))
-  #:use-module (ice-9 regex)
+  #:use-module ((srfi srfi-13) #:select ((substring/shared . subs)
+                                         string-tokenize
+                                         string-trim-both
+                                         string-take
+                                         string-drop))
+  #:use-module ((srfi srfi-14) #:select (char-set-complement
+                                         char-set))
   #:use-module (ice-9 optargs))
 
 ;;;---------------------------------------------------------------------------
@@ -54,12 +59,11 @@
 ;;;---------------------------------------------------------------------------
 ;;; simple parsing
 
-(define +pair-exp+ (make-regexp "(,[ \t]*)*([^=]+)=([^,]+)"))
+(define NOT-COMMA (char-set-complement (char-set #\,)))
 
-;; Parse @var{string} for cookie-like fragments using the simple regexp:
-;; @example
-;; (,[ \t]*)*([^=]+)=([^,]+)
-;; @end example
+;; Parse @var{string} for ``cookie-like fragments'', that is,
+;; zero or more substrings of the form @code{@var{name}=@var{value}},
+;; separated by @code{#\,} (comma) and optionally trailing whitespace.
 ;;
 ;; Return a list of elements @code{(@var{name} . @var{value})},
 ;; where both @var{name} and @var{value} are strings.  For example:
@@ -70,10 +74,11 @@
 ;; @end example
 ;;
 (define (simple-parse-cookies string)
-  (define (kv<-m m)
-    (cons (match:substring m 2)
-          (match:substring m 3)))
-  (map kv<-m (list-matches +pair-exp+ string)))
+  (define (paired clean)
+    (let ((pos (string-index clean #\=)))
+      (cons (string-take clean pos)
+            (string-drop clean (1+ pos)))))
+  (map paired (map string-trim-both (string-tokenize string NOT-COMMA))))
 
 ;;;---------------------------------------------------------------------------
 ;;; RFC2965
