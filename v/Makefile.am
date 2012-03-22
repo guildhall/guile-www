@@ -38,6 +38,7 @@ TESTS += $(single)
 explicit = \
  x100 \
  x110 \
+ x120 \
  x200 \
  x210 \
  x300

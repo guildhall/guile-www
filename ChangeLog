@@ -1,3 +1,10 @@
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Add test for ‘(... cookies) simple-parse-cookies’.
+
+	* v/x120: New file.
+	* v/Makefile.am (explicit): Add x120.
+
 2012-03-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Add "NB" for marked-for-removal items.
