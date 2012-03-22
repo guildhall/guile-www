@@ -1,5 +1,12 @@
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi-prep] Handle also ‘http-cookie2’.
+
+	* server-utils/cgi-prep.scm (*env-jamming-methods*):
+	Accept ‘http-cookie2’; for that, set env var ‘HTTP_COOKIE2’.
+
+2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cookies] Allow ‘simple-parse-cookies’ separation char override.
 
 	* server-utils/cookie.scm (sep-cs): New proc.
