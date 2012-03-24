@@ -4,7 +4,7 @@
 
 	* cgi.scm (env-extraction-methods):
 	Provide access to ‘HTTP_COOKIE2’ via ‘http-cookie2’.
-	(cgi:init): Update doc comment.
+	(cgi:getenv): Update doc comment.
 
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
