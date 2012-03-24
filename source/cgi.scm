@@ -104,6 +104,8 @@
     "HTTP_USER_AGENT"
     http-cookie
     "HTTP_COOKIE"
+    http-cookie2
+    "HTTP_COOKIE2"
     server-software-type
     ,(lambda () (extract server-sw-info
                          (lambda (sw slash)
@@ -270,6 +272,7 @@
 ;; @item http-accept-types (list, possibly empty, of strings)
 ;; @item http-user-agent
 ;; @item http-cookie
+;; @item http-cookie2
 ;; @end itemize
 ;;
 ;; Keys not listed above result in an "unrecognized key" error.

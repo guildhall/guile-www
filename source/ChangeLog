@@ -1,3 +1,11 @@
+2012-03-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Provide access to ‘HTTP_COOKIE2’ via ‘http-cookie2’.
+
+	* cgi.scm (env-extraction-methods):
+	Provide access to ‘HTTP_COOKIE2’ via ‘http-cookie2’.
+	(cgi:init): Update doc comment.
+
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi-prep] Handle also ‘http-cookie2’.
