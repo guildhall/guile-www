@@ -1,5 +1,13 @@
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi int] Use ‘getenv/symbol’ more.
+
+	* cgi.scm (env-look server-sw-info): Use ‘getenv/symbol’.
+	(env-look server-pr-info): Likewise.
+	(env-look, make-ccc): Likewise.
+
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi] Recognize some "idiomatic" env var names.
 
 	* cgi.scm (env-look) <no fuss>: Add ‘server-name’,

@@ -74,11 +74,11 @@
 (define (env-look key)                  ; may return #f
 
   (define (server-sw-info)
-    (and-let* ((sw (getenv "SERVER_SOFTWARE")))
+    (and-let* ((sw (getenv/symbol 'server-software)))
       (list sw (string-index sw #\/))))
 
   (define (server-pr-info)
-    (and-let* ((pr (getenv "SERVER_PROTOCOL")))
+    (and-let* ((pr (getenv/symbol 'server-protocol)))
       (list pr (string-index pr #\/))))
 
   (define (extract make-args proc)
@@ -104,10 +104,10 @@
      (getenv/symbol 'auth-type))
     ;; devious
     ((server-port)
-     (and=> (getenv "SERVER_PORT")
+     (and=> (getenv/symbol key)
             string->number))
     ((content-length)
-     (or (and=> (getenv "CONTENT_LENGTH")
+     (or (and=> (getenv/symbol key)
                 string->number)
          0))
     ((server-software-type)             ; TODO: zonk; add ‘server-software’
@@ -129,7 +129,7 @@
               (lambda (pr slash)
                 (substring/shared pr (1+ slash)))))
     ((http-accept-types)
-     (or (and=> (getenv "HTTP_ACCEPT") ws/comma-split)
+     (or (and=> (getenv/symbol 'http-accept) ws/comma-split)
          ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
          '()))
     (else
@@ -177,7 +177,7 @@
                (set! P (reverse! P))
                (set! U (reverse! U)))))
       ;; Include ‘query-string’ pairs, if any.
-      (and-let* ((s (cgi:getenv 'query-string))
+      (and-let* ((s (getenv/symbol 'query-string))
                  ((not (string-null? s))))
         ;; FIXME: We prefix, but perhaps we should suffix?
         (set! P (append! (alist<-query s) P)))
