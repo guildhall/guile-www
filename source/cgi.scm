@@ -51,20 +51,24 @@
               (map cdr alist))
     (reverse! rv)))
 
-(define ws/comma-split
-  (let ((cs (char-set-complement (char-set-adjoin char-set:whitespace #\,))))
+(define (split-on cs)
+  (let ((not-cs (char-set-complement cs)))
+    ;; rv
     (lambda (string)
-      (string-tokenize string cs))))
+      (string-tokenize string not-cs))))
+
+(define ws/comma-split
+  (split-on (char-set-adjoin char-set:whitespace #\,)))
 
 ;;; CGI environment variables.
 
 (define getenv/symbol
-  (let ((not-dash (char-set-complement (char-set #\-))))
+  (let ((split-on-hyphen (split-on (char-set #\-))))
     ;; getenv/symbol
     (lambda (symbol)
       (getenv (string-join (map string-upcase
-                                (string-tokenize (symbol->string symbol)
-                                                 not-dash))
+                                (split-on-hyphen
+                                 (symbol->string symbol)))
                            "_")))))
 
 (define (env-look key)                  ; may return #f

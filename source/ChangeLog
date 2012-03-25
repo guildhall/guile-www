@@ -1,5 +1,12 @@
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi int] Add abstraction: split-on
+
+	* cgi.scm (split-on): New proc.
+	(ws/comma-split, getenv/symbol): Use ‘split-on’.
+
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Revamp env var lookup.
 
 	* cgi.scm (getenv/symbol): New proc.
