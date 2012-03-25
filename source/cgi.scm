@@ -87,6 +87,8 @@
   (case key
     ;; no fuss
     ((gateway-interface
+      server-name server-software server-protocol
+      auth-type
       request-method
       path-info path-translated
       script-name
@@ -235,31 +237,35 @@
 ;; symbol.  Unless otherwise specified below, the return value is a (possibly
 ;; massaged, possibly empty) string.  The following keys are recognized:
 ;;
-;; @itemize
-;; @item server-software-type
-;; @item server-software-version
-;; @item server-hostname
-;; @item gateway-interface
-;; @item server-protocol-name
-;; @item server-protocol-version
-;; @item server-port (integer)
-;; @item request-method
-;; @item path-info
-;; @item path-translated
-;; @item script-name
-;; @item query-string
-;; @item remote-host
-;; @item remote-addr
-;; @item authentication-type
-;; @item remote-user
-;; @item remote-ident
-;; @item content-type
-;; @item content-length (integer, possibly 0)
-;; @item http-accept-types (list, possibly empty, of strings)
-;; @item http-user-agent
-;; @item http-cookie
-;; @item http-cookie2
-;; @end itemize
+;; @example
+;; server-software
+;; server-software-type     ; @r{part of} server-software @r{before} "/"
+;; server-software-version  ; @r{part of} server-software @r{after} "/"
+;; server-name
+;; server-hostname          ; @r{alias for} server-name
+;; gateway-interface
+;; server-protocol
+;; server-protocol-name     ; @r{part of} server-protocol @r{before} "/"
+;; server-protocol-version  ; @r{part of} server-protocol @r{after} "/"
+;; server-port @r{(integer)}
+;; request-method
+;; path-info
+;; path-translated
+;; script-name
+;; query-string
+;; remote-host
+;; remote-addr
+;; auth-type
+;; authentication-type      ; @r{alias for} auth-type
+;; remote-user
+;; remote-ident
+;; content-type
+;; content-length @r{(integer, possibly 0)}
+;; http-accept-types @r{(list, possibly empty, of strings)}
+;; http-user-agent
+;; http-cookie
+;; http-cookie2
+;; @end example
 ;;
 ;; Keys not listed above result in an "unrecognized key" error.
 ;;

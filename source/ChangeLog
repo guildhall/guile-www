@@ -1,5 +1,13 @@
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi] Recognize some "idiomatic" env var names.
+
+	* cgi.scm (env-look) <no fuss>: Add ‘server-name’,
+	‘server-software’, ‘server-protocol’, ‘auth-type’.
+	(cgi:getenv): Update doc comment.
+
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Add abstraction: split-on
 
 	* cgi.scm (split-on): New proc.
