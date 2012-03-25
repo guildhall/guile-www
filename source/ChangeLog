@@ -1,5 +1,12 @@
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi int] Decruft: Elide ‘ONE #:getenv’.
+
+	* cgi.scm (make-ccc): Drop support for ‘#:getenv’.
+	(cgi:getenv): Use ‘env-look’ directly.
+
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Use ‘getenv/symbol’ more.
 
 	* cgi.scm (env-look server-sw-info): Use ‘getenv/symbol’.

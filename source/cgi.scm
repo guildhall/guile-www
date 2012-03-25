@@ -197,7 +197,6 @@
         (car args))
       (case command
         ((#:init!) (init! args))
-        ((#:getenv) (or (env-look (one)) ""))
         ((#:nv-pairs) P)
         ((#:values) (assoc-ref V (one)))
         ((#:value) (and=> (assoc-ref V (one)) car))
@@ -270,7 +269,7 @@
 ;; Keys not listed above result in an "unrecognized key" error.
 ;;
 (define (cgi:getenv key)
-  (ONE #:getenv key))
+  (or (env-look key) ""))
 
 ;; Fetch the list of @code{(name . value)}, in the same order as found
 ;; in the form data.  A name may appear more than once.  A value is
