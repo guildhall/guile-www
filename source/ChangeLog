@@ -1,3 +1,12 @@
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi int] Revamp env var lookup.
+
+	* cgi.scm (getenv/symbol): New proc.
+	(env-extraction-methods): Delete proc.
+	(*env-extraction*): Delete hash table.
+	(env-look): Rewrite.
+
 2012-03-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Provide access to ‘HTTP_COOKIE2’ via ‘http-cookie2’.

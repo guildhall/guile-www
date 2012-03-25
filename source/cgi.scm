@@ -58,94 +58,76 @@
 
 ;;; CGI environment variables.
 
-(define (env-extraction-methods)        ; => (VAR METHOD ...)
+(define getenv/symbol
+  (let ((not-dash (char-set-complement (char-set #\-))))
+    ;; getenv/symbol
+    (lambda (symbol)
+      (getenv (string-join (map string-upcase
+                                (string-tokenize (symbol->string symbol)
+                                                 not-dash))
+                           "_")))))
+
+(define (env-look key)                  ; may return #f
+
   (define (server-sw-info)
     (and-let* ((sw (getenv "SERVER_SOFTWARE")))
       (list sw (string-index sw #\/))))
+
   (define (server-pr-info)
     (and-let* ((pr (getenv "SERVER_PROTOCOL")))
       (list pr (string-index pr #\/))))
+
   (define (extract make-args proc)
     (apply-to-args (make-args) proc))
-  ;; rv -- methods may be a string to be passed to ‘getenv’, or a thunk
-  `(server-hostname
-    "SERVER_NAME"
-    gateway-interface
-    "GATEWAY_INTERFACE"
-    server-port
-    ,(lambda () (and=> (getenv "SERVER_PORT") string->number))
-    request-method
-    "REQUEST_METHOD"
-    path-info
-    "PATH_INFO"
-    path-translated
-    "PATH_TRANSLATED"
-    script-name
-    "SCRIPT_NAME"
-    query-string
-    "QUERY_STRING"
-    remote-host
-    "REMOTE_HOST"
-    remote-addr
-    "REMOTE_ADDR"
-    authentication-type
-    "AUTH_TYPE"
-    remote-user
-    "REMOTE_USER"
-    remote-ident
-    "REMOTE_IDENT"
-    content-type
-    "CONTENT_TYPE"
-    content-length
-    ,(lambda () (or (and=> (getenv "CONTENT_LENGTH")
-                           string->number)
-                    0))
-    http-user-agent
-    "HTTP_USER_AGENT"
-    http-cookie
-    "HTTP_COOKIE"
-    http-cookie2
-    "HTTP_COOKIE2"
-    server-software-type
-    ,(lambda () (extract server-sw-info
-                         (lambda (sw slash)
-                           (if slash
-                               (substring/shared sw 0 slash)
-                               sw))))
-    server-software-version
-    ,(lambda () (extract server-sw-info
-                         (lambda (sw slash)
-                           (and slash (substring/shared sw (1+ slash))))))
-    server-protocol-name
-    ,(lambda () (extract server-pr-info
-                         (lambda (pr slash)
-                           (substring/shared pr 0 slash))))
-    server-protocol-version
-    ,(lambda () (extract server-pr-info
-                         (lambda (pr slash)
-                           (substring/shared pr (1+ slash)))))
-    http-accept-types
-    ,(lambda () (or (and=> (getenv "HTTP_ACCEPT") ws/comma-split)
-                    ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
-                    '()))))
 
-(define *env-extraction*
-  (let ((ht (make-hash-table 23)))
-    (let loop ((ls (env-extraction-methods)))
-      (or (null? ls)
-          (let ((var (car ls)))
-            (hashq-set! ht var
-                        (let ((v (cadr ls)))
-                          (if (string? v)
-                              (lambda () (getenv v))
-                              v)))
-            (loop (cddr ls)))))
-    ht))
-
-(define (env-look key)                  ; may return #f
-  ((hashq-ref *env-extraction* key
-              (lambda ()
-                (error "unrecognized key:" key)))))
+  (case key
+    ;; no fuss
+    ((gateway-interface
+      request-method
+      path-info path-translated
+      script-name
+      query-string
+      remote-host remote-addr remote-user remote-ident
+      content-type
+      http-user-agent http-cookie http-cookie2)
+     (getenv/symbol key))
+    ;; oblique -- TODO: zonk; move alias target up (into "no fuss")
+    ((server-hostname)
+     (getenv/symbol 'server-name))
+    ((authentication-type)
+     (getenv/symbol 'auth-type))
+    ;; devious
+    ((server-port)
+     (and=> (getenv "SERVER_PORT")
+            string->number))
+    ((content-length)
+     (or (and=> (getenv "CONTENT_LENGTH")
+                string->number)
+         0))
+    ((server-software-type)             ; TODO: zonk; add ‘server-software’
+     (extract server-sw-info
+              (lambda (sw slash)
+                (if slash
+                    (substring/shared sw 0 slash)
+                    sw))))
+    ((server-software-version)          ; TODO: zonk; add ‘server-software’
+     (extract server-sw-info
+              (lambda (sw slash)
+                (and slash (substring/shared sw (1+ slash))))))
+    ((server-protocol-name)             ; TODO: zonk; add ‘server-protocol’
+     (extract server-pr-info
+              (lambda (pr slash)
+                (substring/shared pr 0 slash))))
+    ((server-protocol-version)          ; TODO: zonk; add ‘server-protocol’
+     (extract server-pr-info
+              (lambda (pr slash)
+                (substring/shared pr (1+ slash)))))
+    ((http-accept-types)
+     (or (and=> (getenv "HTTP_ACCEPT") ws/comma-split)
+         ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
+         '()))
+    (else
+     (error "unrecognized key:" key))))
 
 ;;; CGI context closure.
 
