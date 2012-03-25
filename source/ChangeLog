@@ -1,5 +1,14 @@
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Add abstraction: fs
+
+	* server-utils/cookies.scm (fs): Move here from...
+	(rfc2109-set-cookie-string fs): ...from here.
+	(rfc2965-set-cookie2-tree pair<-): Use ‘fs’.
+	(rfc2965-parse-cookie-header-value err!): Likewise.
+
+2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Decruft: Elide ‘ONE #:getenv’.
 
 	* cgi.scm (make-ccc): Drop support for ‘#:getenv’.

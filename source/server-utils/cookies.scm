@@ -35,6 +35,9 @@
                                          char-set))
   #:use-module (ice-9 optargs))
 
+(define (fs s . args)
+  (apply simple-format #f s args))
+
 ;;;---------------------------------------------------------------------------
 ;;; RFC2109
 
@@ -46,8 +49,6 @@
 ;;
 (define* (rfc2109-set-cookie-string name value #:key (path #f)
                                     (domain #f) (expires #f) (secure #f))
-  (define (fs s . args)
-    (apply simple-format #f s args))
   (fs "Set-Cookie: ~A=~A~A~A~A~A"
       (if (keyword? name) (keyword->symbol name) name)
       (if (keyword? value) (keyword->symbol value) value)
@@ -162,7 +163,7 @@
   (define (pair<- x y)
     (list x "=" (if (pair? y)
                     y
-                    (simple-format #f "\"~A\"" y))))
+                    (fs "\"~A\"" y))))
 
   (define (tree<- name value . more)
     (let* ((rv (pair<-
@@ -272,8 +273,9 @@
       v)
 
     (define (err! blurb)
-      (error (simple-format #f "~A while ~A\n~A\n~A^" blurb (car context)
-                            s (make-string pos #\space))))
+      (error (fs "~A while ~A\n~A\n~A^"
+                 blurb (car context)
+                 s (make-string pos #\space))))
 
     (define (sw!)                       ; skip whitespace
       (and (char=? #\space (string-ref s pos))
