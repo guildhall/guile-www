@@ -1,3 +1,11 @@
+2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use "~%" instead of "\n" in format strings.
+
+	* server-utils/big-dishing-loop.scm:
+	Use "~%" instead of "\n" in format strings.
+	* server-utils/cookies.scm: Likewise.
+
 2012-03-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add abstraction: fs

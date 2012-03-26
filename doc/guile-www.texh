@@ -736,7 +736,7 @@ Here is an example that uses most of the @code{mouthpiece} commands:
   (M #:add-header 'Content-Type (filename->content-type
                                  filename "text/plain"))
   (M #:add-content (slurp filename))
-  (simple-format #t "rechunked: ~A\n"
+  (simple-format #t "rechunked: ~A~%"
                  (M #:rechunk-content (* 8 1024)))
   ;; We don't shutdown because this is a file port;
   ;; if it were a socket, we might specify 2 to
@@ -782,7 +782,7 @@ preformatted headers and @code{fs}:
   (M #:add-header 'Content-Type (filename->content-type
                                  filename "text/plain"))
   (M #:add-content (slurp filename))
-  (display (fs "rechunked: ~A\n" (M #:rechunk-content (* 8 1024))))
+  (display (fs "rechunked: ~A~%" (M #:rechunk-content (* 8 1024))))
   (M #:send-reply))
 @end example
 

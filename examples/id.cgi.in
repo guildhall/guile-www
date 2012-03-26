@@ -39,7 +39,7 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
 
 (define-macro (section title . body)
   `(begin
-     (fso "\nSECTION: ~A\n" ,title)
+     (fso "~%SECTION: ~A~%" ,title)
      ,@body
      (newline)))
 
@@ -69,13 +69,13 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
 
 ;; Output the body.
 
-(fso "=== Output from ~S (@PACKAGE_NAME@ @PACKAGE_VERSION@) ===\n"
+(fso "=== Output from ~S (@PACKAGE_NAME@ @PACKAGE_VERSION@) ===~%"
      (command-line))
 
 (section
  "Environment Variables (using ‘cgi:getenv’)"
  (for-each (lambda (var)
-             (fso "\n~A:\n~S\n" var (cgi:getenv var)))
+             (fso "~%~A:~%~S~%" var (cgi:getenv var)))
            '(server-hostname
              gateway-interface
              server-port
@@ -103,11 +103,11 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
  "Query String (using ‘(www server-utils parse-request) alist<-query’)"
  (let ((qs (cgi:getenv 'query-string)))
    (if (string-null? qs)
-       (fso "(none)\n")
+       (fso "(none)~%")
        (let ((ls (alist<-query qs)))
-         (fso "(~A pairs)\n" (length ls))
+         (fso "(~A pairs)~%" (length ls))
          (for-each (lambda (k v)
-                     (fso "~A: ~S\n" k v))
+                     (fso "~A: ~S~%" k v))
                    (map car ls)
                    (map cdr ls))))))
 
@@ -115,18 +115,18 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
  "Form Data (using ‘cgi:form-data?’, ‘cgi:names’ and ‘cgi:values’)"
  (if (cgi:form-data?)
      (let ((ls (cgi:names)))
-       (fso "(~A names)\n" (length ls))
+       (fso "(~A names)~%" (length ls))
        (for-each (lambda (name)
-                   (fso "\n~A:\n~S\n" name (cgi:values name)))
+                   (fso "~%~A:~%~S~%" name (cgi:values name)))
                  ls))
-     (fso "(none)\n")))
+     (fso "(none)~%")))
 
 (section
  "File Uploads (using ‘cgi:uploads’)"
  (let* ((ls (append! (collect cgi:uploads (lambda (name u) u))))
         (tot (length ls)))
    (if (zero? tot)
-       (fso "(none)\n")
+       (fso "(none)~%")
        (let ((v? (eq? 'uploads-lazy +init-opt+)))
 
          (define (v<-u u)
@@ -152,11 +152,11 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
                      (squeeze substring)
                      "[contents omitted -- not text]"))
 
-               (fso "\n~S (~A, ~A bytes)\n~A\n~A\n"
+               (fso "~%~S (~A, ~A bytes)~%~A~%~A~%"
                     filename type (content-length)
                     headers (content)))))
 
-         (fso "(~A uploads (~A))\n" tot
+         (fso "(~A uploads (~A))~%" tot
               (if v?
                   "values"
                   "strings with the object property #:guile-www-cgi"))
@@ -166,13 +166,13 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
  "Cookies (using ‘cgi:cookie-names’ and ‘cgi:cookies’)"
  (let ((k (cgi:cookie-names)))
    (if (null? k)
-       (fso "(none)\n")
+       (fso "(none)~%")
        (let ((v (map cgi:cookies k)))
-         (fso "(~A names ~A values)\n" (length k) (apply + (map length v)))
+         (fso "(~A names ~A values)~%" (length k) (apply + (map length v)))
          (for-each (lambda (k v)
-                     (fso "\n~A: ~A\n" k (length v))
+                     (fso "~%~A: ~A~%" k (length v))
                      (for-each (lambda (c)
-                                 (fso " ~A\n" c))
+                                 (fso " ~A~%" c))
                                v))
                    k v)))))
 

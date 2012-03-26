@@ -55,7 +55,7 @@ exec ${GUILE-guile} -s $0 "$@" # -*- scheme -*-
               #:explicit-return #t))
 
 (format #t "try visiting: http://localhost:9999${UPATH} ")
-(format #t "with UPATH /0 through /999 or /quit\n")
+(format #t "with UPATH /0 through /999 or /quit~%")
 
 (cond
 

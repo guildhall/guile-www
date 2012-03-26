@@ -72,7 +72,7 @@ exec ${GUILE-guile} --debug -s $0 "$@" # -*-scheme-*-
     "print if bool eq t-or-f"
     (for-each (lambda (res)
                 (and (eq? bool (car res))
-                     (simple-format #t "~S\n" res)))
+                     (simple-format #t "~S~%" res)))
               test-results))
 
   (define (comparer qstring-or-pair)

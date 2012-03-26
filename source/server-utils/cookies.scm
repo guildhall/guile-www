@@ -273,7 +273,7 @@
       v)
 
     (define (err! blurb)
-      (error (fs "~A while ~A\n~A\n~A^"
+      (error (fs "~A while ~A~%~A~%~A^"
                  blurb (car context)
                  s (make-string pos #\space))))
 

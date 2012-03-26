@@ -1,3 +1,13 @@
+2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use "~%" instead of "\n" in format strings.
+
+	* contrib/qs-check: Use "~%" instead of "\n" in format strings.
+	* contrib/qs-nv-check: Likewise.
+	* doc/guile-www.texh: Likewise.
+	* examples/id.cgi.in: Likewise.
+	* examples/you-are-here: Likewise.
+
 2012-03-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Add another test case for ‘simple-parse-cookies’.

@@ -96,7 +96,7 @@
   (M #:add-header 'Content-Type "text/plain")
   (M #:add-content upath "\n")
   (for-each (lambda (arg)
-              (M #:add-formatted "extra-arg: ~S\n" arg))
+              (M #:add-formatted "extra-arg: ~S~%" arg))
             extra-args)
   (M #:send-reply 2)
   #t)
