@@ -1,5 +1,11 @@
 2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use ‘PACKAGE_STRING’ more.
+
+	* examples/id.cgi.in: Use ‘PACKAGE_STRING’.
+
+2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use "~%" instead of "\n" in format strings.
 
 	* contrib/qs-check: Use "~%" instead of "\n" in format strings.

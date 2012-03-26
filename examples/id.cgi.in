@@ -69,7 +69,7 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
 
 ;; Output the body.
 
-(fso "=== Output from ~S (@PACKAGE_NAME@ @PACKAGE_VERSION@) ===~%"
+(fso "=== Output from ~S (@PACKAGE_STRING@) ===~%"
      (command-line))
 
 (section
