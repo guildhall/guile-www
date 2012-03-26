@@ -1,5 +1,12 @@
 2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[ex] Include "idiomatic" env var names in id CGI.
+
+	* examples/id.cgi.in <Environment Variables>: Also display
+	‘server-name’, ‘server-software’, ‘server-protocol’, ‘auth-type’.
+
+2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use ‘PACKAGE_STRING’ more.
 
 	* examples/id.cgi.in: Use ‘PACKAGE_STRING’.

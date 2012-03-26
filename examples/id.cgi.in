@@ -76,7 +76,8 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
  "Environment Variables (using ‘cgi:getenv’)"
  (for-each (lambda (var)
              (fso "~%~A:~%~S~%" var (cgi:getenv var)))
-           '(server-hostname
+           '(server-name
+             server-hostname
              gateway-interface
              server-port
              request-method
@@ -86,6 +87,7 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
              query-string
              remote-host
              remote-addr
+             auth-type
              authentication-type
              remote-user
              remote-ident
@@ -93,8 +95,10 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
              content-length
              http-user-agent
              http-cookie
+             server-software
              server-software-type
              server-software-version
+             server-protocol
              server-protocol-name
              server-protocol-version
              http-accept-types)))
