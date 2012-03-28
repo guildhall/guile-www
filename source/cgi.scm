@@ -184,7 +184,9 @@
       (set! V (collate P))
       (set! U (collate U))
       (set! C (collate (simple-parse-cookies
-                        (or (env-look 'http-cookie) "")))))
+                        (or (env-look 'http-cookie) "")
+                        (if (memq 'cookies-split-on-semicolon opts)
+                            #\; #\,)))))
 
     (define (uploads name)
       (and-let* ((pair (assoc name U)))
@@ -224,6 +226,12 @@
 ;; @item uploads-lazy
 ;; This controls how uploaded files, as per @code{cgi:uploads}
 ;; and @code{cgi:upload}, are represented.
+;;
+;; @item cookies-split-on-semicolon
+;; This causes cookies parsing to use @code{#\;} (semicolon), instead
+;; of the default @code{#\,} (comma), for splitting multiple cookies.
+;; This is necessary, for example, if the server is configured to
+;; provide ``Netscape style'' (i.e., old and deprecated) cookies.
 ;; @end table
 ;;
 ;; Unrecognized options are ignored.
