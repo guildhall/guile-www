@@ -95,7 +95,7 @@
       query-string
       remote-host remote-addr remote-user remote-ident
       content-type
-      http-user-agent http-cookie http-cookie2)
+      http-user-agent http-cookie)
      (getenv/symbol key))
     ;; oblique -- TODO: zonk; move alias target up (into "no fuss")
     ((server-hostname)
@@ -263,7 +263,6 @@
 ;; http-accept-types @r{(list, possibly empty, of strings)}
 ;; http-user-agent
 ;; http-cookie
-;; http-cookie2
 ;; @end example
 ;;
 ;; Keys not listed above result in an "unrecognized key" error.

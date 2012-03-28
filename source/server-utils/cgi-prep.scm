@@ -61,8 +61,6 @@
     "HTTP_USER_AGENT"
     http-cookie
     "HTTP_COOKIE"
-    http-cookie2
-    "HTTP_COOKIE2"
     server-software
     "SERVER_SOFTWARE"
     server-protocol
@@ -109,7 +107,6 @@
 ;; @item @code{content-length} (integer, or @code{#f})
 ;; @item @code{http-user-agent}
 ;; @item @code{http-cookie}
-;; @item @code{http-cookie2}
 ;; @item @code{server-software}
 ;; @item @code{server-protocol}
 ;; @item @code{http-accept-types} (list of strings)

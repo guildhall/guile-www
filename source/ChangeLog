@@ -1,3 +1,18 @@
+2012-03-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Drop "cookie2" support in CGI modules.
+
+	This undoes the misfeatures added by 2012-03-22, "[cgi-prep]
+	Handle also ‘http-cookie2’", and 2012-03-24, "[cgi] Provide
+	access to ‘HTTP_COOKIE2’ via ‘http-cookie2’".
+
+	* server-utils/cgi-prep.scm (*env-jamming-methods*):
+	Don't accept ‘http-cookie2’; don't set env var ‘HTTP_COOKIE2’.
+	(cgi-environment-manager): Update doc comment.
+	* cgi.scm (env-extraction-methods):
+	Drop access to ‘HTTP_COOKIE2’ via ‘http-cookie2’.
+	(cgi:getenv): Update doc comment.
+
 2012-03-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use "~%" instead of "\n" in format strings.
