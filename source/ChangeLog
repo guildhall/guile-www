@@ -1,3 +1,10 @@
+2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Add ‘http-accept’; make ‘http-accept-types’ its alias.
+
+	* cgi.scm (env-look): Handle ‘http-accept’ also.
+	(cgi:getenv): Update doc comment.
+
 2012-03-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Add ‘cgi:init’ option ‘cookies-split-on-semicolon’.

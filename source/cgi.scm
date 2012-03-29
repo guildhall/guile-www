@@ -128,7 +128,7 @@
      (extract server-pr-info
               (lambda (pr slash)
                 (substring/shared pr (1+ slash)))))
-    ((http-accept-types)
+    ((http-accept http-accept-types)    ; TODO: zonk latter
      (or (and=> (getenv/symbol 'http-accept) ws/comma-split)
          ;; SHOULD be set (RFC3875, 4.1.18) but sometimes isn't
          '()))
@@ -268,7 +268,8 @@
 ;; remote-ident
 ;; content-type
 ;; content-length @r{(integer, possibly 0)}
-;; http-accept-types @r{(list, possibly empty, of strings)}
+;; http-accept @r{(list, possibly empty, of strings)}
+;; http-accept-types        ; @r{alias for} http-accept-types
 ;; http-user-agent
 ;; http-cookie
 ;; @end example

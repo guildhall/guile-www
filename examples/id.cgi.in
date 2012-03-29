@@ -101,6 +101,7 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
              server-protocol
              server-protocol-name
              server-protocol-version
+             http-accept
              http-accept-types)))
 
 (section
