@@ -183,10 +183,12 @@
         (set! P (append! (alist<-query s) P)))
       (set! V (collate P))
       (set! U (collate U))
-      (set! C (collate (simple-parse-cookies
-                        (or (env-look 'http-cookie) "")
-                        (if (memq 'cookies-split-on-semicolon opts)
-                            #\; #\,)))))
+      (set! C (cond ((env-look 'http-cookie)
+                     => (lambda (raw)
+                          (collate (simple-parse-cookies
+                                    raw (if (memq 'cookies-split-on-semicolon opts)
+                                            #\; #\,)))))
+                    (else '()))))
 
     (define (uploads name)
       (and-let* ((pair (assoc name U)))

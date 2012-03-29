@@ -1,5 +1,15 @@
 2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi] Conditionalize cookie parsing and collation.
+
+	We might as well take advantage of the fact
+	that (... cookies) is autoloaded.
+
+	* cgi.scm (make-ccc init!): Avoid calling ‘collate’
+	and ‘simple-parse-cookies’ if there are none to parse.
+
+2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi] Add ‘http-accept’; make ‘http-accept-types’ its alias.
 
 	* cgi.scm (env-look): Handle ‘http-accept’ also.
