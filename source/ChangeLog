@@ -1,5 +1,9 @@
 2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.34
+
+2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi] Conditionalize cookie parsing and collation.
 
 	We might as well take advantage of the fact

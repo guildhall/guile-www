@@ -1,6 +1,108 @@
 NEWS for Guile-WWW
 
 
+- 2.34 | 2012-03-29
+
+  - bug fix: unbotch ‘upath->filename-proc’
+  - bug fix: unbotch ‘log-http-response-proc’
+
+	In Guile-WWW 2.33 (2012-02-29), these procs were changed to use
+	(ice-9 optargs), but the change was botched.
+
+  - bug fix: ‘(www http) http:post-form’ reserves ‘#\&’ and ‘#\=’
+
+	That is, in the absense of upload specs, the urlencoding for the
+	key names and values now also includes ampersand and equal sign,
+	as those used to delimit pairs and separate key and value within
+	a pair, respectively.
+
+  - bug fix: ‘url-coding:encode’ outputs two hex digits for 0-15
+
+	Previously, octets 0 through 15 were output as "%0" through
+	"%f", respectively.  Now, they are "%00" through "%0f".
+
+  - portability fix: big dishing loop handles #f ‘sockaddr:path’
+
+	For Unix domain sockets, some Guile versions have ‘sockaddr:path’
+	sometimes return the empty string, others ‘#f’.
+
+  - ‘(www url) url:parse’ can handle IPv6 addresses
+
+	Handling doesn't imply validation, however.  For example:
+	(url:host (url:parse "http://fool@[::ffff:bogus.0.2.1]:42/foo"))
+	=> "[::ffff:bogus.0.2.1]"
+
+  - ‘(... answer) hqf<-upath’ more efficient
+
+	The char-set computation has been moved to load-time.
+
+  - ‘(... cookies) simple-parse-cookies’ takes optional arg SEP
+
+	By default, tokens are ‘#\,’ (comma)-separated.  You can use SEP
+	to specify another character, e.g., ‘#\;’ (semicolon).
+
+  - new ‘(www cgi) cgi:init’ option: cookies-split-on-semicolon
+
+	If the server provides the CGI script with a "Netscape style"
+	(i.e., old and deprecated) set of cookies, you can use this
+	option to split them.
+
+  - ‘(www cgi) cgi:getenv’ recognizes some more "idiomatic" names
+
+	The following keys now are recognized by ‘cgi:getenv’ (that is,
+	they no longer signal "unrecognized key" error): ‘server-name’,
+	‘server-software’, ‘server-protocol’, ‘auth-type’, ‘http-accept’.
+	Also, the manual now marks those keys that either are aliases,
+	or return parts of the associated value, of these idiomatic names.
+
+  - new (... parse-request) proc: receive-request
+
+	This uses the same underlying machinery as ‘receive-response’
+	from (www http), and thus sports the same features.
+
+	Additionally, there is a new ‘request’ type with five accessor
+	procs: request-{method,upath,protocol-version,headers,body} and
+	the new predicate ‘request?’.
+
+  - new (... log) proc: string<-sockaddr
+
+	This formats AF_UNIX or AF_INET addresses (including port).
+
+  - new (... answer) proc: compose-response
+
+	This is a stripped down variant of ‘mouthpiece’.  It uses the
+	same underlying machinery as ‘send-request’ from (www http) and
+	thus sports the same features.
+
+  - MARKED FOR REMOVAL
+
+    - 2012-12-31 module (www main)
+
+    - 2012-12-31 (www url) procs
+      - url:address
+      - url:unknown
+
+    - 2013-02-28 (... parse-request) procs
+      - read-first-line
+      - read-headers
+      - skip-headers
+      - read-body
+
+    - 2013-02-28 (www http) procs
+      - http:head
+      - http:get
+
+  - test suite expanded
+
+	Previously, there was just one test.  Now, there are several,
+	and they are in directory v/ (for "validation", "verification",
+	"vouchsafed", and so on).
+
+  - doc license upgraded to GNU FDL 1.3
+
+  - maintenance uses Guile-BAUX 20120309.1509.1c4bb92
+
+
 - 2.33 | 2012-02-29
 
   - distribution now .tar.xz

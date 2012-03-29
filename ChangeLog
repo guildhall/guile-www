@@ -1,5 +1,11 @@
 2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.34
+
+	* configure.ac (AC_INIT): Bump version to "2.34" for release.
+
+2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi] Add ‘http-accept’; make ‘http-accept-types’ its alias.
 
 	* examples/id.cgi.in <Environment Variables>: Also display ‘http-accept’.
