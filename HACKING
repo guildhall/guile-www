@@ -4,8 +4,39 @@ This file is both a guide for newcomers and a todo list for oldstayers.
 It lives in the repo but is not included in the distribution.
 
 * ongoing (some of which may go into a future release)
-*** (doc) factor body-i/o protocols
-*** (doc) factor header name bits: ‘s2s’, "symbols are good", philosophy
+*** cgi/cgi-prep: other "Protocol-Specific Meta-Variables" (RFC 3875, 4.1.18)
+***** 1 Accept-{Charset,Encoding,Language}
+***** ? Authorization
+***** ? Cookie2
+      added: 37f3a642c, 7f438f180; dropped: 11c96f13d
+      need to think about it some more
+      probably will need to add ‘cgi:init’ option ‘cookie2’ as well
+***** 1 Expect
+      hairy, but necessary for full asynchronous feel
+***** 1 From
+***** ? Host
+      covered by ‘remote-host’, ‘remote-addr’
+***** 1 If-{Match,Modified-Since,None-Match,Range,Unmodified-Since}
+      ? translate HTTP-date (RFC 850, RFC 1123, asctime)
+***** 0 Max-Forwards
+      for gateways/proxies in conjunction w/ methods ‘TRACE’, ‘OPTIONS’
+***** 1 Range
+      list of integer pairs
+***** 1 Referer
+***** 1 User-Agent
+***** 0 "hop-by-hop" headers
+      Connection
+      Keep-Alive
+      Proxy-Authenticate
+      Proxy-Authorization
+      TE
+      Trailers
+      Transfer-Encoding
+      Upgrade
+*** convert all ‘error’ calls to ‘throw KEY’ and document all KEYs
+*** doc improvements
+***** factor body-i/o protocols
+***** factor header name bits: ‘s2s’, "symbols are good", philosophy
 *** (v) round-trip POST + CGI + non-text body
 *** incorporate selected functionality from Guile 2 (web ...) modules
 *** manual chapter "Server Utilities"
