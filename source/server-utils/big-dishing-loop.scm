@@ -154,7 +154,7 @@
 ;; @item #:bad-request-handler #f
 ;; If the first line of an HTTP message is not in the proper form, this
 ;; specifies a proc that takes a mouthpiece @var{m}.  Its return value should
-;; be the opposite boston value of the @code{#:loop-break-bool} value, below.
+;; be the opposite boolean value of the @code{#:loop-break-bool} value, below.
 ;; @xref{answer}.
 ;;
 ;; @findex method-handlers

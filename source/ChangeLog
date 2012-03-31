@@ -1,3 +1,10 @@
+2012-03-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Fix typo in ‘make-big-dishing-loop’ description.
+
+	* server-utils/big-dishing-loop.scm (make-big-dishing-loop):
+	Spell "boolean" correctly.
+
 2012-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.34
