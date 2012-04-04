@@ -1,3 +1,11 @@
+2012-04-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Make ‘(www crlf) read-headers’ check for non-empty name.
+
+	* crlf.scm: Import SRFI 13 ‘string-every’.
+	(read-headers): If the header name is empty,
+	throw ‘parse-error’ w/ sub-key ‘no-name’.
+
 2012-03-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Fix typo in ‘make-big-dishing-loop’ description.

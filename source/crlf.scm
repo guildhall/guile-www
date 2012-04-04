@@ -54,6 +54,7 @@
                                          string-take
                                          string-suffix?
                                          string-index
+                                         string-every
                                          string-join
                                          string-trim-right
                                          string-trim-both
@@ -139,6 +140,10 @@
 ;; This problem occurs when the @code{#\:} (colon), which normally
 ;; separates the header name from its value, is not found.
 ;; The argument is a pair @code{(@var{line} . @var{headers}).
+;;
+;; @item no-name
+;; This problem occurs if there is nothing before the colon except
+;; whitespace.  The argument is as for @code{missing-colon}.
 ;; @end table
 ;;
 (define (read-headers port norm)
@@ -176,6 +181,9 @@
             (else
              (let ((colon (string-index line #\:)))
                (or colon (badness 'missing-colon (cons line (racc!))))
+               (and (or (zero? colon)
+                        (string-every char-set:whitespace line 0 colon))
+                    (badness 'no-name (cons line (racc!))))
                (loop (acons
                       (norm (string-trim-right line char-set:whitespace 0 colon))
                       (string-trim-both line char-set:whitespace (1+ colon))
