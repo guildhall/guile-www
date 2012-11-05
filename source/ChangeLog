@@ -1,3 +1,10 @@
+2012-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[url-coding slog] Use ASCII subset of ‘char-set:letter+digit’.
+
+	* url-coding.scm (url-coding:encode):
+	Use only the ASCII subset of ‘char-set:letter+digit’.
+
 2012-04-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Make ‘(www crlf) read-headers’ check for non-empty name.

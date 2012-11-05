@@ -29,10 +29,12 @@
                                          string-concatenate-reverse
                                          substring/shared))
   #:use-module ((srfi srfi-14) #:select (char-set
+                                         char-set-intersection
                                          char-set-union
                                          char-set-difference
                                          list->char-set
                                          string->char-set
+                                         char-set:ascii
                                          char-set:letter+digit)))
 
 ;; Return a new string made from url-decoding @var{str}.  Specifically,
@@ -74,9 +76,13 @@
   ;; “Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
   ;; reserved characters used for their reserved purposes may be used
   ;; unencoded within a URL.” RFC 1738, #2.2.
-  (let ((safe (char-set-union char-set:letter+digit
-                              (string->char-set "$-_.+!*'(),")
-                              (string->char-set ";/?:@&="))))
+  (let ((safe (char-set-union
+               ;; Unicode-based ‘char-set:letter+digit’ is huge.
+               ;; Hew to the original RFC world view.
+               (char-set-intersection char-set:letter+digit
+                                      char-set:ascii)
+               (string->char-set "$-_.+!*'(),")
+               (string->char-set ";/?:@&="))))
 
     (define percent
       (let ((v (list->vector (map (lambda (i)
