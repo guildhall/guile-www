@@ -1,4 +1,4 @@
-;;; x110 --- test ‘url-coding:encode’ and ‘url-coding:decode’
+;;; x110 --- test (www url-coding) procs
 
 ;; Copyright (C) 2012 Thien-Thi Nguyen
 ;;
