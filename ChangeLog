@@ -1,5 +1,13 @@
 2012-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc dist] Fix bug: Arrange to also distribute fdl.texi.
+
+	Omission from 2012-03-20, "Upgrade license to GNU FDL 1.3".
+
+	* doc/Makefile.am (guile_www_TEXINFOS): Add fdl.texi.
+
+2012-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Change comment to avoid ‘coding:’ confusion w/ Guile 2.x.
 
 	* v/x110: Avoid "coding:" in description (first-line) comment.

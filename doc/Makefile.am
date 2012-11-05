@@ -21,7 +21,7 @@
 ## Fifth Floor, Boston, MA  02110-1301  USA
 
 info_TEXINFOS = guile-www.texi
-guile_www_TEXINFOS = version.texi
+guile_www_TEXINFOS = version.texi fdl.texi
 
 include $(top_srcdir)/build-aux/common.mk
 
