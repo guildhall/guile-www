@@ -125,7 +125,9 @@
                          (loop (cdr ls) (1+ count))))))))
     (define (cat-r ls)
       (apply append (reverse! ls)))
-    (values mkx r! cat-r take)))
+    ;; loi
+    (lambda ()
+      (values mkx r! cat-r take))))
 
 (define LOI-BODY '(97 98 99 100 101 102))
 
