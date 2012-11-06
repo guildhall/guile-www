@@ -24,6 +24,7 @@ Installation
 	  make
 	  make check [var=val ...]   # optional, but recommended
 	  make install
+	  make installcheck          # optional, but recommended
 
 	Doing "make check" tests the ‘load’ability of the modules, first
 	individually, then all together (sumo), then does some specific
@@ -57,6 +58,10 @@ Installation
 	For systems which have the "guile-tools make-module-catalog"
 	program, "make install" also updates the module catalog in
 	$(GUILE_LIBSITE).
+
+	Lastly, "make installcheck" essentially does "make check",
+	looking for modules under $(GUILE_LIBSITE).  You can verify
+	proper operation with ‘VERBOSE=1’.
 
 
 Maintenance

@@ -24,7 +24,8 @@ guile="${GUILE-@GUILE@}"
 test x"$DEBUG" = x1 \
     && guile="$guile --debug"
 
-prefix=`pwd`/.fake
+# env override to support "make installcheck"
+test x"$prefix" = x && prefix=`pwd`/.fake
 exec_prefix="@exec_prefix@"
 GUILE_LIBSITE="@GUILE_LIBSITE@"
 guile="$guile -L ${GUILE_LIBSITE}"

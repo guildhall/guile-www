@@ -99,4 +99,7 @@ $(single): all-modules.list
 clean-local:
 	-rm -rf all-modules.list .fake x000 $(single)
 
+installcheck-local:
+	$(MAKE) check prefix='$(prefix)'
+
 ## Makefile.am ends here

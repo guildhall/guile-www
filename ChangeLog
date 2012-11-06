@@ -1,5 +1,12 @@
 2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add support for "make installcheck".
+
+	* v/v.in (prefix): Don't set var if already in environment.
+	* v/Makefile.am (installcheck-local): New target.
+
+2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Use a thunk to specify ‘custom’ procs for ‘receive-response’.
 
 	* v/x300 (loi): Return a thunk instead of 4 values directly.
