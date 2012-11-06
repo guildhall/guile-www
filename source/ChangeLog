@@ -1,3 +1,12 @@
+2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[crlf slog] Allow thunk in ‘receive-response’ spec.
+
+	* crlf.scm (unravel): New proc.
+	(get-body-proc motion) <custom>: Use ‘unravel’.
+	(get-body-proc motion) <u8>: Use thunk for internal ‘custom’ transform.
+	* http.scm (receive-response): Update doc comment; nfc.
+
 2012-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[url-coding slog] Use ASCII subset of ‘char-set:letter+digit’.

@@ -208,6 +208,11 @@
       (lambda (string)
         (string->symbol (s2s string)))))
 
+(define (unravel x)                     ; ZONKME 2013-05-15
+  (if (thunk? x)
+      (x)
+      x))
+
 (define (get-body-proc sock hsym headers)
 
   (define (string-read!/partial s)
@@ -240,7 +245,7 @@
   (define (motion options)
     (cond ((memq 'custom options)
            => (lambda (ls)
-                (let-values (((mkx r! cat-r subseq) (cadr ls)))
+                (let-values (((mkx r! cat-r subseq) (unravel (cadr ls))))
                   (values mkx
                           (lambda (len)
                             (let ((x (mkx len)))
@@ -253,10 +258,11 @@
                           cat-r
                           subseq))))
           ((memq 'u8 options)
-           (motion (append `(custom ,(values make-u8vector
-                                             uniform-vector-read!
-                                             u8-concatenate-reverse
-                                             sub-u8))
+           (motion (append `(custom ,(lambda ()
+                                       (values make-u8vector
+                                               uniform-vector-read!
+                                               u8-concatenate-reverse
+                                               sub-u8)))
                            (delq 'u8 options))))
           (else
            (values make-string

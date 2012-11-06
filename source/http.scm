@@ -365,7 +365,8 @@
 ;; a @code{u8} vector.
 ;;
 ;; @item If @var{flags} contains the symbol @code{custom}, the
-;; following item in @var{flags} should be four values (all procedures)
+;; following item in @var{flags} should be a thunk that returns
+;; four values (all procedures)
 ;; that support the @dfn{chunk transfer protocol}.  These are:
 ;;
 ;; @table @code
@@ -386,6 +387,20 @@
 ;; multiple exact chunks (``chunked'' @code{Transfer-Encoding}),
 ;; or read in one swoop (if @code{Content-Length} is given),
 ;; or from multiple inexact chunks (the default).
+;;
+;; For backward compatability, instead of a thunk returning four values,
+;; you can also specify the four values directly.
+;; @strong{NB: Support for specifying four values directly will
+;; NO LONGER BE AVAILABLE after 2013-05-15.}@footnote{Out of an explicit
+;; @code{call-with-values} context, Guile 2.x will silently discard all
+;; values following the ``expected number'' (one, in this case):
+;;
+;; @example
+;; (list 'custom (values P1 P2 P3 P4))
+;; @result{} (custom P1)
+;; @end example
+;;
+;; This is apparently allowed under R5RS and R6RS.}
 ;;
 ;; @item If @var{flags} contains the symbol @code{no-cat}, then all
 ;; multi-chunk transfers are not ``concatenated''; instead, the message
