@@ -3,10 +3,11 @@
 # usage: sh -x autogen.sh
 #
 # tested with:
-# autoconf (GNU Autoconf) 2.68
-# automake (GNU automake) 1.11.3
+# autoconf (GNU Autoconf) 2.69
+# automake (GNU automake) 1.12.4
 # guile (GNU Guile) 1.8.7
-# guile-baux-tool (Guile-BAUX) 20120309.1509.1c4bb92
+# guile (GNU Guile) 2.0.6
+# guile-baux-tool (Guile-BAUX) 20121026.1208.c21074a
 # snuggle (SNUGGLE) 0.1
 
 [ -f configure.ac ] || {
