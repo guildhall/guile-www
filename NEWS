@@ -1,4 +1,53 @@
 NEWS for Guile-WWW
+See the end for copying conditions.
+
+
+- 2.35 | 2012-11-06
+
+  - support for "make installcheck"
+
+	This does "make check" at its core, so the same env vars apply.
+	Obviously, you should do "make install" first for sane results.
+
+  - ‘receive-response’ spec takes thunk for ‘custom’ handling
+
+	This means that instead of using:
+
+	(list 'custom (values P1 P2 P3 P4))
+
+	to construct a ‘receive-response’ spec, you can use:
+
+	(list 'custom (lambda () (values P1 P2 P3 P4)))
+
+	In fact, this is now the preferred way, as support for using
+	‘values’ directly is now deemed a misfeature and marked for
+	eventual removal (see below).
+
+  - tested against Guile 2.0.6
+
+	There are some deprecation warnings, however.
+
+  - MARKED FOR REMOVAL
+
+    - 2013-05-15 support for values in ‘receive-response’ spec
+
+	Out of an explicit ‘call-with-values’ context, Guile 2.x will
+	silently discard all values but the first if the continuation
+	expects one value only (the common case).
+
+	(cons 0 (values 1 2)) => (0 . 1)
+
+	Thus, the ‘receive-response’ spec constructed by:
+
+	(list 'custom (values P1 P2 P3 P4))
+
+	fails to preserve P2, P3, P4 (w/ Guile 2.x).  See above for
+	thunk support, the future-proof way to specify ‘custom’ procs.
+
+  - bootstrap tools upgrade
+    - GNU Autoconf 2.69
+    - GNU Automake 1.12.4
+    - Guile-BAUX 20121026.1208.c21074a
 
 
 - 2.34 | 2012-03-29

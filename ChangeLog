@@ -1,5 +1,11 @@
 2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.35
+
+	* configure.ac (AC_INIT): Bump version to "2.35" for release.
+
+2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Add support for "make installcheck".
 
 	* v/v.in (prefix): Don't set var if already in environment.

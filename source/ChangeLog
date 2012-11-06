@@ -1,5 +1,9 @@
 2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.35
+
+2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[crlf slog] Avoid ‘(or (foo) ...)’ where ‘foo’ produces values.
 
 	P ≡ "get-body-proc get-body".
