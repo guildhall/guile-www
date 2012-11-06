@@ -280,44 +280,48 @@
             reverse!
             concat-reverse))
 
-      (define (try-chunked)
+      (define (chunked?)
         (let ((t-enc (assq (hsym "Transfer-Encoding") headers)))
           (and (pair? t-enc)
                (equal? "chunked" (cdr t-enc))
-               (let loop ((acc '()))
-                 (let* ((spec (read-through-CRLF sock))
-                        (len (string->number
-                              (cond ((string-index spec #\;)
-                                     => (lambda (semi)
-                                          ;; ignore extensions for now
-                                          (string-take spec semi)))
-                                    (else spec))
-                              16)))
-                   (if (positive? len)
-                       ;; more
-                       (let* ((chunk (data-in! len))
-                              (end (in! 2)))
-                         (or (string=? CRLF end)
-                             (throw 'chunked-transfer-encoding
-                                    'trailing-garbage end))
-                         (loop (cons chunk acc)))
-                       ;; done
-                       (values
-                        (append
-                         ;; Self-deprecate when work is done.
-                         (delq t-enc headers)
-                         ;; New trailers, if any.
-                         (read-headers sock hsym))
-                        (body<-acc acc))))))))
+               t-enc)))
+
+      (define (handle-chunked t-enc)
+        (let loop ((acc '()))
+          (let* ((spec (read-through-CRLF sock))
+                 (len (string->number
+                       (cond ((string-index spec #\;)
+                              => (lambda (semi)
+                                   ;; ignore extensions for now
+                                   (string-take spec semi)))
+                             (else spec))
+                       16)))
+            (if (positive? len)
+                ;; more
+                (let* ((chunk (data-in! len))
+                       (end (in! 2)))
+                  (or (string=? CRLF end)
+                      (throw 'chunked-transfer-encoding
+                             'trailing-garbage end))
+                  (loop (cons chunk acc)))
+                ;; done
+                (values
+                 (append
+                  ;; Self-deprecate when work is done.
+                  (delq t-enc headers)
+                  ;; New trailers, if any.
+                  (read-headers sock hsym))
+                 (body<-acc acc))))))
 
       (define (same-headers s)
         (values #f s))
 
-      (define (try-known)
-        (and=> (assq-ref headers (hsym "Content-Length"))
-               (lambda (s)
-                 (same-headers
-                  (data-in! (string->number s))))))
+      (define (known?)
+        (assq-ref headers (hsym "Content-Length")))
+
+      (define (handle-known s)
+        (same-headers
+         (data-in! (string->number s))))
 
       (define (drain)
         (let loop ((acc '()))
@@ -332,9 +336,11 @@
                    (same-headers
                     (body<-acc acc)))))))
 
-      (or (try-chunked)
-          (try-known)
-          (drain))))
+      ;; Use ‘cond’ instead of ‘or’ w/ combined test/handling because
+      ;; the rv is two values, which ‘or’ cannot handle under Guile 2.x.
+      (cond ((chunked?) => handle-chunked)
+            ((known?) => handle-known)
+            (else (drain)))))
 
   get-body)
 

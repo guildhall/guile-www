@@ -1,5 +1,18 @@
 2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[crlf slog] Avoid ‘(or (foo) ...)’ where ‘foo’ produces values.
+
+	P ≡ "get-body-proc get-body".
+	* crlf.scm (P try-chunked): Delete proc, splitting into...
+	(P chunked?): ...this new proc.
+	(P handle-chunked): ...and this one.
+	(P try-known): Delete proc, splitting into...
+	(P known?): ...this new proc.
+	(P handle-known): ...and this one.
+	(P): Use new procs w/ ‘cond’.
+
+2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[crlf slog] Allow thunk in ‘receive-response’ spec.
 
 	* crlf.scm (unravel): New proc.
