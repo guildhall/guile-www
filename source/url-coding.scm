@@ -26,6 +26,7 @@
   #:export (url-coding:decode
             url-coding:encode)
   #:use-module ((srfi srfi-13) #:select (string-index
+                                         string-skip
                                          string-concatenate-reverse
                                          substring/shared))
   #:use-module ((srfi srfi-14) #:select (char-set

@@ -51,6 +51,7 @@
                                         u8vector-set!))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-concatenate-reverse
+                                         string-concatenate
                                          string-take
                                          string-suffix?
                                          string-index
@@ -59,7 +60,8 @@
                                          string-trim-right
                                          string-trim-both
                                          substring/shared))
-  #:use-module ((srfi srfi-14) #:select (char-set:whitespace)))
+  #:use-module ((srfi srfi-14) #:select (char-set:whitespace
+                                         char-set-contains?)))
 
 (define CR "\r")
 

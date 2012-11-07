@@ -1,3 +1,13 @@
+2012-11-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build slog] Import some procs for poor old Guile 1.4.x.
+
+	These are apparently built-in for Guile 1.8 and later.
+
+	* crlf.scm: Import SRFI 13 ‘string-concatenate’,
+	SRFI 14 ‘char-set-contains?’.
+	* url-coding.scm: Import SRFI 13 ‘string-skip’.
+
 2012-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.35
