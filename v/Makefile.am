@@ -94,7 +94,7 @@ x000: all-modules.list
 
 $(single): all-modules.list
 	@n=`echo $@ | sed 's/x0*//'` ; \
-	sed -e "$${n}!d" -e 's/.*/(use-modules &)\n(exit #t)/' $< > $@
+	sed -e "$${n}!d" -e 's/.*/(use-modules &) (exit #t)/' $< > $@
 
 clean-local:
 	-rm -rf all-modules.list .fake x000 $(single)
