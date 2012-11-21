@@ -27,8 +27,15 @@
   #:export (www:set-protocol-handler!
             www:get
             www:http-head-get)
-  #:use-module (www http)
-  #:use-module (www url)
+  #:use-module ((www http) #:select (http:message-body
+                                     http:message-headers
+                                     http:head
+                                     http:get))
+  #:use-module ((www url) #:select (url:scheme
+                                    url:host
+                                    url:port
+                                    url:path
+                                    url:parse))
   #:use-module (ice-9 optargs))
 
 (define dispatch-table

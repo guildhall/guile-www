@@ -23,8 +23,10 @@
   #:export (parse-form)
   #:use-module (ice-9 curried-definitions)
   #:use-module ((srfi srfi-2) #:select (and-let*))
-  #:use-module (srfi srfi-13)
-  #:use-module (ice-9 regex))
+  #:use-module ((srfi srfi-13) #:select (substring/shared
+                                         string-prefix?
+                                         string-contains))
+  #:use-module ((ice-9 regex) #:select (match:substring)))
 
 (define +boundary-rx+ (make-regexp "boundary=\"*(.[^\"\r\n]*)\"*"))
 (define +name-rx+     (make-regexp "name=\"([^\"]*)\""))

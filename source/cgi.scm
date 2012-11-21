@@ -38,8 +38,16 @@
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
   #:use-module ((srfi srfi-2) #:select (and-let*))
-  #:use-module (srfi srfi-13)
-  #:use-module (srfi srfi-14))
+  #:use-module ((srfi srfi-13) #:select (string-join
+                                         substring/shared
+                                         string-prefix-ci?
+                                         string-index
+                                         string-upcase
+                                         string-tokenize))
+  #:use-module ((srfi srfi-14) #:select (char-set
+                                         char-set-adjoin
+                                         char-set-complement
+                                         char-set:whitespace)))
 
 (define (collate alist)
   (let ((rv '()))

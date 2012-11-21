@@ -27,8 +27,11 @@
             echo-upath
             make-big-dishing-loop)
   #:use-module (ice-9 optargs)
-  #:use-module (www server-utils parse-request)
-  #:use-module (www server-utils answer))
+  #:use-module ((www server-utils parse-request) #:select (request-method
+                                                           request-upath
+                                                           request-headers
+                                                           receive-request))
+  #:use-module ((www server-utils answer) #:select (mouthpiece)))
 
 ;; Return a new socket in protocol @var{family} with address @var{name}.
 ;;

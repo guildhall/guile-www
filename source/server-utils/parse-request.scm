@@ -38,10 +38,14 @@
                                      read-headers/get-body))
   #:use-module ((www url-coding) #:select (url-coding:decode))
   #:use-module ((srfi srfi-2) #:select (and-let*))
-  #:use-module (srfi srfi-9)
+  #:use-module ((srfi srfi-9) #:select (define-record-type))
   #:use-module ((srfi srfi-11) #:select (let-values))
-  #:use-module (srfi srfi-13)
-  #:use-module (srfi srfi-14)
+  #:use-module ((srfi srfi-13) #:select (substring/shared
+                                         string-index
+                                         string-upcase
+                                         string-tokenize))
+  #:use-module ((srfi srfi-14) #:select (char-set
+                                         char-set-complement))
   #:use-module ((ice-9 regex) #:select (match:substring))
   #:use-module (ice-9 optargs))
 

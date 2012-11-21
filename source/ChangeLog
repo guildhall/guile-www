@@ -1,5 +1,18 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Explicitly ‘#:select’ bindings.
+
+	* cgi.scm: SRFI 13, SRFI 14.
+	* http.scm: ‘(www url)’.
+	* main.scm: ‘(www http)’, ‘(www url)’.
+	* url.scm: ‘(ice-9 regex)’.
+	* server-utils/big-dishing-loop.scm:
+	‘(... parse-request)’, ‘(... answer)’.
+	* server-utils/form-2-form.scm: SRFI 13, ‘(ice-9 regex)’.
+	* server-utils/parse-request.scm: SRFI 9, SRFI 13, SRFI 14.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Don't bother autoloading ‘(... url-coding)’.
 
 	* server-utils/parse-request.scm: ...here, via ‘#:use-modules’.

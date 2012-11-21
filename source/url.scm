@@ -42,7 +42,8 @@
                                          string-index
                                          string-take
                                          string-prefix?))
-  #:use-module (ice-9 regex))
+  #:use-module ((ice-9 regex) #:select (match:substring
+                                        match:start)))
 
 ;; Extract and return the "scheme" portion of a @var{url} object.
 ;; @code{url:scheme} is an unfortunate term, but it is the technical
