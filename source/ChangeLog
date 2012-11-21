@@ -1,5 +1,11 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Decruft: Don't import unused SRFI 14.
+
+	* server-utils/form-2-form.scm: ...here.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Decruft: Don't import unused ‘(ice-9 rw)’.
 
 	* http.scm: ...here.
