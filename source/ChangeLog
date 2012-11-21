@@ -1,5 +1,11 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Don't bother autoloading ‘(... url-coding)’.
+
+	* server-utils/parse-request.scm: ...here, via ‘#:use-modules’.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Import ‘(... parse-request)’ w/o autoload.
 
 	* cgi.scm: ...here, via ‘#:use-modules’.

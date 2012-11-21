@@ -36,7 +36,7 @@
                                      (read-headers . crlf:read-headers)
                                      read-characters
                                      read-headers/get-body))
-  #:autoload (www url-coding) (url-coding:decode)
+  #:use-module ((www url-coding) #:select (url-coding:decode))
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-9)
   #:use-module ((srfi srfi-11) #:select (let-values))
