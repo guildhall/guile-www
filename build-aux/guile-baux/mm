@@ -36,6 +36,9 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 ;;                  in the `define-module' form.
 ;;  no-currdef   -- Remove `#:use-module (ice-9 curried-definitions)'
 ;;                  from `define-module' form.
+;;  u8-io        -- Recognize ‘(define u8-read!-all ...)’ and
+;;                  ‘(define u8-write-all ...)’, and substitute a
+;;                  built-in proc (portable but slower) definition.
 
 ;;; Code:
 
@@ -46,6 +49,30 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
   #:use-module ((srfi srfi-13) #:select (string-tokenize))
   #:use-module ((srfi srfi-14) #:select (char-set-complement
                                          char-set)))
+
+(define backport
+  (list
+
+   '(u8-read!-all
+     (v port)
+     (let ((len (u8vector-length v)))
+       (do ((i 0 (1+ i)))
+           ((= len i))
+         (u8vector-set! v i (char->integer (read-char port))))
+       len))
+
+   '(u8-write-all
+     (v port)
+     (let* ((len (u8vector-length v))
+            (s (make-string len)))
+       (do ((i 0 (1+ i)))
+           ((= len i))
+         (string-set! s i (integer->char (u8vector-ref v i))))
+       (display s port)
+       len))
+
+   ;; Add other backport procs here.
+   ))
 
 (define (process flags)
 
@@ -92,6 +119,16 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
           (and (pair? form)
                (eq? 'define-module (car form))
                (munge-define-module! form)))
+      (and (pair? form)
+           (eq? 'define (car form))
+           (symbol? (cadr form))
+           (let ((name (cadr form)))
+             (case name
+               ((u8-read!-all u8-write-all)
+                (and (memq 'u8-io flags)
+                     (set-car! (cddr form)
+                               (cons 'lambda
+                                     (assq-ref backport name))))))))
       (write-line-punily form))))
 
 (define (list<-csep s)

@@ -38,6 +38,18 @@ SNUGGLE_MODULE_AVAILABLE([ice-9 curried-definitions])
 AS_VAR_IF([have_mod_ice_9_curried_definitions],[no],
 [AS_VAR_APPEND([mmflags],[',no-currdef'])])
 
+AC_CACHE_CHECK([uniform-vector-{read!,write} can handle u8vector],
+[gwww_cv_have_modern_u8_io],[
+AS_IF([$GUILE -c '
+         (use-modules (srfi srfi-4))
+         (uniform-vector-write (u8vector 0))
+         ' >/dev/null 2>&1],
+   [gwww_cv_have_modern_u8_io=yes],
+   [gwww_cv_have_modern_u8_io=no])
+])
+AS_VAR_IF([gwww_cv_have_modern_u8_io],[no],
+[AS_VAR_APPEND([mmflags],[',u8-io'])])
+
 AS_VAR_SET_IF([mmflags],[AS_VAR_SET([MMFLAGS],["-f$mmflags"])])
 AC_SUBST([MMFLAGS])
 

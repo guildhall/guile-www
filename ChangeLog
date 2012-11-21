@@ -1,3 +1,13 @@
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Add some built-in "backport procs" to the module munger.
+
+	* build-aux/guile-baux/mm (backport): New data structure.
+	(process): If a form defines ‘u8-read!-all’ or ‘u8-write-all’,
+	check flags for ‘u8-io’ and if set, substitute a backport proc.
+	* configure.ac (gwww_cv_have_modern_u8_io): New AC_CACHE_CHECK;
+	if the result is "no", append ‘u8-io’ to ‘mmflags’.
+
 2012-11-07  Greg Troxel  <gdt@ir.bbn.com>  (tiny change)
 
 	[v] Fix sed portability bug: Avoid ‘\n’ in ‘s’ RHS.
