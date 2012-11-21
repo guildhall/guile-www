@@ -1,5 +1,12 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v slog] Add abstraction: u8-write-all
+
+	* v/x200 (u8-write-all): New proc;
+	use it instead of ‘uniform-vector-write’.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Add some built-in "backport procs" to the module munger.
 
 	* build-aux/guile-baux/mm (backport): New data structure.

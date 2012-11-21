@@ -25,6 +25,14 @@
  (srfi srfi-13)
  (www crlf))
 
+(define u8-write-all
+  (if (false-if-exception (uniform-vector-write (u8vector)))
+      uniform-vector-write
+      (lambda (v port)
+        (let ((s (apply string (map integer->char (u8vector->list v)))))
+          (display s port)
+          (string-length s)))))
+
 (define TMPFILE "x200.tmp")
 
 (define (tmpfile-contents)
@@ -115,7 +123,7 @@
                                    (set! chunks (cdr chunks))
                                    (values (u8vector-length head)
                                            (lambda (p)
-                                             (uniform-vector-write
+                                             (u8-write-all
                                               head p))))
                                  (values #f #f)))
                             (else #f))))
