@@ -1,5 +1,15 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Import ‘and-let*’ from SRFI 2.
+
+	* cgi.scm: Import ‘and-let*’ from SRFI 2
+	instead of from ‘(ice-9 and-let-star)’.
+	* server-utils/filesystem.scm: Likewise.
+	* server-utils/form-2-form.scm: Likewise.
+	* server-utils/parse-request.scm: Likewise.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Decruft: Don't import unused ‘(ice-9 optargs)’.
 
 	* post.scm: ...here.

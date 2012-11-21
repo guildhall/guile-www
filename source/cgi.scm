@@ -36,7 +36,7 @@
   #:autoload (www server-utils parse-request) (alist<-query read-body)
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
-  #:use-module (ice-9 and-let-star)
+  #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14))
 

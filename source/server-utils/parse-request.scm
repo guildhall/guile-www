@@ -37,14 +37,14 @@
                                      read-characters
                                      read-headers/get-body))
   #:autoload (www url-coding) (url-coding:decode)
+  #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-9)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module ((ice-9 regex) #:select (match:substring))
   #:use-module (ice-9 optargs)
-  #:use-module (ice-9 rw)
-  #:use-module (ice-9 and-let-star))
+  #:use-module (ice-9 rw))
 
 (define (read-request port s2s)
   (let-values (((method upath pvers) (read-three-part-line port)))

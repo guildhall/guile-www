@@ -23,11 +23,11 @@
   #:export (parse-form)
   #:use-module (ice-9 curried-definitions)
   #:use-module (www url-coding)
+  #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module (ice-9 regex)
-  #:use-module (ice-9 rw)
-  #:use-module (ice-9 and-let-star))
+  #:use-module (ice-9 rw))
 
 (define +boundary-rx+ (make-regexp "boundary=\"*(.[^\"\r\n]*)\"*"))
 (define +name-rx+     (make-regexp "name=\"([^\"]*)\""))

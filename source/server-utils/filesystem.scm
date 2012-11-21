@@ -28,6 +28,7 @@
             cleanup-filename
             upath->filename-proc
             filename->content-type)
+  #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (string=
                                          (substring/shared . subs)
                                          string-prefix?
@@ -36,7 +37,6 @@
                                          string-join))
   #:use-module ((srfi srfi-14) #:select (char-set-complement
                                          char-set))
-  #:use-module (ice-9 and-let-star)
   #:use-module (ice-9 optargs)
   #:autoload (www data mime-types) (mime-types<-extension))
 
