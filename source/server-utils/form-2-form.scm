@@ -26,8 +26,7 @@
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 rw))
+  #:use-module (ice-9 regex))
 
 (define +boundary-rx+ (make-regexp "boundary=\"*(.[^\"\r\n]*)\"*"))
 (define +name-rx+     (make-regexp "name=\"([^\"]*)\""))

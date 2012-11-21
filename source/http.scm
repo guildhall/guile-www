@@ -49,8 +49,7 @@
   #:use-module ((srfi srfi-1) #:select (car+cdr))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module (www url)
-  #:use-module (ice-9 optargs)
-  #:use-module (ice-9 rw))
+  #:use-module (ice-9 optargs))
 
 (define (fs s . args)
   (apply simple-format #f s args))

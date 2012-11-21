@@ -43,8 +43,7 @@
   #:use-module (srfi srfi-13)
   #:use-module (srfi srfi-14)
   #:use-module ((ice-9 regex) #:select (match:substring))
-  #:use-module (ice-9 optargs)
-  #:use-module (ice-9 rw))
+  #:use-module (ice-9 optargs))
 
 (define (read-request port s2s)
   (let-values (((method upath pvers) (read-three-part-line port)))

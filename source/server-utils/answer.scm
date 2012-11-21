@@ -33,8 +33,7 @@
                                     enq!
                                     q-empty?
                                     deq!
-                                    sync-q!))
-  #:use-module ((ice-9 rw) #:select (write-string/partial)))
+                                    sync-q!)))
 
 (define-macro (+! v n)
   `(set! ,v (+ ,v ,n)))

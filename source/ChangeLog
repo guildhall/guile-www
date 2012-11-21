@@ -1,5 +1,14 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Decruft: Don't import unused ‘(ice-9 rw)’.
+
+	* http.scm: ...here.
+	* server-utils/answer.scm: Likewise.
+	* server-utils/form-2-form.scm: Likewise.
+	* server-utils/parse-request.scm: Likewise.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Import ‘and-let*’ from SRFI 2.
 
 	* cgi.scm: Import ‘and-let*’ from SRFI 2
