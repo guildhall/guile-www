@@ -33,7 +33,8 @@
             cgi:uploads cgi:upload
             cgi:cookie-names
             cgi:cookies cgi:cookie)
-  #:autoload (www server-utils parse-request) (alist<-query read-body)
+  #:use-module ((www server-utils parse-request) #:select (alist<-query
+                                                           read-body))
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
   #:use-module ((srfi srfi-2) #:select (and-let*))
