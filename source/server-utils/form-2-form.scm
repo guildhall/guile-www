@@ -22,7 +22,6 @@
 (define-module (www server-utils form-2-form)
   #:export (parse-form)
   #:use-module (ice-9 curried-definitions)
-  #:use-module (www url-coding)
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module (srfi srfi-13)
   #:use-module (ice-9 regex))
