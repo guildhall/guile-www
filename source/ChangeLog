@@ -8,12 +8,6 @@
 	* server-utils/form-2-form.scm: Likewise.
 	* server-utils/parse-request.scm: Likewise.
 
-2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
-
-	[int] Decruft: Don't import unused ‘(ice-9 optargs)’.
-
-	* post.scm: ...here.
-
 2012-11-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[build slog] Import some procs for poor old Guile 1.4.x.

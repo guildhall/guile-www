@@ -33,7 +33,8 @@
   #:use-module ((www url-coding) #:select (url-coding:encode))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-concatenate-reverse
-                                         string-join)))
+                                         string-join))
+  #:use-module (ice-9 optargs))
 
 (define (fs s . args)
   (apply simple-format #f s args))
