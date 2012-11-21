@@ -215,6 +215,9 @@
       (x)
       x))
 
+(define u8-read!-all uniform-vector-read!)
+(define u8-write-all uniform-vector-write)
+
 (define (get-body-proc sock hsym headers)
 
   (define (string-read!/partial s)
@@ -262,7 +265,7 @@
           ((memq 'u8 options)
            (motion (append `(custom ,(lambda ()
                                        (values make-u8vector
-                                               uniform-vector-read!
+                                               u8-read!-all
                                                u8-concatenate-reverse
                                                sub-u8)))
                            (delq 'u8 options))))
@@ -411,7 +414,7 @@
                 (let ((lengths (map u8vector-length vectors)))
                   ;; move!
                   (x-move vectors (lambda (sock)
-                                    (uniform-vector-write
+                                    (u8-write-all
                                      (pop vectors)
                                      sock))))))
           ((or (and (string? body) (list body))

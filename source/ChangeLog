@@ -1,5 +1,13 @@
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[crlf slog] Add abstractions: u8-read!-all, u8-write-all
+
+	* crlf.scm (u8-read!-all, u8-write-all): New procs.
+	(get-body-proc): Use ‘u8-read!-all’.
+	(out!): Use ‘u8-write-all’.
+
+2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Explicitly ‘#:select’ bindings.
 
 	* cgi.scm: SRFI 13, SRFI 14.
