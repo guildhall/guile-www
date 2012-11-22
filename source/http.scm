@@ -325,7 +325,8 @@
     (let-values (((rvers rcode rtext) (read-three-part-line sock)))
       (let ((numeric (string->number rcode)))
         (let-values (((headers body) (read-headers/get-body
-                                      sock s2s (values method numeric))))
+                                      sock s2s (lambda ()
+                                                 (values method numeric)))))
           (make-message rvers numeric rtext headers body))))))
 
 ;; Receive the @var{pending} (from @code{send-request}) response.

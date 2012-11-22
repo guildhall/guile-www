@@ -354,8 +354,8 @@
          (headers (read-headers sock hsym))
          (get-body (get-body-proc sock hsym headers)))
     (values headers
-            (and (or (not request)
-                     (let-values (((method rcode) request))
+            (and (or (not (thunk? request))
+                     (let-values (((method rcode) (request)))
                        ;; Sometimes no body is indicated.
                        ;; See RFC 2068: Section 4.3 "Message Body".
                        (not (or (eq? 'HEAD method)

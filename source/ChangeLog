@@ -1,3 +1,12 @@
+2012-11-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int slog] Avoid passing ‘values’ as an arg.
+
+	* crlf.scm (read-headers/get-body): If ‘request’
+	is not a thunk, ignore it; update to call it, if a thunk.
+	* http.scm (send-request): Don't pass values to
+	‘read-headers/get-body’; instead, wrap them in a thunk.
+
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[crlf slog] Add abstractions: u8-read!-all, u8-write-all
