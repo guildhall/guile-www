@@ -1,5 +1,9 @@
 2012-11-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.36
+
+2012-11-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[mm slog] Support Guile 2.x bytevector i/o.
 
 	* crlf.scm: Import ‘(ice-9 binary-ports)’.

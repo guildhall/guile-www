@@ -2,6 +2,42 @@ NEWS for Guile-WWW
 See the end for copying conditions.
 
 
+- 2.36 | 2012-11-22
+
+  - portability fixes
+
+    - import some procs explicitly (Guile 1.4.x)
+
+	Guile 1.4.x does not implicitly provide, e.g., SRFI 13.
+
+    - use appropriate u8 i/o procs
+
+	The "compiler" (har har) build-aux/guile-baux/mm, in cahoots w/
+	the configure script, now tries to DTRT for various versions of
+	Guile.  Precisely:
+
+	1.4.x -- custom procs based on ‘read-char’ / ‘display’
+	1.8   -- uniform-vector-{read!,write} (the "normal" case)
+	2.x   -- custom procs based on those in ‘(ice-9 binary-ports)’
+
+	With this change, "make check" under Guile 2.0.6 no longer
+	displays any deprecation warnings.  Any that you might encounter
+	(for any Guile) is now considered a bug; please report it.
+
+    - avoid ‘\n’ in sed ‘s’ RHS (FreeBSD)
+
+	This was a problem in the "make check" prep (test harness).
+
+    - less "values outside ‘call-with-values’ context"
+
+	Another case was found, but this was internal.  Perhaps others
+	lurk -- why doesn't Someone just do a formal audit already?!
+
+  - bootstrap tools upgrade
+    - GNU Automake 1.12.5
+    - Guile-BAUX 20121120.1242.e233fad
+
+
 - 2.35 | 2012-11-06
 
   - support for "make installcheck"
