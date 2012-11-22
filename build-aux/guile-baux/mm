@@ -32,10 +32,10 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 ;;
 ;; FLAGS is a comma-separated list of symbols, zero or more of:
 ;;
-;;  optargs-kw   -- Replace `(ice-9 optargs)' with `(ice-9 optargs-kw)'
-;;                  in the `define-module' form.
-;;  no-currdef   -- Remove `#:use-module (ice-9 curried-definitions)'
-;;                  from `define-module' form.
+;;  optargs-kw   -- Replace ‘(ice-9 optargs)’ with ‘(ice-9 optargs-kw)’
+;;                  in the ‘define-module’ form.
+;;  no-currdef   -- Remove ‘#:use-module (ice-9 curried-definitions)’'
+;;                  from ‘define-module’ form.
 ;;  u8-io        -- Recognize ‘(define u8-read!-all ...)’ and
 ;;                  ‘(define u8-write-all ...)’, and substitute a
 ;;                  built-in proc (portable but slower) definition.
