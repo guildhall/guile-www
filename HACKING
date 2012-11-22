@@ -45,14 +45,11 @@ It lives in the repo but is not included in the distribution.
 ***** sample servers
 *** comment code (audience: intermediate scheme programmer)
 
-* portability
-  | guile version | bootstrap | build | run |
-  |     1.4.1.118 | yes       | yes   | yes |
-  |     1.4.1.119 | yes       | yes   | yes |
-  |     1.4.1.120 | yes       | yes   | yes |
-  |     1.4.1.121 | yes       | yes   | yes |
-  |         1.8.7 | yes       | yes   | yes |
-  |        1.9.14 | ?         | yes   | yes |
+* portability (status: bootstrap - build - run)
+  |     guile | status    | notes     |
+  | 1.4.1.127 | ? - Y - Y | x300 FAIL |
+  |     1.8.7 | Y - Y - Y |           |
+  |     2.0.6 | ? - Y - Y |           |
 
 * bootstrap: see autogen.sh for required tools
 
@@ -82,5 +79,6 @@ It lives in the repo but is not included in the distribution.
 *** q-TOPIC -- "questionably", "querulously"
     These are experimental, exploring the particular TOPIC.  They are intended
     to be ephemeral, undergoing rebase, amendment, and ultimately removal.
+
 * link definitions
 #+LINK: repo  http://git.savannah.gnu.org/cgit/guile-www.git/commit/?id=
