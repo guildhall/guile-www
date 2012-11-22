@@ -4,10 +4,10 @@
 #
 # tested with:
 # autoconf (GNU Autoconf) 2.69
-# automake (GNU automake) 1.12.4
+# automake (GNU automake) 1.12.5
 # guile (GNU Guile) 1.8.7
 # guile (GNU Guile) 2.0.6
-# guile-baux-tool (Guile-BAUX) 20121026.1208.c21074a
+# guile-baux-tool (Guile-BAUX) 20121120.1242.e233fad
 # snuggle (SNUGGLE) 0.1
 
 [ -f configure.ac ] || {
