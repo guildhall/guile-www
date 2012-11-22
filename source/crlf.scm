@@ -39,6 +39,7 @@
             get-body-proc
             read-headers/get-body
             out!)
+  #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 optargs)
   #:use-module ((ice-9 rw) #:select (read-string!/partial
                                      write-string/partial))

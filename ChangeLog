@@ -1,3 +1,17 @@
+2012-11-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[mm slog] Support Guile 2.x bytevector i/o.
+
+	* build-aux/guile-baux/mm (backport-2): New data structure.
+	(process binports!): New proc.
+	(process flag?): Likewise.
+	(process and-flag): Likewise.
+	(process): Handle new flag ‘no-binports’.
+	* configure.ac (have_mod_ice_9_binary_ports): New shell var, via
+	‘SNUGGLE_MODULE_AVAILABLE’; if set append ‘mmflags’ w/ ‘no-binports’.
+	* v/x200 [guile-2]: Import ‘(ice-9 binary-ports)’.
+	(u8-write-all) [guile-2]: Define, else the previous def.
+
 2012-11-21  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v slog] Add abstraction: u8-write-all

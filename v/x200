@@ -25,13 +25,21 @@
  (srfi srfi-13)
  (www crlf))
 
+(cond-expand (guile-2 (use-modules (ice-9 binary-ports)))
+             (else #f))
+
 (define u8-write-all
-  (if (false-if-exception (uniform-vector-write (u8vector)))
-      uniform-vector-write
-      (lambda (v port)
-        (let ((s (apply string (map integer->char (u8vector->list v)))))
-          (display s port)
-          (string-length s)))))
+  (cond-expand
+   (guile-2
+    (lambda (v port)
+      (put-bytevector port v)))
+   (else
+    (if (false-if-exception (uniform-vector-write (u8vector)))
+        uniform-vector-write
+        (lambda (v port)
+          (let ((s (apply string (map integer->char (u8vector->list v)))))
+            (display s port)
+            (string-length s)))))))
 
 (define TMPFILE "x200.tmp")
 

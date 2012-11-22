@@ -38,6 +38,10 @@ SNUGGLE_MODULE_AVAILABLE([ice-9 curried-definitions])
 AS_VAR_IF([have_mod_ice_9_curried_definitions],[no],
 [AS_VAR_APPEND([mmflags],[',no-currdef'])])
 
+SNUGGLE_MODULE_AVAILABLE([ice-9 binary-ports])
+AS_VAR_IF([have_mod_ice_9_binary_ports],[no],
+[AS_VAR_APPEND([mmflags],[',no-binports'])])
+
 AC_CACHE_CHECK([uniform-vector-{read!,write} can handle u8vector],
 [gwww_cv_have_modern_u8_io],[
 AS_IF([$GUILE -c '
