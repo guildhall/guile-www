@@ -23,7 +23,7 @@ dnl Fifth Floor, Boston, MA  02110-1301  USA
 
 AC_INIT([Guile-WWW],[2.36],[ttn@gnuvola.org])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.11.1 gnu no-dist-gzip dist-xz])
+AM_INIT_AUTOMAKE([1.12.2 gnu no-dist-gzip dist-xz])
 
 SNUGGLE_PROGS
 
