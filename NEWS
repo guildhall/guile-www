@@ -8,30 +8,30 @@ See the end for copying conditions.
 
     - import some procs explicitly (Guile 1.4.x)
 
-	Guile 1.4.x does not implicitly provide, e.g., SRFI 13.
+      Guile 1.4.x does not implicitly provide, e.g., SRFI 13.
 
     - use appropriate u8 i/o procs
 
-	The "compiler" (har har) build-aux/guile-baux/mm, in cahoots w/
-	the configure script, now tries to DTRT for various versions of
-	Guile.  Precisely:
+      The "compiler" (har har) build-aux/guile-baux/mm, in cahoots w/
+      the configure script, now tries to DTRT for various versions of
+      Guile.  Precisely:
 
-	1.4.x -- custom procs based on ‘read-char’ / ‘display’
-	1.8   -- uniform-vector-{read!,write} (the "normal" case)
-	2.x   -- custom procs based on those in ‘(ice-9 binary-ports)’
+      1.4.x -- custom procs based on ‘read-char’ / ‘display’
+      1.8   -- uniform-vector-{read!,write} (the "normal" case)
+      2.x   -- custom procs based on those in ‘(ice-9 binary-ports)’
 
-	With this change, "make check" under Guile 2.0.6 no longer
-	displays any deprecation warnings.  Any that you might encounter
-	(for any Guile) is now considered a bug; please report it.
+      With this change, "make check" under Guile 2.0.6 no longer
+      displays any deprecation warnings.  Any that you might encounter
+      (for any Guile) is now considered a bug; please report it.
 
     - avoid ‘\n’ in sed ‘s’ RHS (FreeBSD)
 
-	This was a problem in the "make check" prep (test harness).
+      This was a problem in the "make check" prep (test harness).
 
     - less "values outside ‘call-with-values’ context"
 
-	Another case was found, but this was internal.  Perhaps others
-	lurk -- why doesn't Someone just do a formal audit already?!
+      Another case was found, but this was internal.  Perhaps others
+      lurk -- why doesn't Someone just do a formal audit already?!
 
   - bootstrap tools upgrade
     - GNU Automake 1.12.5
@@ -42,43 +42,43 @@ See the end for copying conditions.
 
   - support for "make installcheck"
 
-	This does "make check" at its core, so the same env vars apply.
-	Obviously, you should do "make install" first for sane results.
+    This does "make check" at its core, so the same env vars apply.
+    Obviously, you should do "make install" first for sane results.
 
   - ‘receive-response’ spec takes thunk for ‘custom’ handling
 
-	This means that instead of using:
+    This means that instead of using:
 
-	(list 'custom (values P1 P2 P3 P4))
+    (list 'custom (values P1 P2 P3 P4))
 
-	to construct a ‘receive-response’ spec, you can use:
+    to construct a ‘receive-response’ spec, you can use:
 
-	(list 'custom (lambda () (values P1 P2 P3 P4)))
+    (list 'custom (lambda () (values P1 P2 P3 P4)))
 
-	In fact, this is now the preferred way, as support for using
-	‘values’ directly is now deemed a misfeature and marked for
-	eventual removal (see below).
+    In fact, this is now the preferred way, as support for using
+    ‘values’ directly is now deemed a misfeature and marked for
+    eventual removal (see below).
 
   - tested against Guile 2.0.6
 
-	There are some deprecation warnings, however.
+    There are some deprecation warnings, however.
 
   - MARKED FOR REMOVAL
 
     - 2013-05-15 support for values in ‘receive-response’ spec
 
-	Out of an explicit ‘call-with-values’ context, Guile 2.x will
-	silently discard all values but the first if the continuation
-	expects one value only (the common case).
+      Out of an explicit ‘call-with-values’ context, Guile 2.x will
+      silently discard all values but the first if the continuation
+      expects one value only (the common case).
 
-	(cons 0 (values 1 2)) => (0 . 1)
+      (cons 0 (values 1 2)) => (0 . 1)
 
-	Thus, the ‘receive-response’ spec constructed by:
+      Thus, the ‘receive-response’ spec constructed by:
 
-	(list 'custom (values P1 P2 P3 P4))
+      (list 'custom (values P1 P2 P3 P4))
 
-	fails to preserve P2, P3, P4 (w/ Guile 2.x).  See above for
-	thunk support, the future-proof way to specify ‘custom’ procs.
+      fails to preserve P2, P3, P4 (w/ Guile 2.x).  See above for
+      thunk support, the future-proof way to specify ‘custom’ procs.
 
   - bootstrap tools upgrade
     - GNU Autoconf 2.69
@@ -91,73 +91,73 @@ See the end for copying conditions.
   - bug fix: unbotch ‘upath->filename-proc’
   - bug fix: unbotch ‘log-http-response-proc’
 
-	In Guile-WWW 2.33 (2012-02-29), these procs were changed to use
-	(ice-9 optargs), but the change was botched.
+    In Guile-WWW 2.33 (2012-02-29), these procs were changed to use
+    (ice-9 optargs), but the change was botched.
 
   - bug fix: ‘(www http) http:post-form’ reserves ‘#\&’ and ‘#\=’
 
-	That is, in the absense of upload specs, the urlencoding for the
-	key names and values now also includes ampersand and equal sign,
-	as those used to delimit pairs and separate key and value within
-	a pair, respectively.
+    That is, in the absense of upload specs, the urlencoding for the
+    key names and values now also includes ampersand and equal sign,
+    as those used to delimit pairs and separate key and value within
+    a pair, respectively.
 
   - bug fix: ‘url-coding:encode’ outputs two hex digits for 0-15
 
-	Previously, octets 0 through 15 were output as "%0" through
-	"%f", respectively.  Now, they are "%00" through "%0f".
+    Previously, octets 0 through 15 were output as "%0" through
+    "%f", respectively.  Now, they are "%00" through "%0f".
 
   - portability fix: big dishing loop handles #f ‘sockaddr:path’
 
-	For Unix domain sockets, some Guile versions have ‘sockaddr:path’
-	sometimes return the empty string, others ‘#f’.
+    For Unix domain sockets, some Guile versions have ‘sockaddr:path’
+    sometimes return the empty string, others ‘#f’.
 
   - ‘(www url) url:parse’ can handle IPv6 addresses
 
-	Handling doesn't imply validation, however.  For example:
-	(url:host (url:parse "http://fool@[::ffff:bogus.0.2.1]:42/foo"))
-	=> "[::ffff:bogus.0.2.1]"
+    Handling doesn't imply validation, however.  For example:
+    (url:host (url:parse "http://fool@[::ffff:bogus.0.2.1]:42/foo"))
+    => "[::ffff:bogus.0.2.1]"
 
   - ‘(... answer) hqf<-upath’ more efficient
 
-	The char-set computation has been moved to load-time.
+    The char-set computation has been moved to load-time.
 
   - ‘(... cookies) simple-parse-cookies’ takes optional arg SEP
 
-	By default, tokens are ‘#\,’ (comma)-separated.  You can use SEP
-	to specify another character, e.g., ‘#\;’ (semicolon).
+    By default, tokens are ‘#\,’ (comma)-separated.  You can use SEP
+    to specify another character, e.g., ‘#\;’ (semicolon).
 
   - new ‘(www cgi) cgi:init’ option: cookies-split-on-semicolon
 
-	If the server provides the CGI script with a "Netscape style"
-	(i.e., old and deprecated) set of cookies, you can use this
-	option to split them.
+    If the server provides the CGI script with a "Netscape style"
+    (i.e., old and deprecated) set of cookies, you can use this
+    option to split them.
 
   - ‘(www cgi) cgi:getenv’ recognizes some more "idiomatic" names
 
-	The following keys now are recognized by ‘cgi:getenv’ (that is,
-	they no longer signal "unrecognized key" error): ‘server-name’,
-	‘server-software’, ‘server-protocol’, ‘auth-type’, ‘http-accept’.
-	Also, the manual now marks those keys that either are aliases,
-	or return parts of the associated value, of these idiomatic names.
+    The following keys now are recognized by ‘cgi:getenv’ (that is,
+    they no longer signal "unrecognized key" error): ‘server-name’,
+    ‘server-software’, ‘server-protocol’, ‘auth-type’, ‘http-accept’.
+    Also, the manual now marks those keys that either are aliases,
+    or return parts of the associated value, of these idiomatic names.
 
   - new (... parse-request) proc: receive-request
 
-	This uses the same underlying machinery as ‘receive-response’
-	from (www http), and thus sports the same features.
+    This uses the same underlying machinery as ‘receive-response’
+    from (www http), and thus sports the same features.
 
-	Additionally, there is a new ‘request’ type with five accessor
-	procs: request-{method,upath,protocol-version,headers,body} and
-	the new predicate ‘request?’.
+    Additionally, there is a new ‘request’ type with five accessor
+    procs: request-{method,upath,protocol-version,headers,body} and
+    the new predicate ‘request?’.
 
   - new (... log) proc: string<-sockaddr
 
-	This formats AF_UNIX or AF_INET addresses (including port).
+    This formats AF_UNIX or AF_INET addresses (including port).
 
   - new (... answer) proc: compose-response
 
-	This is a stripped down variant of ‘mouthpiece’.  It uses the
-	same underlying machinery as ‘send-request’ from (www http) and
-	thus sports the same features.
+    This is a stripped down variant of ‘mouthpiece’.  It uses the
+    same underlying machinery as ‘send-request’ from (www http) and
+    thus sports the same features.
 
   - MARKED FOR REMOVAL
 
@@ -179,9 +179,9 @@ See the end for copying conditions.
 
   - test suite expanded
 
-	Previously, there was just one test.  Now, there are several,
-	and they are in directory v/ (for "validation", "verification",
-	"vouchsafed", and so on).
+    Previously, there was just one test.  Now, there are several,
+    and they are in directory v/ (for "validation", "verification",
+    "vouchsafed", and so on).
 
   - doc license upgraded to GNU FDL 1.3
 
@@ -192,94 +192,94 @@ See the end for copying conditions.
 
   - distribution now .tar.xz
 
-	If you have GNU tar, you can use "tar xf" and it will DTRT.
-	If not, you can use "xz -dc TARBALL | tar xf -" to unpack.
+    If you have GNU tar, you can use "tar xf" and it will DTRT.
+    If not, you can use "xz -dc TARBALL | tar xf -" to unpack.
 
   - configure no longer checks for some widely-available modules
 
-	The modules ‘(ice-9 and-let-star)’, ‘(ice-9 rdelim)’ and
-	‘(ice-9 regex)’ have been widely-available since Guile 1.4.x.
+    The modules ‘(ice-9 and-let-star)’, ‘(ice-9 rdelim)’ and
+    ‘(ice-9 regex)’ have been widely-available since Guile 1.4.x.
 
   - configure uses SNUGGLE for cross-Guile portability
 
-	SNUGGLE is Free Software: <http://www.gnuvola.org/software/>.
-	It provides ‘build-aux/snuggle.m4’, which is more amicable than
-	the various ‘guile.m4’ in the wild.
+    SNUGGLE is Free Software: <http://www.gnuvola.org/software/>.
+    It provides ‘build-aux/snuggle.m4’, which is more amicable than
+    the various ‘guile.m4’ in the wild.
 
   - dropped ‘(www server-utils answer) string<-header-components’
 
-	This was pre-announced below in Guile-WWW 2.28 (2010-06-22).
+    This was pre-announced below in Guile-WWW 2.28 (2010-06-22).
 
   - changes to (www http)
 
     - bug fix: ‘http:request’ sends message body as-is
 
-	This procedure used to erroneously send ‘CRLF’ after each string
-	specified in BODY.  Now, it sends BODY only.
+      This procedure used to erroneously send ‘CRLF’ after each string
+      specified in BODY.  Now, it sends BODY only.
 
     - ‘http:status-ok?’ also accepts numeric arg
 
-	E.g., ‘(http:status-ok? 200)’ and ‘(http:status-ok? "200")’
-	both return ‘#t’.
+      E.g., ‘(http:status-ok? 200)’ and ‘(http:status-ok? "200")’
+      both return ‘#t’.
 
     - ‘http:request’ also accepts a symbolic method
 
-	Of course, a string is still acceptable.  Additionally, it is
-	now an error if ‘method’ is neither string nor symbol.
+      Of course, a string is still acceptable.  Additionally, it is
+      now an error if ‘method’ is neither string nor symbol.
 
     - new procs: ‘send-request’, ‘receive-response’
 
-	These give (www http) a more asynchronous feel; it is now
-	possible to implement pipelining, connection re-use, etc.
-	Support for "chunked" transfer encoding and other HTTP 1.1 bits
-	is built-in, although you can explicitly downgrade to 1.0 if you
-	wish.
+      These give (www http) a more asynchronous feel; it is now
+      possible to implement pipelining, connection re-use, etc.
+      Support for "chunked" transfer encoding and other HTTP 1.1 bits
+      is built-in, although you can explicitly downgrade to 1.0 if you
+      wish.
 
-	Other features: (optional) caller-directed i/o to reduce data
-	motion; support for ‘u8vector’ body (see example in the docs);
-	support for custom body type; caller-specifiable header-name
-	normalization; procedure names w/o "http:" prefix :-D.
+      Other features: (optional) caller-directed i/o to reduce data
+      motion; support for ‘u8vector’ body (see example in the docs);
+      support for custom body type; caller-specifiable header-name
+      normalization; procedure names w/o "http:" prefix :-D.
 
     - message field types now documented
 
-	The message object returned by ‘receive-response’ has a numeric
-	status-code and header names normalized by the caller.
+      The message object returned by ‘receive-response’ has a numeric
+      status-code and header names normalized by the caller.
 
-	In contrast, for backward compatability, the message object
-	returned by ‘http:request’ has a string status-code and
-	lower-case header names.
+      In contrast, for backward compatability, the message object
+      returned by ‘http:request’ has a string status-code and
+      lower-case header names.
 
-	(Header names are symbolic in any case.)
+      (Header names are symbolic in any case.)
 
     - new fluid: protocol-version
 
-	This affects how ‘http:request’ calls ‘send-request’ internally.
-	It also impacts ‘http:get’, ‘http:head’, and ‘http:post-form’,
-	which call ‘http:request’.
+      This affects how ‘http:request’ calls ‘send-request’ internally.
+      It also impacts ‘http:get’, ‘http:head’, and ‘http:post-form’,
+      which call ‘http:request’.
 
-	The default value is ‘(1 . 0)’, i.e., HTTP 1.0.  The idea is to
-	support backward compatability out of the box, but allow users
-	to experimentally do:
+      The default value is ‘(1 . 0)’, i.e., HTTP 1.0.  The idea is to
+      support backward compatability out of the box, but allow users
+      to experimentally do:
 
-	  (set-fluid! protocol-version '(1 . 1))
+        (set-fluid! protocol-version '(1 . 1))
 
-	without having to modify their current code.  (New code
-	should use ‘send-request’ and ‘receive-response’ directly.)
-	This is a transitional feature of Guile-WWW 2.x; 3.x will
-	drop ‘http:request’ (et al) along with the need for this
-	fluid, entirely.
+      without having to modify their current code.  (New code
+      should use ‘send-request’ and ‘receive-response’ directly.)
+      This is a transitional feature of Guile-WWW 2.x; 3.x will
+      drop ‘http:request’ (et al) along with the need for this
+      fluid, entirely.
 
   - (www cgi) recognizes ‘application/x-www-form-urlencoded’ better
 
-	Before, Content-Type recognition was over-constrained, failing
-	to handle parameters (usually of the form "; charset=...").
-	Things are now more relaxed.
+    Before, Content-Type recognition was over-constrained, failing
+    to handle parameters (usually of the form "; charset=...").
+    Things are now more relaxed.
 
   - documentation now explicitly UTF-8
 
-	This has no immediate impact, but if you regenerate the .info,
-	it may be possible that the makeinfo you use will generate nicer
-	quotes, e.g., ‘foo’ instead of `foo'.  Time will tell.
+    This has no immediate impact, but if you regenerate the .info,
+    it may be possible that the makeinfo you use will generate nicer
+    quotes, e.g., ‘foo’ instead of `foo'.  Time will tell.
 
   - maintenance: Autoconf 2.68, Automake 1.11.3, Guile-BAUX 20111227
 
