@@ -1,5 +1,13 @@
 2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop module (www main).
+
+	* doc/guile-www.texh (Top): Remove "main" from menu.
+	(main): Delete node/chapter.
+	* build-aux/common.mk (top_leaves): Remove main.
+
+2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop examples/wwwcat.
 
 	* examples/wwwcat: Delete file.

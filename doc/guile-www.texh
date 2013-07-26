@@ -67,7 +67,6 @@ Basic -- (www *)
 * http::                Navigate HTTP connections.
 * url::                 Parse URLs, including decoding.
 * cgi::                 Write CGI scripts painlessly.
-* main::                Fetch world-wide-web resources.
 * url-coding::          URL decode and encode, only.
 * utcsec::              Seconds after epoch, UTC.
 
@@ -274,25 +273,6 @@ different and intermingled names.  For this, you can use @code{cgi:nv-pairs}
 to access the uncollated (albeit ordered) form data.
 
 @tsin i cgi:nv-pairs
-
-@c ---------------------------------------------------------------------------
-@node         main
-@chapter (www main)
-
-@strong{NB: This module will NO LONGER BE AVAILABLE after 2012-12-31.}
-Using @code{send-request} and @code{receive-reply} directly is more
-flexible and featureful (@pxref{http}).
-
-The @code{(www main)} module provides a generic interface useful for
-retrieving data named by any URL.  The URL scheme @code{http} is pre-registered.
-
-@tsin i www:set-protocol-handler!
-@tsin i www:get
-
-@noindent
-There is also the convenience proc @code{www:http-head-get}.
-
-@tsin i www:http-head-get
 
 @c ---------------------------------------------------------------------------
 @node         url-coding

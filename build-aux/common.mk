@@ -32,7 +32,6 @@ top_leaves =		\
  crlf			\
  cgi			\
  http			\
- main			\
  post			\
  url			\
  url-coding		\

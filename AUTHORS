@@ -1,7 +1,6 @@
 Tim Pierce wrote:
 	source/cgi.scm
 	source/http.scm
-	source/main.scm
 	source/url-coding.scm
 	source/url.scm
 
