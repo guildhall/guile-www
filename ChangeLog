@@ -1,5 +1,11 @@
 2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[boot] Specify serial tests.
+
+	* configure.ac (AM_INIT_AUTOMAKE): ...here.
+
+2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[boot] Use Guile-BAUX for snuggle.m4.
 
 	* autogen.sh: Use guile-baux-tool(1), not snuggle(1).
