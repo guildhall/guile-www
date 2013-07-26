@@ -1,3 +1,9 @@
+2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[boot] Use Guile-BAUX for snuggle.m4.
+
+	* autogen.sh: Use guile-baux-tool(1), not snuggle(1).
+
 2013-03-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[boot] Bump Automake min vers to 1.12.2.
