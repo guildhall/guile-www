@@ -30,7 +30,6 @@ EXTRA_DIST = \
  build-aux/snuggle.m4 \
  examples/README \
  examples/cookie.cgi \
- examples/wwwcat \
  examples/you-are-here \
  contrib
 

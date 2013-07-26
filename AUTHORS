@@ -1,5 +1,4 @@
 Tim Pierce wrote:
-	examples/wwwcat
 	source/cgi.scm
 	source/http.scm
 	source/main.scm

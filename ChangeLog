@@ -1,5 +1,12 @@
 2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop examples/wwwcat.
+
+	* examples/wwwcat: Delete file.
+	* Makefile.am (EXTRA_DIST): Remove examples/wwwcat.
+
+2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[boot] Specify serial tests.
 
 	* configure.ac (AM_INIT_AUTOMAKE): ...here.
