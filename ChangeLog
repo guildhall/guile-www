@@ -1,5 +1,15 @@
 2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc slog] Add blank lines around @tsin directives.
+
+	Apparently, makeinfo 5.x doesn't automagically add blank
+	lines around @deffn et al, like makeinfo 4.13 used to do.
+	<http://lists.gnu.org/archive/html/bug-texinfo/2013-02/msg00129.html>
+
+	* doc/guile-www.texh: ...here, throughout.
+
+2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[url] Make ‘url:address’ and ‘url:unknown’ more strict.
 
 	* doc/guile-www.texh (url): Remove imminent-removal blurb.

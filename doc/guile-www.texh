@@ -107,8 +107,11 @@ operation, low-level HTTP message object access, and common messages.
 @section High-Level HTTP Operation
 
 @tsin i http:connect
+
 @tsin i http:open
+
 @tsin i send-request
+
 @tsin i receive-response
 
 Here is an example that uses @code{receive-response} argument
@@ -162,10 +165,15 @@ pending response, you can instead use @code{(hget "Content-Type")}
 @section Low-Level HTTP Message Object Access
 
 @tsin i http:message-version
+
 @tsin i http:message-status-code
+
 @tsin i http:message-status-text
+
 @tsin i http:message-status-ok?
+
 @tsin i http:status-ok?
+
 @tsin i http:message-body
 
 An HTTP message header is represented by a pair.  The @sc{car} is a
@@ -186,6 +194,7 @@ mixed-case.  Clients using this library should keep this in mind, since Guile
 symbols are case-sensitive.
 
 @tsin i http:message-headers
+
 @tsin i http:message-header
 
 @section Common Messages
@@ -197,6 +206,7 @@ after 2013-02-28.}  Using @code{send-request} and @code{receive-reply}
 directly is more flexible and featureful.
 
 @tsin i http:head
+
 @tsin i http:get
 
 @c ---------------------------------------------------------------------------
@@ -210,28 +220,39 @@ and character decoding/encoding.
 @section High-Level URL Object Conversion
 
 @tsin i url:parse
+
 @tsin i url:unparse
 
 @section Low-Level URL Object Construction
 
 @tsin i url:make
+
 @tsin i url:make-http
+
 @tsin i url:make-ftp
+
 @tsin i url:make-mailto
 
 @section Low-Level URL Object Access
 
 @tsin i url:scheme
+
 @tsin i url:user
+
 @tsin i url:host
+
 @tsin i url:port
+
 @tsin i url:path
+
 @tsin i url:address
+
 @tsin i url:unknown
 
 @section Character Decoding/Encoding
 
 @tsin i url:decode
+
 @tsin i url:encode
 
 @c ---------------------------------------------------------------------------
@@ -246,18 +267,27 @@ discovery, data transfer in, data transfer out.
 @section Initialization and Discovery
 
 @tsin i cgi:init
+
 @tsin i cgi:form-data?
+
 @tsin i cgi:names
+
 @tsin i cgi:cookie-names
 
 @section Data Transfer In
 
 @tsin i cgi:getenv
+
 @tsin i cgi:values
+
 @tsin i cgi:value
+
 @tsin i cgi:uploads
+
 @tsin i cgi:upload
+
 @tsin i cgi:cookies
+
 @tsin i cgi:cookie
 
 @section Uncollated Form Data
@@ -277,6 +307,7 @@ The @code{(www url-coding)} module provides two procedures for decoding
 and encoding URL strings for safe transmission according to RFC 1738.
 
 @tsin i url-coding:decode
+
 @tsin i url-coding:encode
 
 @c ---------------------------------------------------------------------------
@@ -288,10 +319,15 @@ The @code{(www utcsec)} module provides procedures to work with the
 epoch, in the GMT time zone (also known as UTC).
 
 @tsin i format-utcsec
+
 @tsin i rfc1123-date<-
+
 @tsin i <-rfc1123-date
+
 @tsin i <-mtime
+
 @tsin i <-ctime
+
 @tsin i rfc1123-now
 
 @c ---------------------------------------------------------------------------
@@ -302,7 +338,9 @@ The @code{(www server-utils big-dishing-loop)} module provides procedures
 that facilitate generation of a customized listener/dispatch proc.
 
 @tsin i named-socket
+
 @tsin i echo-upath
+
 @tsin i make-big-dishing-loop - no-kw-list
 
 The combination of @code{#:need-headers}, @code{#:need-input-port} and
@@ -338,15 +376,18 @@ input port.
 @tsin i receive-request
 
 @tsin i request
+
 @tsin i "request procs"
 
 @tsin i hqf<-upath
+
 @tsin i alist<-query
 
 @strong{NB: The following four procedures will NO LONGER BE AVAILABLE
 after 2013-02-28.}  Better to use @code{receive-request}.
 
 @tsin i read-first-line
+
 @tsin i read-headers
 
 @noindent
@@ -354,6 +395,7 @@ Sometimes you are interested in the body of the message but not the headers.
 In this case, you can use @code{skip-headers} to quickly position the port.
 
 @tsin i skip-headers
+
 @tsin i read-body
 
 @c ---------------------------------------------------------------------------
@@ -539,7 +581,9 @@ string lengths.
 @end example
 
 @tsin i access-forbidden?-proc
+
 @tsin i upath->filename-proc
+
 @tsin i filename->content-type
 
 @c ---------------------------------------------------------------------------
@@ -617,7 +661,9 @@ sent by the client.  Procedures that return trees are meant to be used with
 the @code{mouthpiece} command @code{#:add-header} (@pxref{answer}).
 
 @tsin i simple-parse-cookies
+
 @tsin i rfc2109-set-cookie-string
+
 @tsin i rfc2965-set-cookie2-tree
 
 @heading example
@@ -690,6 +736,7 @@ which is one reason why new code should use @code{compose-response}.)
 @xref{modlisp}, for another way to format this information.
 
 @tsin i compose-response
+
 @tsin i mouthpiece
 
 @heading example
@@ -734,11 +781,17 @@ once flattened, thus enabling internal optimizations.
 (The flat length of a string is its @code{string-length}.)
 
 @tsin i CRLF
+
 @tsin i flat-length
+
 @tsin i fs
+
 @tsin i walk-tree
+
 @tsin i tree-flat-length!
+
 @tsin i string<-tree
+
 @tsin i string<-headers
 
 @heading example
@@ -785,6 +838,7 @@ writing log information to an output port.  Each generator is conventionally
 named @code{log-SOMETHING-proc}.
 
 @tsin i string<-sockaddr
+
 @tsin i log-http-response-proc
 
 @c ---------------------------------------------------------------------------
@@ -818,6 +872,7 @@ with @var{name} being @samp{Status}
 and @var{value} being @samp{@var{nnn} @var{msg}}.
 
 @tsin i modlisp-hgrok
+
 @tsin i modlisp-ish
 
 Although these are separate objects, you should probably use or not use them
@@ -908,9 +963,13 @@ If an entry does not validate, the operation throws an error,
 with key @code{invalid-extension} or @code{invalid-mime-type}.
 
 @tsin i reset-mime-types!
+
 @tsin i put-mime-types-from-file!
+
 @tsin i put-mime-types!
+
 @tsin i mime-types<-extension
+
 @tsin i select-extensions
 
 @heading why @code{select-extensions}?
