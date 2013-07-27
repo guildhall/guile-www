@@ -1,3 +1,9 @@
+2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[url] Make ‘url:address’ and ‘url:unknown’ more strict.
+
+	* doc/guile-www.texh (url): Remove imminent-removal blurb.
+
 2013-07-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Drop module (www main).

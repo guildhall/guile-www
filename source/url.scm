@@ -51,13 +51,21 @@
 ;;
 (define (url:scheme url)  (vector-ref url 0))
 
-;; Extract and return the "address" portion of the @var{url} object.
+;; Extract and return the "address" portion of the @var{url} object,
+;; which must have scheme @code{mailto}.
 ;;
-(define (url:address url) (vector-ref url 1))
+(define (url:address url)
+  (or (eq? 'mailto (url:scheme url))
+      (error "invalid url scheme:" (url:scheme url)))
+  (vector-ref url 1))
 
-;; Extract and return the "unknown" portion of the @var{url} object.
+;; Extract and return the "unknown" portion of the @var{url} object,
+;; which must have scheme @code{unknown}.
 ;;
-(define (url:unknown url) (vector-ref url 1))
+(define (url:unknown url)
+  (or (eq? 'unknown (url:scheme url))
+      (error "invalid url scheme:" (url:scheme url)))
+  (vector-ref url 1))
 
 ;; Extract and return the "user" portion of the @var{url} object.
 ;;
