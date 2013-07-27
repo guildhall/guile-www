@@ -613,12 +613,13 @@ manager with more-or-less constant bindings.
 @end example
 
 @noindent
-Later, we add connection-specific bindings.  We use @code{read-first-line}
+Later, we add connection-specific bindings.  We use @code{receive-request}
 from the @ref{parse-request} module.
 
 @example
 (define PORT ...)
-(define UPATH (list-ref (read-first-line PORT) 1))
+(define REQUEST (receive-request PORT))
+(define UPATH (request-upath REQUEST))
 (define QMARK (string-index UPATH #\?))
 (define CGI (substring UPATH 0 QMARK))
 

@@ -1,5 +1,11 @@
 2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[doc] Use ‘receive-request’ in example.
+
+	* doc/guile-www.texh (cgi-prep): ...here.
+
+2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[doc slog] Add blank lines around @tsin directives.
 
 	Apparently, makeinfo 5.x doesn't automagically add blank
