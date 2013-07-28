@@ -1,5 +1,9 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.37
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop support for values in ‘receive-response’ spec.
 
 	* http.scm (receive-response): Update doc comment.

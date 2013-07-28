@@ -1,5 +1,11 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.37
+
+	* configure.ac (AC_INIT): Bump version to "2.37" for release.
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop two ‘(www http)’ procs.
 
 	* doc/guile-www.texh (http): Remove @tsin

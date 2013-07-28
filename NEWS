@@ -2,6 +2,42 @@ NEWS for Guile-WWW
 See the end for copying conditions.
 
 
+- 2.37 | 2013-07-28
+
+  - dropped
+
+    - example program wwwcat
+
+      This trivial program is not so interesting.
+
+    - module ‘(www main)’
+    - proc ‘(www server-utils parse-request) read-first-line’
+    - proc ‘(www server-utils parse-request) read-headers’
+    - proc ‘(www server-utils parse-request) skip-headers’
+    - proc ‘(www server-utils parse-request) read-body’
+    - proc ‘(www http) http:head’
+    - proc ‘(www http) http:get’
+
+      These were announced in Guile-WWW 2.34 (2012-03-29) NEWS.
+
+    - support for values in ‘receive-response’ spec
+
+      This was announced in Guile-WWW 2.36 (2012-11-22) NEWS.
+
+  - ‘(www url) url:address’ more strict
+  - ‘(www url) url:unknown’ more strict
+
+    Contrary to the Guile-WWW 2.34 (2012-03-29) NEWS blurb, these
+    two procs are not being deleted.  Instead, they persist and now
+    check their arg for the proper scheme (‘mailto’ and ‘unknown’,
+    respectively) to better support the (thin) abstraction they
+    provide over the underlying data structure.
+
+  - bootstrap tools upgraded
+    - GNU Automake 1.13.4
+    - Guile-BAUX 20130705.0751.4969fb4
+
+
 - 2.36 | 2012-11-22
 
   - portability fixes
