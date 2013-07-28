@@ -1,3 +1,11 @@
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Drop some ‘(... parse-request)’ procs.
+
+	* doc/guile-www.texh (parse-request): Remove @tsin
+	and related blurbs for ‘read-first-line’, ‘read-headers’,
+	‘skip-headers’, ‘read-body’.
+
 2013-07-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Use ‘receive-request’ in example.

@@ -28,13 +28,8 @@
             request-headers
             request-body
             receive-request
-            read-first-line
-            hqf<-upath alist<-query
-            read-headers skip-headers read-body)
-  #:use-module ((www crlf) #:select (read-through-CRLF
-                                     read-three-part-line
-                                     (read-headers . crlf:read-headers)
-                                     read-characters
+            hqf<-upath alist<-query)
+  #:use-module ((www crlf) #:select (read-three-part-line
                                      read-headers/get-body))
   #:use-module ((www url-coding) #:select (url-coding:decode))
   #:use-module ((srfi srfi-2) #:select (and-let*))
@@ -42,7 +37,6 @@
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (substring/shared
                                          string-index
-                                         string-upcase
                                          string-tokenize))
   #:use-module ((srfi srfi-14) #:select (char-set
                                          char-set-complement))
@@ -142,24 +136,6 @@
           (lambda ignored
             #f)))
 
-;; Parse the first line of the HTTP message from input @var{port} and
-;; return a list of the method, URL path and HTTP version indicator, or
-;; @code{#f} if the line ends prematurely or is otherwise malformed.  A
-;; successful parse consumes the trailing @samp{CRLF} of the line as
-;; well.  The method is a symbol with its constituent characters
-;; upcased, such as @code{GET}; the other elements are strings.  If the
-;; first line is missing the HTTP version, @code{parse-first-line}
-;; returns the default "HTTP/1.0".
-;;
-(define (read-first-line port)
-  (false-if-eof
-   (let-values (((method url vers) (read-three-part-line port)))
-     (list (string->symbol (string-upcase method))
-           url
-           (if (string-null? vers)
-               "HTTP/1.0"
-               vers)))))
-
 ;; Parse string @var{upath} and return three values representing
 ;; its hierarchy, query and fragment components.
 ;; If a component is missing, its value is @code{#f}.
@@ -213,38 +189,5 @@
            (cons (if mid (decode 0 mid) (decode 0))
                  (and mid (decode (1+ mid))))))
        (amp-split query-string)))
-
-;; Parse the headers of the HTTP message from input @var{port} and
-;; return a list of key/value pairs, or @code{#f} if the message ends
-;; prematurely or is otherwise malformed.  Both keys and values are
-;; strings.  Values are trimmed of leading and trailing whitespace and
-;; may be empty.  Values that span more than one line have their
-;; "continuation whitespace" reduced to a single space.  A successful
-;; parse consumes the trailing @samp{CRLF} of the header block as well.
-;;
-(define (read-headers port)
-  (catch 'parse-error (lambda ()
-                        (crlf:read-headers port identity))
-         (lambda ignored
-           #f)))
-
-;; Scan without parsing the headers of the HTTP message from input
-;; @var{port}, and return the empty list, or @code{#f} if the message
-;; ends prematurely.  A successful scan consumes the trailing
-;; @samp{CRLF} of the header block as well.
-;;
-(define (skip-headers port)
-  (false-if-eof
-   (let loop ()
-     (let ((line (read-through-CRLF port)))
-       (if (string-null? line)
-           '()
-           (loop))))))
-
-;; Return a new string of @var{len} bytes with contents
-;; read from input @var{port}.
-;;
-(define (read-body len port)
-  (read-characters len port))
 
 ;;; (www server-utils parse-request) ends here

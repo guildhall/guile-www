@@ -383,21 +383,6 @@ input port.
 
 @tsin i alist<-query
 
-@strong{NB: The following four procedures will NO LONGER BE AVAILABLE
-after 2013-02-28.}  Better to use @code{receive-request}.
-
-@tsin i read-first-line
-
-@tsin i read-headers
-
-@noindent
-Sometimes you are interested in the body of the message but not the headers.
-In this case, you can use @code{skip-headers} to quickly position the port.
-
-@tsin i skip-headers
-
-@tsin i read-body
-
 @c ---------------------------------------------------------------------------
 @node                      form-2-form
 @chapter (www server-utils form-2-form)

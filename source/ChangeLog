@@ -1,5 +1,15 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop some ‘(... parse-request)’ procs.
+
+	* server-utils/parse-request.scm: From ‘(www crlf)’, don't
+	import ‘read-through-CRLF’, ‘read-headers’, ‘read-characters’;
+	don't import SRFI 13 ‘string-upcase’.
+	(read-first-line, read-headers, skip-headers)
+	(read-body): Delete procs.
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Avoid ‘(... parse-request) read-body’.
 
 	* cgi.scm: Don't import ‘(... parse-request) read-body’;
