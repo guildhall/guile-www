@@ -1,6 +1,6 @@
 ;;; (www crlf)
 
-;; Copyright (C) 2012 Thien-Thi Nguyen
+;; Copyright (C) 2012, 2013 Thien-Thi Nguyen
 ;;
 ;; This file is part of Guile-WWW.
 ;;

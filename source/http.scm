@@ -1,6 +1,6 @@
 ;;; (www http) --- HTTP client library
 
-;; Copyright (C) 2008, 2009, 2011, 2012 Thien-Thi Nguyen
+;; Copyright (C) 2008, 2009, 2011, 2012, 2013 Thien-Thi Nguyen
 ;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005,
 ;;   2006, 2007 Free Software Foundation, Inc.
 ;;

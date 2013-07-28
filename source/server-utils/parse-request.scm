@@ -1,6 +1,6 @@
 ;;; (www server-utils parse-request) --- Read HTTP first line and headers
 
-;; Copyright (C) 2009, 2012 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2012, 2013 Thien-Thi Nguyen
 ;; Copyright (C) 2004 Free Software Foundation, Inc.
 ;;
 ;; This file is part of Guile-WWW.
