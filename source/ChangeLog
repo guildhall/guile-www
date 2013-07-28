@@ -1,5 +1,13 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop support for values in ‘receive-response’ spec.
+
+	* http.scm (receive-response): Update doc comment.
+	* crlf.scm (unravel): Delete proc.
+	(get-body-proc motion): Call ‘custom’ thunk directly.
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop two ‘(www http)’ procs.
 
 	* http.scm (http:head, http:get): Delete procs.

@@ -211,11 +211,6 @@
       (lambda (string)
         (string->symbol (s2s string)))))
 
-(define (unravel x)                     ; ZONKME 2013-05-15
-  (if (thunk? x)
-      (x)
-      x))
-
 (define u8-read!-all uniform-vector-read!)
 (define u8-write-all uniform-vector-write)
 
@@ -251,7 +246,7 @@
   (define (motion options)
     (cond ((memq 'custom options)
            => (lambda (ls)
-                (let-values (((mkx r! cat-r subseq) (unravel (cadr ls))))
+                (let-values (((mkx r! cat-r subseq) ((cadr ls))))
                   (values mkx
                           (lambda (len)
                             (let ((x (mkx len)))
