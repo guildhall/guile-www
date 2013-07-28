@@ -1,5 +1,12 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop two ‘(www http)’ procs.
+
+	* doc/guile-www.texh (http): Remove @tsin
+	and related blurb for ‘http:head’, ‘http:get’.
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop some ‘(... parse-request)’ procs.
 
 	* doc/guile-www.texh (parse-request): Remove @tsin

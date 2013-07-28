@@ -33,8 +33,6 @@
             http:message-body
             http:message-headers
             http:message-header
-            http:head
-            http:get
             http:post-form
             http:connect
             http:open
@@ -65,9 +63,7 @@
 ;;
 ;; @example
 ;; http:request
-;; http:head        ; via http:request
-;; http:get         ; likewise
-;; http:post-form   ; likewise
+;; http:post-form   ; via http:request
 ;; @end example
 ;;
 ;;-category: fluid
@@ -145,25 +141,6 @@
   (vector-set! msg 1 (fs "~A" (vector-ref msg 1))))
 
 
-
-;;; HTTP methods.
-
-;; Common methods: HEAD, GET, POST etc.
-
-;; Submit an http request using the @code{HEAD} method on the @var{url}.
-;; The @code{Host} header is automatically included.
-;;
-(define (http:head url)
-  (http:request 'HEAD url))
-
-;; Submit an http request using the @code{GET} method on the @var{url}.
-;; The @code{Host} header is automatically included.
-;;
-(define (http:get url)
-  ;; FIXME: if http:open returns an old connection that has been
-  ;; closed remotely, this will fail.
-  (http:request 'GET url))
-
 ;; Submit an http request using the @code{POST} method on the @var{url}.
 ;; @var{extra-headers} is a list of extra headers, each a string of form
 ;; "@var{name}: @var{value} @dots{}".

@@ -201,14 +201,6 @@ symbols are case-sensitive.
 
 @tsin i http:post-form
 
-@strong{NB: The following two procedures will NO LONGER BE AVAILABLE
-after 2013-02-28.}  Using @code{send-request} and @code{receive-reply}
-directly is more flexible and featureful.
-
-@tsin i http:head
-
-@tsin i http:get
-
 @c ---------------------------------------------------------------------------
 @node         url
 @chapter (www url)

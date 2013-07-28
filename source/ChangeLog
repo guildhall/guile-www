@@ -1,5 +1,11 @@
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Drop two ‘(www http)’ procs.
+
+	* http.scm (http:head, http:get): Delete procs.
+
+2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Drop some ‘(... parse-request)’ procs.
 
 	* server-utils/parse-request.scm: From ‘(www crlf)’, don't
