@@ -33,10 +33,10 @@
             cgi:uploads cgi:upload
             cgi:cookie-names
             cgi:cookies cgi:cookie)
-  #:use-module ((www server-utils parse-request) #:select (alist<-query
-                                                           read-body))
+  #:use-module ((www server-utils parse-request) #:select (alist<-query))
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
+  #:autoload (ice-9 rw) (read-string!/partial)
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (string-join
                                          substring/shared
@@ -48,6 +48,17 @@
                                          char-set-adjoin
                                          char-set-complement
                                          char-set:whitespace)))
+
+;; NB: This is a copy of ‘(www crlf) read-characters’,
+;;     here to avoid (auto)loading that module.
+(define (read-body n port)
+  (let ((s (make-string n)))
+    (let loop ((start 0))
+      (or (= start n)
+          (and=> (read-string!/partial s port start)
+                 (lambda (got)
+                   (loop (+ start got))))))
+    s))
 
 (define (collate alist)
   (let ((rv '()))
