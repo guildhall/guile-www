@@ -47,8 +47,8 @@
 ;; @samp{multipart/form-data}.)
 ;;
 ;; Each element of the alist has the form @code{(@var{name} . @var{value})},
-;; where @var{name} is a string and @var{value} is either a string or four
-;; values (extractable by @code{call-with-values}):
+;; where @var{name} is a string and @var{value} is either a string or
+;; a (four-element) list of:
 ;;
 ;; @table @var
 ;; @item filename
@@ -89,13 +89,13 @@
       (or (and (or (not filename)
                    (string-null? filename))
                (= bov eov))
-          (v! name (values filename type raw-headers
-                           (let ((raw raw-data))
-                             ;; access byte range
-                             (lambda (abr)
-                               (if (and raw abr)
-                                   (abr raw bov eov)
-                                   (set! raw #f))))))))
+          (v! name (list filename type raw-headers
+                         (let ((raw raw-data))
+                           ;; access byte range
+                           (lambda (abr)
+                             (if (and raw abr)
+                                 (abr raw bov eov)
+                                 (set! raw #f))))))))
 
     (let level ((bor 0) (eor (string-length raw-data))
                 (boundary (determine-boundary content-type-more))

@@ -1,3 +1,14 @@
+2013-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix bug: Don't use ‘values’ as a container.
+
+	Reported by Josep Portella Florit.
+
+	* server-utils/form-2-form.scm (parse-form u!):
+	Use ‘list’ instead of ‘values’.
+	* cgi.scm (make-ccc init! mogrify handle): New proc.
+	(make-ccc init! mogrify): Use ‘handle’.
+
 2013-07-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 2.37

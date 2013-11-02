@@ -176,12 +176,14 @@
                (set! P (alist<-query s)))
               ((string-prefix-ci? "multipart/form-data" type)
                (let ((alist (parse-form (substring/shared type 19) s)))
+
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))
                    (if (string? (cdr m))
                        (set! P (cons m P))
-                       (call-with-values (lambda () (cdr m))
-                         (lambda (filename type headers squeeze)
+                       (let ((four (cdr m)))
+
+                         (define (handle filename type headers squeeze)
                            (set! P (acons (car m) filename P))
                            (and pre-squeezed?
                                 (let ((value (squeeze substring)))
@@ -192,7 +194,10 @@
                                      (#:mime-type . ,type)
                                      (#:raw-mime-headers . ,headers)))
                                   (set-cdr! m value)))
-                           (set! U (cons m U))))))
+                           (set! U (cons m U)))
+
+                         (apply handle four))))
+
                  (for-each mogrify alist))
                (set! P (reverse! P))
                (set! U (reverse! U)))))
