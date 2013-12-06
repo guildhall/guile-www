@@ -175,7 +175,7 @@
         (cond ((string-prefix-ci? "application/x-www-form-urlencoded" type)
                (set! P (alist<-query s)))
               ((string-prefix-ci? "multipart/form-data" type)
-               (let ((alist (parse-form (substring/shared type 19) s)))
+               (let ((alist (parse-form (substring/shared type 19) len)))
 
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))

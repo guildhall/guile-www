@@ -1,5 +1,11 @@
 2013-12-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi int] Specify bytes-to-read RAW-DATA for ‘parse-form’.
+
+	* cgi.scm (make-ccc init!): ...here.
+
+2013-12-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make ‘parse-form’ handle bytes-to-read RAW-DATA.
 
 	* server-utils/form-2-form.scm: Import ‘(www crlf) read-characters’.
