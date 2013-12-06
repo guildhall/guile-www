@@ -30,6 +30,6 @@ exec_prefix="@exec_prefix@"
 GUILE_LIBSITE="@GUILE_LIBSITE@"
 guile="$guile -L ${GUILE_LIBSITE}"
 
-exec $guile -l common -s $1
+exec $guile -l $srcdir/common -s $1
 
 # v ends here
