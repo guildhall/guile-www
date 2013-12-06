@@ -22,6 +22,7 @@
 (define-module (www server-utils form-2-form)
   #:export (parse-form)
   #:use-module (ice-9 curried-definitions)
+  #:use-module ((www crlf) #:select (read-characters))
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (substring/shared
                                          string-prefix?
@@ -38,8 +39,10 @@
   (and-let* ((m (regexp-exec rx string)))
     (match:substring m 1)))
 
-;; Parse @var{raw-data} as raw form response data of enctype
+;; Parse @var{raw-data} (an integer) bytes from the current input port,
+;; as raw form response data of enctype
 ;; @samp{multipart/form-data} and return an alist.
+;; For backward compatibility, @var{raw-data} can also be a string.
 ;;
 ;; @var{content-type-more} is a string that should include the
 ;; @code{boundary="@dots{}"} information.  (This parameter name reflects the
@@ -75,7 +78,8 @@
 ;; part content-length is zero or unspecified.
 ;;
 (define (parse-form content-type-more raw-data)
-
+  (or (string? raw-data)
+      (set! raw-data (read-characters raw-data)))
   (let ((v '()))
 
     (define (determine-boundary s)
