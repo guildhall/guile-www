@@ -36,7 +36,7 @@
   #:use-module ((www server-utils parse-request) #:select (alist<-query))
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
-  #:autoload (ice-9 rw) (read-string!/partial)
+  #:autoload (www crlf) (read-characters)
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (string-join
                                          substring/shared
@@ -48,17 +48,6 @@
                                          char-set-adjoin
                                          char-set-complement
                                          char-set:whitespace)))
-
-;; NB: This is a copy of ‘(www crlf) read-characters’,
-;;     here to avoid (auto)loading that module.
-(define (read-body n port)
-  (let ((s (make-string n)))
-    (let loop ((start 0))
-      (or (= start n)
-          (and=> (read-string!/partial s port start)
-                 (lambda (got)
-                   (loop (+ start got))))))
-    s))
 
 (define (collate alist)
   (let ((rv '()))
@@ -168,12 +157,11 @@
       (set! pre-squeezed? (not (memq 'uploads-lazy opts)))
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
-                 (type (env-look 'content-type))
-                 (s (read-body len (current-input-port))))
+                 (type (env-look 'content-type)))
         ;; We check for prefix instead of equality because sometimes
         ;; the server appends other information (e.g., "; charset=UTF-8").
         (cond ((string-prefix-ci? "application/x-www-form-urlencoded" type)
-               (set! P (alist<-query s)))
+               (set! P (alist<-query (read-characters len (current-input-port)))))
               ((string-prefix-ci? "multipart/form-data" type)
                (let ((alist (parse-form (substring/shared type 19) len)))
 

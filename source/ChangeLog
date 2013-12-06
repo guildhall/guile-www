@@ -1,5 +1,13 @@
 2013-12-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[cgi int] Use ‘(www crlf) read-characters’ directly.
+
+	* cgi.scm: Don't autoload ‘(ice-9 rw)’;
+	instead, autoload ‘(www crlf)’ on trigger ‘read-characters’.
+	(make-ccc init!): Use ‘read-characters’ directly.
+
+2013-12-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[cgi int] Specify bytes-to-read RAW-DATA for ‘parse-form’.
 
 	* cgi.scm (make-ccc init!): ...here.
