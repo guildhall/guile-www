@@ -1,3 +1,11 @@
+2013-12-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[crlf] Default ‘read-characters’ port.
+
+	* crlf.scm (read-characters): Make 2nd arg PORT optional;
+	if unspecified, take the port to be the current input port.
+	* cgi.scm (make-ccc init!): Don't specify PORT to ‘read-characters’.
+
 2013-12-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi int] Use ‘(www crlf) read-characters’ directly.

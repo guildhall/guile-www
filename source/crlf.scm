@@ -192,10 +192,14 @@
                       (string-trim-both line char-set:whitespace (1+ colon))
                       acc))))))))
 
-;; Return a string made from reading @var{n} characters from @var{port}.
+;; Return a string made from reading @var{n} characters from @var{port},
+;; or current input port if @var{port} is unspecified.
 ;;
-(define (read-characters n port)
-  (let ((s (make-string n)))
+(define (read-characters n . port)
+  (let ((port (if (pair? port)
+                  (car port)
+                  (current-input-port)))
+        (s (make-string n)))
     (let loop ((start 0))
       (or (= start n)
           (and=> (read-string!/partial s port start)

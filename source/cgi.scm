@@ -161,7 +161,7 @@
         ;; We check for prefix instead of equality because sometimes
         ;; the server appends other information (e.g., "; charset=UTF-8").
         (cond ((string-prefix-ci? "application/x-www-form-urlencoded" type)
-               (set! P (alist<-query (read-characters len (current-input-port)))))
+               (set! P (alist<-query (read-characters len))))
               ((string-prefix-ci? "multipart/form-data" type)
                (let ((alist (parse-form (substring/shared type 19) len)))
 
