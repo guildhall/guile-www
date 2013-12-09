@@ -82,13 +82,14 @@
             s
             (string-concatenate-reverse acc s)))
 
+      (define (weird! new-s)
+        (set! s new-s)
+        (throw 'unexpected-eof (so-far)))
+
       (cond
        ;; weird
-       ((eof-object? s)
-        (set! s "")
-        (throw 'unexpected-eof (so-far)))
-       ((eof-object? c)
-        (throw 'unexpected-eof (so-far)))
+       ((eof-object? s) (weird! ""))
+       ((eof-object? c) (weird! s))
 
        ;; normal
        ((char=? #\newline c)

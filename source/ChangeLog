@@ -1,3 +1,10 @@
+2013-12-09  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add abstraction: weird!
+
+	* crlf.scm (read-through-CRLF weird!): New proc.
+	(read-through-CRLF): Use ‘weird!’.
+
 2013-12-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[crlf] Default ‘read-characters’ port.
