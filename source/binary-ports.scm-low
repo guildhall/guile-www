@@ -1,0 +1,76 @@
+;;; low (www binary-ports)
+
+;; Copyright (C) 2013 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+;;; Code:
+
+(define-module (www binary-ports)
+  #:export (get-bytevector-n!
+            put-bytevector)
+  #:use-module (ice-9 optargs-kw)
+  #:use-module ((srfi srfi-11) #:select (let-values))
+  #:use-module ((srfi srfi-4) #:select (u8vector-length
+                                        u8vector-set!
+                                        u8vector-ref)))
+
+(define (validate bv start count who)
+
+  (define (range-error pos val)
+    (scm-error 'out-of-range (procedure-name who)
+               "Argument ~S out of range: ~S"
+               (list pos val)
+               #f))
+
+  (let* ((len (u8vector-length bv))
+         (end (+ start count)))
+    (or (<= 0 start len) (range-error 3 start))
+    (or (<= 0 end   len) (range-error 4 count))
+    (values len end)))
+
+(define (get-bytevector-n! port bv start count)
+  (let-values (((len end) (validate bv start count
+                                    get-bytevector-n!)))
+    (let loop ((i start))
+      (if (= i end)
+          count
+          (let ((ch (read-char port)))
+            (cond ((eof-object? ch)
+                   (- i start))
+                  (else
+                   (u8vector-set! bv i (char->integer ch))
+                   (loop (1+ i)))))))))
+
+(define* (put-bytevector port bv #:optional
+                         (start 0)
+                         (count (- (u8vector-length bv)
+                                   start)))
+  (let-values (((len end) (validate bv start count
+                                    put-bytevector)))
+    (let ((s (make-string (- end start))))
+      (do ((i 0 (1+ i)))
+          ((= count i))
+        (string-set! s i (integer->char (u8vector-ref bv (+ start i)))))
+      (display s port))
+    count))
+
+;;; Local variables:
+;;; mode: scheme
+;;; End:
+;;; low (www binary-ports) ends here

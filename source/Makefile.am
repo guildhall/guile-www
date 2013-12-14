@@ -27,6 +27,12 @@ www_DATA = $(top_leaves)
 include $(top_srcdir)/build-aux/comp.mk
 
 EXTRA_DIST += ChangeLog-data ChangeLog-server-utils
+EXTRA_DIST += binary-ports.scm-low
+EXTRA_DIST += binary-ports.scm-mid
+
+if NEED_BINPORTS
+www_DATA += binary-ports
+endif
 
 update-site-module-catalog:
 if HAVE_MKPIMMC
@@ -40,5 +46,8 @@ install-data-hook:
 uninstall-hook:
 	rm -rf '$(DESTDIR)$(wwwdir)'
 	$(MAKE) $(AM_MAKEFLAGS) update-site-module-catalog
+
+dist-hook:
+	rm -f $(distdir)/binary-ports.scm
 
 ## Makefile.am ends here

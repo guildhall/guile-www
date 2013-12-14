@@ -39,7 +39,8 @@
             get-body-proc
             read-headers/get-body
             out!)
-  #:use-module (ice-9 binary-ports)
+  #:use-module ((ice-9 binary-ports) #:select (get-bytevector-n!
+                                               put-bytevector))
   #:use-module (ice-9 optargs)
   #:use-module ((ice-9 rw) #:select (read-string!/partial
                                      write-string/partial))
@@ -216,8 +217,11 @@
       (lambda (string)
         (string->symbol (s2s string)))))
 
-(define u8-read!-all uniform-vector-read!)
-(define u8-write-all uniform-vector-write)
+(define (u8-read!-all v port)
+  (get-bytevector-n! port v 0 (u8vector-length v)))
+
+(define (u8-write-all v port)
+  (put-bytevector port v))
 
 (define (get-body-proc sock hsym headers)
 

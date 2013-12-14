@@ -1,3 +1,17 @@
+2013-12-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Add binary-ports.scm-{low,mid}.
+
+	* binary-ports.scm-low: New file.
+	* binary-ports.scm-mid: New file.
+	* Makefile.am (EXTRA_DIST): Add binary-ports.scm-low,
+	binary-ports.scm-mid.
+	(www_DATA) [NEED_BINPORTS]: Add binary-ports.
+	(dist-hook): New target.
+	* crlf.scm: From ‘(ice-9 binary-ports)’ select
+	specifically ‘get-bytevector-n!’, ‘put-bytevector’.
+	(u8-read!-all, u8-write-all): Rewrite.
+
 2013-12-09  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add abstraction: weird!

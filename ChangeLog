@@ -1,3 +1,17 @@
+2013-12-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Add binary-ports.scm-{low,mid}.
+
+	* configure.ac: Make uniform-vector-{read!,write} check
+	conditional on module ‘(ice-9 binary-ports)’ unavailability;
+	don't bother adding ‘u8-io’ to ‘mmflags’; instead, set var
+	‘gwww_cv_u8_handling’ to either "mid" or "low" for the sake of...
+	(source/binary-port.scm): New AC_CONFIG_LINKS.
+	(NEED_BINPORTS): New AM_CONDITIONAL.
+	* build-aux/guile-baux/mm (backport-2, backport): Delete data.
+	(process binports!): Rewrite to do ‘s/ice-9/www/g’, effectively.
+	(process): No longer do ‘u8-io’ and redef processing.
+
 2013-12-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v int] Decruft: Reduce number of generated tests.
