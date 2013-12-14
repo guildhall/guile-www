@@ -1,5 +1,11 @@
 2013-12-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v int] Add abstraction: srcdir/
+
+	* v/common (srcdir/): New proc.
+
+2013-12-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[build int] Add binary-ports.scm-{low,mid}.
 
 	* configure.ac: Make uniform-vector-{read!,write} check

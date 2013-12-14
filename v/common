@@ -1,6 +1,6 @@
 ;;; common --- some -*-scheme-*- useful for testing
 
-;; Copyright (C) 2012 Thien-Thi Nguyen
+;; Copyright (C) 2012, 2013 Thien-Thi Nguyen
 ;;
 ;; This file is part of Guile-WWW.
 ;;
@@ -31,5 +31,8 @@
 
 (define (fse s . args)
   (apply simple-format (current-error-port) s args))
+
+(define (srcdir/ filename)
+  (in-vicinity (getenv "srcdir") filename))
 
 ;;; common ends here
