@@ -220,9 +220,6 @@
 (define (u8-read!-all v port)
   (get-bytevector-n! port v 0 (u8vector-length v)))
 
-(define (u8-write-all v port)
-  (put-bytevector port v))
-
 (define (get-body-proc sock hsym headers)
 
   (define (string-read!/partial s)
@@ -419,9 +416,8 @@
                 (let ((lengths (map u8vector-length vectors)))
                   ;; move!
                   (x-move vectors (lambda (sock)
-                                    (u8-write-all
-                                     (pop vectors)
-                                     sock))))))
+                                    (put-bytevector
+                                     sock (pop vectors)))))))
           ((or (and (string? body) (list body))
                (and (pair? body) (and-map string? body) body))
            => (lambda (strings)

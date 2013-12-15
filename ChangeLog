@@ -1,3 +1,11 @@
+2013-12-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use ‘(... binary-ports) put-bytevector’ more.
+
+	* v/x200 [not Guile 2]: Import ‘(www binary-ports)’.
+	(u8-write-all): Delete proc; replace ‘(u8-write-all V PORT)’
+	with ‘(put-bytevector PORT V)’.
+
 2013-12-14  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v int] Add abstraction: srcdir/
