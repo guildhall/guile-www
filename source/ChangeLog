@@ -1,3 +1,12 @@
+2013-12-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] New (www binary-ports) proc: get-bytevector-n
+
+	* binary-ports.scm-low: Import ‘(srfi srfi-4) make-u8vector’.
+	(get-bytevector-n): New proc, exported.
+	* binary-ports.scm-mid: Import ‘(srfi srfi-4) make-u8vector’.
+	(get-bytevector-n): New proc, exported.
+
 2013-12-15  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use ‘(... binary-ports) put-bytevector’ more.

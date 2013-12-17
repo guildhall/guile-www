@@ -23,10 +23,12 @@
 
 (define-module (www binary-ports)
   #:export (get-bytevector-n!
+            get-bytevector-n
             put-bytevector)
   #:use-module (ice-9 optargs-kw)
   #:use-module ((srfi srfi-11) #:select (let-values))
-  #:use-module ((srfi srfi-4) #:select (u8vector-length
+  #:use-module ((srfi srfi-4) #:select (make-u8vector
+                                        u8vector-length
                                         u8vector-set!
                                         u8vector-ref)))
 
@@ -56,6 +58,11 @@
                   (else
                    (u8vector-set! bv i (char->integer ch))
                    (loop (1+ i)))))))))
+
+(define (get-bytevector-n port count)
+  (let ((bv (make-u8vector count)))
+    (get-bytevector-n! port bv 0 count)
+    bv))
 
 (define* (put-bytevector port bv #:optional
                          (start 0)
