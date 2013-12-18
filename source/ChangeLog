@@ -1,5 +1,11 @@
 2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] New internal module: (www mime)
+
+	* mime.scm: New file.
+
+2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Make mid/low ‘put-bytevector’ rv compatible w/ Guile 2.
 
 	* binary-ports.scm-low (put-bytevector): Return unspecified.
