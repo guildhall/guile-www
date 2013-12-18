@@ -1,0 +1,23 @@
+This directory contains data files to support test x310.
+
+All files Copyright (C) 2013 Thien-Thi Nguyen and distributed
+under the same terms as Guile-WWW.
+
+Z.txt            -- unicode text with CRLF line endings
+
+serveez-logo.jpg -- from GNU Serveez, scaled down 15x
+                    (http://www.gnu.org/software/serveez/)
+
+invoke-id.html   -- a ‘form’ with four ‘input’ elements, two
+                    file-upload, two text (w/ builtin values)
+
+type, body       -- the type and body, respectively, sampled
+                    from running w3m w/ the "local CGI" feature,
+                    like so:
+
+                    $ w3m -o cgi_bin=`../../examples ; pwd` invoke-id.html
+
+                    having previously instrumented ‘(www cgi)’ and
+                    ‘(www server-utils form-2-form)’ to dump out
+                    the raw bytes encountered, and manually selecting
+                    Z.txt for ‘file1’ and serveez-logo.jpg for ‘file2’

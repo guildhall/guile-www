@@ -41,11 +41,12 @@ explicit = \
  x120 \
  x200 \
  x210 \
- x300
+ x300 \
+ x310
 
 TESTS += $(explicit)
 
-EXTRA_DIST = $(explicit) common
+EXTRA_DIST = $(explicit) common x310.d
 
 all-modules.list:
 	@echo Creating $@ ... ;						\

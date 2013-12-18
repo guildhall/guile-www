@@ -1,5 +1,20 @@
 2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v int] Add test for (www mime).
+
+	* v/x310: New file.
+	* v/x310.d/: New directory.
+	* v/x310.d/README: Likewise.
+	* v/x310.d/Z.txt: Likewise.
+	* v/x310.d/body: Likewise.
+	* v/x310.d/invoke-id.html: Likewise.
+	* v/x310.d/serveez-logo.jpg: Likewise.
+	* v/x310.d/type: Likewise.
+	* v/Makefile.am (explicit): Add x310.
+	(EXTRA_DIST): Add x310.d.
+
+2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www mime)
 
 	* build-aux/common.mk (top_leaves): Add mime.

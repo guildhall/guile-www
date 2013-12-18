@@ -1,0 +1,88 @@
+;;; x310 --- test ‘(www mime)’
+
+;; Copyright (C) 2013 Thien-Thi Nguyen
+;;
+;; This file is part of Guile-WWW.
+;;
+;; Guile-WWW is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; Guile-WWW is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public
+;; License along with Guile-WWW; see the file COPYING.  If not,
+;; write to the Free Software Foundation, Inc., 51 Franklin Street,
+;; Fifth Floor, Boston, MA  02110-1301  USA
+
+(use-modules
+ ((srfi srfi-11) #:select (let-values))
+ ((ice-9 rdelim) #:select (read-line))
+ (ice-9 pretty-print)
+ ((www mime) #:prefix M*))
+
+(define (dot-d/ filename)
+  (srcdir/ (in-vicinity "x310.d" filename)))
+
+(define-macro (with-input-port-from-dot-d filename . body)
+  `(call-with-input-file (dot-d/ ,filename)
+     (lambda (port)
+       ,@body)))
+
+(define (check rv msg . args)
+  (or rv (begin (apply fse (string-append "sorry: " msg "~%") args)
+                (exit #f))))
+
+(define TYPE (with-input-port-from-dot-d "type"
+               (M*parse-type (read-line port))))
+
+(check (pair? TYPE)
+       "TYPE not a pair: ~S" TYPE)
+(check (equal? '(multipart . form-data) (car TYPE))
+       "TYPE not multipart/form-data: ~S" (car TYPE))
+(check (M*p-ref TYPE 'boundary)
+       "no boundary in params: ~S" (cdr TYPE))
+
+(define BODY (with-input-port-from-dot-d "body"
+               (M*parse-multipart TYPE port (stat:size (stat port)))))
+
+(define (check-upload move filename)
+  (let ((known (dot-d/ filename))
+        (fresh (string-append "x310-" filename ".fresh")))
+    (call-with-output-file fresh move)
+    (check (zero? (system (simple-format #f "cmp ~A ~A" known fresh)))
+           "file contents mismatch:~% ~A~% ~A" known fresh)
+    (vfso "file: ~A OK!~%" filename)
+    (delete-file fresh)))
+
+(define (check-form-input headers move)
+
+  (define (get name)
+    (let ((val (assq-ref headers name)))
+      (check val "missing ~A!" name)
+      val))
+
+  (and verbose? (pretty-print headers))
+  (let ((type (get 'Content-Type))
+        (disp (get 'Content-Disposition)))
+    (cond ((M*p-ref disp 'filename)
+           => (lambda (filename)
+                (check-upload move filename)))
+          ((equal? '(text . plain) (car type))
+           (vfso "text: ~A~%" (call-with-output-string move)))))
+  (vfso "~%"))
+
+(for-each check-form-input
+          (map car BODY)
+          (map cdr BODY))
+
+(exit #t)
+
+;;; Local variables:
+;;; eval: (put 'with-input-port-from-dot-d 'scheme-indent-function 1)
+;;; End:
+;;; x310 ends here
