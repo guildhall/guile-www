@@ -74,8 +74,9 @@
       (do ((i 0 (1+ i)))
           ((= count i))
         (string-set! s i (integer->char (u8vector-ref bv (+ start i)))))
-      (display s port))
-    count))
+      (display s port)))
+  ;; Compatibility lameness.
+  (if #f #f))
 
 ;;; Local variables:
 ;;; mode: scheme

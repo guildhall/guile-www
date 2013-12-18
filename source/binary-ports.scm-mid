@@ -62,7 +62,9 @@
                                    start)))
   (let-values (((len end) (validate bv start count
                                     put-bytevector)))
-    (uniform-vector-write bv port start end)))
+    (uniform-vector-write bv port start end))
+  ;; Compatibility lameness.
+  (if #f #f))
 
 ;;; Local variables:
 ;;; mode: scheme

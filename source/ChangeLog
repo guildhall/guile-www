@@ -1,3 +1,10 @@
+2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Make mid/low ‘put-bytevector’ rv compatible w/ Guile 2.
+
+	* binary-ports.scm-low (put-bytevector): Return unspecified.
+	* binary-ports.scm-mid (put-bytevector): Likewise.
+
 2013-12-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] New (www binary-ports) proc: get-bytevector-n
