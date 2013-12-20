@@ -1,3 +1,9 @@
+2013-12-20  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Change bug-report email address.
+
+	* configure.ac (AC_INIT): ...here.
+
 2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v int] Add test for (www mime).
