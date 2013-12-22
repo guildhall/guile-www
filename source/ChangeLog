@@ -1,5 +1,13 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Avoid strings for CGI MIME-type manipulation.
+
+	* cgi.scm: Autoload (www mime-headers) on trigger ‘parse-type’;
+	don't import SRFI 13 ‘string-prefix-ci?’.
+	(make-ccc init!): Compute/match type symbolically.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Add (www mime-headers) procs: typed?, top-typed?
 
 	* mime-headers.scm (typed?, top-typed?): New procs, exported.

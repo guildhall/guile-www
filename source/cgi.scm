@@ -34,13 +34,13 @@
             cgi:cookie-names
             cgi:cookies cgi:cookie)
   #:use-module ((www server-utils parse-request) #:select (alist<-query))
+  #:autoload (www mime-headers) (parse-type)
   #:autoload (www server-utils cookies) (simple-parse-cookies)
   #:autoload (www server-utils form-2-form) (parse-form)
   #:autoload (www crlf) (read-characters)
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (string-join
                                          substring/shared
-                                         string-prefix-ci?
                                          string-index
                                          string-upcase
                                          string-tokenize))
@@ -157,13 +157,12 @@
       (set! pre-squeezed? (not (memq 'uploads-lazy opts)))
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
-                 (type (env-look 'content-type)))
-        ;; We check for prefix instead of equality because sometimes
-        ;; the server appends other information (e.g., "; charset=UTF-8").
-        (cond ((string-prefix-ci? "application/x-www-form-urlencoded" type)
+                 (raw-type (env-look 'content-type))
+                 (type (parse-type raw-type)))
+        (cond ((typed? type 'application 'x-www-form-urlencoded)
                (set! P (alist<-query (read-characters len))))
-              ((string-prefix-ci? "multipart/form-data" type)
-               (let ((alist (parse-form (substring/shared type 19) len)))
+              ((typed? type 'multipart 'form-data)
+               (let ((alist (parse-form (substring/shared raw-type 19) len)))
 
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))
