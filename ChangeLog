@@ -1,5 +1,11 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] New internal module: (www mime-multipart)
+
+	* build-aux/common.mk (top_leaves): Add mime-multipart.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www mime-headers)
 
 	* build-aux/common.mk (top_leaves): Add mime-headers.

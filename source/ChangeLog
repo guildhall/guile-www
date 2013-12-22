@@ -1,5 +1,12 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] New internal module: (www mime-multipart)
+
+	* mime-multipart.scm: New file, from mime.scm excerpts,
+	and using ‘(www mime-headers)’ procs in various places.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Avoid strings for CGI MIME-type manipulation.
 
 	* cgi.scm: Autoload (www mime-headers) on trigger ‘parse-type’;
