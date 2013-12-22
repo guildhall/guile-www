@@ -1,5 +1,11 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Drop internal module: (www mime)
+
+	* mime.scm: Delete file.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www mime-multipart)
 
 	* mime-multipart.scm: New file, from mime.scm excerpts,

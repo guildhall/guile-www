@@ -1,4 +1,4 @@
-;;; x310 --- test ‘(www mime)’
+;;; x310 --- test ‘(www mime-headers)’ and ‘(www mime-multipart)’
 
 ;; Copyright (C) 2013 Thien-Thi Nguyen
 ;;
@@ -23,7 +23,9 @@
  ((srfi srfi-11) #:select (let-values))
  ((ice-9 rdelim) #:select (read-line))
  (ice-9 pretty-print)
- ((www mime) #:prefix M*))
+ ((www mime-headers) #:select (parse-type
+                               p-ref))
+ ((www mime-multipart) #:select (parse-multipart)))
 
 (define (dot-d/ filename)
   (srcdir/ (in-vicinity "x310.d" filename)))
@@ -38,17 +40,17 @@
                 (exit #f))))
 
 (define TYPE (with-input-port-from-dot-d "type"
-               (M*parse-type (read-line port))))
+               (parse-type (read-line port))))
 
 (check (pair? TYPE)
        "TYPE not a pair: ~S" TYPE)
 (check (equal? '(multipart . form-data) (car TYPE))
        "TYPE not multipart/form-data: ~S" (car TYPE))
-(check (M*p-ref TYPE 'boundary)
+(check (p-ref TYPE 'boundary)
        "no boundary in params: ~S" (cdr TYPE))
 
 (define BODY (with-input-port-from-dot-d "body"
-               (M*parse-multipart TYPE port (stat:size (stat port)))))
+               (parse-multipart TYPE port (stat:size (stat port)))))
 
 (define (check-upload move filename)
   (let ((known (dot-d/ filename))
@@ -69,7 +71,7 @@
   (and verbose? (pretty-print headers))
   (let ((type (get 'Content-Type))
         (disp (get 'Content-Disposition)))
-    (cond ((M*p-ref disp 'filename)
+    (cond ((p-ref disp 'filename)
            => (lambda (filename)
                 (check-upload move filename)))
           ((equal? '(text . plain) (car type))

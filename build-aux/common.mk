@@ -32,7 +32,6 @@ top_leaves =		\
  crlf			\
  cgi			\
  http			\
- mime			\
  mime-headers		\
  mime-multipart		\
  post			\

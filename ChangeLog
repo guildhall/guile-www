@@ -1,5 +1,17 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Drop internal module: (www mime)
+
+	* build-aux/common.mk (top_leaves): Remove mime.
+	* v/x310: Don't import ‘(www mime)’ procs; instead, import
+	specific ‘(www mime-headers)’ and ‘(www mime-multipart)’ procs.
+	(TYPE): Use ‘parse-type’ directly.
+	<boundary check>: Use ‘p-ref’ directly.
+	(BODY): Use ‘parse-multipart’ directly.
+	(check-form-input): Use ‘p-ref’ directly.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www mime-multipart)
 
 	* build-aux/common.mk (top_leaves): Add mime-multipart.
