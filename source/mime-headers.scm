@@ -31,6 +31,8 @@
 (define-module (www mime-headers)
   #:export (p-ref
             parse-type
+            typed?
+            top-typed?
             parse-headers)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-trim-right
@@ -155,6 +157,21 @@
     (acons (sym m-top)
            (sym m-sub)
            (parms s m-sub))))
+
+;; Return @code{#t} iff the form @var{type}
+;; has the MIME type @var{top}/@var{sub}.
+;; Both @var{top} and @var{sub} are symbols.
+;;
+(define (typed? type top sub)
+  (let ((pair (car type)))
+    (and (eq? (car pair) top)
+         (eq? (cdr pair) sub))))
+
+;; Return @code{#t} iff the form @var{type}
+;; has the MIME type @var{top}/* (@var{top} is a symbol).
+;;
+(define (top-typed? type top)
+  (eq? (caar type) top))
 
 ;; Read from @var{port} and return an alist with titlecased
 ;; symbolic keys.  The values depend on the key:

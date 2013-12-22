@@ -1,5 +1,11 @@
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Add (www mime-headers) procs: typed?, top-typed?
+
+	* mime-headers.scm (typed?, top-typed?): New procs, exported.
+
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] New internal module: (www mime-headers)
 
 	* mime-headers.scm: New file, made by excerpting
