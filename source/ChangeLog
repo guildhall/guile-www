@@ -1,3 +1,11 @@
+2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] New internal module: (www mime-headers)
+
+	* mime-headers.scm: New file, made by excerpting
+	from mime.scm, with only one small addition:
+	(parse-headers): Also handle Content-Length, if available.
+
 2013-12-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] New internal module: (www mime)

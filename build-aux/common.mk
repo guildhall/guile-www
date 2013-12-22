@@ -33,6 +33,7 @@ top_leaves =		\
  cgi			\
  http			\
  mime			\
+ mime-headers		\
  post			\
  url			\
  url-coding		\
