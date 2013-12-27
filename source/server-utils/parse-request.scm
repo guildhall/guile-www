@@ -36,6 +36,7 @@
   #:use-module ((srfi srfi-9) #:select (define-record-type))
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (substring/shared
+                                         string-titlecase
                                          string-index
                                          string-tokenize))
   #:use-module ((srfi srfi-14) #:select (char-set

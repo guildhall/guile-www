@@ -1,3 +1,11 @@
+2013-12-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Import SRFI 13 ‘string-titlecase’ for Guile pre-1.8.
+
+	* http.scm: Import SRFI 13 ‘string-titlecase’.
+	* mime-headers.scm: Likewise.
+	* parse-request.scm: Likewise.
+
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Drop internal module: (www mime)

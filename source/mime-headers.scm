@@ -36,6 +36,7 @@
             parse-headers)
   #:use-module ((srfi srfi-11) #:select (let-values))
   #:use-module ((srfi srfi-13) #:select (string-trim-right
+                                         string-titlecase
                                          string-index
                                          substring/shared))
   #:use-module ((srfi srfi-14) #:select (char-set-difference
