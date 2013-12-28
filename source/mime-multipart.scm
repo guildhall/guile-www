@@ -165,14 +165,14 @@
         (eye! n)
         port)
 
-      (define (port-at-body)
-        (port-at beg))
-
       (define (unflatten span)
         (let* ((headers (parse-headers (port-at (car span))))
                (beg eye)
                (len (- (cdr span) beg))
                (buf buf))
+
+          (define (port-at-body)
+            (port-at beg))
 
           (define (ok rv)
             (set! buf #f)

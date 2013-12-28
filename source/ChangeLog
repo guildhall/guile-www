@@ -1,5 +1,15 @@
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[pre] Fix bug: Move ‘port-at-body’ to proper scope.
+
+	Reported by Josep Portella Florit.
+
+	* mime-multipart.scm
+	(parse-multipart port-at-body): Move from here...
+	(parse-multipart unflatten port-at-body): ...to here.
+
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Add abstraction: opt?
 
 	* cgi.scm (make-ccc init! opt?): New proc.
