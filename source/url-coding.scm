@@ -25,6 +25,7 @@
 (define-module (www url-coding)
   #:export (url-coding:decode
             url-coding:encode)
+  #:use-module ((srfi srfi-11) #:select (let*-values))
   #:use-module ((srfi srfi-13) #:select (string-index
                                          string-skip
                                          string-concatenate-reverse
@@ -38,36 +39,118 @@
                                          char-set:ascii
                                          char-set:letter+digit)))
 
+ 
+;;; These three are from Guile-BAUX: (info "(guile-baux) bv")
+
+(define make-bv
+  (cond-expand (guile-2 make-bitvector)
+               (else (if (defined? 'make-bitvector)
+                         make-bitvector
+                         (lambda (sz init)
+                           (make-uniform-vector sz #t init))))))
+
+(define bv-set!
+  (cond-expand (guile-2 bitvector-set!)
+               (else (if (defined? 'bitvector-set!)
+                         bitvector-set!
+                         uniform-vector-set!))))
+
+(define bv-ref
+  (cond-expand (guile-2 bitvector-ref)
+               (else (if (defined? 'bitvector-ref)
+                         bitvector-ref
+                         uniform-vector-ref))))
+
+
+(define PLUS/PERCENT (char-set #\+ #\%))
+
+(define ZERO (char->integer #\0))
+
+(define SPACE (char->integer #\space))
+
+(define (particulars str)
+  (let* ((slen (string-length str))
+         (hmmm (make-bv slen #f))
+         (plus (make-bv slen #f)))
+
+    (define (yep! bv pos)
+      (bv-set! bv pos #t))
+
+    (let scan ((len (string-length str))
+               (start 0))
+      (cond ((string-index str PLUS/PERCENT start)
+             => (lambda (pos)
+                  (yep! hmmm pos)
+                  (let ((dec (char=? #\% (string-ref str pos))))
+                    (or dec (yep! plus pos))
+                    (scan (if dec
+                              (- len 2)
+                              len)
+                          (+ pos (if dec 3 1))))))
+            (else
+             (values hmmm
+                     plus
+                     slen
+                     len))))))
+
+(define (c-hex c)
+  (case c
+    ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9) (- (char->integer c)
+                                                  ZERO))
+    ((#\a #\A) 10)
+    ((#\b #\B) 11)
+    ((#\c #\C) 12)
+    ((#\d #\D) 13)
+    ((#\e #\E) 14)
+    ((#\f #\F) 15)))
+
 ;; Return a new string made from url-decoding @var{str}.  Specifically,
 ;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
 ;; their eight-bit characters.
 ;;
-(define url-coding:decode
-  (let ((both (char-set #\+ #\%)))
-    ;; url-coding:decode
-    (lambda (str)
-      (define (subs b . e)
-        (apply substring/shared str b e))
-      (let ((last-start (- (string-length str) 3)))
-        (let loop ((acc '()) (start 0))
-          (define (until . e)
-            (apply subs start e))
-          (cond ((string-index str both start)
-                 => (lambda (pos)
-                      (define (with processed x)
-                        (loop (cons* x (until pos) acc)
-                              (+ processed pos)))
-                      (case (string-ref str pos)
-                        ((#\+) (with 1 " "))
-                        (else (and (< last-start pos)
-                                   (error "% too late:" str))
-                              (with 3 (string
-                                       (integer->char
-                                        (string->number
-                                         (subs (1+ pos) (+ 3 pos))
-                                         16))))))))
-                (else
-                 (string-concatenate-reverse acc (until)))))))))
+(define (url-coding:decode str)
+
+  (define (w/string len)
+    (let ((s (make-string len))
+          (wx 0))
+
+      (define (one! n)
+        (string-set! s wx (integer->char n))
+        (set! wx (1+ wx)))
+
+      (define (many! beg end)
+        (substring-move! str beg end s wx)
+        (set! wx (+ wx (- end beg))))
+
+      (values s one! many!)))
+
+  (let*-values (((hmmm plus slen len) (particulars str))
+                ((rv one! many!) (w/string len)))
+
+    (let transfer ((rx 0))
+
+      (define (copy-up-to! end)
+        (many! rx end))
+
+      (cond ((bit-position #t hmmm rx)
+             => (lambda (pos)
+
+                  (define (n-at ofs)
+                    (c-hex (string-ref str (+ ofs pos))))
+
+                  (copy-up-to! pos)
+                  (transfer
+                   (+ pos (cond ((bv-ref plus pos)
+                                 (one! SPACE)
+                                 1)
+                                (else
+                                 (one! (logior (ash (n-at 1)
+                                                    4)
+                                               (n-at 2)))
+                                 3))))))
+            (else
+             (copy-up-to! slen)
+             rv)))))
 
 ;; Return a new string made from url-encoding @var{str},
 ;; unconditionally transforming those in @var{reserved-chars}, a list

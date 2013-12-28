@@ -1,3 +1,13 @@
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Rewrite ‘url-coding:decode’.
+
+	* url-coding.scm: Import SRFI 11 ‘let*-values’.
+	(make-bv, bv-set!, bv-ref): New aliases / procs.
+	(PLUS/PERCENT, ZERO, SPACE): New data.
+	(particulars, c-hex): New procs.
+	(url-coding:decode): Rewrite.
+
 2013-12-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[slog] Import SRFI 13 ‘string-titlecase’ for Guile pre-1.8.
