@@ -20,6 +20,7 @@
 ;; Fifth Floor, Boston, MA  02110-1301  USA
 
 (use-modules
+ (srfi srfi-4)
  (srfi srfi-13)
  (www url-coding))
 
@@ -57,6 +58,18 @@
                           ALL-STRING)
               Y)
     (die "unexpected Y: ~A|~A|~%~S~%" (string-length Y) Y Y))
+
+(define Z (url-coding:decode X #t))
+(vfso "Z: ~S~%" Z)
+
+(or (equal? (let ((v (apply u8vector (iota 256))))
+              ;; Account for non bijection. :-/
+              (u8vector-set! v
+                             (char->integer #\+)
+                             (char->integer #\space))
+              v)
+            Z)
+    (die "unexpected Z: ~A|~A|~%~S~%" (u8vector-length Z) Z Z))
 
 (exit #t)
 

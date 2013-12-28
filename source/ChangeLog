@@ -1,5 +1,15 @@
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Make ‘url-coding:decode’ optionally return u8vector.
+
+	* url-coding.scm: Import ‘(ice-9 optargs)’;
+	import SRFI 4 ‘make-u8vector’, ‘u8vector-set!’.
+	(url-coding:decode w/u8vector): New proc.
+	(url-coding:decode): Take optional arg ‘u8’; if
+	non-‘#f’, arrange to return a u8vector instead of string.
+
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Rewrite ‘url-coding:decode’.
 
 	* url-coding.scm: Import SRFI 11 ‘let*-values’.

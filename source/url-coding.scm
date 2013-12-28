@@ -25,6 +25,9 @@
 (define-module (www url-coding)
   #:export (url-coding:decode
             url-coding:encode)
+  #:use-module (ice-9 optargs)
+  #:use-module ((srfi srfi-4) #:select (make-u8vector
+                                        u8vector-set!))
   #:use-module ((srfi srfi-11) #:select (let*-values))
   #:use-module ((srfi srfi-13) #:select (string-index
                                          string-skip
@@ -108,7 +111,16 @@
 ;; turn @code{+} into space, and hex-encoded @code{%XX} strings into
 ;; their eight-bit characters.
 ;;
-(define (url-coding:decode str)
+;; If optional arg @var{u8} is non-@code{#f}, return u8vector instead
+;; of string, useful for further processing in the case when the desired
+;; ``character set'' is not ISO-8859-1.  For example:
+;;
+;; @example
+;; (url-coding:decode "%E2%98%A1" #t)
+;; @result{} #u8(226 152 161) ; aka U+2621 CAUTION SIGN in UTF-8
+;; @end example
+;;
+(define* (url-coding:decode str #:optional (u8 #f))
 
   (define (w/string len)
     (let ((s (make-string len))
@@ -124,8 +136,23 @@
 
       (values s one! many!)))
 
+  (define (w/u8vector len)
+    (let ((v (make-u8vector len))
+          (wx 0))
+
+      (define (one! n)
+        (u8vector-set! v wx n)
+        (set! wx (1+ wx)))
+
+      (define (many! beg end)
+        (do ((i beg (1+ i)))
+            ((= end i))
+          (one! (char->integer (string-ref str i)))))
+
+      (values v one! many!)))
+
   (let*-values (((hmmm plus slen len) (particulars str))
-                ((rv one! many!) (w/string len)))
+                ((rv one! many!) ((if u8 w/u8vector w/string) len)))
 
     (let transfer ((rx 0))
 

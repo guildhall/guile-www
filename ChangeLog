@@ -1,3 +1,11 @@
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make ‘url-coding:decode’ optionally return u8vector.
+
+	* v/x110: Use SRFI 4.
+	(Z): New object, from calling ‘url-coding:decode’,
+	and validated against a manually constructed u8vector.
+
 2013-12-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Drop internal module: (www mime)
