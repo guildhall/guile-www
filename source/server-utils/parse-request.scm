@@ -182,10 +182,21 @@
 ;; For each element @code{(@var{name} . @var{value})} of the alist,
 ;; @var{name} is a string and @var{value} is either @code{#f} or a string.
 ;;
-(define (alist<-query query-string)
+;; If optional arg @var{u8} is non-@code{#f}, use u8vector instead
+;; of string for names and values.  For example:
+;;
+;; @example
+;; (alist<-query "ab&jk=yz" #t)
+;; @result{} ((#u8(97 98) . #f) (#u8(106 107) . #u8(121 122)))
+;; @end example
+;;
+;; @xref{url-coding}.
+;;
+(define* (alist<-query query-string #:optional (u8 #f))
   (map (lambda (pair)
          (define (decode . args)
-           (url-coding:decode (apply substring/shared pair args)))
+           (url-coding:decode (apply substring/shared pair args)
+                              u8))
          (let ((mid (string-index pair #\=)))
            (cons (if mid (decode 0 mid) (decode 0))
                  (and mid (decode (1+ mid))))))

@@ -1,5 +1,12 @@
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Make ‘alist<-query’ optionally return u8vectors.
+
+	* server-utils/parse-request.scm (alist<-query):
+	Take optional arg ‘u8’; pass it to ‘url-coding:decode’.
+
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make ‘url-coding:decode’ optionally return u8vector.
 
 	* url-coding.scm: Import ‘(ice-9 optargs)’;
