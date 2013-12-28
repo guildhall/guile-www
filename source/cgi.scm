@@ -153,8 +153,12 @@
         (C '()))                        ; cookies
 
     (define (init! opts)
+
+      (define (opt? symbol)
+        (memq symbol opts))
+
       (set! P '()) (set! V '()) (set! U '())
-      (set! pre-squeezed? (not (memq 'uploads-lazy opts)))
+      (set! pre-squeezed? (not (opt? 'uploads-lazy)))
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
                  (raw-type (env-look 'content-type))
@@ -198,7 +202,7 @@
       (set! C (cond ((env-look 'http-cookie)
                      => (lambda (raw)
                           (collate (simple-parse-cookies
-                                    raw (if (memq 'cookies-split-on-semicolon opts)
+                                    raw (if (opt? 'cookies-split-on-semicolon)
                                             #\; #\,)))))
                     (else '()))))
 

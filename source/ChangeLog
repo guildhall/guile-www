@@ -1,5 +1,12 @@
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Add abstraction: opt?
+
+	* cgi.scm (make-ccc init! opt?): New proc.
+	(make-ccc init!): Use ‘opt?’.
+
+2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	Make ‘alist<-query’ optionally return u8vectors.
 
 	* server-utils/parse-request.scm (alist<-query):
