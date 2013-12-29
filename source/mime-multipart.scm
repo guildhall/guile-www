@@ -23,8 +23,6 @@
 
 ;; This module is "internal": distributed, installed,
 ;; but not documented (at least, for now).
-;;
-;; It contains procedures to parse MIME type and multipart body.
 
 ;;; Code:
 
