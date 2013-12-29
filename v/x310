@@ -61,6 +61,14 @@
     (vfso "file: ~A OK!~%" filename)
     (delete-file fresh)))
 
+(define nice-text
+  ;; Bifurcating test behavior is somewhat uncool.  However, we can
+  ;; live w/ it because this is used only for informative output.
+  (cond-expand (guile-2 (lambda (move)
+                          (move #t)))
+               (else (lambda (move)
+                       (call-with-output-string move)))))
+
 (define (check-form-input headers move)
 
   (define (get name)
@@ -75,7 +83,7 @@
            => (lambda (filename)
                 (check-upload move filename)))
           ((equal? '(text . plain) (car type))
-           (vfso "text: ~A~%" (call-with-output-string move)))))
+           (vfso "text: ~A~%" (nice-text move)))))
   (vfso "~%"))
 
 (for-each check-form-input

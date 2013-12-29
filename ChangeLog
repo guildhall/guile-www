@@ -1,3 +1,10 @@
+2013-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Exercise x310 ‘(move #t)’ under Guile 2.
+
+	* v/x310 (nice-text): New proc.
+	(check-form-input): Use ‘nice-text’.
+
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Make ‘url-coding:decode’ optionally return u8vector.
