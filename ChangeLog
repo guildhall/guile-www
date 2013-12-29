@@ -1,5 +1,11 @@
 2013-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Add fake Content-Type header to x310 body part "one".
+
+	* v/x310.d/body: ...here.
+
+2013-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Exercise x310 ‘(move #t)’ under Guile 2.
 
 	* v/x310 (nice-text): New proc.
