@@ -24,6 +24,7 @@
  ((ice-9 rdelim) #:select (read-line))
  (ice-9 pretty-print)
  ((www mime-headers) #:select (parse-type
+                               typed?
                                p-ref))
  ((www mime-multipart) #:select (parse-multipart)))
 
@@ -82,7 +83,7 @@
     (cond ((p-ref disp 'filename)
            => (lambda (filename)
                 (check-upload move filename)))
-          ((equal? '(text . plain) (car type))
+          ((typed? type 'text 'plain)
            (vfso "text: ~A~%" (nice-text move)))))
   (vfso "~%"))
 

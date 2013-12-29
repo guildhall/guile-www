@@ -1,5 +1,12 @@
 2013-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v int] Use ‘(www mime-headers) typed?’ more.
+
+	* v/x310: Import ‘(www mime-headers) typed?’.
+	(check-form-input): Use ‘typed?’.
+
+2013-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Add fake Content-Type header to x310 body part "one".
 
 	* v/x310.d/body: ...here.
