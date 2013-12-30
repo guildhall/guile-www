@@ -149,7 +149,7 @@
 (define (make-ccc)
   (let ((P '())                         ; form variables as pairs
         (V '())                         ; form variables collated
-        (U '()) (pre-squeezed? #t)      ; file uploads
+        (U '())                         ; file uploads
         (C '()))                        ; cookies
 
     (define (init! opts)
@@ -158,7 +158,6 @@
         (memq symbol opts))
 
       (set! P '()) (set! V '()) (set! U '())
-      (set! pre-squeezed? (not (opt? 'uploads-lazy)))
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
                  (raw-type (env-look 'content-type))
@@ -166,7 +165,8 @@
         (cond ((typed? type 'application 'x-www-form-urlencoded)
                (set! P (alist<-query (read-characters len))))
               ((typed? type 'multipart 'form-data)
-               (let ((alist (parse-form (substring/shared raw-type 19) len)))
+               (let ((alist (parse-form (substring/shared raw-type 19) len))
+                     (pre-squeezed? (not (opt? 'uploads-lazy))))
 
                  (define (mogrify m)
                    (or (cdr m) (error "badness from parse-form:" m))

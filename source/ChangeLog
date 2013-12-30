@@ -1,3 +1,10 @@
+2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Move local var init to ‘let’ bindings closer to usage.
+
+	* cgi.scm (make-ccc): Move ‘pre-squeezed?’ binding/init to...
+	(make-ccc init!): ...here, combined into a single expression.
+
 2013-12-28  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[pre] Fix bug: Move ‘port-at-body’ to proper scope.
