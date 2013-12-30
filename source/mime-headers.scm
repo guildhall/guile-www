@@ -28,6 +28,7 @@
 
 (define-module (www mime-headers)
   #:export (p-ref
+            parse-parameters
             parse-type
             typed?
             top-typed?
@@ -115,6 +116,16 @@
              v)
        v-end))))
 
+;; Parse string @var{s} and return an alist:
+;;
+;; @example
+;; (PARAMETER...)
+;; @end example
+;;
+;; Each @var{parameter} is a pair with @sc{car} a downcased
+;; symbol and @sc{cdr} a string.  It is an error if @var{s}
+;; does not begin with space (U+20) or semicolon (U+3B).
+;;
 (define (parse-parameters s)
   (set! s (string-trim-right s))
   (let ((len (string-length s)))

@@ -1,5 +1,12 @@
 2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Export ‘(www mime-headers) parse-parameters’.
+
+	* mime-headers.scm: Add ‘parse-parameters’ to the export list.
+	(parse-parameters): Add pre-form doc comment.
+
+2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Move local var init to ‘let’ bindings closer to usage.
 
 	* cgi.scm (make-ccc): Move ‘pre-squeezed?’ binding/init to...
