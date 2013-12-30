@@ -1,5 +1,14 @@
 2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use ‘(www mime-headers)’ more.
+
+	* server-utils/form-2-form.scm: Import ‘(www mime-headers)’
+	procs ‘p-ref’, ‘parse-parameters’, ‘parse-type’.
+	(+boundary-rx+): Delete.
+	(parse-form determine-boundary): Rewrite.
+
+2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Export ‘(www mime-headers) parse-parameters’.
 
 	* mime-headers.scm: Add ‘parse-parameters’ to the export list.

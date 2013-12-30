@@ -22,6 +22,9 @@
 (define-module (www server-utils form-2-form)
   #:export (parse-form)
   #:use-module (ice-9 curried-definitions)
+  #:use-module ((www mime-headers) #:select (p-ref
+                                             parse-parameters
+                                             parse-type))
   #:use-module ((www crlf) #:select (read-characters))
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (substring/shared
@@ -29,7 +32,6 @@
                                          string-contains))
   #:use-module ((ice-9 regex) #:select (match:substring)))
 
-(define +boundary-rx+ (make-regexp "boundary=\"*(.[^\"\r\n]*)\"*"))
 (define +name-rx+     (make-regexp "name=\"([^\"]*)\""))
 (define +filename-rx+ (make-regexp "filename=\"*([^\"\r]*)\"*"))
 (define +type-rx+     (make-regexp "Content-Type: ([^\r]*)\r"
@@ -83,7 +85,11 @@
   (let ((v '()))
 
     (define (determine-boundary s)
-      (string-append "--" ((m1-extract s) +boundary-rx+)))
+      (string-append
+       "--" (let ((type (if (memq (string-ref s 0) '(#\; #\space))
+                            (cons '#f (parse-parameters s))
+                            (parse-type s))))
+              (p-ref type 'boundary))))
 
     (define (v! name value)
       (set! v (acons name value v)))
