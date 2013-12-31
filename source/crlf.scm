@@ -170,7 +170,7 @@
                     (let ((v (cdr pair)))
                       (if (string? v)
                           pair
-                          (cons (car pair) (string-join (reverse! v) " ")))))
+                          (cons (car pair) (string-join (reverse! v))))))
                   (racc!)))
             ((char-set-contains? char-set:whitespace (string-ref line 0))
              (or (pair? acc)

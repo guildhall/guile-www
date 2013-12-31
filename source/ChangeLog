@@ -1,5 +1,11 @@
 2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Don't bother specifying " " for ‘string-join’ DELIM.
+
+	* crlf.scm (read-headers): ...here.
+
+2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use SRFI 13 ‘string-map!’ more.
 
 	* cgi.scm: Import SRFI 13 ‘string-map!’, not ‘string-join’.
