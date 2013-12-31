@@ -1,5 +1,12 @@
 2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Use SRFI 13 ‘string-map!’ more.
+
+	* cgi.scm: Import SRFI 13 ‘string-map!’, not ‘string-join’.
+	(getenv/symbol): Rewrite.
+
+2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Don't call ‘(... form-2-form) parse-form’ w/ string TYPE.
 
 	* cgi.scm (make-ccc init!): ...here.

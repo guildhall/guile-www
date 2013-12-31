@@ -39,7 +39,7 @@
   #:autoload (www server-utils form-2-form) (parse-form)
   #:autoload (www crlf) (read-characters)
   #:use-module ((srfi srfi-2) #:select (and-let*))
-  #:use-module ((srfi srfi-13) #:select (string-join
+  #:use-module ((srfi srfi-13) #:select (string-map!
                                          substring/shared
                                          string-index
                                          string-upcase
@@ -72,13 +72,23 @@
 ;;; CGI environment variables.
 
 (define getenv/symbol
-  (let ((split-on-hyphen (split-on (char-set #\-))))
+  (let ((ht (make-hash-table)))
+
+    (define (squash-hyphen c)
+      (if (char=? #\- c)
+          #\_
+          c))
+
+    (define (string<- symbol)
+      (or (hashq-ref ht symbol)
+          (let ((str (string-upcase (symbol->string symbol))))
+            (string-map! squash-hyphen str)
+            (hashq-set! ht symbol str)
+            str)))
+
     ;; getenv/symbol
     (lambda (symbol)
-      (getenv (string-join (map string-upcase
-                                (split-on-hyphen
-                                 (symbol->string symbol)))
-                           "_")))))
+      (getenv (string<- symbol)))))
 
 (define (env-look key)                  ; may return #f
 
