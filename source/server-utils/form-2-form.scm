@@ -24,7 +24,8 @@
   #:use-module (ice-9 curried-definitions)
   #:use-module ((www mime-headers) #:select (p-ref
                                              parse-parameters
-                                             parse-type))
+                                             parse-type
+                                             typed?))
   #:use-module ((www crlf) #:select (read-characters))
   #:use-module ((srfi srfi-2) #:select (and-let*))
   #:use-module ((srfi srfi-13) #:select (substring/shared
@@ -41,15 +42,28 @@
   (and-let* ((m (regexp-exec rx string)))
     (match:substring m 1)))
 
+(define (boundary<- type)
+  (string-append "--" (p-ref type 'boundary)))
+
 ;; Parse @var{raw-data} (an integer) bytes from the current input port,
 ;; as raw form response data of enctype
 ;; @samp{multipart/form-data} and return an alist.
 ;; For backward compatibility, @var{raw-data} can also be a string.
 ;;
-;; @var{content-type-more} is a string that should include the
-;; @code{boundary="@dots{}"} information.  (This parameter name reflects the
-;; typical source of such a string, the Content-Type header value, after the
-;; @samp{multipart/form-data}.)
+;; @c NB: Description of ‘type’ adapted from ‘parse-type’ doc-comment.
+;; @c We can replace it w/ xref if ‘parse-type’ should ever become public.
+;; @var{type} is a form:
+;;
+;; @example
+;; ((multipart . MINOR) [PARAMETER...])
+;; @end example
+;;
+;; where @var{minor} is a downcased symbol (usually @code{mixed}),
+;; and each @var{parameter} is a pair with @sc{car} a downcased
+;; symbol and @sc{cdr} a string.  It is an error if one of these
+;; parameters is not @code{boundary}.
+;; For backward compatibility, @code{type} may also be a string,
+;; the unparsed value of the @code{Content-Type} header.
 ;;
 ;; Each element of the alist has the form @code{(@var{name} . @var{value})},
 ;; where @var{name} is a string and @var{value} is either a string or
@@ -79,17 +93,15 @@
 ;; of @code{raw-data} where the part header specifies no filename and the
 ;; part content-length is zero or unspecified.
 ;;
-(define (parse-form content-type-more raw-data)
+(define (parse-form type raw-data)
+  (and (string? type)
+       (set! type
+             (if (memq (string-ref type 0) '(#\; #\space))
+                 (cons '#f (parse-parameters type))
+                 (parse-type type))))
   (or (string? raw-data)
       (set! raw-data (read-characters raw-data)))
   (let ((v '()))
-
-    (define (determine-boundary s)
-      (string-append
-       "--" (let ((type (if (memq (string-ref s 0) '(#\; #\space))
-                            (cons '#f (parse-parameters s))
-                            (parse-type s))))
-              (p-ref type 'boundary))))
 
     (define (v! name value)
       (set! v (acons name value v)))
@@ -108,7 +120,7 @@
                                  (set! raw #f))))))))
 
     (let level ((bor 0) (eor (string-length raw-data))
-                (boundary (determine-boundary content-type-more))
+                (boundary (boundary<- type))
                 (parent-name #f))
 
       (define (find-bound from)
@@ -125,11 +137,12 @@
                    (name (or parent-name (hx +name-rx+)))
                    (eop (find-bound bov))
                    (eov (- eop 2)))
-          (or (and-let* ((type (hx +type-rx+)))
+          (or (and-let* ((stype (hx +type-rx+))
+                         (type (parse-type stype)))
                 (if (and (not parent-name) ; only recurse once
-                         (string-contains type "multipart/mixed"))
-                    (level bov eov (determine-boundary type) name)
-                    (u! name (hx +filename-rx+) type bov eov headers)))
+                         (typed? type 'multipart 'mixed))
+                    (level bov eov (boundary<- type) name)
+                    (u! name (hx +filename-rx+) stype bov eov headers)))
               (= bov eov)
               (v! name (substring/shared raw-data bov eov)))
           (get-pair eop))))

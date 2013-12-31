@@ -1,3 +1,15 @@
+2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make ‘parse-form’ handle parsed TYPE.
+
+	* server-utils/form-2-form.scm: Import ‘(www mime-headers) typed?’.
+	(boundary<-): New proc.
+	(parse-form): Rename 1st arg to ‘type’; if it is a string,
+	convert it immediately to its parsed form.
+	(parse-form determine-boundary): Delete proc.
+	(parse-form level): Use ‘boundary<-’, ‘typed?’;
+	for recursion and its check, use parsed form of type.
+
 2013-12-30  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Use ‘(www mime-headers)’ more.
