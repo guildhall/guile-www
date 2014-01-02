@@ -156,58 +156,78 @@
 
 ;;; CGI context closure.
 
+(define (parse-form/squeeze-maybe type len opt?)
+  (let ((pre-squeezed? (not (opt? 'uploads-lazy)))
+        (alist (parse-form type len)))
+
+    (define (linear name rest)
+
+      (define (upload filename type headers squeeze)
+        (list filename
+              (if pre-squeezed?
+                  (let ((value (squeeze substring)))
+                    (set-object-property!
+                     value #:guile-www-cgi
+                     `((#:name . ,name)
+                       (#:filename . ,filename)
+                       (#:mime-type . ,type)
+                       (#:raw-mime-headers . ,headers)))
+                    value)
+                  rest)))
+
+      (cons* name (if (string? rest)
+                      (list rest #f)
+                      (apply upload rest))))
+
+    (map linear
+         (map car alist)
+         (map cdr alist))))
+
 (define (make-ccc)
   (let ((P '())                         ; form variables as pairs
         (V '())                         ; form variables collated
         (U '())                         ; file uploads
         (C '()))                        ; cookies
 
+    (define (P! x) (set! P x))
+    (define (V! x) (set! V x))
+    (define (U! x) (set! U x))
+
     (define (init! opts)
 
       (define (opt? symbol)
         (memq symbol opts))
 
-      (set! P '()) (set! V '()) (set! U '())
+      (P! '()) (V! '()) (U! '())
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
                  (type (parse-type (env-look 'content-type))))
         (cond ((typed? type 'application 'x-www-form-urlencoded)
-               (set! P (alist<-query (read-characters len))))
+               (P! (alist<-query (read-characters len))))
               ((typed? type 'multipart 'form-data)
-               (let ((alist (parse-form type len))
-                     (pre-squeezed? (not (opt? 'uploads-lazy))))
+               (let ((full (parse-form/squeeze-maybe
+                            type len opt?)))
 
-                 (define (mogrify m)
-                   (or (cdr m) (error "badness from parse-form:" m))
-                   (if (string? (cdr m))
-                       (set! P (cons m P))
-                       (let ((four (cdr m)))
+                 (define (extract-P name value upload)
+                   (cons name value))
 
-                         (define (handle filename type headers squeeze)
-                           (set! P (acons (car m) filename P))
-                           (and pre-squeezed?
-                                (let ((value (squeeze substring)))
-                                  (set-object-property!
-                                   value #:guile-www-cgi
-                                   `((#:name . ,(car m))
-                                     (#:filename . ,filename)
-                                     (#:mime-type . ,type)
-                                     (#:raw-mime-headers . ,headers)))
-                                  (set-cdr! m value)))
-                           (set! U (cons m U)))
+                 (define (extract-U name value upload)
+                   (and upload (cons name upload)))
 
-                         (apply handle four))))
+                 (define (map-ent proc)
+                   (map (lambda (ent)
+                          (apply proc ent))
+                        full))
 
-                 (for-each mogrify alist))
-               (set! P (reverse! P))
-               (set! U (reverse! U)))))
+                 (P! (map-ent extract-P))
+                 (U! (delq #f (map-ent extract-U)))))))
       ;; Include ‘query-string’ pairs, if any.
       (and-let* ((s (getenv/symbol 'query-string))
                  ((not (string-null? s))))
         ;; FIXME: We prefix, but perhaps we should suffix?
-        (set! P (append! (alist<-query s) P)))
-      (set! V (collate P))
-      (set! U (collate U))
+        (P! (append! (alist<-query s) P)))
+      (V! (collate P))
+      (U! (collate U))
       (set! C (cond ((env-look 'http-cookie)
                      => (lambda (raw)
                           (collate (simple-parse-cookies
@@ -217,7 +237,7 @@
 
     (define (uploads name)
       (and-let* ((pair (assoc name U)))
-        (set! U (delq pair U))
+        (U! (delq pair U))
         (cdr pair)))
 
     ;; rv

@@ -1,3 +1,13 @@
+2014-01-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add abstractions: P!, V!, U!, parse-form/squeeze-maybe
+
+	* cgi.scm (parse-form/squeeze-maybe): New proc.
+	(make-ccc! P!): Likewise.
+	(make-ccc! V!): Likewise.
+	(make-ccc! U!): Likewise.
+	(make-ccc!): Use new procs.
+
 2013-12-31  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Don't bother specifying " " for ‘string-join’ DELIM.
