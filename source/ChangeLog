@@ -1,5 +1,13 @@
 2014-01-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[int] Invert order of ‘parse-multipart unflatten’ rv.
+
+	This makes ‘p-ref’ happy.
+
+	* mime-multipart.scm (parse-multipart unflatten): ...here.
+
+2014-01-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Add abstractions: P!, V!, U!, parse-form/squeeze-maybe
 
 	* cgi.scm (parse-form/squeeze-maybe): New proc.

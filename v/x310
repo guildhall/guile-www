@@ -70,7 +70,7 @@
                (else (lambda (move)
                        (call-with-output-string move)))))
 
-(define (check-form-input headers move)
+(define (check-form-input move headers)
 
   (define (get name)
     (let ((val (assq-ref headers name)))

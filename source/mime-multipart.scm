@@ -88,7 +88,7 @@
 ;; Return a list of forms:
 ;;
 ;; @example
-;; ((HEADERS . MOVE) ...)
+;; ((MOVE . HEADERS) ...)
 ;; @end example
 ;;
 ;; where @var{headers} are the result of calling @code{parse-headers}
@@ -190,13 +190,15 @@
                       (else (bad-move! 'bad-to))))))
 
           ;; rv
-          (cons (acons 'Content-Length len headers)
-                ;; Check for sub multipart/foo and recurse.  We could
-                ;; simply leave things to the caller, but that's lame.
-                (let ((type (assq-ref headers 'Content-Type)))
-                  (if (top-typed? type 'multipart)
-                      (ok (parse-multipart type (port-at-body) len))
-                      move)))))
+          (cons
+           ;; Check for sub multipart/foo and recurse.  We could
+           ;; simply leave things to the caller, but that's lame.
+           (let ((type (assq-ref headers 'Content-Type)))
+             (if (top-typed? type 'multipart)
+                 (ok (parse-multipart type (port-at-body) len))
+                 move))
+           (acons 'Content-Length len
+                  headers))))
 
       (map unflatten spans))))
 
