@@ -1,6 +1,6 @@
 ;;; (www server-utils form-2-form) --- Unflatten POSTed form data
 
-;; Copyright (C) 2009, 2011 Thien-Thi Nguyen
+;; Copyright (C) 2009, 2011, 2012, 2013 Thien-Thi Nguyen
 ;;
 ;; This file is part of Guile-WWW.
 ;;
