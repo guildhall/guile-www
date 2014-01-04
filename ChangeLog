@@ -1,3 +1,10 @@
+2014-01-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add a query-string to the x310 html.
+
+	* v/x310.d/invoke-id.html <form action>: ...here,
+	to specify effectively ‘zero=0𝟎0’ (U+30, U+1D7CE, U+30).
+
 2014-01-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Invert order of ‘parse-multipart unflatten’ rv.
