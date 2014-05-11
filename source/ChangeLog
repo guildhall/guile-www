@@ -1,3 +1,10 @@
+2014-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Expand ‘url-coding:encode’ description.
+
+	* url-coding.scm (url-coding:encode):
+	Add "safe" charset list and example to doc-comment.
+
 2014-01-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Invert order of ‘parse-multipart unflatten’ rv.

@@ -181,7 +181,23 @@
 
 ;; Return a new string made from url-encoding @var{str},
 ;; unconditionally transforming those in @var{reserved-chars}, a list
-;; of characters, in addition to those in the standard (internal) set.
+;; of characters to be omitted from the standard (safe) set:
+;;
+;; @example
+;; A @r{through} Z
+;; a @r{through} z
+;; 0 @r{through} 9
+;; $ - _ . + ! * ' ( ) , ; / ? : @@ & =
+;; @end example
+;;
+;; For example:
+;;
+;; @example
+;; (url-coding:encode "/foo/bar/baz" '())
+;; @result{} "/foo/bar/baz"
+;; (url-coding:encode "/foo/bar/baz" '(#\/ #\b))
+;; @result{} "%2ffoo%2f%62ar%2f%62az"
+;; @end example
 ;;
 (define url-coding:encode
   ;; “Thus, only alphanumerics, the special characters "$-_.+!*'(),", and
