@@ -57,6 +57,10 @@ It lives in the repo but is not included in the distribution.
 *** indent with emacs (don't like the result? fix emacs!)
 *** (setq indent-tabs-mode nil)
 *** (add-hook 'before-save-hook 'delete-trailing-whitespace)
+*** use scheme mode for tests
+  (pushnew '("guile-www[^/]*/v/x[0-9][0-9][0-9]$" . scheme-mode)
+           auto-mode-alist
+           :test 'equal)
 *** everything UTF-8
 *** ChangeLog
 ***** ttn-style: TITLE LF LF {BLURB LF LF}* BODY
