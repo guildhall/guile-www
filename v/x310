@@ -28,8 +28,7 @@
                                p-ref))
  ((www mime-multipart) #:select (parse-multipart)))
 
-(define (dot-d/ filename)
-  (srcdir/ (in-vicinity "x310.d" filename)))
+(use-dot-d-files!)
 
 (define-macro (with-input-port-from-dot-d filename . body)
   `(call-with-input-file (dot-d/ ,filename)

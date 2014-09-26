@@ -1,3 +1,12 @@
+2014-09-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Centralize ‘dot-d/’ support.
+
+	* v/common (dot-d/): New proc, w/ initial value ‘#f’, to be set by...
+	(use-dot-d-files!): ...this new proc.
+	* v/x310: Use ‘use-dot-d-files!’.
+	(dot-d/): Delete proc.
+
 2014-01-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[int] Add a query-string to the x310 html.

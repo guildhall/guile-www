@@ -35,4 +35,16 @@
 (define (srcdir/ filename)
   (in-vicinity (getenv "srcdir") filename))
 
+;;;---------------------------------------------------------------------------
+;;; A test xNNN keeps its extra data in directory xNNN.d.
+;;; Protocol: Call ‘use-dot-d-files!’ first, then ‘dot-d/’ afterwards.
+
+(define dot-d/ #f)
+
+(define (use-dot-d-files!)
+  (let ((d (string-append (basename (port-filename (current-load-port)))
+                          ".d")))
+    (set! dot-d/ (lambda (filename)
+                   (srcdir/ (in-vicinity d filename))))))
+
 ;;; common ends here
