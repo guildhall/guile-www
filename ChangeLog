@@ -1,5 +1,13 @@
 2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v int] Add abstraction: do-it!
+
+	* v/x310 (BODY): Delete.
+	(do-it!): New proc.
+	<top-level>: Don't ‘check-form-input’ directly; instead, ‘do-it!’.
+
+2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Validate form-data values, too.
 
 	* v/x310: Import ‘(ice-9 binary-ports)’ or ‘(www binary-ports)’.

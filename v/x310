@@ -52,9 +52,6 @@
 (check (p-ref TYPE 'boundary)
        "no boundary in params: ~S" (cdr TYPE))
 
-(define BODY (with-input-port-from-dot-d "body"
-               (parse-multipart TYPE port (stat:size (stat port)))))
-
 (define (check-upload move filename)
   (let ((known (dot-d/ filename))
         (fresh (string-append "x310-" filename ".fresh")))
@@ -107,9 +104,14 @@
                     who got)))))
   (vfso "~%"))
 
-(for-each check-form-input
-          (map car BODY)
-          (map cdr BODY))
+(define (do-it!)
+  (let ((body (with-input-port-from-dot-d "body"
+                (parse-multipart TYPE port (stat:size (stat port))))))
+    (for-each check-form-input
+              (map car body)
+              (map cdr body))))
+
+(do-it!)
 
 (exit #t)
 
