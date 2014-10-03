@@ -1,3 +1,15 @@
+2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v] Validate form-data values, too.
+
+	* v/x310: Import ‘(ice-9 binary-ports)’ or ‘(www binary-ports)’.
+	(nice-text): Delete.
+	(uv->list): New proc alias.
+	(extract): New proc.
+	(EXPECTED-FORM-DATA): New data structure.
+	(check-form-input): Determine ‘name’ of form data field;
+	use ‘extract’; ‘check’ its value against ‘EXPECTED-FORM-DATA’.
+
 2014-09-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v int] Centralize ‘dot-d/’ support.

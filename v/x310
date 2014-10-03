@@ -28,6 +28,9 @@
                                p-ref))
  ((www mime-multipart) #:select (parse-multipart)))
 
+(cond-expand (guile-2 (use-modules (ice-9 binary-ports)))
+             (else (use-modules (www binary-ports))))
+
 (use-dot-d-files!)
 
 (define-macro (with-input-port-from-dot-d filename . body)
@@ -61,13 +64,27 @@
     (vfso "file: ~A OK!~%" filename)
     (delete-file fresh)))
 
-(define nice-text
-  ;; Bifurcating test behavior is somewhat uncool.  However, we can
-  ;; live w/ it because this is used only for informative output.
-  (cond-expand (guile-2 (lambda (move)
-                          (move #t)))
-               (else (lambda (move)
-                       (call-with-output-string move)))))
+;; Maybe someday we will slog backwards to Guile 1.4.x,
+;; which DOES have ‘(srfi srfi-4) u8vector->list’ after all...
+(define uv->list u8vector->list)
+
+(define (extract move)
+  (let* ((uv (move #t))
+         (ls (uv->list uv)))
+    (vfso "uvec: ~S~%" uv)
+    (vfso "text: ~A~%" (call-with-output-string
+                        (lambda (port)
+                          (put-bytevector port uv))))
+    ls))
+
+(define EXPECTED-FORM-DATA
+  '((one
+     ;; od -A n -j 1109 -N 38 -t u1 x310.d/body
+     33 33 32 226 152 161 32 71 117 105 108 101 32 226 136 152 32 87 111
+     114 108 100 45 87 105 100 101 45 87 101 98 32 226 136 158 32 33 33)
+    (two
+     ;; od -A n -j 1267 -N 3 -t u1 x310.d/body
+     116 119 111)))
 
 (define (check-form-input move headers)
 
@@ -83,7 +100,11 @@
            => (lambda (filename)
                 (check-upload move filename)))
           ((typed? type 'text 'plain)
-           (vfso "text: ~A~%" (nice-text move)))))
+           (let* ((who (string->symbol (p-ref disp 'name)))
+                  (got (extract move)))
+             (check (equal? got (assq-ref EXPECTED-FORM-DATA who))
+                    "bad ‘~A’ data: ~S"
+                    who got)))))
   (vfso "~%"))
 
 (for-each check-form-input
