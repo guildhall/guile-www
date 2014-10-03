@@ -113,6 +113,15 @@
 
 (do-it!)
 
+(let ((locale (call-with-input-file "testing-locale" read-line))
+      (now #f))
+  (check (string? locale) "bad locale: ~S" locale)
+  (set! now (setlocale LC_ALL locale))
+  (check (string? now) "setlocale ~S failed" locale)
+  (vfso "locale: was unset, now ~S~%~%" now))
+
+(do-it!)
+
 (exit #t)
 
 ;;; Local variables:

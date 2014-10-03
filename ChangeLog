@@ -1,5 +1,12 @@
 2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Make x310 check also after ‘setlocale’.
+
+	* v/x310: After initial ‘do-it!’,
+	set the locale and ‘do-it!’ again.
+
+2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v] Determine a UTF-8 locale for testing.
 
 	* v/Makefile.am (DISTCLEANFILES): New var.
