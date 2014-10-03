@@ -38,6 +38,14 @@
                                         u8vector-length
                                         u8vector-ref)))
 
+(define-macro (ignore-default-port-encoding . body)
+  `(cond-expand
+    (guile-2
+     (with-fluids ((%default-port-encoding #f))
+       ,@body))
+    (else
+     ,@body)))
+
 (define (interesting buf boundary)
   (set! boundary (string-append "--" boundary))
   (let* ((buf-lim (u8vector-length buf))
@@ -154,10 +162,11 @@
     ;; as proper operation requires enabling ‘seek’ support available
     ;; only via C func ‘scm_set_port_seek’.
 
-    (let ((port (make-soft-port (vector #f #f #f
-                                        buf-get-one-char
-                                        buf-close)
-                                "r")))
+    (let ((port (ignore-default-port-encoding
+                 (make-soft-port (vector #f #f #f
+                                         buf-get-one-char
+                                         buf-close)
+                                 "r"))))
 
       (define (port-at n)
         (eye! n)

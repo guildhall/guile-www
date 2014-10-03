@@ -1,3 +1,14 @@
+2014-10-03  Josep Portella Florit  <jpf@primfilat.com>  (tiny change)
+
+	[slog] Work around Guile 2.0.x ‘%default-port-encoding’ weirdness.
+
+	This is probably related to Guile bug#18520:
+	<http://lists.gnu.org/archive/html/bug-guile/2014-09/msg00017.html>,
+	which indicates a need to revisit / review for Guile 2.2.x (sigh).
+
+	* mime-multipart.scm (ignore-default-port-encoding): New macro.
+	(parse-multipart): Use it around ‘make-soft-port’ call.
+
 2014-05-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[doc] Expand ‘url-coding:encode’ description.
