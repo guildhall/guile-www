@@ -63,7 +63,9 @@ all-modules.list:
 	  z 'www data' $(data_leaves) ;					\
 	} > $@
 
-check_DATA = .fake
+DISTCLEANFILES = testing-locale
+
+check_DATA = .fake testing-locale
 
 ## This hair is so that we can do, e.g.:
 ##  touch ../source/**/foo.scm && make check
@@ -96,6 +98,13 @@ x000: all-modules.list
 $(single): all-modules.list
 	@n=`echo $@ | sed 's/x0*//'` ; \
 	sed -e "$${n}!d" -e 's/.*/(use-modules &) (exit #t)/' $< > $@
+
+# Try to find the first .UTF-8 locale; default to C.UTF-8 on failure.
+testing-locale:
+	locale -a > $@T
+	sed -n -e '/[.]UTF-8$$/{' -e p -e q -e '}' $@T > $@
+	test -s $@ || echo C.UTF-8 > $@
+	rm -f $@T
 
 clean-local:
 	-rm -rf all-modules.list .fake x000 $(single)

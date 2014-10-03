@@ -1,5 +1,13 @@
 2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[v] Determine a UTF-8 locale for testing.
+
+	* v/Makefile.am (DISTCLEANFILES): New var.
+	(check_DATA): Add testing-locale.
+	(testing-locale): New target.
+
+2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Add abstraction: do-it!
 
 	* v/x310 (BODY): Delete.

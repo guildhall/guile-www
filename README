@@ -36,6 +36,17 @@ Installation
 	  VERBOSE         -- if "1", set ‘%load-verbosely’, and
 			     enable some tests to display more info
 
+	Tests that manipulate the locale (via ‘setlocale’) normally
+	consult file v/testing-locale, which is constructed based on
+	the first UTF-8 locale output by "locale -a" and falls back to
+	"C.UTF-8" if there are problems w/ "locale -a".  You can set
+	a different value (that must be UTF-8) by modifying that file
+	directly.  For example, to use the value of env var ‘LANG’:
+
+	  $ echo $LANG
+	  it_IT.UTF-8
+	  $ echo $LANG > v/testing-locale
+
 	If "make check" fails, please report the problem (see below).
 
 	On "make install", these files are copied to these directories
