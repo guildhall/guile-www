@@ -1,3 +1,16 @@
+2014-10-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Exercise CGI "move u8" style.
+
+	* examples/id.cgi.in: Import ‘(ice-9 format)’.
+	(fso): Use ‘format’.
+	(+init-opt+): Add ‘move’ to options mix, weight 50%,
+	and reduce both ‘uploads-lazy’ and no-options to 25%.
+	<init>: Call ‘cgi:init’ w/ ‘u8-qs’ and ‘move-simple-text/plain’.
+	<form data>: Use "~Y" in ‘fso’ format string.
+	<file uploads>: Display contents in MIME-type-specific ways,
+	taking into account ‘cgi:init’ option ‘move’.
+
 2014-10-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[v] Make x310 check also after ‘setlocale’.

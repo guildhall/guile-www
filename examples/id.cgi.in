@@ -31,11 +31,12 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
 ;;; Code:
 
 (use-modules (www cgi) (www server-utils parse-request))
+(use-modules (ice-9 format))
 
 ;; Abstractions: formatted string output, sectioned output, collection.
 
 (define (fso s . args)
-  (apply simple-format #t s args))
+  (apply format #t s args))
 
 (define-macro (section title . body)
   `(begin
@@ -56,10 +57,12 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
 ;; called each time to reinitialize the context, and the rest of the
 ;; file converted from multiple top-level forms into a thunk.
 
-(define +init-opt+ (and (even? (cdr (gettimeofday)))
-                        'uploads-lazy))
+(define +init-opt+ (case (modulo (cdr (gettimeofday)) 4)
+                     ((3 2) 'move)
+                     ((1)   'uploads-lazy)
+                     (else  #f)))
 
-(cgi:init +init-opt+)
+(cgi:init 'u8-qs 'move-simple-text/plain +init-opt+)
 
 ;; Output the headers.  Each header is followed by a CRLF pair, and the
 ;; headers are separated from the body by another CRLF.  In this case,
@@ -122,7 +125,7 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
      (let ((ls (cgi:names)))
        (fso "(~A names)~%" (length ls))
        (for-each (lambda (name)
-                   (fso "~%~A:~%~S~%" name (cgi:values name)))
+                   (fso "~%~A:~%~Y" name (cgi:values name)))
                  ls))
      (fso "(none)~%")))
 
@@ -130,9 +133,23 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
  "File Uploads (using ‘cgi:uploads’)"
  (let* ((ls (append! (collect cgi:uploads (lambda (name u) u))))
         (tot (length ls)))
+
+   (define NOT-TEXT "[contents omitted -- not text]")
+
    (if (zero? tot)
        (fso "(none)~%")
-       (let ((v? (eq? 'uploads-lazy +init-opt+)))
+       (let ((v? (eq? 'uploads-lazy +init-opt+))
+             (m? (eq? 'move +init-opt+)))
+
+         (define (show-m x)
+           (define (out filename move len type)
+             (fso "~%~S (~A/~A, ~A bytes)~%~A~%"
+                  filename (caar type) (cdar type) len
+                  (if (equal? '(text . plain) (car type))
+                      ;; aka: (typed? type 'text 'plain)
+                      (call-with-output-string move)
+                      NOT-TEXT)))
+           (apply out x))
 
          (define (v<-u u)
            (let ((minfo (object-property u #:guile-www-cgi))
@@ -155,17 +172,18 @@ exec ${GUILE-'@abs_top_builddir@/examples/wily-guile'} -s $0 "$@" # -*- scheme -
                (define (content)
                  (if (string=? "text" (substring type 0 (string-index type #\/)))
                      (squeeze substring)
-                     "[contents omitted -- not text]"))
+                     NOT-TEXT))
 
                (fso "~%~S (~A, ~A bytes)~%~A~%~A~%"
                     filename type (content-length)
                     headers (content)))))
 
          (fso "(~A uploads (~A))~%" tot
-              (if v?
-                  "values"
-                  "strings with the object property #:guile-www-cgi"))
-         (for-each show (apply append ls))))))
+              (cond (m? "each of the form (FILENAME MOVE LENGTH TYPE)")
+                    (v? "values")
+                    (else "strings with the object property #:guile-www-cgi")))
+         (for-each (if m? show-m show)
+                   (apply append ls))))))
 
 (section
  "Cookies (using ‘cgi:cookie-names’ and ‘cgi:cookies’)"
