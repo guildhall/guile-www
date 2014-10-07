@@ -13,7 +13,7 @@
 @copying
 This reference manual is for Guile-WWW @value{VERSION}.
 
-Copyright @copyright{} 2007--2013 Thien-Thi Nguyen@*
+Copyright @copyright{} 2007--2014 Thien-Thi Nguyen@*
 Copyright @copyright{} 2001--2007 Free Software Foundation, Inc.
 
 @quotation

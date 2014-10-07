@@ -3,7 +3,7 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 !#
 ;;; mm --- module munge
 
-;; Copyright (C) 2010, 2011, 2012, 2013 Thien-Thi Nguyen
+;; Copyright (C) 2010, 2011, 2012, 2013, 2014 Thien-Thi Nguyen
 ;;
 ;; This file is part of Guile-WWW.
 ;;
