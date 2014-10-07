@@ -68,27 +68,7 @@ Makefile.in
 /v/all-modules.list
 /v/testing-locale
 /v/v
-/v/x000
-/v/x000
-/v/x001
-/v/x002
-/v/x003
-/v/x004
-/v/x005
-/v/x006
-/v/x007
-/v/x008
-/v/x009
-/v/x010
-/v/x011
-/v/x012
-/v/x013
-/v/x014
-/v/x015
-/v/x016
-/v/x017
-/v/x018
-/v/x019
+/v/x0??
 
 # here we try to express:
 # everything else under source except Makefile.am and *.scm
