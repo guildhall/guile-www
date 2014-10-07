@@ -1,3 +1,17 @@
+2014-10-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[cgi] Add option to do file-uploads entirely in "move u8" style.
+
+	* cgi.scm:
+	Autoload ‘(www mime-multipart)’ on trigger ‘parse-multipart’.
+	(parse-form/move): New proc.
+	(make-ccc alist<-qs): New proc.
+	(make-ccc): If given option ‘move’,
+	use ‘alist<-qs’, ‘parse-form/move’.
+	(make-ccc init!): Use ‘alist<-qs’.
+	(cgi:init): Document new options ‘move’, ‘move-simple-text/plain’.
+	(cgi:uploads): Document behavior given new options.
+
 2014-10-03  Josep Portella Florit  <jpf@primfilat.com>  (tiny change)
 
 	[slog] Work around Guile 2.0.x ‘%default-port-encoding’ weirdness.

@@ -36,6 +36,7 @@
   #:use-module ((www server-utils parse-request) #:select (alist<-query))
   #:autoload (www mime-headers) (parse-type)
   #:autoload (www server-utils cookies) (simple-parse-cookies)
+  #:autoload (www mime-multipart) (parse-multipart)
   #:autoload (www server-utils form-2-form) (parse-form)
   #:autoload (www crlf) (read-characters)
   #:use-module ((srfi srfi-2) #:select (and-let*))
@@ -156,6 +157,38 @@
 
 ;;; CGI context closure.
 
+(define (parse-form/move type len opt?)
+
+  (define string-text/plain-please (opt? 'move-simple-text/plain))
+
+  (define (reflow pair)
+
+    (define move (car pair))
+
+    (define (hget header)
+      (p-ref pair header))
+
+    (define (d key)
+      (p-ref (hget 'Content-Disposition)
+             key))
+
+    (let* ((filename (d 'filename))
+           (type     (hget 'Content-Type))
+           (value    (if (and string-text/plain-please
+                              (typed? type 'text 'plain)
+                              (not filename))
+                         (call-with-output-string move)
+                         (list (if (procedure? move)
+                                   move
+                                   (map reflow move))
+                               (hget 'Content-Length)
+                               type))))
+      (list (d 'name)
+            (or filename value)
+            (and filename (cons filename value)))))
+
+  (map reflow (parse-multipart type (current-input-port) len)))
+
 (define (parse-form/squeeze-maybe type len opt?)
   (let ((pre-squeezed? (not (opt? 'uploads-lazy)))
         (alist (parse-form type len)))
@@ -198,14 +231,19 @@
       (define (opt? symbol)
         (memq symbol opts))
 
+      (define (alist<-qs s)
+        (alist<-query s (opt? 'u8-qs)))
+
       (P! '()) (V! '()) (U! '())
       (and-let* ((len (env-look 'content-length))
                  ((not (zero? len)))
                  (type (parse-type (env-look 'content-type))))
         (cond ((typed? type 'application 'x-www-form-urlencoded)
-               (P! (alist<-query (read-characters len))))
+               (P! (alist<-qs (read-characters len))))
               ((typed? type 'multipart 'form-data)
-               (let ((full (parse-form/squeeze-maybe
+               (let ((full ((if (opt? 'move)
+                                parse-form/move
+                                parse-form/squeeze-maybe)
                             type len opt?)))
 
                  (define (extract-P name value upload)
@@ -225,7 +263,7 @@
       (and-let* ((s (getenv/symbol 'query-string))
                  ((not (string-null? s))))
         ;; FIXME: We prefix, but perhaps we should suffix?
-        (P! (append! (alist<-query s) P)))
+        (P! (append! (alist<-qs s) P)))
       (V! (collate P))
       (U! (collate U))
       (set! C (cond ((env-look 'http-cookie)
@@ -270,9 +308,25 @@
 ;; @var{opts} are zero or more symbols that configure the module.
 ;;
 ;; @table @code
+;; @item u8-qs
+;; This causes parsing of @code{query-string} and form data posted
+;; with MIME type @code{application/x-www-form-urlencoded} to return
+;; an alist with u8vector keys and values.
+;;
 ;; @item uploads-lazy
 ;; This controls how uploaded files, as per @code{cgi:uploads}
 ;; and @code{cgi:upload}, are represented.
+;;
+;; @item move
+;; This is like @code{uploads-lazy} but additionally affects all
+;; parameters in a form with MIME type @code{multipart/form-data}.
+;; If both @code{uploads-lazy} and @code{move} are specified,
+;; then @code{move} takes precedence.
+;;
+;; @item move-simple-text/plain
+;; This simplifies the value of form parameters with MIME type
+;; @code{text/plain} to a string, discarding other MIME information.
+;; It is only meaningful in conjunction with @code{move}.
 ;;
 ;; @item cookies-split-on-semicolon
 ;; This causes cookies parsing to use @code{#\;} (semicolon), instead
@@ -364,6 +418,37 @@
 
 ;; Return a list of file contents associated with @var{name},
 ;; or @code{#f} if no files are available.
+;;
+;; If the @code{move} option is specified to @code{cgi:init},
+;; each file contents element has the form:
+;;
+;; @example
+;; (FILENAME MOVE LENGTH TYPE)
+;; @end example
+;;
+;; where @var{filename} is a string, @var{length} is an integer,
+;; @var{type} is a ``MIME type form'' [[[TODO: this is really
+;; a PITA to document piecemeal --- might as well redirect the
+;; effort towards making @code{(www mime-headers)} public.]]],
+;; and @var{move} is either a sub-list (from a sub-multipart part),
+;; or, more typically the case a procedure that takes one arg @var{to}:
+;;
+;; @c NB: This is taken from @code{(www mime-multipart)}.
+;; @table @asis
+;; @item @var{port}
+;; Send the part contents to @var{port}.
+;;
+;; @item @code{#t}
+;; Return a u8vector of the part contents.
+;;
+;; @item @code{#f}
+;; Discard the part contents and return @code{#f}.
+;; @end table
+;;
+;; NB: @code{move-simple-text/plain} does not apply to file
+;; contents, even for file with MIME type @code{text/plain}.
+;;
+;; If @code{move} is @strong{not} specified to @code{cgi:init}, read on.
 ;;
 ;; Uploaded files are parsed by @code{parse-form} (@pxref{form-2-form}).
 ;; If the @code{uploads-lazy} option is specified to @code{cgi:init}, then
