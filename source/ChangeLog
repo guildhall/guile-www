@@ -1,3 +1,7 @@
+2014-10-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 2.38
+
 2014-10-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Add option to do file-uploads entirely in "move u8" style.

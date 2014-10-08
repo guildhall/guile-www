@@ -2,6 +2,98 @@ NEWS for Guile-WWW
 See the end for copying conditions.
 
 
+- 2.38 | 2014-10-08
+
+  - bug-report address changed
+
+    Please send bug reports to the address shown by running command:
+
+     ./configure --help
+
+    Mail sent to the previous address is likely to be misplaced.
+
+  - bugfixes
+
+    - ‘parse-form’ uses ‘list’ instead of ‘values’
+
+      NB: Backward-incompatible change.
+
+      Previously, this ‘(www server-utils form-2-form)’ proc would use
+      ‘values’ for form elements that have type info, consing the
+      result into the returned alist.  Unfortunately, use of ‘values’
+      outside a ‘call-with-values’ context (e.g., as a container, as
+      in this case) is not supported by Guile 2.x.
+
+      Now, the four pieces of type info are packaged w/ ‘list’.
+
+    - support for VPATH "make check"
+
+      Previously VPATH "make check" failed to initialize each test's
+      infrastructure (i.e., v/common).  Now it takes into account the
+      configure-substituted and Makefile var ‘srcdir’ as well.
+
+  - new optional arg ‘u8’
+
+    - ‘(www url-coding) url-coding:decode’
+
+      This proc now takes an optional arg U8, which if non-‘#f’, means
+      to return a u8vector instead of a string.
+
+    - ‘(www server-utils parse-request) alist<-query’
+
+      This proc now takes an optionl arg U8, which if non-‘#f’, means
+      to return u8vectors instead of strings for names and values.
+
+  - changes to ‘(www server-utils form-2-form) parse-form’
+
+    - non-string args ok
+
+      The first arg can now be a form:
+
+       ((multipart . MINOR) PARAMETER...)
+
+      i.e., the parsed form of the Content-Type header's value.
+      Relatedly, the arg's documented name is now simply TYPE.
+
+      The second arg can now be an integer specifying the number of
+      bytes to read from the current input port.
+
+      For backward compatibility, TYPE and RAW-DATA can also be
+      strings.
+
+    - sub ‘multipart/mixed’ better recognized
+
+      Previously, a (sub) part w/ "Content-Type: multiPART / miXed"
+      (for instance) would be handled opaquely.  Now, such a header is
+      properly recognized and recursed into.  Sigh, one has to wonder:
+      Will there ever be a more tightly specified MIME 2.0?
+
+  - CGI file-uploads can now be done in "move u8" style
+
+    Proc ‘(www cgi) cgi:init’ now accepts options ‘move’, which
+    controls how file-uploads are handled.  When specified, the
+    uploaded files are returned as procedures that can be called to
+    write the actual contents of the file (a u8vector) to a port or
+    to return those contents directly.  This option takes precedence
+    over ‘uploads-lazy’.
+
+    Another new option is ‘move-simple-text/plain’, which only is
+    meaningful if ‘move’ is also specified.  This simplifies the
+    value of form parameters with MIME type ‘text/plain’ to a
+    string, discarding other MIME information.
+
+    See examples/id.cgi.in for how to use these options.
+
+  - "make check" locale support
+
+    You can customize (somewhat) the locale that tests use by
+    manipulating file v/testing-locale.  See README.
+
+  - bootstrap tools upgraded
+    - GNU Automake 1.14.1
+    - Guile-BAUX 20140110.0849.39e9660
+
+
 - 2.37 | 2013-07-28
 
   - dropped
