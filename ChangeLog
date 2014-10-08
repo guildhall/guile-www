@@ -1,3 +1,13 @@
+2014-10-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Create list of x0?? tests via autogen.sh.
+
+	* v/singles-update.mk: New file.
+	* v/Makefile.am (single): Don't assign to this var;
+	instead, init empty and then ‘include singles’.
+	(EXTRA_DIST): Add singles, singles-update.mk.
+	* autogen.sh <make v/singles>: New section.
+
 2014-10-07  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	[cgi] Exercise CGI "move u8" style.

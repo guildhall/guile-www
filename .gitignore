@@ -66,6 +66,7 @@ Makefile.in
 
 /v/.fake
 /v/all-modules.list
+/v/singles
 /v/testing-locale
 /v/v
 /v/x0??

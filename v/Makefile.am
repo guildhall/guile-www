@@ -28,11 +28,8 @@ XFAIL_TESTS =
 TESTS =
 TESTS += x000
 
-# Unfortunately, this list must track the count of items listed
-# in ../build-aux/common.mk (i.e., be manually maintained).
-single = \
- x001 x002 x003 x004 x005 x006 x007 x008 x009 x010 \
- x011 x012 x013 x014 x015 x016 x017 x018
+single =
+include singles
 TESTS += $(single)
 
 explicit = \
@@ -47,6 +44,7 @@ explicit = \
 TESTS += $(explicit)
 
 EXTRA_DIST = $(explicit) common x310.d
+EXTRA_DIST += singles singles-update.mk
 
 all-modules.list:
 	@echo Creating $@ ... ;						\
