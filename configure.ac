@@ -16,10 +16,8 @@ dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
 dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 dnl GNU General Public License for more details.
 dnl
-dnl You should have received a copy of the GNU General Public
-dnl License along with Guile-WWW; see the file COPYING.  If not,
-dnl write to the Free Software Foundation, Inc., 51 Franklin Street,
-dnl Fifth Floor, Boston, MA  02110-1301  USA
+dnl You should have received a copy of the GNU General Public License
+dnl along with Guile-WWW.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_INIT([Guile-WWW],[2.37],[guile-user@gnu.org])
 AC_CONFIG_AUX_DIR([build-aux])
