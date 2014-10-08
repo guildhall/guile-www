@@ -1,5 +1,12 @@
 2014-10-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	[build int] Update mm version to track releases.
+
+	* build-aux/guile-baux/mm (main):
+	Bump to "1.2"; add comments summarizing changes.
+
+2014-10-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[v int] Create list of x0?? tests via autogen.sh.
 
 	* v/singles-update.mk: New file.

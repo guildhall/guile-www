@@ -147,7 +147,10 @@ exec ${GUILE-guile} -e '(guile-baux mm)' -s $0 "$@" # -*-scheme-*-
 
 (define (main args)
   (check-hv args '((package . "Guile-WWW")
-                   (version . "1.0")
+                   (version . "1.2")
+                   ;; 1.2  -- add ‘no-binports’, ‘u8-io’
+                   ;; 1.1  -- bugfix: export ‘main’ !
+                   ;; 1.0  -- initial release
                    (help . commentary)))
   (main/qop (qop<-args
              args '((output (single-char #\o) (value #t))
