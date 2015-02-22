@@ -2,6 +2,17 @@ NEWS for Guile-WWW
 See the end for copying conditions.
 
 
+- 2.39 | 2015-02-22
+
+  - doc fix: spell "incompatibility" correctly!
+
+  - ‘http:request’ slightly faster
+
+  - bootstrap tools upgraded
+    - GNU Automake 1.15
+    - Guile-BAUX 20150108.1006.f6573e4
+
+
 - 2.38 | 2014-10-08
 
   - bug-report address changed

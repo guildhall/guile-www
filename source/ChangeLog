@@ -1,5 +1,9 @@
 2015-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
+	Release: 2.39
+
+2015-02-22  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
 	[int] Use ‘number->string’ more.
 
 	* http.scm (msg-string-rcode!): ...here.

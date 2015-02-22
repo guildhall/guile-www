@@ -1,6 +1,7 @@
 dnl configure.ac
 dnl
-dnl Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013, 2014 Thien-Thi Nguyen
+dnl Copyright (C) 2008, 2009, 2010, 2011, 2012, 2013,
+dnl    2014, 2015 Thien-Thi Nguyen
 dnl Copyright (C) 2001, 2002, 2003, 2004, 2005,
 dnl    2006, 2007 Free Software Foundation, Inc.
 dnl
@@ -19,7 +20,7 @@ dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with Guile-WWW.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([Guile-WWW],[2.38],[guile-user@gnu.org])
+AC_INIT([Guile-WWW],[2.39],[guile-user@gnu.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.12.2 gnu no-dist-gzip dist-xz serial-tests])
 
