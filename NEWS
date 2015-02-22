@@ -373,7 +373,7 @@ See the end for copying conditions.
       The message object returned by ‘receive-response’ has a numeric
       status-code and header names normalized by the caller.
 
-      In contrast, for backward compatability, the message object
+      In contrast, for backward compatibility, the message object
       returned by ‘http:request’ has a string status-code and
       lower-case header names.
 
@@ -386,7 +386,7 @@ See the end for copying conditions.
       which call ‘http:request’.
 
       The default value is ‘(1 . 0)’, i.e., HTTP 1.0.  The idea is to
-      support backward compatability out of the box, but allow users
+      support backward compatibility out of the box, but allow users
       to experimentally do:
 
         (set-fluid! protocol-version '(1 . 1))
