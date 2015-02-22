@@ -137,7 +137,7 @@
 (define (msg-body! msg string)   (vector-set! msg 4 string))
 
 (define (msg-string-rcode! msg)
-  (vector-set! msg 1 (fs "~A" (vector-ref msg 1))))
+  (vector-set! msg 1 (number->string (vector-ref msg 1))))
 
 
 ;; Submit an http request using the @code{POST} method on the @var{url}.
