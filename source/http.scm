@@ -409,7 +409,7 @@
 ;; Submit an HTTP request using @var{method} and @var{url}, wait
 ;; for a response, and return the response as an HTTP message object.
 ;; The field types and values of this message object are as described in
-;; @code{receive-response}, with two exceptions (for backward compatability):
+;; @code{receive-response}, with two exceptions (for backward compatibility):
 ;; the status code is a string; the header names are symbols, all lower-case.
 ;;
 ;; @var{method} is the symbolic name of some HTTP method, e.g.,
@@ -439,7 +439,7 @@
 ;;
 (define* (http:request method url #:optional (headers '()) (body '()))
   (cond ((symbol? method))
-        ;; Handle string ‘method’ for backward compatability.
+        ;; Handle string ‘method’ for backward compatibility.
         ((string? method) (set! method (string->symbol method)))
         (else (error "bad method:" method)))
   (let* ((sock (http:open (url:host url) (or (url:port url)
@@ -451,7 +451,7 @@
          (ans (receive-response get
                                 ;; Backward comptability; blech!
                                 #:s2s string-downcase)))
-    ;; Backward compatability; blech!
+    ;; Backward compatibility; blech!
     (msg-string-rcode! ans)
     ;; FIXME: what about keepalives?
     (close-port sock)
